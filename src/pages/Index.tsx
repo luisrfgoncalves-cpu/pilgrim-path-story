@@ -29,9 +29,15 @@ const Index = () => {
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true;
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const alreadyInstalled = isStandalone || localStorage.getItem('pwa_installed') === '1';
 
   useEffect(() => {
-    if (isStandalone) return; // Already installed
+    // Mark as installed if opened in standalone mode
+    if (isStandalone) {
+      localStorage.setItem('pwa_installed', '1');
+      return;
+    }
+    if (alreadyInstalled) return;
     const dismissed = sessionStorage.getItem('install_banner_dismissed');
     if (dismissed) return;
 
@@ -42,7 +48,7 @@ const Index = () => {
     };
     window.addEventListener('beforeinstallprompt', handler);
 
-    if (isMobile && !isStandalone) {
+    if (isMobile && !alreadyInstalled) {
       const timeout = setTimeout(() => {
         setShowInstallBanner(prev => prev ? prev : true);
       }, 3000);
@@ -56,7 +62,10 @@ const Index = () => {
     if (installPrompt) {
       installPrompt.prompt();
       const result = await installPrompt.userChoice;
-      if (result.outcome === 'accepted') setShowInstallBanner(false);
+      if (result.outcome === 'accepted') {
+        setShowInstallBanner(false);
+        localStorage.setItem('pwa_installed', '1');
+      }
       setInstallPrompt(null);
     } else {
       setShowInstallInstructions(true);
