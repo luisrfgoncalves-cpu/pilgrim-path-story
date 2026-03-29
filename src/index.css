@@ -164,8 +164,9 @@ html, body, #root {
 
   .scene-title {
     letter-spacing: 0.02em;
-    word-spacing: 0.15em;
-    overflow-wrap: anywhere;
+    word-spacing: 0.2em;
+    overflow-wrap: break-word;
+    word-break: normal;
   }
 
   .fade-in {
