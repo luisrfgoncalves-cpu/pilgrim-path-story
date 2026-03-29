@@ -19,6 +19,7 @@ import { rollInvisibleDice, applyDiceToEffects, getDiceNarrativeHint } from '@/l
 import { rollForSurprise, Surprise } from '@/lib/gameLoop';
 import { applyIntensityToEffects } from '@/lib/replayEngine';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
+import { postureLabels, postureLabelsFemale } from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import { ParticleEffects, getParticleTypeForScene } from '@/components/ParticleEffects';
 import Inventory from '@/components/Inventory';
@@ -648,7 +649,7 @@ const ScenePage = () => {
                   />
                   <div className="text-left">
                     <p className="font-display text-sm font-bold text-primary leading-tight">{userName}</p>
-                    <p className="text-[10px] text-muted-foreground capitalize">{emotional?.posture?.replace(/_/g, ' ') || 'Peregrino'}</p>
+                    <p className="text-[10px] text-muted-foreground capitalize">{emotional?.posture ? (isPart2 ? postureLabelsFemale : postureLabels)[emotional.posture] || emotional.posture.replace(/_/g, ' ') : (isPart2 ? 'Peregrina' : 'Peregrino')}</p>
                   </div>
                 </button>
               );
