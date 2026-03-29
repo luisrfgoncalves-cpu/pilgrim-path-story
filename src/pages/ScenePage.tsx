@@ -430,9 +430,9 @@ const ScenePage = () => {
               return pType ? <ParticleEffects type={pType} intensity={0.6} /> : null;
             })()}
             <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background via-background/10 to-transparent" />
-            <div className="absolute bottom-3 left-4 flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-primary" />
-              <span className="text-sm uppercase tracking-widest text-primary font-display drop-shadow-lg">{chapter.location}</span>
+            <div className="absolute bottom-3 left-4 flex items-center gap-2 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-primary/30">
+              <MapPin className="w-4 h-4 text-primary drop-shadow-[0_0_6px_hsl(var(--primary))]" />
+              <span className="text-sm uppercase tracking-widest text-primary font-display font-bold" style={{ textShadow: '0 0 8px hsl(var(--primary) / 0.6), 0 1px 3px rgba(0,0,0,0.9)' }}>{chapter.location}</span>
             </div>
           </div>
         )}
