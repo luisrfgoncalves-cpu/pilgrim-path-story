@@ -73,6 +73,8 @@ const ScenePage = () => {
   const [miniGameResult, setMiniGameResult] = useState<MiniGameResult | null>(null);
   const [showMiniGameResult, setShowMiniGameResult] = useState(false);
   const [miniGameReady, setMiniGameReady] = useState(false);
+  // Character entrance reveal
+  const [charReveal, setCharReveal] = useState<{ name: string; img: string; role?: string } | null>(null);
   const { triggerChoiceEffect, triggerSceneEntryVFX } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
@@ -189,6 +191,7 @@ const ScenePage = () => {
     setMiniGameResult(null);
     setShowMiniGameResult(false);
     setMiniGameReady(false);
+    setCharReveal(null);
     const t = setTimeout(() => {
       setTransitioning(false);
       // Auto-trigger dramatic VFX on scene entry
@@ -196,6 +199,33 @@ const ScenePage = () => {
     }, 100);
     return () => clearTimeout(t);
   }, [progress.currentChapterId]);
+
+  // Dramatic character entrance — show big portrait for non-protagonist characters
+  useEffect(() => {
+    if (!chapter || transitioning) return;
+    const allChars = [...characters, ...part2Characters];
+    const isPart2 = progress.campaign === 'part2';
+    const protagonistId = isPart2 ? 'crista' : 'cristao';
+    const sceneCharIds = chapter.characters || [];
+    // Find the most important non-protagonist character to reveal
+    const revealChar = sceneCharIds
+      .filter(id => id !== protagonistId)
+      .map(id => {
+        const char = allChars.find(c => c.id === id);
+        const img = characterImages[id];
+        return char && img ? { name: char.name, img, role: char.role } : null;
+      })
+      .find(Boolean);
+    
+    if (revealChar) {
+      const delay = setTimeout(() => {
+        setCharReveal(revealChar);
+        // Auto-dismiss after 3 seconds
+        setTimeout(() => setCharReveal(null), 3000);
+      }, 800); // Show after scene image loads
+      return () => clearTimeout(delay);
+    }
+  }, [chapter?.id, transitioning]);
 
   // Roll for surprise on scene entry
   useEffect(() => {
@@ -1008,6 +1038,46 @@ const ScenePage = () => {
             <span className="text-sm opacity-80">
               {lastStreakEffect === 'positive' ? '🔥 Em chamas!' : '💔 Sequência sombria'}
             </span>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ CHARACTER ENTRANCE REVEAL ═══ */}
+      {charReveal && (
+        <div
+          className="fixed inset-0 z-[55] flex items-center justify-center pointer-events-none"
+          onClick={() => setCharReveal(null)}
+          style={{ animation: 'charRevealBg 3s ease-out forwards' }}
+        >
+          <div className="absolute inset-0" style={{
+            background: 'radial-gradient(ellipse at center, hsl(0 0% 0% / 0.7) 0%, hsl(0 0% 0% / 0.3) 60%, transparent 100%)',
+          }} />
+          <div className="relative z-10 text-center" style={{ animation: 'charRevealIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}>
+            <img
+              src={charReveal.img}
+              alt={charReveal.name}
+              className="w-40 h-40 md:w-52 md:h-52 rounded-full object-cover mx-auto"
+              style={{
+                border: '4px solid hsl(40 60% 50%)',
+                boxShadow: '0 0 40px hsl(40 60% 50% / 0.5), 0 0 80px hsl(40 50% 40% / 0.3), 0 20px 60px hsl(0 0% 0% / 0.5)',
+              }}
+            />
+            <div className="mt-4" style={{ animation: 'charRevealName 0.6s ease-out 0.4s both' }}>
+              <p className="font-display text-2xl md:text-3xl font-bold" style={{
+                color: 'hsl(40 70% 70%)',
+                textShadow: '0 2px 12px hsl(0 0% 0% / 0.8), 0 0 30px hsl(40 60% 50% / 0.4)',
+              }}>
+                {charReveal.name}
+              </p>
+              {charReveal.role && (
+                <p className="text-sm md:text-base mt-1 font-display" style={{
+                  color: 'hsl(40 40% 55%)',
+                  textShadow: '0 1px 6px hsl(0 0% 0% / 0.6)',
+                }}>
+                  {charReveal.role}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       )}
