@@ -672,8 +672,8 @@ const PhoneMockupTour = () => {
         {/* Play/Pause */}
         <button
           onClick={() => setIsPaused(p => !p)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-primary/30 bg-card/80 hover:border-primary/60 transition-all text-sm"
-          style={{ boxShadow: '0 0 10px hsl(40 70% 50% / 0.1)' }}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl border-2 border-primary/40 bg-card/80 hover:border-primary/70 transition-all text-sm hover:scale-105"
+          style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.2), 0 0 40px hsl(40 70% 50% / 0.08), inset 0 1px 0 hsl(40 80% 75% / 0.1)' }}
         >
           {isPaused ? (
             <><Play className="w-4 h-4 text-primary" /> <span className="text-foreground text-xs font-display">Retomar Tour</span></>
