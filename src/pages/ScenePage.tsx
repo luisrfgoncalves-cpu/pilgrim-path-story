@@ -980,6 +980,8 @@ const ScenePage = () => {
             </div>
           )}
         </div>
+        </>
+        )}
       </main>
 
       {/* ═══ INLINE CONSEQUENCE OVERLAY ═══ */}
