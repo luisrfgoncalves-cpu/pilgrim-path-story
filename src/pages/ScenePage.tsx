@@ -168,7 +168,7 @@ const ScenePage = () => {
                   {availableChoices.map((choice, i) => (
                     <button
                       key={i}
-                      onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence)}
+                      onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag)}
                       className="w-full text-left p-4 rounded-lg bg-card border border-border hover:border-primary/50 hover:glow-gold transition-all duration-300 group"
                     >
                       <p className="text-foreground font-body text-sm group-hover:text-gold transition-colors">{choice.text}</p>
