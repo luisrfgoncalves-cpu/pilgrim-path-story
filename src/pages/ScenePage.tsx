@@ -144,8 +144,9 @@ const ScenePage = () => {
 
         {/* Expandable attribute bars */}
         {showStats && (
-          <div className="max-w-lg mx-auto pt-3 pb-1 animate-fade-in">
+          <div className="max-w-lg mx-auto pt-3 pb-1 animate-fade-in space-y-3">
             <AttributeBars attributes={progress.attributes} compact />
+            {progress.items.length > 0 && <Inventory items={progress.items} compact />}
           </div>
         )}
       </header>
