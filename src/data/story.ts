@@ -88,21 +88,22 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "evangelista"],
     reflection: "r1",
     narrative: [
-      "Cristão vivia na Cidade da Destruição, carregando um fardo pesado nas costas — o peso de seus pecados e angústias. Um dia, enquanto lia um livro antigo, descobriu que sua cidade seria consumida pelo fogo do céu.",
-      "Atormentado por essa revelação, Cristão vagava pelos campos, chorando e clamando: \"O que devo fazer para ser salvo?\"",
-      "Foi então que encontrou Evangelista, um homem sábio que apontou para uma luz distante brilhando além de um portão estreito. \"Siga aquela luz\", disse Evangelista. \"Ela o guiará ao caminho da salvação.\""
+      "Cristão carregava um fardo pesado nas costas. Um peso que ninguém via, mas que o esmagava por dentro.",
+      "Lendo um livro antigo, descobriu: sua cidade seria destruída.",
+      "Desesperado, vagava chorando: \"O que devo fazer?\"",
+      "Evangelista apareceu e apontou para uma luz distante. \"Siga aquela luz. Ela levará você ao caminho certo.\""
     ],
     choices: [
       {
-        text: "Seguir a luz imediatamente, deixando tudo para trás",
+        text: "Seguir a luz agora, deixando tudo para trás",
         nextChapterId: "pantano-desanimo",
-        consequence: "Sua fé o impulsiona adiante, mas o caminho não será fácil.",
+        consequence: "A fé o move, mas o caminho será duro.",
         effects: { fe: 5, coragem: 3 }
       },
       {
-        text: "Tentar convencer sua família a ir junto",
+        text: "Tentar convencer a família a ir junto",
         nextChapterId: "familia-recusa",
-        consequence: "O amor pela família é nobre, mas nem todos ouvirão o chamado.",
+        consequence: "Nem todos ouvirão o chamado.",
         effects: { perseveranca: 3, discernimento: 2 }
       }
     ]
@@ -115,26 +116,26 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "obstinado", "flexivel"],
     reflection: "r2",
     narrative: [
-      "Cristão correu para casa e implorou à sua esposa e filhos que fugissem com ele. Mas eles o olharam com descrença e preocupação.",
-      "\"Você enlouqueceu!\", disseram. Vizinhos e amigos tentaram dissuadi-lo, chamando-o de tolo e fanático.",
-      "Obstinado e Flexível, dois vizinhos, vieram até ele. Obstinado zombava de sua decisão. Flexível, porém, mostrou-se curioso sobre a jornada.",
-      "Com o coração partido, mas determinado, Cristão sabia que precisava seguir em frente."
+      "Cristão implorou à família que fugisse com ele. Ninguém acreditou.",
+      "\"Você enlouqueceu!\", disseram.",
+      "Obstinado zombou dele. Flexível ficou curioso, mas indeciso.",
+      "Com o coração partido, Cristão entendeu: precisava seguir sozinho ou com quem quisesse ir."
     ],
     adaptiveNarrative: [
-      { minAttr: "fe", minValue: 15, text: "A fé de Cristão era tão evidente que até Flexível sentiu algo diferente nele — uma convicção que não podia ser fabricada." },
-      { minAttr: "discernimento", minValue: 8, text: "Com discernimento aguçado, Cristão percebeu que insistir mais só causaria ressentimento. Era hora de partir." }
+      { minAttr: "fe", minValue: 15, text: "Algo na convicção de Cristão tocou Flexível. Havia verdade naquele olhar." },
+      { minAttr: "discernimento", minValue: 8, text: "Cristão percebeu que insistir só geraria mais raiva. Era hora de partir." }
     ],
     choices: [
       {
-        text: "Partir com Flexível como companheiro",
+        text: "Levar Flexível como companheiro",
         nextChapterId: "pantano-desanimo",
-        consequence: "Um companheiro pode ser um conforto... ou uma provação.",
+        consequence: "Um companheiro pode ser conforto ou provação.",
         effects: { discernimento: 2, perseveranca: 2 }
       },
       {
-        text: "Partir sozinho, confiando apenas na providência",
+        text: "Partir sozinho, confiando na providência",
         nextChapterId: "pantano-desanimo-sozinho",
-        consequence: "A solidão no caminho pode fortalecer ou enfraquecer.",
+        consequence: "A solidão pode fortalecer ou quebrar.",
         effects: { coragem: 5, fe: 3 }
       }
     ]
@@ -147,26 +148,26 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "flexivel", "socorro"],
     reflection: "r3",
     narrative: [
-      "Cristão e Flexível caminhavam animados quando, sem aviso, o chão cedeu sob seus pés. Afundaram em um pântano escuro e lodoso — o Pântano do Desânimo.",
-      "O lodo parecia sugar suas forças. Flexível, tomado de pânico, gritou: \"Isto é loucura!\" e arrastou-se de volta.",
-      "Cristão lutava para avançar, mas o fardo o empurrava para baixo. A lama parecia feita de culpa, vergonha e dúvida.",
-      "Quando tudo parecia perdido, uma mão firme estendeu-se. Era Socorro."
+      "O chão cedeu. Cristão e Flexível afundaram numa lama escura e pesada.",
+      "Flexível entrou em pânico. \"Isso é loucura!\" Virou as costas e fugiu.",
+      "Cristão lutava, mas o fardo o puxava para baixo. Culpa, vergonha, dúvida — tudo pesava.",
+      "Uma mão firme apareceu. Era Socorro."
     ],
     adaptiveNarrative: [
-      { minAttr: "perseveranca", minValue: 10, text: "Mesmo afundando, Cristão sentia dentro de si uma chama de perseverança que se recusava a apagar. Cada tentativa de avançar era um ato de resistência." },
-      { minAttr: "coragem", minValue: 10, text: "A coragem de Cristão impressionou até Socorro. \"Poucos lutam com tanta determinação neste lugar\", disse ele." }
+      { minAttr: "perseveranca", minValue: 10, text: "Mesmo afundando, uma chama dentro de Cristão se recusava a apagar." },
+      { minAttr: "coragem", minValue: 10, text: "Socorro ficou impressionado. \"Poucos lutam assim neste lugar.\"" }
     ],
     choices: [
       {
-        text: "Aceitar a mão de Socorro e seguir em frente",
+        text: "Aceitar a mão de Socorro",
         nextChapterId: "portao-estreito",
-        consequence: "A humildade de aceitar ajuda revela sabedoria.",
+        consequence: "Aceitar ajuda é sinal de sabedoria.",
         effects: { fe: 3, discernimento: 4, perseveranca: 2 }
       },
       {
-        text: "Tentar sair sozinho, provando sua força",
+        text: "Tentar sair sozinho",
         nextChapterId: "pantano-orgulho",
-        consequence: "O orgulho pode ser tão perigoso quanto o próprio pântano.",
+        consequence: "O orgulho pode ser tão perigoso quanto a lama.",
         effects: { coragem: 3, perseveranca: 2 }
       }
     ]
@@ -179,12 +180,12 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "socorro"],
     reflection: "r3",
     narrative: [
-      "Sozinho no caminho, Cristão avançava com determinação quando o chão cedeu. O Pântano do Desânimo o engoliu sem misericórdia.",
-      "Sem ninguém para ajudá-lo, o desespero crescia. Pensamentos sombrios sussurravam: \"Volte. Desista.\"",
-      "Mas Cristão lembrou das palavras de Evangelista e da luz distante. Clamou por ajuda, e surgiu Socorro."
+      "Sozinho no caminho, o chão cedeu. O pântano o engoliu.",
+      "Sem ninguém por perto, pensamentos sombrios vieram: \"Volte. Desista.\"",
+      "Cristão lembrou da luz. Clamou por ajuda. Socorro apareceu."
     ],
     adaptiveNarrative: [
-      { minAttr: "fe", minValue: 12, text: "A fé de Cristão brilhava mesmo na escuridão do pântano. Socorro sorriu: \"Sua fé já o sustentava antes de eu chegar.\"" }
+      { minAttr: "fe", minValue: 12, text: "Socorro sorriu. \"Sua fé já o sustentava antes de eu chegar.\"" }
     ],
     choices: [
       {
@@ -203,16 +204,15 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "socorro"],
     reflection: "r4",
     narrative: [
-      "Cristão recusou a mão de Socorro. \"Eu consigo sozinho!\", disse, lutando contra o lodo com toda sua força.",
-      "Cada movimento o afundava mais. Suas forças se esvaíam.",
-      "Finalmente, exausto e humilhado, Cristão aceitou a ajuda de Socorro.",
-      "\"O orgulho\", disse Socorro gentilmente, \"é um fardo que você carrega por escolha.\""
+      "\"Eu consigo sozinho!\" Cristão recusou a mão estendida.",
+      "Cada movimento o afundava mais. Suas forças se esgotaram.",
+      "Exausto, aceitou a ajuda. Socorro disse com gentileza: \"O orgulho é um fardo que você carrega por escolha.\""
     ],
     choices: [
       {
-        text: "Aprender com a lição e seguir humildemente",
+        text: "Aprender a lição e seguir humildemente",
         nextChapterId: "portao-estreito",
-        consequence: "A lição do orgulho ficará gravada no coração.",
+        consequence: "A lição ficará gravada no coração.",
         effects: { discernimento: 5, perseveranca: 3, fe: 2 }
       }
     ]
@@ -225,26 +225,26 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "boa-vontade"],
     reflection: "r5",
     narrative: [
-      "Cristão avistou o Portão Estreito — humilde e quase escondido entre muros altos.",
-      "Boa Vontade o esperava. \"Bata, e a porta se abrirá.\"",
-      "Cristão bateu. Boa Vontade o puxou para dentro com urgência. \"Entre rápido! Há inimigos que atiram flechas contra os que hesitam.\"",
-      "Do outro lado, o Caminho Estreito se estendia rumo a uma colina distante."
+      "Cristão avistou o Portão Estreito — pequeno e quase escondido.",
+      "Boa Vontade o chamou: \"Bata, e se abrirá.\"",
+      "Cristão bateu. Boa Vontade o puxou para dentro. \"Rápido! Inimigos atacam os que hesitam.\"",
+      "Do outro lado, o Caminho Estreito seguia rumo a uma colina distante."
     ],
     adaptiveNarrative: [
-      { minAttr: "discernimento", minValue: 10, text: "O discernimento de Cristão permitiu-lhe notar marcas de flechas nas paredes do portão — sinais de peregrinos anteriores que quase não conseguiram entrar. Ele agradeceu pela urgência de Boa Vontade." },
-      { minAttr: "coragem", minValue: 12, text: "Boa Vontade observou Cristão com admiração: \"Poucos chegam aqui com tanta coragem no olhar. O caminho à frente exigirá cada gota dela.\"" }
+      { minAttr: "discernimento", minValue: 10, text: "Cristão notou marcas de flechas nas paredes. Outros quase não conseguiram entrar." },
+      { minAttr: "coragem", minValue: 12, text: "Boa Vontade o observou. \"Poucos chegam aqui com tanta coragem no olhar.\"" }
     ],
     choices: [
       {
         text: "Perguntar sobre o caminho antes de seguir",
         nextChapterId: "casa-interprete",
-        consequence: "Conhecimento é um aliado precioso na jornada.",
+        consequence: "Conhecimento é um aliado precioso.",
         effects: { discernimento: 6, fe: 2 }
       },
       {
         text: "Seguir imediatamente pelo Caminho Estreito",
         nextChapterId: "cruz-fardo",
-        consequence: "A urgência da jornada queima no coração.",
+        consequence: "A urgência queima no coração.",
         effects: { coragem: 4, perseveranca: 3 }
       }
     ]
@@ -257,19 +257,19 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "interprete"],
     reflection: "r6",
     narrative: [
-      "Na Casa do Intérprete, Cristão foi guiado por salas com visões que revelavam verdades profundas.",
-      "Na primeira sala, viu um retrato de um homem grave com olhos erguidos ao céu. \"Este é o único homem autorizado a ser seu guia.\"",
-      "Na segunda, um fogo que crescia apesar da água jogada nele. \"A graça de Deus mantém a obra viva no coração.\"",
-      "Cada sala revelava uma nova verdade, preparando Cristão para os desafios futuros."
+      "O Intérprete guiou Cristão por salas cheias de visões.",
+      "Na primeira: um retrato de um homem com os olhos no céu. \"Ele é o único guia verdadeiro.\"",
+      "Na segunda: um fogo que crescia mesmo com água jogada nele. \"A graça mantém a chama viva.\"",
+      "Cada sala preparava Cristão para o que viria."
     ],
     adaptiveNarrative: [
-      { minAttr: "discernimento", minValue: 12, text: "O discernimento aguçado de Cristão permitiu-lhe compreender significados mais profundos nas visões. O Intérprete sorriu: \"Você vê além da superfície. Isso será essencial.\"" }
+      { minAttr: "discernimento", minValue: 12, text: "O Intérprete sorriu. \"Você enxerga além da superfície. Isso será essencial.\"" }
     ],
     choices: [
       {
-        text: "Continuar pelo caminho, fortalecido pelas visões",
+        text: "Seguir fortalecido pelas visões",
         nextChapterId: "cruz-fardo",
-        consequence: "As lições do Intérprete iluminarão os dias difíceis.",
+        consequence: "As lições iluminarão os dias difíceis.",
         effects: { discernimento: 8, fe: 4, perseveranca: 2 }
       }
     ]
@@ -282,15 +282,15 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     reflection: "r7",
     narrative: [
-      "Cristão subiu a colina com dificuldade, o fardo pesando cada vez mais.",
-      "No topo, ele a viu — a Cruz. Alta, simples, poderosa.",
-      "As amarras do fardo se soltaram. O peso deslizou de suas costas e desapareceu para sempre.",
-      "Cristão caiu de joelhos em lágrimas de alegria. Três seres resplandecentes lhe deram vestes novas, um selo e um pergaminho selado.",
-      "\"Este pergaminho é sua garantia. Apresente-o nos portões da Cidade Celestial.\""
+      "Cristão subiu a colina. O fardo nunca pesou tanto.",
+      "No topo, viu a Cruz. Simples. Poderosa.",
+      "As amarras se soltaram. O fardo caiu e sumiu para sempre.",
+      "De joelhos, Cristão chorou de alívio. Recebeu vestes novas e um pergaminho selado.",
+      "\"Apresente-o nos portões da Cidade Celestial.\""
     ],
     choices: [
       {
-        text: "Seguir renovado pelo Caminho Estreito",
+        text: "Seguir renovado, livre do fardo",
         nextChapterId: "vale-sombra",
         consequence: "A jornada continua, mas agora você caminha livre.",
         effects: { fe: 10, perseveranca: 5, coragem: 3, discernimento: 2 }
@@ -305,27 +305,27 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     reflection: "r8",
     narrative: [
-      "O caminho desceu para um vale escuro e terrível. À direita, um fosso sem fundo. À esquerda, um pântano traiçoeiro.",
-      "Demônios sussurravam nas trevas. Chamas irrompiam do chão. Cristão sentia medo como nunca antes.",
-      "Vozes blasfemas sussurravam em seus ouvidos. A escuridão era tão densa que ele mal podia ver seus pés.",
-      "No meio daquela noite, ouviu outro peregrino citando: \"Ainda que eu ande pelo vale da sombra da morte, não temerei mal algum.\""
+      "O caminho desceu para um vale de trevas. Fosso à direita. Pântano à esquerda.",
+      "Sussurros, chamas, vozes acusadoras. A escuridão era completa.",
+      "Cristão sentiu medo como nunca.",
+      "No fundo do vale, ouviu outro peregrino recitando: \"Não temerei mal algum, porque Tu estás comigo.\""
     ],
     adaptiveNarrative: [
-      { minAttr: "fe", minValue: 25, text: "A fé profunda de Cristão era como uma armadura invisível. Os demônios recuavam ao sentir a luz que emanava dele, e o vale pareceu menos aterrador." },
-      { minAttr: "coragem", minValue: 18, text: "A coragem forjada nas provações anteriores permitiu a Cristão caminhar com passo firme onde outros teriam paralisado." },
-      { minAttr: "perseveranca", minValue: 15, text: "Cada passo era uma escolha de não desistir. A perseverança de Cristão transformava o impossível em inevitável." }
+      { minAttr: "fe", minValue: 25, text: "A fé de Cristão era como uma armadura. Os demônios recuavam diante dele." },
+      { minAttr: "coragem", minValue: 18, text: "A coragem forjada nas provações fez Cristão caminhar firme onde outros paralisariam." },
+      { minAttr: "perseveranca", minValue: 15, text: "Cada passo era uma escolha de não desistir." }
     ],
     choices: [
       {
-        text: "Orar em voz alta e avançar com fé",
+        text: "Orar em voz alta e avançar",
         nextChapterId: "fiel-encontro",
-        consequence: "A oração é uma arma poderosa nas trevas.",
+        consequence: "A oração é uma arma nas trevas.",
         effects: { fe: 8, coragem: 5, perseveranca: 3 }
       },
       {
-        text: "Buscar o peregrino à frente para não estar só",
+        text: "Buscar o peregrino à frente",
         nextChapterId: "fiel-encontro",
-        consequence: "A comunhão entre peregrinos fortalece a caminhada.",
+        consequence: "A companhia fortalece a caminhada.",
         effects: { discernimento: 5, perseveranca: 5, fe: 3 }
       }
     ]
@@ -338,20 +338,20 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "fiel"],
     reflection: "r9",
     narrative: [
-      "A aurora rompeu as trevas. Cristão viu Fiel, um antigo conhecido que também partira da Cidade da Destruição.",
-      "Os dois se abraçaram e compartilharam suas histórias. Fiel contou suas provações.",
-      "\"O caminho é difícil\", disse Fiel, \"mas a graça é sempre suficiente.\"",
-      "Juntos, avistaram no horizonte a Feira da Vaidade."
+      "A aurora rompeu as trevas. Cristão encontrou Fiel — um conhecido que também saíra da Cidade da Destruição.",
+      "Os dois se abraçaram. Compartilharam suas histórias.",
+      "\"O caminho é difícil\", disse Fiel, \"mas a graça é suficiente.\"",
+      "No horizonte, avistaram a Feira da Vaidade."
     ],
     choices: [
       {
-        text: "Entrar na Feira da Vaidade com cautela",
+        text: "Entrar na Feira com cautela",
         nextChapterId: "feira-vaidade",
-        consequence: "A prudência será necessária em um lugar de tantas tentações.",
+        consequence: "Prudência será necessária entre tantas tentações.",
         effects: { discernimento: 5, fe: 2 }
       },
       {
-        text: "Tentar contornar a feira por outro caminho",
+        text: "Tentar contornar a feira",
         nextChapterId: "feira-inevitavel",
         consequence: "Alguns caminhos não podem ser evitados.",
         effects: { perseveranca: 3, discernimento: 2 }
@@ -365,15 +365,15 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Arredores da Feira da Vaidade",
     characters: ["cristao", "fiel"],
     narrative: [
-      "Cristão e Fiel tentaram encontrar outro caminho, mas o Caminho Estreito passava pelo centro da Feira.",
-      "\"Não há atalhos na jornada do peregrino\", disse Fiel. \"O Senhor nos dá força para enfrentar, não para fugir.\"",
-      "Com essa convicção, os dois se prepararam para entrar na feira."
+      "Não havia outro caminho. O Caminho Estreito passava pelo centro da Feira.",
+      "Fiel disse: \"O Senhor nos dá força para enfrentar, não para fugir.\"",
+      "Os dois se prepararam para entrar."
     ],
     choices: [
       {
-        text: "Entrar na feira juntos, fortalecidos pela convicção",
+        text: "Entrar juntos, com coragem",
         nextChapterId: "feira-vaidade",
-        consequence: "A coragem de enfrentar o inevitável é um sinal de maturidade.",
+        consequence: "Enfrentar o inevitável é sinal de maturidade.",
         effects: { coragem: 5, perseveranca: 3, fe: 2 }
       }
     ]
@@ -386,19 +386,19 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "fiel"],
     reflection: "r10",
     narrative: [
-      "A Feira da Vaidade era um espetáculo de tentações. Vendedores ofereciam honras, prazeres, títulos e riquezas.",
-      "Quando perguntaram o que desejavam, Cristão e Fiel responderam: \"Nós compramos a Verdade.\"",
-      "A resposta causou tumulto. Foram espancados e presos.",
-      "Fiel foi condenado e martirizado. Sua morte corajosa inspirou outros. Cristão escapou por providência divina.",
-      "Com o coração pesado, mas fortalecido pelo exemplo de Fiel, Cristão sabia que a jornada deveria continuar."
+      "A Feira oferecia tudo: honras, prazeres, riquezas, títulos.",
+      "\"O que desejam comprar?\", perguntaram. \"A Verdade\", responderam.",
+      "A resposta causou fúria. Foram espancados e presos.",
+      "Fiel foi condenado e morto. Sua coragem inspirou outros.",
+      "Com o coração pesado, Cristão escapou. A jornada precisava continuar."
     ],
     adaptiveNarrative: [
-      { minAttr: "coragem", minValue: 20, text: "A coragem de Cristão durante o julgamento foi tão evidente que até alguns dos guardas sentiram vergonha do que faziam." },
-      { minAttr: "fe", minValue: 30, text: "A fé inabalável de Cristão transformou a prisão em altar. Ele cantava hinos mesmo acorrentado, e as paredes pareciam tremer." }
+      { minAttr: "coragem", minValue: 20, text: "A coragem de Cristão no julgamento fez até os guardas sentirem vergonha." },
+      { minAttr: "fe", minValue: 30, text: "Mesmo acorrentado, Cristão cantava hinos. As paredes pareciam tremer." }
     ],
     choices: [
       {
-        text: "Honrar a memória de Fiel e seguir em frente",
+        text: "Honrar Fiel e seguir em frente",
         nextChapterId: "esperanca-encontro",
         consequence: "O sacrifício de Fiel não será em vão.",
         effects: { fe: 5, perseveranca: 5, coragem: 5 }
@@ -412,27 +412,27 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Além da Feira da Vaidade",
     characters: ["cristao", "esperanca"],
     narrative: [
-      "Cristão foi alcançado por Esperança — um jovem que, testemunhando a coragem de Fiel, decidiu seguir o Caminho Estreito.",
-      "\"Se Fiel preferiu morrer a negar a Verdade, essa Verdade vale mais que tudo\", disse Esperança.",
-      "Os dois caminharam juntos. Mas ao longe, podiam ver os contornos sombrios do Castelo da Dúvida."
+      "Esperança alcançou Cristão — um jovem tocado pela coragem de Fiel.",
+      "\"Se ele preferiu morrer a negar a Verdade, essa Verdade vale tudo.\"",
+      "Juntos, seguiram. Mas ao longe, os contornos sombrios do Castelo da Dúvida apareceram."
     ],
     choices: [
       {
-        text: "Manter-se no Caminho Estreito com disciplina",
+        text: "Manter-se no Caminho Estreito",
         nextChapterId: "cidade-celestial",
-        consequence: "A perseverança é a marca dos verdadeiros peregrinos.",
+        consequence: "Perseverança é a marca dos verdadeiros peregrinos.",
         effects: { perseveranca: 8, fe: 5, discernimento: 3 }
       },
       {
         text: "Tomar um atalho que parece mais fácil",
         nextChapterId: "castelo-duvida",
-        consequence: "Os atalhos raramente levam aonde prometem.",
+        consequence: "Atalhos raramente levam aonde prometem.",
         effects: { coragem: 2 }
       },
       {
         text: "Consultar o pergaminho antes de decidir",
         nextChapterId: "cidade-celestial",
-        consequence: "O pergaminho brilhou com uma luz suave, confirmando a direção do Caminho Estreito.",
+        consequence: "O pergaminho brilhou, confirmando a direção certa.",
         effects: { discernimento: 8, fe: 5, perseveranca: 3 },
         requires: { discernimento: 20 }
       }
@@ -446,33 +446,33 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "esperanca", "gigante-desespero"],
     reflection: "r11",
     narrative: [
-      "O atalho levou Cristão e Esperança para as terras do Gigante Desespero, que os lançou nas masmorras.",
-      "O Gigante os atormentou: \"Vocês nunca chegarão à Cidade Celestial. Morram aqui.\"",
-      "Esperança manteve-se firme: \"Lembre-se de tudo que você já superou. Deus não nos trouxe até aqui para nos abandonar.\"",
-      "Na calada da noite, Cristão lembrou-se da chave chamada Promessa, que abria qualquer fechadura do Castelo."
+      "O atalho os levou às terras do Gigante Desespero. Foram presos nas masmorras.",
+      "O Gigante os torturava: \"Vocês nunca chegarão lá. Desistam.\"",
+      "Esperança o encorajou: \"Deus não nos trouxe até aqui para nos abandonar.\"",
+      "Na calada da noite, Cristão lembrou da chave chamada Promessa."
     ],
     adaptiveNarrative: [
-      { minAttr: "fe", minValue: 35, text: "A fé de Cristão era tão forte que mesmo nas masmorras ele sentia paz. O Gigante, perplexo, não conseguia quebrar seu espírito." },
-      { minAttr: "perseveranca", minValue: 20, text: "A perseverança acumulada ao longo da jornada sustentou Cristão nos dias mais escuros do calabouço." }
+      { minAttr: "fe", minValue: 35, text: "A fé de Cristão era tão forte que o Gigante não conseguia quebrar seu espírito." },
+      { minAttr: "perseveranca", minValue: 20, text: "A perseverança acumulada sustentou Cristão nos dias mais escuros." }
     ],
     choices: [
       {
         text: "Usar a chave da Promessa e fugir",
         nextChapterId: "cidade-celestial",
-        consequence: "A experiência no Castelo ensinou o preço dos desvios.",
+        consequence: "A experiência ensinou o preço dos desvios.",
         effects: { fe: 5, discernimento: 5, perseveranca: 3 }
       },
       {
-        text: "Enfrentar o Gigante com as palavras da Verdade",
+        text: "Enfrentar o Gigante com palavras de fé",
         nextChapterId: "cidade-celestial",
-        consequence: "O Gigante Desespero tremeu diante das palavras de fé. Suas correntes se partiram.",
+        consequence: "O Gigante tremeu. As correntes se partiram.",
         effects: { coragem: 10, fe: 8, perseveranca: 5 },
         requires: { coragem: 25, fe: 30 }
       }
     ]
   },
 
-  // === MULTIPLE ENDINGS ===
+  // === FINAIS ===
   "cidade-celestial": {
     id: "cidade-celestial",
     title: "A Cidade Celestial",
@@ -480,13 +480,12 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "esperanca"],
     reflection: "r12",
     narrative: [
-      "Cristão e Esperança chegaram às Montanhas Deleitosas. Pastores lhes mostraram, ao longe, os portões da Cidade Celestial brilhando como ouro.",
-      "O último obstáculo era o Rio da Morte — profundo e sem ponte.",
-      "\"Não tema\", disse Esperança. \"As águas são profundas ou rasas conforme a sua fé.\"",
-      "Cristão lutou contra as ondas. Do outro lado, anjos o esperavam com trombetas e cânticos.",
-      "Os portões se abriram. Cristão apresentou seu pergaminho, e as hostes celestiais proclamaram:",
-      "\"Benditos os que lavam as suas vestiduras para que tenham direito à árvore da vida.\"",
-      "Cristão entrou na presença do Rei, e todo peso ficou para trás — para sempre."
+      "Cristão e Esperança chegaram às Montanhas Deleitosas. Ao longe, os portões brilhavam como ouro.",
+      "O último obstáculo: o Rio da Morte. Profundo, sem ponte.",
+      "\"Não tema\", disse Esperança. \"As águas são rasas ou profundas conforme a sua fé.\"",
+      "Cristão atravessou. Anjos o esperavam com cânticos.",
+      "Apresentou o pergaminho. Os portões se abriram.",
+      "Cristão entrou na presença do Rei. Todo peso ficou para trás — para sempre."
     ],
     choices: [],
     isEnding: true,
@@ -495,16 +494,16 @@ export const storyChapters: Record<string, StoryChapter> = {
 
   "cidade-celestial-glorioso": {
     id: "cidade-celestial-glorioso",
-    title: "Final Glorioso — O Peregrino de Fé Inabalável",
+    title: "Final Glorioso",
     location: "Cidade Celestial",
     characters: ["cristao", "esperanca"],
     reflection: "r12",
     narrative: [
-      "Cristão e Esperança chegaram às Montanhas Deleitosas sob uma luz dourada que parecia reconhecê-los.",
-      "O Rio da Morte se abriu diante deles, e Cristão caminhou sobre águas quase rasas — sua fé era tão profunda que o próprio rio se curvou.",
-      "Anjos desceram em fileiras resplandecentes, cantando o nome de Cristão. Os portões da Cidade Celestial se abriram com um trovão de glória.",
-      "O Rei em pessoa veio ao seu encontro: \"Bem-vindo, servo bom e fiel. Você caminhou com fé, coragem, discernimento e perseverança. Entre na alegria do seu Senhor.\"",
-      "Uma coroa de ouro foi colocada sobre sua cabeça, e todas as hostes celestiais celebraram. Cada provação, cada escolha, cada lágrima — tudo convergiu neste momento de triunfo eterno."
+      "Uma luz dourada envolveu Cristão e Esperança nas Montanhas Deleitosas.",
+      "O Rio da Morte se acalmou. Cristão caminhou sobre águas quase rasas.",
+      "Anjos desceram em fileiras, cantando seu nome. Os portões se abriram com um trovão de glória.",
+      "O Rei veio ao encontro: \"Bem-vindo, servo bom e fiel. Entre na alegria do seu Senhor.\"",
+      "Uma coroa de ouro foi colocada sobre sua cabeça. Cada provação, cada lágrima — tudo valeu a pena."
     ],
     choices: [],
     isEnding: true,
@@ -518,11 +517,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "esperanca"],
     reflection: "r12",
     narrative: [
-      "Cristão chegou às margens do Rio da Morte com um coração tranquilo.",
-      "As águas eram profundas, mas ele não temeu. O discernimento adquirido ao longo do caminho lhe mostrava que cada prova tinha sido preparação para este momento.",
-      "Atravessou o rio com serenidade. No outro lado, um anjo o recebeu em silêncio e o guiou pelos portões.",
-      "Dentro da Cidade, o Rei sorriu: \"Você buscou sabedoria acima de tudo. E a sabedoria o trouxe até aqui.\"",
-      "Cristão recebeu um manto tecido com as lições de cada capítulo vivido — cada fio era uma escolha sábia."
+      "Cristão chegou ao Rio da Morte com o coração tranquilo.",
+      "As águas eram profundas, mas ele não temeu. O discernimento lhe mostrava: cada prova foi preparação.",
+      "Atravessou com serenidade. Um anjo o guiou pelos portões.",
+      "O Rei sorriu: \"Você buscou sabedoria acima de tudo. E a sabedoria o trouxe até aqui.\"",
+      "Cristão recebeu um manto tecido com as lições de cada escolha sábia."
     ],
     choices: [],
     isEnding: true,
@@ -536,11 +535,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "esperanca"],
     reflection: "r12",
     narrative: [
-      "Cristão chegou ao Rio da Morte coberto de cicatrizes — marcas de cada batalha, cada queda, cada desvio.",
-      "As águas eram turbulentas e profundas. Cristão quase afundou, mas Esperança o segurou com firmeza: \"Não agora. Não depois de tudo.\"",
-      "Com as últimas forças, Cristão alcançou a outra margem. Caiu de joelhos na areia dourada.",
-      "Anjos o ergueram e o carregaram até o portão. Suas vestes estavam rasgadas, mas brilhavam com uma luz interior.",
-      "O Rei o abraçou: \"Você caiu muitas vezes, mas nunca ficou no chão. Sua perseverança move montanhas. Bem-vindo, meu filho sofrido e fiel.\""
+      "Cristão chegou ao Rio coberto de cicatrizes. Marcas de cada batalha, cada queda.",
+      "As águas eram turbulentas. Quase afundou. Esperança o segurou: \"Não agora. Não depois de tudo.\"",
+      "Com as últimas forças, alcançou a outra margem.",
+      "O Rei o abraçou: \"Você caiu muitas vezes, mas nunca ficou no chão. Bem-vindo, meu filho.\"",
+      "Suas vestes estavam rasgadas, mas brilhavam."
     ],
     choices: [],
     isEnding: true,
