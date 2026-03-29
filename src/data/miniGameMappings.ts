@@ -474,4 +474,120 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
       { emoji: '✨', label: 'Veste Branca', bonus: { fe: 1 } },
     ],
   },
+
+  // ╔══════════════════════════════════════╗
+  // ║  NOVOS — Puzzle de Escrituras        ║
+  // ╚══════════════════════════════════════╝
+
+  // Fase 1 — Aprendendo versículos no início
+  'cena5': {
+    type: 'wordpuzzle',
+    difficulty: 'easy',
+    intro: 'Antes de seguir, monte o versículo que guiará seus passos na jornada.',
+    successBonus: { fe: 1, discernimento: 1 },
+    failurePenalty: { discernimento: -1 },
+  },
+
+  // Fase 2 — Estudando na Casa do Intérprete
+  'fase2-cena2': {
+    type: 'wordpuzzle',
+    difficulty: 'easy',
+    intro: 'O Intérprete te desafia a montar as Escrituras de memória. Prove seu conhecimento!',
+    successBonus: { discernimento: 2 },
+    failurePenalty: { discernimento: -1 },
+  },
+
+  // Fase 3 — Fortalecendo-se com versículos após Apolião
+  'fase3-cena7': {
+    type: 'wordpuzzle',
+    difficulty: 'normal',
+    intro: 'Após a batalha, as Escrituras te fortalecem. Monte os versículos que restauram sua alma.',
+    successBonus: { fe: 1, perseveranca: 1 },
+    failurePenalty: { fe: -1 },
+  },
+
+  // Fase 4 — Defesa no tribunal com as Escrituras
+  'fase4-cena6': {
+    type: 'wordpuzzle',
+    difficulty: 'normal',
+    intro: 'No tribunal, use as Escrituras como defesa! Monte os versículos da verdade!',
+    successBonus: { discernimento: 2, coragem: 1 },
+    failurePenalty: { discernimento: -1 },
+  },
+
+  // Fase 5 — Chave da Promessa é um versículo
+  'fase5-cena5': {
+    type: 'wordpuzzle',
+    difficulty: 'hard',
+    intro: 'A Chave da Promessa é um versículo! Monte-o corretamente para abrir as portas do calabouço!',
+    successBonus: { fe: 2, perseveranca: 1 },
+    failurePenalty: { perseveranca: -1 },
+  },
+
+  // Fase 6 — Últimos versículos antes da glória
+  'fase6-cena4': {
+    type: 'wordpuzzle',
+    difficulty: 'hard',
+    intro: 'Diante da Cidade Celestial, recite os versículos que marcaram sua jornada inteira.',
+    successBonus: { fe: 2, discernimento: 1 },
+    failurePenalty: { fe: -1 },
+  },
+
+  // ╔══════════════════════════════════════╗
+  // ║  NOVOS — Caminho da Fé (RPG Path)   ║
+  // ╚══════════════════════════════════════╝
+
+  // Fase 1 — Primeiros passos no caminho
+  'cena9': {
+    type: 'pathchoice',
+    difficulty: 'easy',
+    intro: 'O caminho se divide à frente. Cada trilha esconde perigos e bênçãos. Escolha com sabedoria!',
+    successBonus: { coragem: 1, perseveranca: 1 },
+    failurePenalty: { coragem: -1 },
+  },
+
+  // Fase 2 — Explorando após o Palácio Belo
+  'fase2-cena9': {
+    type: 'pathchoice',
+    difficulty: 'easy',
+    intro: 'Após o Palácio Belo, encruzilhadas surgem. Sua fé e coragem definirão o caminho.',
+    successBonus: { fe: 1, coragem: 1 },
+    failurePenalty: { coragem: -1 },
+  },
+
+  // Fase 3 — Navegando o Vale
+  'fase3-cena2': {
+    type: 'pathchoice',
+    difficulty: 'normal',
+    intro: 'O Vale da Humilhação apresenta trilhas perigosas. Cada decisão pode custar sua vida.',
+    successBonus: { coragem: 2, perseveranca: 1 },
+    failurePenalty: { coragem: -1, perseveranca: -1 },
+  },
+
+  // Fase 4 — Fugindo da Feira
+  'fase4-cena10': {
+    type: 'pathchoice',
+    difficulty: 'normal',
+    intro: 'Escapando da Feira da Vaidade, cada rua é uma armadilha. Escolha o caminho certo!',
+    successBonus: { perseveranca: 1, discernimento: 1 },
+    failurePenalty: { perseveranca: -1 },
+  },
+
+  // Fase 5 — Dentro do Castelo da Dúvida
+  'fase5-cena10': {
+    type: 'pathchoice',
+    difficulty: 'hard',
+    intro: 'Os corredores do Castelo da Dúvida se ramificam em infinitas possibilidades. Encontre a saída!',
+    successBonus: { perseveranca: 2, fe: 1 },
+    failurePenalty: { perseveranca: -2 },
+  },
+
+  // Fase 6 — Últimos passos antes do portão
+  'fase6-cena6': {
+    type: 'pathchoice',
+    difficulty: 'hard',
+    intro: 'Os últimos passos antes da Cidade Celestial. Cada escolha ecoa na eternidade.',
+    successBonus: { fe: 2, coragem: 1 },
+    failurePenalty: { fe: -1 },
+  },
 };
