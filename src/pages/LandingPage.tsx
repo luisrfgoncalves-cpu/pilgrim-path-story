@@ -692,74 +692,140 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* ══════════ GALERIA DE CENAS DO APP ══════════ */}
-      <section className="px-5 py-12">
-        <div className="max-w-4xl mx-auto space-y-6">
-          <div className="text-center mb-8">
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Imagens Reais do App</p>
+      {/* ══════════ MODO SOLO — COMO FUNCIONA ══════════ */}
+      <section className="px-5 py-16">
+        <div className="max-w-4xl mx-auto space-y-8">
+          <div className="text-center mb-4">
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Modo Solo</p>
             <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
-              Cada cena é uma <span className="text-primary">obra de arte</span>
+              Uma aventura narrativa <span className="text-primary">onde cada escolha importa</span>
             </h2>
-            <p className="text-sm text-muted-foreground mt-2">Essas são as imagens reais que você verá durante o jogo</p>
+            <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">
+              Você lê, decide e vive a história. Não é um jogo passivo — suas decisões alteram atributos, desbloqueiam caminhos e determinam o final.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <CinematicImage
-              src={valeHumilhacao}
-              alt="Vale da Humilhação"
-              caption="⚔️ Vale da Humilhação"
-              subcaption="Enfrente Apolião em um duelo épico pela sua alma"
-              rotate={-2}
-            />
-            <CinematicImage
-              src={casteloDuvida}
-              alt="Castelo da Dúvida"
-              caption="🏰 Castelo da Dúvida"
-              subcaption="Preso pelo Gigante Desespero — você consegue escapar?"
-              rotate={2}
-            />
+            <MedievalCard glow className="overflow-hidden p-0">
+              <div className="relative h-36 overflow-hidden">
+                <img src={valeHumilhacao} alt="Narrativa com escolhas" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+              </div>
+              <div className="p-5">
+                <h3 className="font-display text-base font-bold text-foreground flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-primary" /> Narrativa Interativa
+                </h3>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  30+ capítulos com texto imersivo e arte cinematográfica. Cada cena apresenta 2-4 escolhas que impactam seus <strong className="text-primary">4 atributos</strong>: Fé 🔥, Perseverança ⛰️, Discernimento 👁️ e Coragem 🛡️.
+                </p>
+              </div>
+            </MedievalCard>
+
+            <MedievalCard glow className="overflow-hidden p-0">
+              <div className="relative h-36 overflow-hidden">
+                <img src={casteloDuvida} alt="Duelos de dados" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+              </div>
+              <div className="p-5">
+                <h3 className="font-display text-base font-bold text-foreground flex items-center gap-2">
+                  <Swords className="w-5 h-5 text-primary" /> Duelos com Dados 3D
+                </h3>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  Enfrente inimigos como <strong className="text-primary">Apolião</strong> e o <strong className="text-primary">Gigante Desespero</strong> com sistema de combate: Espada ⚔️ (ataque), Escudo 🛡️ (defesa) e Oração 🙏 (poder). Dados 3D animados!
+                </p>
+              </div>
+            </MedievalCard>
+
+            <MedievalCard glow className="overflow-hidden p-0">
+              <div className="relative h-36 overflow-hidden">
+                <img src={feiraVaidade} alt="Mini-games" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+              </div>
+              <div className="p-5">
+                <h3 className="font-display text-base font-bold text-foreground flex items-center gap-2">
+                  <Gamepad2 className="w-5 h-5 text-primary" /> 9 Tipos de Mini-Games
+                </h3>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  QTE de reflexo, esquiva de tentações, memória bíblica, stealth, caça ao tesouro, Simon Says, puzzle de versículos, caminho da fé e duelo de dados. Cada um com tela de instrução antes do início.
+                </p>
+              </div>
+            </MedievalCard>
+
+            <MedievalCard glow className="overflow-hidden p-0">
+              <div className="relative h-36 overflow-hidden">
+                <img src={cidadeCelestial} alt="Finais múltiplos" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+              </div>
+              <div className="p-5">
+                <h3 className="font-display text-base font-bold text-foreground flex items-center gap-2">
+                  <Trophy className="w-5 h-5 text-primary" /> Múltiplos Finais
+                </h3>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  Seus atributos determinam qual final você alcança. Cidade Celestial gloriosa, finais alternativos ou caminhos secretos. Cada jogada é diferente com <strong className="text-primary">eventos aleatórios</strong> e dados invisíveis.
+                </p>
+              </div>
+            </MedievalCard>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            <CinematicImage
-              src={feiraVaidade}
-              alt="Feira da Vaidade"
-              caption="🎪 Feira da Vaidade"
-              subcaption="Tentações a cada passo"
-              rotate={-1}
-            />
-            <CinematicImage
-              src={valeSombra}
-              alt="Vale da Sombra"
-              caption="💀 Vale da Sombra"
-              subcaption="A escuridão mais profunda"
-            />
-            <CinematicImage
-              src={rioFinal}
-              alt="Travessia do Rio"
-              caption="🌊 Rio da Morte"
-              subcaption="O desafio final"
-              rotate={1}
-            />
-          </div>
-          <CinematicImage
-            src={cidadeCelestial}
-            alt="Cidade Celestial"
-            caption="✨ Cidade Celestial — O Destino Final"
-            subcaption="Após uma jornada de batalhas, fé e perseverança — a recompensa aguarda os fiéis."
-          />
         </div>
       </section>
 
       <SectionDivider />
 
-      {/* ══════════ PERSONAGENS DO APP ══════════ */}
+      {/* ══════════ MODO MULTIPLAYER ══════════ */}
       <section className="px-5 py-16 bg-card/30">
-        <div className="max-w-3xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center">
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Personagens Reais do App</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Multiplayer</p>
             <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
-              Conheça quem faz parte <span className="text-primary">desta jornada</span>
+              Dois modos para jogar <span className="text-primary">em grupo</span>
             </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <MedievalCard glow className="text-center space-y-4">
+              <div className="w-14 h-14 mx-auto rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center" style={{ boxShadow: '0 0 15px hsl(40 70% 50% / 0.2)' }}>
+                <Users className="w-7 h-7 text-primary" />
+              </div>
+              <h3 className="font-display text-lg text-foreground font-bold">Online</h3>
+              <ul className="text-xs text-muted-foreground text-left space-y-2">
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Até 6 jogadores simultâneos via internet</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Tabuleiro premium digital com 65 casas</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Dados 3D animados (branco com pontos pretos)</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> 65 eventos narrativos no tabuleiro</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Ranking e medalhas por partida</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Compartilhe o link e jogue com amigos</li>
+              </ul>
+            </MedievalCard>
+
+            <MedievalCard glow className="text-center space-y-4">
+              <div className="w-14 h-14 mx-auto rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center" style={{ boxShadow: '0 0 15px hsl(40 70% 50% / 0.2)' }}>
+                <Swords className="w-7 h-7 text-primary" />
+              </div>
+              <h3 className="font-display text-lg text-foreground font-bold">Presencial (Reunidos)</h3>
+              <ul className="text-xs text-muted-foreground text-left space-y-2">
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> 2 a 8 jogadores no mesmo dispositivo</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Funciona 100% offline — ideal para retiros</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Use dados físicos reais ou o dado digital</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Cada jogador escolhe nome e personagem</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Eventos surpresa a cada casa</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Perfeito para grupos de jovens e famílias</li>
+              </ul>
+            </MedievalCard>
+          </div>
+        </div>
+      </section>
+
+      <SectionDivider />
+
+      {/* ══════════ PERSONAGENS + CENAS ══════════ */}
+      <section className="px-5 py-16">
+        <div className="max-w-4xl mx-auto space-y-8">
+          <div className="text-center">
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Conteúdo do App</p>
+            <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
+              40+ personagens e cenários <span className="text-primary">cinematográficos</span>
+            </h2>
+            <p className="text-sm text-muted-foreground mt-2">Todas as imagens abaixo são reais — exatamente o que você verá no app</p>
           </div>
 
           <div className="grid grid-cols-4 md:grid-cols-8 gap-4 justify-items-center">
@@ -773,42 +839,21 @@ const LandingPage = () => {
             <CharacterPortrait src={valentePelaVerdade} name="Valente" role="Pela Verdade" />
           </div>
 
-          <p className="text-center text-sm text-muted-foreground font-body">
-            + mais de <strong className="text-primary">40 personagens</strong> com arte original em cada cena
-          </p>
-        </div>
-      </section>
-
-      <SectionDivider />
-
-      {/* ══════════ MAIS CENAS REAIS ══════════ */}
-      <section className="px-5 py-12">
-        <div className="max-w-4xl mx-auto space-y-6">
-          <div className="text-center mb-4">
-            <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
-              Mais cenários <span className="text-primary">cinematográficos</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
+              { img: cidadeDestruicao, label: 'Cidade da Destruição' },
               { img: portaoEstreito, label: 'Portão Estreito' },
-              { img: pantanoDesanimo, label: 'Pântano do Desânimo' },
-              { img: casaInterprete, label: 'Casa do Intérprete' },
-              { img: palacioBelo, label: 'Palácio Belo' },
               { img: cruzFardo, label: 'A Cruz e o Fardo' },
+              { img: casaInterprete, label: 'Casa do Intérprete' },
+              { img: valeSombra, label: 'Vale da Sombra' },
               { img: julgamentoFeira, label: 'Julgamento na Feira' },
               { img: giganteMataBons, label: 'Gigante Mata-Bons' },
               { img: montanhasDeleitosas, label: 'Montanhas Deleitosas' },
             ].map((scene, i) => (
-              <div
-                key={i}
-                className="relative rounded-xl overflow-hidden group aspect-square"
-                style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
-              >
+              <div key={i} className="relative rounded-xl overflow-hidden group aspect-[4/3]" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}>
                 <img src={scene.img} alt={scene.label} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                <p className="absolute bottom-2 left-2 right-2 font-display text-[11px] text-white font-bold leading-tight">{scene.label}</p>
+                <p className="absolute bottom-2 left-2 right-2 font-display text-[11px] text-white font-bold">{scene.label}</p>
               </div>
             ))}
           </div>
