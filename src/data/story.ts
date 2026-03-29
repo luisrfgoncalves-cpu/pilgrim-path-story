@@ -40,6 +40,14 @@ export interface ToneNarrative {
   lowText: string;
 }
 
+export interface SceneEventConfig {
+  type: 'sinking' | 'tension' | 'suspense';
+  delay?: number;
+  duration?: number;
+  message?: string;
+  intensity?: number;
+}
+
 export interface StoryChapter {
   id: string;
   title: string;
@@ -49,19 +57,17 @@ export interface StoryChapter {
   flagNarrative?: { flag: string; text: string }[];
   noFlagNarrative?: { flag: string; text: string }[];
   toneNarrative?: ToneNarrative[];
-  /** Text shown only on replays (playthrough > 1) */
   replayNarrative?: string[];
   choices: StoryChoice[];
   isEnding?: boolean;
   endingType?: 'parte1' | 'final_good' | 'final_bad';
   reflection?: string;
   characters?: string[];
-  /** Interaction type for choices in this chapter */
   interactionType?: 'hold' | 'timed' | 'drag';
-  /** Time limit in seconds (for 'timed' type) */
   timeLimit?: number;
-  /** Default choice index when timer expires (for 'timed' type) */
   timeoutChoiceIndex?: number;
+  /** Immersive event triggered when entering scene */
+  sceneEvent?: SceneEventConfig;
 }
 
 export interface Character {
