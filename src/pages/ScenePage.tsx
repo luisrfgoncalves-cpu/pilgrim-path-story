@@ -12,6 +12,7 @@ import { useAudioEngine } from '@/hooks/useAudioEngine';
 import { useAtmosphere } from '@/hooks/useAtmosphere';
 import { useDynamicEvents } from '@/hooks/useDynamicEvents';
 import { rollInvisibleDice, applyDiceToEffects, getDiceNarrativeHint } from '@/lib/invisibleDice';
+import { rollForSurprise, Surprise } from '@/lib/gameLoop';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
@@ -32,6 +33,8 @@ const ScenePage = () => {
   const [suspenseActive, setSuspenseActive] = useState(false);
   const [pendingChoice, setPendingChoice] = useState<(() => void) | null>(null);
   const [transitioning, setTransitioning] = useState(false);
+  const [surprise, setSurprise] = useState<Surprise | null>(null);
+  const [surpriseShown, setSurpriseShown] = useState(false);
   const { triggerChoiceEffect } = useVisualEffects();
   const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
   // Recent decision effects for trend analysis
@@ -115,6 +118,21 @@ const ScenePage = () => {
     const t = setTimeout(() => setTransitioning(false), 100);
     return () => clearTimeout(t);
   }, [progress.currentChapterId]);
+
+  // Roll for surprise on scene entry
+  useEffect(() => {
+    if (!chapter) return;
+    const s = rollForSurprise(progress.attributes, chapter.id, progress.choicesMade);
+    if (s) {
+      setSurprise(s);
+      setSurpriseShown(true);
+      const t = setTimeout(() => setSurpriseShown(false), 4000);
+      return () => clearTimeout(t);
+    } else {
+      setSurprise(null);
+      setSurpriseShown(false);
+    }
+  }, [chapter?.id]);
 
   // Audio: set ambience when scene or emotional state changes
   useEffect(() => {
@@ -226,6 +244,18 @@ const ScenePage = () => {
       <div className="atmo-glow transition-opacity duration-[2000ms] ease-in-out" style={{ '--glow-opacity': atmosphere.glowOpacity, opacity: atmosphere.glowOpacity > 0.02 ? 1 : 0 } as React.CSSProperties} />
       {/* Emotional tint overlay — full screen color wash per state */}
       <div className="fixed inset-0 pointer-events-none z-[38] transition-all duration-[2000ms] ease-in-out" style={{ background: 'var(--bg-overlay, transparent)' }} />
+      {/* Surprise micro-reward toast */}
+      {surpriseShown && surprise && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
+          <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-card border border-primary/30 shadow-lg max-w-xs">
+            <span className="text-xl">{surprise.icon}</span>
+            <div>
+              <p className="text-xs font-display text-primary">{surprise.title}</p>
+              <p className="text-[10px] text-foreground/80">{surprise.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Header with avatar */}
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
