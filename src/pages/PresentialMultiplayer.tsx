@@ -132,26 +132,32 @@ const PresentialMultiplayer = () => {
     let challengeResult: 'win' | 'fail' | null = null;
 
     if (event) {
+      const eff = event.effect;
       if (event.type === 'challenge') {
         const roll = Math.floor(Math.random() * 6) + 1;
         challengeResult = roll >= 4 ? 'win' : 'fail';
         if (challengeResult === 'win') {
-          attrChanges = { ...event.reward };
+          if (eff.attribute) (attrChanges as any)[eff.attribute] = (eff.amount || 1);
+          if (eff.positions) posAdjust = Math.abs(eff.positions);
         } else {
-          attrChanges = { ...event.penalty };
-          posAdjust = event.penaltyMove || 0;
+          if (eff.attribute) (attrChanges as any)[eff.attribute] = -(eff.amount || 1);
+          if (eff.positions) posAdjust = -(Math.abs(eff.positions));
         }
-      } else if (event.type === 'blessing') {
-        attrChanges = { ...event.reward };
-        posAdjust = event.bonusMove || 0;
-      } else if (event.type === 'trap') {
-        attrChanges = { ...event.penalty };
-        posAdjust = event.penaltyMove || 0;
-        if (event.stunTurns) { stun = true; stunTurns = event.stunTurns; }
-      } else if (event.type === 'mystery') {
-        const isGood = Math.random() > 0.4;
-        attrChanges = isGood ? { ...event.reward } : { ...event.penalty };
-        posAdjust = isGood ? (event.bonusMove || 0) : (event.penaltyMove || 0);
+      } else if (event.type === 'advance' || event.type === 'boost') {
+        if (eff.attribute) (attrChanges as any)[eff.attribute] = (eff.amount || 1);
+        posAdjust = eff.positions || 0;
+      } else if (event.type === 'retreat' || event.type === 'steal') {
+        if (eff.attribute) (attrChanges as any)[eff.attribute] = -(eff.amount || 1);
+        posAdjust = eff.positions ? -Math.abs(eff.positions) : 0;
+      } else if (event.type === 'stun') {
+        if (eff.attribute) (attrChanges as any)[eff.attribute] = -(eff.amount || 1);
+        posAdjust = eff.positions ? -Math.abs(eff.positions) : 0;
+        if (eff.stunTurns) { stun = true; stunTurns = eff.stunTurns; }
+      } else if (event.type === 'shield' || event.type === 'safe') {
+        if (eff.attribute) (attrChanges as any)[eff.attribute] = (eff.amount || 1);
+      } else if (event.type === 'swap') {
+        // Swap doesn't affect attributes in local mode
+        if (eff.attribute) (attrChanges as any)[eff.attribute] = -(eff.amount || 0);
       }
 
       setRevealEvent({ event, playerName: player.name, dice: diceValue, challengeResult });
