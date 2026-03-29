@@ -22,6 +22,9 @@ import paisBeula from '@/assets/scenes/pais-beula.jpg';
 import redeLisonjeiro from '@/assets/scenes/rede-lisonjeiro.jpg';
 import tresDorminhocoes from '@/assets/scenes/tres-dorminhocoes.jpg';
 import julgamentoFeira from '@/assets/scenes/julgamento-feira.jpg';
+import colinaDificuldadeSubida from '@/assets/scenes/colina-dificuldade-subida.jpg';
+import leoesPalacio from '@/assets/scenes/leoes-palacio.jpg';
+import minaDemas from '@/assets/scenes/mina-demas.jpg';
 
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
@@ -41,7 +44,7 @@ export const sceneImages: Record<string, string> = {
   'cena14': pantanoDesanimo,
   'cena15': cruzFardo,
 
-  // FASE 2: Casa do Intérprete
+  // FASE 2: Casa do Intérprete + Colina + Leões
   'fase2-cena1': casaInterprete,
   'fase2-cena2': casaInterprete,
   'fase2-cena3': portaoEstreito,
@@ -53,6 +56,9 @@ export const sceneImages: Record<string, string> = {
   'fase2-cena9': palacioBelo,
   'fase2-cena10': palacioBelo,
   'fase2-cena11': colinaDificuldade,
+  'fase2-cena12': colinaDificuldadeSubida,
+  'fase2-cena13': colinaDificuldadeSubida,
+  'fase2-cena14': leoesPalacio,
 
   // FASE 3: Vale da Humilhação e Apolião
   'fase3-cena1': valeHumilhacao,
@@ -66,7 +72,7 @@ export const sceneImages: Record<string, string> = {
   'fase3-cena9': valeSombra,
   'fase3-cena10': fielEncontro,
 
-  // FASE 4: Feira da Vaidade
+  // FASE 4: Feira da Vaidade + Demas
   'fase4-cena1': feiraVaidade,
   'fase4-cena2': feiraVaidade,
   'fase4-cena3': feiraVaidade,
@@ -77,6 +83,7 @@ export const sceneImages: Record<string, string> = {
   'fase4-cena8': esperancaEncontro,
   'fase4-cena9': feiraVaidade,
   'fase4-cena10': esperancaEncontro,
+  'fase4-cena11b': minaDemas,
   'fase4-cena11': esperancaEncontro,
   'fase4-cena12': fielEncontro,
 
