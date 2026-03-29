@@ -116,6 +116,52 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
 
+          {/* Settings */}
+          <div className="pt-4 border-t border-border space-y-3">
+            <h2 className="text-sm font-display text-foreground">Configurações</h2>
+            
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-2 text-sm text-foreground/80">
+                {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                Tema {theme === 'dark' ? 'Escuro' : 'Claro'}
+              </div>
+              <button
+                onClick={toggleTheme}
+                className="px-3 py-1.5 rounded-md text-xs bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
+              >
+                {theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-2 text-sm text-foreground/80">
+                {notifEnabled ? <Bell className="w-4 h-4" /> : <BellOff className="w-4 h-4" />}
+                Notificações
+              </div>
+              <button
+                onClick={async () => {
+                  if (!notifEnabled) {
+                    const ok = await requestNotificationPermission();
+                    setNotifEnabled(ok);
+                    if (ok) toast.success('Notificações ativadas!');
+                    else toast.error('Permissão negada pelo navegador');
+                  } else {
+                    toggleNotifications(false);
+                    setNotifEnabled(false);
+                    toast.success('Notificações desativadas');
+                  }
+                }}
+                className={`px-3 py-1.5 rounded-md text-xs transition-colors ${
+                  notifEnabled 
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                }`}
+              >
+                {notifEnabled ? 'Desativar' : 'Ativar'}
+              </button>
+            </div>
+          </div>
+
           <div className="pt-2 space-y-3">
             <Button onClick={handleSave} className="w-full" disabled={saving}>
               <Save className="w-4 h-4 mr-2" />
