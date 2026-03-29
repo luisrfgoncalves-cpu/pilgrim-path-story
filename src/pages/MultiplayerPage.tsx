@@ -198,6 +198,25 @@ const MultiplayerPage = () => {
           {error && (
             <p className="text-xs text-destructive bg-destructive/10 px-4 py-2 rounded-lg">{error}</p>
           )}
+
+          {/* Presential mode separator */}
+          <div className="w-full space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="flex-1 h-px bg-border/30" />
+              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">modo presencial</span>
+              <div className="flex-1 h-px bg-border/30" />
+            </div>
+            <button
+              onClick={() => navigate('/multiplayer/presencial')}
+              className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-card border border-primary/20 text-foreground font-display text-sm hover:border-primary/40 transition-all"
+            >
+              <Users className="w-5 h-5 text-primary" />
+              Jogar Reunidos (Sem Internet)
+            </button>
+            <p className="text-[10px] text-center text-muted-foreground/60 leading-relaxed">
+              Um celular como tabuleiro · Dado digital ou físico · 2-8 jogadores
+            </p>
+          </div>
         </main>
       </div>
     );
