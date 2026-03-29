@@ -2092,6 +2092,12 @@ export const storyChapters: Record<string, StoryChapter> = {
     ],
     choices: [
       {
+        text: "Sentar na margem e relembrar a jornada com Esperança",
+        nextChapterId: "fase6-cena3",
+        effects: { fe: 1 },
+        flag: "relembrou_jornada"
+      },
+      {
         text: "Entrar no rio com os olhos fixos na Cidade",
         nextChapterId: "fase6-cena2",
         effects: { fe: 1, coragem: 1 },

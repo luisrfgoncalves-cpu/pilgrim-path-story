@@ -22,7 +22,11 @@ const AuthPage: React.FC = () => {
     if (isLogin) {
       const { error } = await signIn(email, password);
       if (error) {
-        toast.error(error.message);
+        if (error.message === 'Email not confirmed') {
+          toast.error('Email ainda não confirmado. Verifique sua caixa de entrada (e spam) pelo link de confirmação.');
+        } else {
+          toast.error(error.message);
+        }
       } else {
         toast.success('Bem-vindo de volta, peregrino!');
         navigate('/');
