@@ -52,7 +52,7 @@ const MultiplayerPage = () => {
         } else {
           setTurnAnnounce(`Vez de ${turnPlayer.display_name}`);
         }
-        setTimeout(() => setTurnAnnounce(null), 2500);
+        // GameNotification handles dismiss
       }
     }
   }, [room?.current_turn_player_id, players, user?.id]);
