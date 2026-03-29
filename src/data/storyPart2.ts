@@ -50,6 +50,9 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Uma noite, ela tem um sonho: vê o marido na Cidade Celestial, vestido de branco, entre anjos, olhando para ela com saudade e amor.",
       "Ao acordar, encontra uma carta deixada à sua porta. É do Rei da Cidade Celestial: \"Convido-te, Cristã, a vir ao meu palácio. O mesmo caminho que teu marido percorreu está aberto para ti e teus filhos.\""
     ],
+    adaptiveNarrative: [
+      { minAttr: "fe", minValue: 0, text: "Cristã reconhece o caminho que seu marido percorreu. Cada marco que ele enfrentou — o pântano, a cruz, o vale, a feira — agora aguarda por ela." }
+    ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "A carta queima em suas mãos como uma promessa viva. Não há dúvida — é hora de partir.", lowThreshold: 4, lowText: "As palavras da carta tremem diante dos seus olhos. Partir? Com quatro filhos? Pelo mesmo caminho perigoso?" }
     ],
