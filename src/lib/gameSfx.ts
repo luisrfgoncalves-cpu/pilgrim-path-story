@@ -38,7 +38,8 @@ export type GameSfx =
   | 'attack' | 'defend' | 'pray' | 'critical' | 'miss' | 'heal' | 'combo'
   | 'victory' | 'defeat' | 'diceRoll' | 'itemFound' | 'timerTick'
   | 'gameStart' | 'dodge' | 'accept' | 'correct' | 'wrong'
-  | 'stealthPass' | 'stealthFail' | 'hit' | 'block';
+  | 'stealthPass' | 'stealthFail' | 'hit' | 'block'
+  | 'charRevealHero' | 'charRevealVillain' | 'charRevealAlly' | 'suspense';
 
 export function playGameSfx(type: GameSfx) {
   try {
@@ -149,6 +150,34 @@ export function playGameSfx(type: GameSfx) {
       case 'block':
         note(ctx, ctx.destination, midiToFreq(76), now, 0.3, 0.06);
         note(ctx, ctx.destination, midiToFreq(80), now + 0.02, 0.25, 0.04);
+        break;
+      // Character entrance sounds
+      case 'charRevealHero':
+        // Heroic fanfare — ascending bright notes
+        note(ctx, ctx.destination, midiToFreq(60), now, 0.4, 0.06);
+        note(ctx, ctx.destination, midiToFreq(64), now + 0.15, 0.35, 0.06);
+        note(ctx, ctx.destination, midiToFreq(67), now + 0.3, 0.4, 0.07);
+        note(ctx, ctx.destination, midiToFreq(72), now + 0.5, 0.6, 0.08);
+        break;
+      case 'charRevealVillain':
+        // Dark menacing — low descending tritone
+        note(ctx, ctx.destination, midiToFreq(48), now, 0.5, 0.07);
+        note(ctx, ctx.destination, midiToFreq(42), now + 0.2, 0.6, 0.08);
+        note(ctx, ctx.destination, midiToFreq(36), now + 0.45, 0.7, 0.07);
+        note(ctx, ctx.destination, midiToFreq(30), now + 0.7, 0.8, 0.06);
+        break;
+      case 'charRevealAlly':
+        // Warm welcoming — gentle ascending
+        note(ctx, ctx.destination, midiToFreq(64), now, 0.5, 0.05);
+        note(ctx, ctx.destination, midiToFreq(67), now + 0.2, 0.4, 0.05);
+        note(ctx, ctx.destination, midiToFreq(71), now + 0.4, 0.5, 0.06);
+        break;
+      case 'suspense':
+        // Tension build — tremolo low note
+        note(ctx, ctx.destination, midiToFreq(36), now, 0.3, 0.06);
+        note(ctx, ctx.destination, midiToFreq(37), now + 0.25, 0.3, 0.05);
+        note(ctx, ctx.destination, midiToFreq(36), now + 0.5, 0.3, 0.06);
+        note(ctx, ctx.destination, midiToFreq(37), now + 0.75, 0.4, 0.05);
         break;
     }
   } catch {
