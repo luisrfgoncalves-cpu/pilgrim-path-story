@@ -521,10 +521,51 @@ const ScenePage = () => {
       </header>
 
       <main className={`flex-1 max-w-lg mx-auto w-full ${transitioning ? 'opacity-0' : 'scene-transition-enter'}`}>
+        {/* When inline mini-game is active, show it at the top and hide scene content */}
+        {miniGameReady && !miniGameDone && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
+          <div id="minigame-area" className="px-5 py-4 animate-scale-in space-y-4">
+            {scenePortraits.length > 0 && (
+              <div className="flex items-center justify-center gap-3 overflow-x-auto pb-1">
+                {scenePortraits.slice(0, 3).map((p, idx) => (
+                  <div key={p.id} className="text-center flex-shrink-0">
+                    <img
+                      src={p.img}
+                      alt={p.name}
+                      className="w-16 h-16 rounded-full object-cover border-2"
+                      style={{
+                        borderColor: idx === 0 ? 'hsl(120 40% 45%)' : 'hsl(40 55% 45%)',
+                        boxShadow: idx === 0
+                          ? '0 0 16px hsl(120 50% 45% / 0.4)'
+                          : '0 0 14px hsl(40 60% 50% / 0.35)',
+                      }}
+                    />
+                    <p className="text-[10px] font-display font-bold mt-1 text-foreground/90">{p.name}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+            <MiniGame
+              config={miniGameMappings[chapter.id]}
+              characterPortraits={scenePortraits}
+              onComplete={(result) => {
+                setMiniGameResult(result);
+                setMiniGameDone(true);
+                setShowMiniGameResult(true);
+                if (result.effects) {
+                  triggerChoiceEffect(result.effects as Record<string, number>);
+                  sfxForChoice(result.effects as Record<string, number>);
+                }
+              }}
+            />
+          </div>
+        )}
+
+        {/* Scene content — hidden when inline mini-game is active */}
+        {!(miniGameReady && !miniGameDone && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id]?.type)) && (
+        <>
         {/* Scene image with preloading */}
         {bgImage && (
           <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px', minHeight: '180px', background: 'hsl(var(--card))' }}>
-            <img
               src={bgImage}
               alt={chapter.title}
               width={1024}
