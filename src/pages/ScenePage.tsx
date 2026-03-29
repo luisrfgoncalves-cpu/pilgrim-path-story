@@ -713,8 +713,8 @@ const ScenePage = () => {
           )}
 
           {/* Mini-game result toast */}
-          {showMiniGameResult && miniGameResult && (
-            <div className="mb-4 animate-fade-in">
+          {miniGameResult && (
+            <GameNotification visible={showMiniGameResult} onDismiss={() => setShowMiniGameResult(false)} duration={15000} position="top">
               <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 ${
                 miniGameResult.success
                   ? 'bg-primary/10 border-primary/30 text-primary'
@@ -736,7 +736,7 @@ const ScenePage = () => {
                   </p>
                 </div>
               </div>
-            </div>
+            </GameNotification>
           )}
 
           {/* Suspense overlay */}
