@@ -156,14 +156,62 @@ const ScenePage = () => {
           {/* Choices or Ending */}
           {showChoices && (
             <div className="space-y-3 slide-up pb-8">
-              {chapter.isEnding ? (
+              {chapter.isEnding && chapter.endingType === 'final_good' ? (
                 <div className="text-center space-y-6 py-6">
                   <div className="flex items-center gap-3 justify-center">
                     <div className="h-px w-12 bg-primary/30" />
-                    <span className="text-primary font-display text-sm">✦ FIM DA PARTE 1 ✦</span>
+                    <span className="text-primary font-display text-sm">✦ JORNADA COMPLETA ✦</span>
                     <div className="h-px w-12 bg-primary/30" />
                   </div>
-                  <p className="narrative-text text-muted-foreground italic">A primeira parte da jornada chegou ao fim. Mas há muito mais pela frente.</p>
+                  <p className="narrative-text text-foreground italic">Você chegou à Cidade Celestial. A jornada terminou, mas a história permanece.</p>
+                  <div className="bg-card border border-border rounded-lg p-4 text-left space-y-2">
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Seus Atributos Finais</p>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <span className="text-foreground">🔥 Fé: <strong className="text-gold">{progress.attributes.fe}</strong></span>
+                      <span className="text-foreground">⛰️ Perseverança: <strong className="text-gold">{progress.attributes.perseveranca}</strong></span>
+                      <span className="text-foreground">👁️ Discernimento: <strong className="text-gold">{progress.attributes.discernimento}</strong></span>
+                      <span className="text-foreground">🛡️ Coragem: <strong className="text-gold">{progress.attributes.coragem}</strong></span>
+                    </div>
+                    <p className="text-xs text-muted-foreground pt-1">Decisões: {progress.choicesMade} · Capítulos: {progress.visitedChapters.length}</p>
+                  </div>
+                  <div className="space-y-3">
+                    <button onClick={() => navigate('/progresso')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-display text-sm w-full">
+                      <ScrollText className="w-4 h-4" /> Ver Jornada Completa
+                    </button>
+                    <button onClick={() => { localStorage.removeItem('peregrino-progress'); window.location.href = '/'; }} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-secondary text-secondary-foreground font-display text-sm w-full">
+                      <Home className="w-4 h-4" /> Recomeçar Jornada
+                    </button>
+                  </div>
+                </div>
+              ) : chapter.isEnding && chapter.endingType === 'final_bad' ? (
+                <div className="text-center space-y-6 py-6">
+                  <div className="flex items-center gap-3 justify-center">
+                    <div className="h-px w-12 bg-destructive/30" />
+                    <span className="text-destructive font-display text-sm">✦ JORNADA INTERROMPIDA ✦</span>
+                    <div className="h-px w-12 bg-destructive/30" />
+                  </div>
+                  <p className="narrative-text text-muted-foreground italic">A cidade brilha ao longe, mas você não conseguiu alcançá-la. Toda jornada pode ser recomeçada.</p>
+                  <div className="bg-card border border-border rounded-lg p-4 text-left space-y-2">
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Seus Atributos</p>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <span className="text-foreground">🔥 Fé: <strong className="text-gold">{progress.attributes.fe}</strong></span>
+                      <span className="text-foreground">⛰️ Perseverança: <strong className="text-gold">{progress.attributes.perseveranca}</strong></span>
+                      <span className="text-foreground">👁️ Discernimento: <strong className="text-gold">{progress.attributes.discernimento}</strong></span>
+                      <span className="text-foreground">🛡️ Coragem: <strong className="text-gold">{progress.attributes.coragem}</strong></span>
+                    </div>
+                  </div>
+                  <button onClick={() => { localStorage.removeItem('peregrino-progress'); window.location.href = '/'; }} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-display text-sm">
+                    <Home className="w-4 h-4" /> Recomeçar Jornada
+                  </button>
+                </div>
+              ) : chapter.isEnding ? (
+                <div className="text-center space-y-6 py-6">
+                  <div className="flex items-center gap-3 justify-center">
+                    <div className="h-px w-12 bg-primary/30" />
+                    <span className="text-primary font-display text-sm">✦ FIM DA FASE ✦</span>
+                    <div className="h-px w-12 bg-primary/30" />
+                  </div>
+                  <p className="narrative-text text-muted-foreground italic">Esta parte da jornada chegou ao fim. Mas há muito mais pela frente.</p>
                   <div className="bg-card border border-border rounded-lg p-4 text-left space-y-2">
                     <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Seus Atributos</p>
                     <div className="grid grid-cols-2 gap-2 text-sm">
@@ -174,7 +222,6 @@ const ScenePage = () => {
                     </div>
                     <p className="text-xs text-muted-foreground pt-1">Decisões: {progress.choicesMade} · Capítulos: {progress.visitedChapters.length}</p>
                   </div>
-                  <p className="text-xs text-muted-foreground">Em breve: Vale da Sombra, Feira da Vaidade, Castelo da Dúvida e mais...</p>
                   <button onClick={() => navigate('/')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-display text-sm">
                     <Home className="w-4 h-4" /> Voltar ao Início
                   </button>

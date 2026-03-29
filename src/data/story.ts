@@ -53,7 +53,7 @@ export interface StoryChapter {
   toneNarrative?: ToneNarrative[];
   choices: StoryChoice[];
   isEnding?: boolean;
-  endingType?: 'parte1';
+  endingType?: 'parte1' | 'final_good' | 'final_bad';
   reflection?: string;
   characters?: string[];
 }
@@ -1495,9 +1495,213 @@ export const storyChapters: Record<string, StoryChapter> = {
       { flag: "escapou_castelo_fe", text: "A fé foi sua chave. Não a certeza, não a força — a fé. Isso muda tudo." },
       { flag: "reconheceu_erro_castelo", text: "Reconhecer o erro no início fez toda a diferença. Humildade abre portas que orgulho fecha." }
     ],
+    choices: [
+      {
+        text: "Seguir em frente",
+        nextChapterId: "fase6-cena1",
+        effects: { perseveranca: 1 }
+      }
+    ]
+  },
+
+  // ========== FASE 6: RIO E CIDADE CELESTIAL ==========
+
+  "fase6-cena1": {
+    id: "fase6-cena1",
+    title: "O Destino à Vista",
+    location: "Rio e Cidade Celestial",
+    characters: ["cristao"],
+    narrative: [
+      "Após uma longa jornada, você avista o destino final. Mas ainda há um último desafio."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 8, highText: "Seu coração se enche de expectativa. Tudo pelo que lutou está ali, do outro lado.", lowThreshold: 3, lowText: "Você olha para o destino sem conseguir acreditar. Será que merece chegar até lá?" },
+      { attr: "perseveranca", highThreshold: 8, highText: "Cada cicatriz da jornada conta uma história. Você não desistiu. Chegou até aqui.", lowThreshold: 3, lowText: "A exaustão é quase insuportável. Suas pernas mal sustentam o peso do caminho percorrido." }
+    ],
+    flagNarrative: [
+      { flag: "escapou_castelo_fe", text: "Depois do castelo, você aprendeu: a fé abre caminhos que os olhos não veem." },
+      { flag: "enfrentou_presenca", text: "Você enfrentou a escuridão no vale. O que resta agora é a luz." }
+    ],
+    choices: [
+      {
+        text: "Avançar com confiança",
+        nextChapterId: "fase6-cena2",
+        effects: { fe: 1 },
+        flag: "avancou_confiante_rio"
+      },
+      {
+        text: "Sentir medo",
+        nextChapterId: "fase6-cena2",
+        effects: { coragem: -1 }
+      }
+    ]
+  },
+
+  "fase6-cena2": {
+    id: "fase6-cena2",
+    title: "O Rio",
+    location: "Rio e Cidade Celestial",
+    characters: ["cristao"],
+    narrative: [
+      "Um rio bloqueia o caminho. Não há ponte. É necessário atravessar."
+    ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 7, highText: "Você olha para a água sem medo. Já enfrentou coisas piores.", lowThreshold: 3, lowText: "A correnteza parece furiosa. Tudo dentro de você grita para não entrar." }
+    ],
+    choices: [
+      {
+        text: "Entrar no rio",
+        nextChapterId: "fase6-cena3",
+        effects: { fe: 2 },
+        flag: "entrou_rio",
+        conditionalEffects: [
+          { attr: "fe", threshold: 8, bonus: { coragem: 2 }, penalty: {} }
+        ]
+      },
+      {
+        text: "Hesitar",
+        nextChapterId: "fase6-cena4",
+        effects: { fe: -1 }
+      }
+    ]
+  },
+
+  "fase6-cena3": {
+    id: "fase6-cena3",
+    title: "A Travessia",
+    location: "Rio e Cidade Celestial",
+    characters: ["cristao"],
+    narrative: [
+      "Ao entrar no rio, você sente dificuldade. A travessia exige tudo de você."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 8, highText: "Mas cada passo na água te aproxima. A fé sustenta onde os pés não alcançam.", lowThreshold: 3, lowText: "A água sobe. O medo é real. Você não sabe se vai conseguir." },
+      { attr: "perseveranca", highThreshold: 8, highText: "Sua perseverança é como uma âncora. Você não veio até aqui para desistir agora.", lowThreshold: 3, lowText: "Seu corpo implora para parar. A jornada cobrou um preço alto demais." }
+    ],
+    flagNarrative: [
+      { flag: "pediu_ajuda_pantano", text: "No pântano, a ajuda veio. Aqui, no rio, você sabe: não está sozinho." },
+      { flag: "aceitou_custo_feira", text: "Na feira, você pagou o preço. Aqui, o preço final é confiar." }
+    ],
+    choices: [
+      {
+        text: "Confiar até o fim",
+        nextChapterId: "fase6-cena5",
+        effects: { fe: 2 },
+        flag: "confiou_rio",
+        conditionalEffects: [
+          { attr: "fe", threshold: 7, bonus: { perseveranca: 2, coragem: 1 }, penalty: {} }
+        ]
+      },
+      {
+        text: "Duvidar",
+        nextChapterId: "fase6-cena4",
+        effects: { fe: -2 }
+      }
+    ]
+  },
+
+  "fase6-cena4": {
+    id: "fase6-cena4",
+    title: "A Dúvida Final",
+    location: "Rio e Cidade Celestial",
+    characters: ["cristao"],
+    narrative: [
+      "A dúvida torna a travessia mais difícil. O caminho parece desaparecer."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 5, highText: "Mas lá no fundo, algo resiste. Uma faísca que se recusa a apagar.", lowThreshold: 2, lowText: "A escuridão é total. Você não consegue ver nada além da água." }
+    ],
+    choices: [
+      {
+        text: "Reafirmar sua decisão",
+        nextChapterId: "fase6-cena3",
+        effects: { fe: 1 }
+      },
+      {
+        text: "Recuar",
+        nextChapterId: "fase6-cena6",
+        effects: { coragem: -2 }
+      }
+    ]
+  },
+
+  "fase6-cena5": {
+    id: "fase6-cena5",
+    title: "O Outro Lado",
+    location: "Cidade Celestial",
+    characters: ["cristao"],
+    narrative: [
+      "Você atravessa o rio. Do outro lado, tudo muda. Há paz e clareza."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "A paz que te envolve é absoluta. Você sabe, com cada fibra do ser: valeu a pena.", lowThreshold: 4, lowText: "A paz te surpreende. Depois de tudo, você não esperava sentir algo assim." }
+    ],
+    choices: [
+      {
+        text: "Avançar",
+        nextChapterId: "fase6-cena7",
+        effects: {}
+      }
+    ]
+  },
+
+  "fase6-cena6": {
+    id: "fase6-cena6",
+    title: "A Jornada Interrompida",
+    location: "Rio e Cidade Celestial",
+    characters: ["cristao"],
+    narrative: [
+      "Você não consegue atravessar. A jornada se interrompe antes do final."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 5, highText: "Mas mesmo neste momento, algo te diz que haverá outra chance.", lowThreshold: 2, lowText: "O silêncio é ensurdecedor. A cidade brilha ao longe, inalcançável." }
+    ],
+    flagNarrative: [
+      { flag: "reconheceu_erro_castelo", text: "No castelo, você aprendeu que erros podem ser corrigidos. Talvez essa lição se aplique aqui também." }
+    ],
     choices: [],
     isEnding: true,
-    endingType: "parte1"
+    endingType: "final_bad"
+  },
+
+  "fase6-cena7": {
+    id: "fase6-cena7",
+    title: "A Cidade Celestial",
+    location: "Cidade Celestial",
+    characters: ["cristao"],
+    narrative: [
+      "Você vê a Cidade Celestial. O destino da jornada está diante de você."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 8, highText: "As portas se abrem como se estivessem te esperando. Você pertence a este lugar.", lowThreshold: 4, lowText: "Você mal acredita. Depois de tudo, chegou." }
+    ],
+    flagNarrative: [
+      { flag: "entrou_casa_interprete", text: "As lições do Intérprete ganham sentido pleno. Cada visão era um preparo para este momento." },
+      { flag: "permaneceu_diferente", text: "Na feira, você se recusou a ser como todos. Agora, diante da cidade, sabe por quê." }
+    ],
+    choices: [
+      {
+        text: "Entrar",
+        nextChapterId: "fase6-cena8",
+        effects: {}
+      }
+    ]
+  },
+
+  "fase6-cena8": {
+    id: "fase6-cena8",
+    title: "O Fim da Jornada",
+    location: "Cidade Celestial",
+    characters: ["cristao"],
+    narrative: [
+      "Você chega ao final da jornada. Suas decisões te trouxeram até aqui."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 8, highText: "Cada decisão de fé construiu a ponte que te trouxe até este momento. Não foi sorte — foi escolha.", lowThreshold: 4, lowText: "O caminho foi tortuoso, cheio de dúvidas. Mas você chegou. Isso basta." }
+    ],
+    choices: [],
+    isEnding: true,
+    endingType: "final_good"
   }
 };
 
