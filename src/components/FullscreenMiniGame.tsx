@@ -18,6 +18,7 @@ interface FullscreenMiniGameProps {
   chapterId: string;
   onComplete: (result: MiniGameResult) => void;
   onSkip?: () => void;
+  characterPortraits?: { id: string; name: string; img: string }[];
 }
 
 const GAME_THEMES: Record<string, {
@@ -57,13 +58,15 @@ const GAME_THEMES: Record<string, {
   },
 };
 
-export function FullscreenMiniGame({ config, chapterId, onComplete, onSkip }: FullscreenMiniGameProps) {
+export function FullscreenMiniGame({ config, chapterId, onComplete, onSkip, characterPortraits }: FullscreenMiniGameProps) {
   const [phase, setPhase] = useState<'cinematic' | 'playing' | 'done'>('cinematic');
   const [fadeIn, setFadeIn] = useState(false);
   const [result, setResult] = useState<MiniGameResult | null>(null);
 
   const bgImage = sceneImages[chapterId] || '';
   const theme = GAME_THEMES[config.type] || GAME_THEMES.diceduel;
+  const leadPortrait = characterPortraits?.[0];
+  const supportPortrait = characterPortraits?.[1];
 
   useEffect(() => {
     requestAnimationFrame(() => setFadeIn(true));
