@@ -69,6 +69,7 @@ const getInitialProgress = (): StoryProgress => {
         attributes: parsed.attributes || defaultAttributes,
         decisions: parsed.decisions || [],
         flags: parsed.flags || {},
+        items: parsed.items || [],
         started: parsed.started ?? false,
         playthrough: parsed.playthrough ?? 1,
       };
@@ -82,6 +83,7 @@ const getInitialProgress = (): StoryProgress => {
     attributes: defaultAttributes,
     decisions: [],
     flags: {},
+    items: [],
     started: false,
     playthrough: history.totalPlaythroughs + 1,
   };
@@ -189,6 +191,7 @@ export const useStoryProgress = () => {
       attributes: defaultAttributes,
       decisions: [],
       flags: {},
+      items: [],
       started: false,
       playthrough: hist.totalPlaythroughs + 1,
     });
