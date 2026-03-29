@@ -100,7 +100,7 @@ const ScenePage = () => {
     }
   }, [narrativeIndex, chapter, fullNarrative.length]);
 
-  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
+  const executeChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
     triggerChoiceEffect(effects as Record<string, number>);
     sfxForChoice(effects as Record<string, number>);
 
@@ -125,6 +125,18 @@ const ScenePage = () => {
     } else {
       makeChoice(chapter!.id, nextChapterId, choiceText, effects, flag, conditionalEffects);
     }
+  };
+
+  // Wrap choice execution with optional suspense delay
+  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
+    // Check if next chapter has a suspense event
+    const nextChapter = getChapter(nextChapterId);
+    if (nextChapter?.sceneEvent?.type === 'suspense' && !consequence) {
+      setSuspenseActive(true);
+      setPendingChoice(() => () => executeChoice(nextChapterId, choiceText, effects, consequence, flag, conditionalEffects, item));
+      return;
+    }
+    executeChoice(nextChapterId, choiceText, effects, consequence, flag, conditionalEffects, item);
   };
 
   if (!chapter) {
