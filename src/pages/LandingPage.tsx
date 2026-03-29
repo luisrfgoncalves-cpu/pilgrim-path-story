@@ -1234,6 +1234,7 @@ const LandingPage = () => {
       <section className="px-5 py-16">
         <div className="max-w-2xl mx-auto text-center space-y-8">
           <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Veja por Dentro</p>
+          <MedievalOrnament size="sm" />
           <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
             O app <span className="text-primary">por dentro</span> — tour real
           </h2>
@@ -1524,6 +1525,7 @@ const LandingPage = () => {
       <section className="px-5 py-16">
         <div className="max-w-2xl mx-auto text-center space-y-8">
           <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Investimento</p>
+          <MedievalOrnament />
           <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
             Quanto vale uma <span className="text-primary">transformação</span> assim?
           </h2>
