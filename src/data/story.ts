@@ -596,6 +596,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Fogo que Não Apaga",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+    sceneEvent: { type: 'suspense', duration: 2000, message: 'As chamas dançam diante de seus olhos...' },
     narrative: [
       "Em outra sala, você vê um fogo sendo apagado, mas ele continua queimando."
     ],
