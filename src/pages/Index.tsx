@@ -9,7 +9,7 @@ import { getStreak, getDashboardMessage } from '@/lib/gameLoop';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import SplashScreen from '@/components/SplashScreen';
 import GameNotification from '@/components/GameNotification';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen } from 'lucide-react';
+import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen, Home } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
