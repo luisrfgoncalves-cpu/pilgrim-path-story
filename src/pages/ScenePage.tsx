@@ -288,12 +288,15 @@ const ScenePage = () => {
                   {availableChoices.map((choice, i) => (
                     <button
                       key={i}
-                      onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects)}
+                      onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
                       className="w-full text-left p-4 rounded-lg bg-card border border-border hover:border-primary/50 hover:glow-gold transition-all duration-300 group"
                     >
                       <p className="text-foreground font-body text-sm group-hover:text-gold transition-colors">{choice.text}</p>
                       {choice.requires && (
                         <p className="text-[10px] text-primary mt-1.5 uppercase tracking-wider">★ Escolha desbloqueada por seus atributos</p>
+                      )}
+                      {choice.item && (
+                        <p className="text-[10px] text-amber-400 mt-1 uppercase tracking-wider">✦ Concede um item</p>
                       )}
                     </button>
                   ))}
