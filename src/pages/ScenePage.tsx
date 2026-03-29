@@ -5,6 +5,9 @@ import { useProgressSync } from '@/hooks/useProgressSync';
 import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect, ToneNarrative, StoryChoice } from '@/data/story';
 import { getPart2Chapter } from '@/data/storyPart2';
 import { sceneImages } from '@/data/sceneImages';
+import { characterImages } from '@/data/characterImages';
+import { characters } from '@/data/story';
+import { part2Characters } from '@/data/storyPart2';
 import { sceneVariations, VariationContext } from '@/data/sceneVariations';
 import { resolveEmotionalState, postureToLegacyTone } from '@/lib/emotionalState';
 import { analyzePerformance } from '@/lib/performanceAnalysis';
@@ -371,6 +374,32 @@ const ScenePage = () => {
             <MapPin className="w-6 h-6 text-muted-foreground" />
           </div>
         )}
+
+        {/* Character portraits */}
+        {chapter.characters && chapter.characters.length > 0 && (() => {
+          const allChars = [...characters, ...part2Characters];
+          const sceneChars = chapter.characters
+            .map(id => ({ id, char: allChars.find(c => c.id === id), img: characterImages[id] }))
+            .filter(c => c.img);
+          if (sceneChars.length === 0) return null;
+          return (
+            <div className="px-4 py-3 flex items-center gap-3 overflow-x-auto">
+              {sceneChars.map(({ id, char, img }) => (
+                <div key={id} className="flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg bg-card border border-border">
+                  <img
+                    src={img}
+                    alt={char?.name || id}
+                    className="w-10 h-10 rounded-full object-cover border-2 border-primary/30"
+                  />
+                  <div>
+                    <p className="text-xs font-display text-foreground leading-tight">{char?.name || id}</p>
+                    {char?.role && <p className="text-[9px] text-muted-foreground">{char.role}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
 
         <div className="px-5 py-5">
           <h1 className="font-display text-xl md:text-2xl text-foreground mb-4 fade-in leading-tight">{chapter.title}</h1>
