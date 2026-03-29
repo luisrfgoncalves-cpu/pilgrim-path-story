@@ -10,12 +10,13 @@ import { analyzePerformance } from '@/lib/performanceAnalysis';
 import { useVisualEffects } from '@/hooks/useVisualEffects';
 import { useAudioEngine } from '@/hooks/useAudioEngine';
 import { useAtmosphere } from '@/hooks/useAtmosphere';
+import { useDynamicEvents } from '@/hooks/useDynamicEvents';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
 import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
-import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX } from 'lucide-react';
+import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass } from 'lucide-react';
 
 const ScenePage = () => {
   const navigate = useNavigate();
@@ -40,6 +41,9 @@ const ScenePage = () => {
   const chapter = getChapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
+  // Dynamic events system
+  const dynamicEvents = useDynamicEvents(progress, progress.currentChapterId);
+
   // Emotional state system (9 postures)
   const emotional = useMemo(() => 
     chapter ? resolveEmotionalState(progress.attributes, chapter.id, Object.entries(progress.flags).filter(([, v]) => v).map(([k]) => k), recentEffects) : null
@@ -58,7 +62,7 @@ const ScenePage = () => {
     attributes: progress.attributes,
   }), [progress, history]);
 
-  // Build full narrative with adaptive + flag-based + tone-based + emotional + replay + variation segments
+  // Build full narrative: base + variations + dynamic events + consequence hints
   const fullNarrative = chapter ? [
     ...chapter.narrative,
     ...(isReplay && chapter.replayNarrative ? chapter.replayNarrative : []),
@@ -81,6 +85,10 @@ const ScenePage = () => {
       if (val <= tone.lowThreshold) return tone.lowText;
       return null;
     }).filter((t): t is string => t !== null),
+    // Dynamic events narrative (randomly selected per playthrough)
+    ...dynamicEvents.extraNarrative,
+    // Consequence echoes from past dynamic choices
+    ...dynamicEvents.consequenceHints.map(h => `_${h}_`),
     ...(emotional?.atmosphereLine ? [emotional.atmosphereLine] : []),
   ] : [];
 
@@ -178,6 +186,27 @@ const ScenePage = () => {
     (!c.excludesFlag || !hasFlag(c.excludesFlag))
   );
   const lockedChoices = chapter.choices.filter(c => !meetsRequirements(c.requires) && !c.requiresFlag && !c.excludesFlag);
+
+  // Dynamic choices from event pools (converted to StoryChoice format)
+  const dynamicChoicesMapped: StoryChoice[] = dynamicEvents.extraChoices.map(dc => ({
+    text: dc.text,
+    nextChapterId: dc.nextChapterId || progress.currentChapterId,
+    effects: {
+      ...dc.effects,
+      // Apply consequence bonuses from past dynamic decisions
+      ...(dynamicEvents.consequenceBonus ? Object.fromEntries(
+        Object.entries(dynamicEvents.consequenceBonus).map(([k, v]) => [k, (dc.effects[k as keyof ChoiceEffect] || 0) + (v || 0)])
+      ) : {}),
+    },
+    consequence: dc.consequence,
+    flag: dc.consequenceKey || dc.flag,
+    requires: dc.requires,
+    requiresFlag: dc.requiresFlag,
+    excludesFlag: dc.excludesFlag,
+  }));
+
+  // Merge all choices: base + dynamic
+  const allChoices = [...availableChoices, ...dynamicChoicesMapped];
 
   return (
     <div id="scene-container" className={`min-h-screen bg-background flex flex-col transition-all duration-[2000ms] ease-in-out ${emotionalClass} ${atmosphere.wobbleClass}`} style={atmosphere.containerStyle}>
@@ -435,7 +464,21 @@ const ScenePage = () => {
 
                   ) : (
                     <>
-                      {availableChoices.map((choice, i) => (
+                      {/* Alternate route option */}
+                      {dynamicEvents.alternateRoute && (
+                        <button
+                          onClick={() => handleChoice(dynamicEvents.alternateRoute!.nextChapterId, dynamicEvents.alternateRoute!.hint, {}, dynamicEvents.alternateRoute!.hint)}
+                          className="choice-btn group border-primary/30 bg-card/80"
+                        >
+                          <p className="text-foreground font-body text-sm group-hover:text-primary transition-colors flex items-center gap-2">
+                            <Compass className="w-3.5 h-3.5 text-primary" />
+                            {dynamicEvents.alternateRoute.hint}
+                          </p>
+                          <p className="text-[10px] text-primary/60 mt-1 uppercase tracking-wider">✦ Caminho alternativo</p>
+                        </button>
+                      )}
+
+                      {allChoices.map((choice, i) => (
                         <button
                           key={i}
                           onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
