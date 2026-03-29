@@ -945,10 +945,27 @@ function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps)
   const [dice, setDice] = useState<DiceState>({ player: 1, enemy: 1, rolling: false });
   const [action, setAction] = useState<'attack' | 'defend' | 'pray' | null>(null);
   const [roundLog, setRoundLog] = useState('');
-  const [combo, setCombo] = useState(0);
-  const [lastAction, setLastAction] = useState<string | null>(null);
+  const [_combo, _setCombo] = useState(0); // kept for interface compat
+  const [_lastAction, _setLastAction] = useState<string | null>(null);
   const [criticalHit, setCriticalHit] = useState(false);
   const rollInterval = useRef<ReturnType<typeof setInterval>>();
+
+  // === Armadura de Deus: Rock-Paper-Scissors Espiritual ===
+  // ⚔️ Espada do Espírito > 🙏 Oração (ataque interrompe oração)
+  // 🙏 Oração > 🛡️ Escudo da Fé (oração transpassa defesa)
+  // 🛡️ Escudo da Fé > ⚔️ Espada (escudo bloqueia espada)
+
+  const getAdvantage = (player: 'attack' | 'defend' | 'pray', enemy: 'attack' | 'defend' | 'pray'): 'win' | 'lose' | 'tie' => {
+    if (player === enemy) return 'tie';
+    if (
+      (player === 'attack' && enemy === 'pray') ||
+      (player === 'pray' && enemy === 'defend') ||
+      (player === 'defend' && enemy === 'attack')
+    ) return 'win';
+    return 'lose';
+  };
+
+  const ENEMY_ACTIONS: ('attack' | 'defend' | 'pray')[] = ['attack', 'defend', 'pray'];
 
   const rollDice = (chosenAction: 'attack' | 'defend' | 'pray') => {
     setAction(chosenAction);
@@ -957,7 +974,6 @@ function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps)
     playGameSfx('diceRoll');
     playGameSfx(chosenAction);
 
-    // Animate dice
     let ticks = 0;
     rollInterval.current = setInterval(() => {
       setDice({
@@ -968,7 +984,6 @@ function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps)
       ticks++;
       if (ticks >= 15) {
         if (rollInterval.current) clearInterval(rollInterval.current);
-        // Final rolls
         const pRoll = Math.ceil(Math.random() * 6);
         const eRoll = Math.ceil(Math.random() * 6);
         setDice({ player: pRoll, enemy: eRoll, rolling: false });
@@ -978,66 +993,53 @@ function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps)
   };
 
   const resolveCombat = (pRoll: number, eRoll: number, act: 'attack' | 'defend' | 'pray') => {
+    // Enemy picks a random action
+    const enemyAct = ENEMY_ACTIONS[Math.floor(Math.random() * 3)];
+    const advantage = getAdvantage(act, enemyAct);
+    
     let pDmg = 0;
     let eDmg = 0;
     let log = '';
-    let isCrit = false;
+    let isCrit = pRoll === 6;
+    const actionNames = { attack: 'Espada', defend: 'Escudo', pray: 'Oração' };
+    const actionEmojis = { attack: '⚔️', defend: '🛡️', pray: '🙏' };
 
-    // Combo bonus: same action 2+ times in a row
-    const comboMultiplier = (lastAction === act) ? 1 + combo * 0.15 : 1;
-    if (lastAction === act) {
-      setCombo(c => c + 1);
+    if (advantage === 'win') {
+      // Player has type advantage — dice = damage dealt
+      eDmg = isCrit ? Math.ceil(pRoll * 1.5) : pRoll;
+      log = `${actionEmojis[act]} ${actionNames[act]} vence ${actionNames[enemyAct]}! ${eDmg} de dano!`;
+      if (isCrit) log = `🌟 CRÍTICO! ${log}`;
+    } else if (advantage === 'lose') {
+      // Enemy has type advantage — enemy dice = damage taken
+      pDmg = eRoll;
+      log = `${actionEmojis[enemyAct]} ${actionNames[enemyAct]} inimigo vence ${actionNames[act]}! Você sofreu ${pDmg}.`;
     } else {
-      setCombo(0);
+      // Same action — higher dice wins
+      if (pRoll > eRoll) {
+        eDmg = pRoll - eRoll;
+        log = `⚡ Empate de ${actionNames[act]}! Seu dado é maior: ${eDmg} de dano!`;
+      } else if (eRoll > pRoll) {
+        pDmg = eRoll - pRoll;
+        log = `⚡ Empate de ${actionNames[act]}! Dado inimigo é maior: ${pDmg} de dano.`;
+      } else {
+        pDmg = 1;
+        eDmg = 1;
+        log = `⚡ Empate total! 1 de dano em cada lado.`;
+      }
     }
-    setLastAction(act);
 
-    if (act === 'attack') {
-      if (pRoll >= eRoll) {
-        eDmg = Math.ceil(pRoll * comboMultiplier);
-        isCrit = pRoll === 6;
-        if (isCrit) {
-          eDmg = Math.ceil(eDmg * 1.5);
-          log = `🌟 CRÍTICO! Ataque devastador! ${eDmg} de dano!`;
-        } else {
-          log = `⚔️ Ataque certeiro! ${eDmg} de dano no inimigo!`;
-        }
-      } else {
-        pDmg = Math.ceil(eRoll / 2);
-        log = `💥 Contra-ataque! Você sofreu ${pDmg} de dano.`;
-      }
-    } else if (act === 'defend') {
-      const incoming = eRoll;
-      const blocked = Math.min(incoming, Math.ceil(pRoll * comboMultiplier));
-      pDmg = Math.max(0, incoming - blocked);
-      if (pDmg === 0) {
-        log = `🛡️ Defesa perfeita! Bloqueou todo o dano!`;
-        if (pRoll === 6) {
-          eDmg = 2;
-          log += ` Ripostou ${eDmg}!`;
-          isCrit = true;
-        }
-      } else {
-        log = `🛡️ Bloqueou ${blocked}, mas sofreu ${pDmg}.`;
-      }
-    } else {
-      const heal = Math.ceil(pRoll * comboMultiplier / 2);
+    // Oração sempre cura um pouco, mesmo perdendo
+    if (act === 'pray') {
+      const heal = Math.max(1, Math.ceil(pRoll / 3));
       setPlayerHP(h => Math.min(maxHP, h + heal));
-      if (pRoll >= 5) {
-        eDmg = Math.ceil((pRoll - 2) * comboMultiplier);
-        isCrit = pRoll === 6;
-        log = `🙏 Oração poderosa! Curou ${heal} e causou ${eDmg} de dano espiritual!`;
-      } else {
-        log = `🙏 Oração suave. Curou ${heal} pontos.`;
-      }
+      log += ` 🙏+${heal} HP`;
+      playGameSfx('heal');
     }
 
-    setCriticalHit(isCrit);
-    if (isCrit) playGameSfx('critical');
+    setCriticalHit(isCrit && advantage === 'win');
+    if (isCrit && advantage === 'win') playGameSfx('critical');
     else if (eDmg > 0) playGameSfx('hit');
     else if (pDmg > 0) playGameSfx('miss');
-    if (act === 'pray' && pDmg === 0) playGameSfx('heal');
-    if (combo >= 2) { log += ` 🔥Combo x${combo + 1}!`; playGameSfx('combo'); }
 
     setPlayerHP(h => Math.max(0, h - pDmg));
     setEnemyHP(h => Math.max(0, h - eDmg));
@@ -1145,31 +1147,32 @@ function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps)
           borderRadius: '12px',
           padding: '12px 16px',
         }}>
-          <p className="game-text-muted text-center font-bold" style={{ color: 'hsl(40 70% 65%)', fontSize: '13px' }}>📜 Como jogar</p>
+        <p className="game-text-muted text-center font-bold" style={{ color: 'hsl(40 70% 65%)', fontSize: '13px' }}>📜 Armadura de Deus (Efésios 6)</p>
           <div className="space-y-2">
+            <p className="text-[11px] text-center" style={{ color: 'hsl(40 50% 60%)' }}>Cada lado escolhe uma ação. Funciona como pedra-papel-tesoura espiritual!</p>
             <div className="flex items-start gap-2">
               <span className="text-lg">⚔️</span>
               <div>
-                <span className="font-display font-bold text-sm" style={{ color: 'hsl(0 60% 70%)' }}>Atacar</span>
-                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Se seu dado ≥ inimigo: causa dano. Senão: leva contra-ataque. Dado 6 = crítico!</p>
+                <span className="font-display font-bold text-sm" style={{ color: 'hsl(0 60% 70%)' }}>Espada do Espírito</span>
+                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Vence 🙏 Oração · Perde para 🛡️ Escudo</p>
               </div>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-lg">🛡️</span>
               <div>
-                <span className="font-display font-bold text-sm" style={{ color: 'hsl(220 60% 70%)' }}>Defender</span>
-                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Bloqueia dano. Dado 6 = riposte!</p>
+                <span className="font-display font-bold text-sm" style={{ color: 'hsl(220 60% 70%)' }}>Escudo da Fé</span>
+                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Vence ⚔️ Espada · Perde para 🙏 Oração</p>
               </div>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-lg">🙏</span>
               <div>
-                <span className="font-display font-bold text-sm" style={{ color: 'hsl(40 70% 70%)' }}>Orar</span>
-                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Cura + dano espiritual se dado ≥ 5!</p>
+                <span className="font-display font-bold text-sm" style={{ color: 'hsl(40 70% 70%)' }}>Oração</span>
+                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Vence 🛡️ Escudo · Perde para ⚔️ Espada · Sempre cura um pouco!</p>
               </div>
             </div>
           </div>
-          <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>💡 Repetir mesma ação = combo (+15%)</p>
+          <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>🎲 Os dados determinam a intensidade do dano · Dado 6 = golpe crítico!</p>
         </div>
 
         <button onClick={() => { playGameSfx('gameStart'); setPhase('choose'); }} className="btn-medieval w-full">
@@ -1351,8 +1354,8 @@ function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps)
               boxShadow: '0 4px 0 0 hsl(0 40% 15%), 0 0 12px hsl(0 50% 40% / 0.3)',
             }}>
             <span className="text-3xl block">⚔️</span>
-            <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(0 60% 70%)' }}>Atacar</span>
-            <span className="text-[9px] block mt-0.5" style={{ color: 'hsl(0 30% 55%)' }}>Dano alto</span>
+            <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(0 60% 70%)' }}>Espada</span>
+            <span className="text-[9px] block mt-0.5" style={{ color: 'hsl(0 30% 55%)' }}>Vence 🙏</span>
           </button>
           <button onClick={() => rollDice('defend')}
             className="py-4 rounded-xl transition-all active:scale-90 text-center" style={{
@@ -1361,8 +1364,8 @@ function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps)
               boxShadow: '0 4px 0 0 hsl(220 40% 15%), 0 0 12px hsl(220 50% 45% / 0.3)',
             }}>
             <span className="text-3xl block">🛡️</span>
-            <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(220 60% 70%)' }}>Defender</span>
-            <span className="text-[9px] block mt-0.5" style={{ color: 'hsl(220 30% 55%)' }}>Bloqueia</span>
+            <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(220 60% 70%)' }}>Escudo</span>
+            <span className="text-[9px] block mt-0.5" style={{ color: 'hsl(220 30% 55%)' }}>Vence ⚔️</span>
           </button>
           <button onClick={() => rollDice('pray')}
             className="py-4 rounded-xl transition-all active:scale-90 text-center" style={{
@@ -1371,8 +1374,8 @@ function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps)
               boxShadow: '0 4px 0 0 hsl(40 40% 15%), 0 0 12px hsl(40 60% 45% / 0.3)',
             }}>
             <span className="text-3xl block">🙏</span>
-            <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(40 70% 70%)' }}>Orar</span>
-            <span className="text-[9px] block mt-0.5" style={{ color: 'hsl(40 30% 55%)' }}>Cura + dano</span>
+            <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(40 70% 70%)' }}>Oração</span>
+            <span className="text-[9px] block mt-0.5" style={{ color: 'hsl(40 30% 55%)' }}>Vence 🛡️ +Cura</span>
           </button>
         </div>
       )}

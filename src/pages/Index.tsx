@@ -206,7 +206,7 @@ const Index = () => {
           </button>
         </div>
 
-        {/* Theme toggle + Backup */}
+        {/* Theme toggle + Backup (only for non-logged users) */}
         <div className="flex gap-2">
           <button
             onClick={toggleTheme}
@@ -215,34 +215,38 @@ const Index = () => {
           >
             {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
-          <button
-            onClick={() => { downloadBackup(); toast.success('Backup salvo!'); }}
-            className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
-          >
-            <Download className="w-4 h-4" />
-            Backup
-          </button>
-          <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all cursor-pointer">
-            <Upload className="w-4 h-4" />
-            Restaurar
-            <input
-              type="file"
-              accept=".json"
-              className="hidden"
-              onChange={async (e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                const result = await importBackup(file);
-                if (result.success) {
-                  toast.success('Progresso restaurado! Recarregando...');
-                  setTimeout(() => window.location.reload(), 1000);
-                } else {
-                  toast.error(result.error || 'Erro ao restaurar');
-                }
-                e.target.value = '';
-              }}
-            />
-          </label>
+          {!user && (
+            <>
+              <button
+                onClick={() => { downloadBackup(); toast.success('Backup salvo!'); }}
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
+              >
+                <Download className="w-4 h-4" />
+                Backup
+              </button>
+              <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all cursor-pointer">
+                <Upload className="w-4 h-4" />
+                Restaurar
+                <input
+                  type="file"
+                  accept=".json"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const result = await importBackup(file);
+                    if (result.success) {
+                      toast.success('Progresso restaurado! Recarregando...');
+                      setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                      toast.error(result.error || 'Erro ao restaurar');
+                    }
+                    e.target.value = '';
+                  }}
+                />
+              </label>
+            </>
+          )}
         </div>
 
         {/* Restart */}
