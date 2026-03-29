@@ -24,9 +24,10 @@ const ScenePage = () => {
 
   const emotionalClass = emotional ? getEmotionalClasses(emotional.tone) : '';
 
-  // Build full narrative with adaptive + flag-based + tone-based + emotional segments
+  // Build full narrative with adaptive + flag-based + tone-based + emotional + replay segments
   const fullNarrative = chapter ? [
     ...chapter.narrative,
+    ...(isReplay && chapter.replayNarrative ? chapter.replayNarrative : []),
     ...(chapter.adaptiveNarrative || [])
       .filter(seg => progress.attributes[seg.minAttr as keyof typeof progress.attributes] >= seg.minValue)
       .map(seg => seg.text),
@@ -42,7 +43,6 @@ const ScenePage = () => {
       if (val <= tone.lowThreshold) return tone.lowText;
       return null;
     }).filter((t): t is string => t !== null),
-    // Auto-injected emotional atmosphere line
     ...(emotional?.atmosphereLine ? [emotional.atmosphereLine] : []),
   ] : [];
 

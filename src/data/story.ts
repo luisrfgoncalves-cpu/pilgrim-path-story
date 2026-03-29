@@ -108,6 +108,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Você vive na Cidade da Destruição. Tudo parece normal, mas algo dentro de você está inquieto."
     ],
+    replayNarrative: [
+      "Você já esteve aqui antes. O peso é familiar. Mas desta vez, você sabe que há um caminho — e que suas escolhas fazem diferença."
+    ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "Mesmo assim, há uma certeza silenciosa dentro de você. Você sabe que precisa agir.", lowThreshold: 3, lowText: "A dúvida te consome. Será que esse sentimento é real ou apenas medo?" }
     ],
