@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMultiplayer } from '@/hooks/useMultiplayer';
 import { useAuth } from '@/contexts/AuthContext';
@@ -6,8 +6,9 @@ import PremiumDice from '@/components/multiplayer/PremiumDice';
 import PremiumBoard from '@/components/multiplayer/PremiumBoard';
 import EventReveal from '@/components/multiplayer/EventReveal';
 import { BOARD_SIZE, boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
-import { playMove, playVictory } from '@/components/multiplayer/BoardSounds';
-import { ArrowLeft, Copy, Crown, Users, MapPin, Trophy, LogIn, Share2, Swords, Loader2, Eye } from 'lucide-react';
+import { playMove, playVictory, playTurnStart } from '@/components/multiplayer/BoardSounds';
+import { playGameSfx } from '@/lib/gameSfx';
+import { ArrowLeft, Copy, Crown, Users, MapPin, Trophy, LogIn, Share2, Swords, Loader2, Eye, Flame, Shield, Star, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
 const MultiplayerPage = () => {
