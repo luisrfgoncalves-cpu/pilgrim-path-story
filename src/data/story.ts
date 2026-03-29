@@ -169,7 +169,8 @@ export const chapterOrder = [
   "fase4-cena6", "fase4-cena7", "fase4-cena8", "fase4-cena9", "fase4-cena10",
   "fase5-cena1", "fase5-cena2", "fase5-cena3", "fase5-cena4", "fase5-cena5",
   "fase5-cena6", "fase5-cena7", "fase5-cena8", "fase5-cena9", "fase5-cena10",
-  "fase6-cena1", "fase6-cena2", "fase6-cena4", "fase6-cena5",
+  "fase5-cena11", "fase5-cena12", "fase5-cena13", "fase5-cena14",
+  "fase6-cena1", "fase6-cena2", "fase6-cena3", "fase6-cena4", "fase6-cena5",
   "fase6-cena6", "fase6-cena7", "fase6-cena8",
 ];
 
