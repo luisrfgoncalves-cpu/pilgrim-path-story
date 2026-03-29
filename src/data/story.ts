@@ -56,6 +56,12 @@ export interface StoryChapter {
   endingType?: 'parte1' | 'final_good' | 'final_bad';
   reflection?: string;
   characters?: string[];
+  /** Interaction type for choices in this chapter */
+  interactionType?: 'hold' | 'timed' | 'drag';
+  /** Time limit in seconds (for 'timed' type) */
+  timeLimit?: number;
+  /** Default choice index when timer expires (for 'timed' type) */
+  timeoutChoiceIndex?: number;
 }
 
 export interface Character {
