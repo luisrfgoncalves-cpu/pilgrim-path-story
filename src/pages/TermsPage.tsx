@@ -22,7 +22,7 @@ const TermsPage = () => {
             <FileText className="w-5 h-5 text-primary" />
             <h2 className="font-display text-xl text-foreground">Termos de Uso</h2>
           </div>
-          <div className="prose prose-sm text-foreground/85 space-y-3" style={{ wordSpacing: '0.05em' }}>
+          <div className="prose prose-sm text-foreground/85 space-y-3">
             <p><strong>Última atualização:</strong> {new Date().toLocaleDateString('pt-BR')}</p>
             <p>Ao utilizar o aplicativo "O Peregrino — Jornada Interativa", você concorda com estes termos.</p>
             
@@ -54,7 +54,7 @@ const TermsPage = () => {
             <Shield className="w-5 h-5 text-primary" />
             <h2 className="font-display text-xl text-foreground">Política de Privacidade</h2>
           </div>
-          <div className="prose prose-sm text-foreground/85 space-y-3" style={{ wordSpacing: '0.05em' }}>
+          <div className="prose prose-sm text-foreground/85 space-y-3">
             <p><strong>Última atualização:</strong> {new Date().toLocaleDateString('pt-BR')}</p>
             
             <h3 className="font-display text-base text-foreground mt-6">1. Dados Coletados</h3>

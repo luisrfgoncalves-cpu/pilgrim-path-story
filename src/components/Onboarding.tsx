@@ -78,10 +78,10 @@ const Onboarding = ({ onComplete }: OnboardingProps) => {
             {current.icon}
           </div>
         </div>
-        <h2 className="font-display text-2xl text-foreground mb-3" style={{ wordSpacing: '0.1em' }}>
+        <h2 className="font-display text-2xl text-foreground mb-3">
           {current.title}
         </h2>
-        <p className="text-sm text-foreground/75 leading-relaxed" style={{ wordSpacing: '0.05em' }}>
+        <p className="text-sm text-foreground/75 leading-relaxed">
           {current.desc}
         </p>
       </div>

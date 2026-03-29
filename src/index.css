@@ -137,7 +137,7 @@
     font-size: 1.05rem;
     line-height: 1.9;
     letter-spacing: 0.015em;
-    word-spacing: 0.02em;
+    word-spacing: normal;
     overflow-wrap: break-word;
     word-break: normal;
     hyphens: manual;
