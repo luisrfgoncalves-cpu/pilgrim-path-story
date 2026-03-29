@@ -112,7 +112,7 @@ const AuthPage: React.FC = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com"
+              placeholder="peregrino0001@centrobiblico.online"
               required
               className="bg-card border-border"
             />
