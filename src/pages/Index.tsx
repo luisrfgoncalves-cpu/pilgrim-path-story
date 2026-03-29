@@ -7,7 +7,7 @@ import { getPart2Chapter, part2Chapters } from '@/data/storyPart2';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getStreak, getDashboardMessage } from '@/lib/gameLoop';
-import { downloadBackup, importBackup } from '@/lib/progressBackup';
+// progressBackup removed — auto-save handles persistence
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import SplashScreen from '@/components/SplashScreen';
 import Onboarding from '@/components/Onboarding';
