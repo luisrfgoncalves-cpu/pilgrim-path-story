@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 const MultiplayerPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const {
     room, players, myPlayer, loading, error,
     createRoom, joinRoom, startGame, rollDice, leaveRoom,
