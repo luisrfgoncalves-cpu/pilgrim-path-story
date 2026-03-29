@@ -4,15 +4,38 @@ import {
   Sparkles, ChevronRight, ChevronDown, BookOpen, Users, Star, Shield, Flame, Zap,
   Share2, Smartphone, Clock, Check, X, CreditCard, QrCode,
   Swords, Gamepad2, Brain, Eye, Heart, Crown, Map, Trophy, Lock,
-  Play, Award, Timer, Target, Compass
+  Play, Award, Timer, Target, Compass, ArrowRight, MessageCircle, Gift
 } from 'lucide-react';
 
-import heroImg from '@/assets/landing-hero.jpg';
-import battleImg from '@/assets/landing-battle.jpg';
-import bunyanImg from '@/assets/bunyan-portrait.jpg';
+// ── IMAGENS REAIS DO APP ──
+import cidadeDestruicao from '@/assets/scenes/cidade-destruicao.jpg';
+import valeHumilhacao from '@/assets/scenes/vale-humilhacao.jpg';
+import feiraVaidade from '@/assets/scenes/feira-vaidade.jpg';
+import casteloDuvida from '@/assets/scenes/castelo-duvida.jpg';
+import cidadeCelestial from '@/assets/scenes/cidade-celestial.jpg';
+import cruzFardo from '@/assets/scenes/cruz-fardo.jpg';
+import valeSombra from '@/assets/scenes/vale-sombra.jpg';
+import casaInterprete from '@/assets/scenes/casa-interprete.jpg';
+import palacioBelo from '@/assets/scenes/palacio-belo.jpg';
+import montanhasDeleitosas from '@/assets/scenes/montanhas-deleitosas.jpg';
+import rioFinal from '@/assets/scenes/rio-final.jpg';
+import portaoEstreito from '@/assets/scenes/portao-estreito.jpg';
+import pantanoDesanimo from '@/assets/scenes/pantano-desanimo.jpg';
+import giganteMataBons from '@/assets/scenes/gigante-mata-bons.jpg';
+import julgamentoFeira from '@/assets/scenes/julgamento-feira.jpg';
+
+// Personagens reais
+import cristao from '@/assets/characters/cristao.jpg';
+import apolion from '@/assets/characters/apolion.jpg';
+import giganteDesespero from '@/assets/characters/gigante-desespero.jpg';
+import evangelista from '@/assets/characters/evangelista.jpg';
+import fiel from '@/assets/characters/fiel.jpg';
+import esperanca from '@/assets/characters/esperanca.jpg';
+import crista from '@/assets/characters/crista.jpg';
+import valentePelaVerdade from '@/assets/characters/valente-pela-verdade.jpg';
+
 import sealImg from '@/assets/medieval-seal.png';
-import giantImg from '@/assets/landing-giant.jpg';
-import journeyImg from '@/assets/landing-journey.jpg';
+import logoImg from '@/assets/logo-peregrino.png';
 
 const SALE_URL = 'https://ocapelao-app.centrobiblico.online/venda';
 
@@ -76,148 +99,122 @@ const CountdownTimer = ({ compact = false }: { compact?: boolean }) => {
 };
 
 /* ═══════════════════════════════════════════════════════════
-   PHONE MOCKUP WITH AUTO-SCROLL TOUR
+   PHONE MOCKUP — REAL APP SCREENSHOTS TOUR
    ═══════════════════════════════════════════════════════════ */
 const PhoneMockupTour = () => {
-  const tourScreens = [
-    {
-      title: '🏰 Tela Inicial',
-      subtitle: 'Escolha seu capítulo',
-      items: ['Fase 1 — Cidade da Destruição', 'Fase 2 — Casa do Intérprete', 'Fase 3 — Vale da Humilhação'],
-      accent: 'from-amber-900/60 to-stone-900/80',
-    },
-    {
-      title: '📖 Narrativa Imersiva',
-      subtitle: 'Leia e decida',
-      items: ['Arte cinematográfica em cada cena', 'Escolhas que mudam a história', 'Consequências em tempo real'],
-      accent: 'from-emerald-900/60 to-stone-900/80',
-    },
-    {
-      title: '⚔️ Duelo contra Apolião',
-      subtitle: 'Combate estratégico',
-      items: ['Espada > Oração > Escudo', 'Dados 3D animados', 'Armadura de Deus'],
-      accent: 'from-red-900/60 to-stone-900/80',
-    },
-    {
-      title: '🧩 Mini-Games',
-      subtitle: '9 tipos diferentes',
-      items: ['Puzzles bíblicos', 'Reflexo e esquiva', 'Caça ao tesouro espiritual'],
-      accent: 'from-violet-900/60 to-stone-900/80',
-    },
-    {
-      title: '📊 Seus Atributos',
-      subtitle: 'Evolua com cada escolha',
-      items: ['Fé ██████░░ 75%', 'Perseverança █████░░░ 62%', 'Coragem ████████░ 88%'],
-      accent: 'from-blue-900/60 to-stone-900/80',
-    },
-    {
-      title: '🎲 Multiplayer',
-      subtitle: 'Até 6 jogadores',
-      items: ['Tabuleiro premium', 'Online ou presencial', 'Eventos coletivos'],
-      accent: 'from-cyan-900/60 to-stone-900/80',
-    },
-    {
-      title: '🏆 Finais Múltiplos',
-      subtitle: 'Rejogue e descubra',
-      items: ['Final da Cidade Celestial', 'Final do Rio da Morte', 'Finais alternativos secretos'],
-      accent: 'from-yellow-900/60 to-stone-900/80',
-    },
+  const [currentScreen, setCurrentScreen] = useState(0);
+
+  const screens = [
+    { img: cidadeDestruicao, label: 'Cidade da Destruição — Início da Jornada' },
+    { img: cruzFardo, label: 'A Cruz e o Fardo — Libertação' },
+    { img: casaInterprete, label: 'Casa do Intérprete — Revelações' },
+    { img: valeHumilhacao, label: 'Vale da Humilhação — Batalha contra Apolião' },
+    { img: valeSombra, label: 'Vale da Sombra da Morte' },
+    { img: feiraVaidade, label: 'Feira da Vaidade — Tentações' },
+    { img: casteloDuvida, label: 'Castelo da Dúvida — Gigante Desespero' },
+    { img: montanhasDeleitosas, label: 'Montanhas Deleitosas — Descanso' },
+    { img: rioFinal, label: 'Travessia do Rio — Desafio Final' },
+    { img: cidadeCelestial, label: 'Cidade Celestial — Glória!' },
   ];
 
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCurrentScreen(prev => (prev + 1) % screens.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [screens.length]);
+
   return (
-    <div className="flex justify-center">
-      {/* Phone frame - realistic iPhone style */}
+    <div className="flex flex-col items-center gap-6">
+      {/* Phone frame */}
       <div
         className="relative"
         style={{
-          width: 300,
-          transform: 'perspective(1200px) rotateY(-5deg) rotateX(2deg)',
+          width: 280,
+          transform: 'perspective(1200px) rotateY(-4deg) rotateX(2deg)',
         }}
       >
-        {/* Phone body */}
+        {/* Phone outer shell — realistic */}
         <div
-          className="relative rounded-[3rem] overflow-hidden border-[6px] border-foreground/30 bg-background"
+          className="relative rounded-[2.5rem] overflow-hidden"
           style={{
-            boxShadow:
-              '0 0 40px hsl(40 70% 50% / 0.25), 0 30px 80px rgba(0,0,0,0.7), -15px 15px 40px rgba(0,0,0,0.4), inset 0 0 0 2px hsl(40 70% 50% / 0.1)',
             aspectRatio: '9/19.5',
+            background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 30%, #111 100%)',
+            padding: '8px',
+            boxShadow:
+              '0 0 0 1px rgba(255,255,255,0.08), 0 0 40px hsl(40 70% 50% / 0.2), 0 40px 100px rgba(0,0,0,0.8), -20px 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
           }}
         >
-          {/* Dynamic Island / Notch */}
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 w-28 h-6 bg-foreground/90 rounded-full z-20" />
+          {/* Side buttons (volume, power) */}
+          <div className="absolute -left-[3px] top-[100px] w-[3px] h-8 rounded-l-sm" style={{ background: '#333' }} />
+          <div className="absolute -left-[3px] top-[145px] w-[3px] h-12 rounded-l-sm" style={{ background: '#333' }} />
+          <div className="absolute -left-[3px] top-[170px] w-[3px] h-12 rounded-l-sm" style={{ background: '#333' }} />
+          <div className="absolute -right-[3px] top-[130px] w-[3px] h-16 rounded-r-sm" style={{ background: '#333' }} />
 
-          {/* Screen content - auto scrolling */}
-          <div className="absolute inset-0 overflow-hidden rounded-[2.4rem]">
-            <div
-              className="animate-phone-scroll"
-              style={{
-                animation: 'phoneScroll 28s ease-in-out infinite',
-              }}
-            >
-              {tourScreens.map((screen, i) => (
-                <div
-                  key={i}
-                  className={`min-h-[580px] flex flex-col p-6 pt-12 bg-gradient-to-b ${screen.accent}`}
-                  style={{ background: `linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--background)) 100%)` }}
-                >
-                  {/* Status bar mockup */}
-                  <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-6 pt-4">
-                    <span>9:41</span>
-                    <span className="font-display text-primary text-[9px] tracking-wider">O PEREGRINO</span>
-                    <span>100%</span>
-                  </div>
+          {/* Screen area */}
+          <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-black">
+            {/* Dynamic Island */}
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-[22px] bg-black rounded-full z-30" style={{ boxShadow: 'inset 0 0 4px rgba(0,0,0,0.8)' }}>
+              <div className="absolute right-[18px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full" style={{ background: 'radial-gradient(circle, #1a3a5c, #0a1a2c)' }} />
+            </div>
 
-                  {/* Screen title */}
-                  <div className="mb-6">
-                    <h4 className="font-display text-xl text-foreground font-bold">{screen.title}</h4>
-                    <p className="text-sm text-muted-foreground mt-1">{screen.subtitle}</p>
-                  </div>
+            {/* Screen content — real screenshots */}
+            {screens.map((screen, i) => (
+              <div
+                key={i}
+                className="absolute inset-0 transition-opacity duration-700"
+                style={{ opacity: currentScreen === i ? 1 : 0 }}
+              >
+                <img
+                  src={screen.img}
+                  alt={screen.label}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+                {/* App overlay UI simulation */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70" />
+                
+                {/* Top bar */}
+                <div className="absolute top-8 left-0 right-0 flex items-center justify-between px-4 z-20">
+                  <span className="text-[9px] text-white/70 font-mono">9:41</span>
+                  <span className="text-[8px] text-primary font-display tracking-[0.2em] uppercase">O Peregrino</span>
+                  <span className="text-[9px] text-white/70">⚡100%</span>
+                </div>
 
-                  {/* Content items as cards */}
-                  <div className="space-y-3 flex-1">
-                    {screen.items.map((item, j) => (
-                      <div
-                        key={j}
-                        className="p-4 rounded-xl bg-card/60 border border-border/50 text-sm text-foreground/80 font-body"
-                        style={{
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 hsl(40 80% 75% / 0.05)',
-                        }}
-                      >
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Fake bottom nav */}
-                  <div className="flex items-center justify-around pt-6 pb-2 border-t border-border/30 mt-4">
-                    <div className="flex flex-col items-center gap-1">
-                      <Compass className="w-4 h-4 text-primary" />
-                      <span className="text-[9px] text-primary">Jornada</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-1">
-                      <Users className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-[9px] text-muted-foreground">Multi</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-1">
-                      <Trophy className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-[9px] text-muted-foreground">Perfil</span>
+                {/* Bottom label */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
+                  <div className="bg-black/60 backdrop-blur-sm rounded-xl p-3 border border-primary/20">
+                    <p className="text-[11px] text-white font-display leading-tight">{screen.label}</p>
+                    <div className="flex gap-1 mt-2">
+                      {screens.map((_, j) => (
+                        <div
+                          key={j}
+                          className="h-[2px] flex-1 rounded-full transition-all duration-300"
+                          style={{ background: j === currentScreen ? 'hsl(40 70% 50%)' : 'rgba(255,255,255,0.2)' }}
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            ))}
 
-          {/* Home indicator */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-foreground/40 rounded-full z-20" />
+            {/* Home indicator */}
+            <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-28 h-[4px] bg-white/30 rounded-full z-30" />
+          </div>
         </div>
 
-        {/* Reflection effect */}
+        {/* Phone reflection */}
         <div
-          className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[80%] h-8 rounded-full"
-          style={{ background: 'radial-gradient(ellipse, hsl(40 70% 50% / 0.15), transparent)' }}
+          className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-10 rounded-full"
+          style={{ background: 'radial-gradient(ellipse, hsl(40 70% 50% / 0.12), transparent)' }}
         />
       </div>
+
+      {/* Screen counter */}
+      <p className="text-xs text-muted-foreground font-display">
+        {currentScreen + 1} / {screens.length} — Tour automático
+      </p>
     </div>
   );
 };
@@ -234,10 +231,12 @@ const faqData = [
   { q: 'É adequado para crianças e adolescentes?', a: 'Sim! O conteúdo é 100% baseado na obra clássica de John Bunyan. É ideal para jovens, grupos de jovens, escolas dominicais e famílias. Classificação livre.' },
   { q: 'Posso jogar com meu grupo de jovens da igreja?', a: 'Absolutamente! O modo presencial foi feito exatamente para isso. Reúna até 6 pessoas, cada um com seu personagem, e vivam a jornada juntos como um RPG de tabuleiro digital.' },
   { q: 'Quais formas de pagamento são aceitas?', a: 'Aceitamos PIX, cartão de crédito (até 12x), cartão de débito, e pagamento híbrido (PIX + cartão). Processamento 100% seguro.' },
+  { q: 'Funciona em qual dispositivo?', a: 'Funciona em qualquer celular, tablet ou computador com navegador moderno. Android, iPhone, iPad, Windows, Mac — tudo funciona.' },
+  { q: 'O app é atualizado?', a: 'Sim! Estamos constantemente adicionando novos capítulos, desafios e funcionalidades. Todas as atualizações são inclusas no plano anual.' },
 ];
 
 /* ═══════════════════════════════════════════════════════════
-   CTA BUTTON
+   REUSABLE COMPONENTS
    ═══════════════════════════════════════════════════════════ */
 const CtaButton = ({ children, onClick, variant = 'primary', className = '' }: {
   children: React.ReactNode;
@@ -250,6 +249,7 @@ const CtaButton = ({ children, onClick, variant = 'primary', className = '' }: {
     className={`
       relative font-display text-base tracking-wide rounded-xl transition-all duration-300
       flex items-center justify-center gap-2 min-h-[56px] px-8
+      hover:scale-[1.02] active:scale-[0.98]
       ${variant === 'primary'
         ? 'bg-gradient-to-b from-primary to-primary/80 text-primary-foreground border-2 border-primary/60'
         : 'bg-card/80 text-foreground border-2 border-primary/30 hover:border-primary/60'
@@ -266,9 +266,6 @@ const CtaButton = ({ children, onClick, variant = 'primary', className = '' }: {
   </button>
 );
 
-/* ═══════════════════════════════════════════════════════════
-   MEDIEVAL CARD
-   ═══════════════════════════════════════════════════════════ */
 const MedievalCard = ({ children, className = '', glow = false }: {
   children: React.ReactNode;
   className?: string;
@@ -294,24 +291,37 @@ const SectionDivider = () => (
   </div>
 );
 
-/* ═══════════════════════════════════════════════════════════
-   CINEMATIC IMAGE SECTION
-   ═══════════════════════════════════════════════════════════ */
 const CinematicImage = ({ src, alt, caption, subcaption, rotate = 0 }: {
   src: string; alt: string; caption: string; subcaption?: string; rotate?: number;
 }) => (
   <div
-    className="relative rounded-2xl overflow-hidden"
+    className="relative rounded-2xl overflow-hidden group"
     style={{
       transform: `perspective(1000px) rotateY(${rotate}deg) rotateX(1deg)`,
       boxShadow: '0 0 30px hsl(40 70% 50% / 0.2), 0 20px 60px rgba(0,0,0,0.5)',
     }}
   >
-    <img src={src} alt={alt} className="w-full" loading="lazy" width={1280} height={720} />
+    <img src={src} alt={alt} className="w-full transition-transform duration-700 group-hover:scale-105" loading="lazy" />
     <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
     <div className="absolute bottom-0 left-0 right-0 p-5 text-left">
       <p className="font-display text-lg text-foreground font-bold">{caption}</p>
       {subcaption && <p className="text-sm text-foreground/70 mt-1">{subcaption}</p>}
+    </div>
+  </div>
+);
+
+/* Character portrait for the gallery */
+const CharacterPortrait = ({ src, name, role }: { src: string; name: string; role: string }) => (
+  <div className="flex flex-col items-center gap-2">
+    <div
+      className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-primary/40"
+      style={{ boxShadow: '0 0 15px hsl(40 70% 50% / 0.25), 0 4px 15px rgba(0,0,0,0.5)' }}
+    >
+      <img src={src} alt={name} className="w-full h-full object-cover" loading="lazy" />
+    </div>
+    <div className="text-center">
+      <p className="font-display text-xs font-bold text-foreground">{name}</p>
+      <p className="text-[10px] text-muted-foreground">{role}</p>
     </div>
   </div>
 );
@@ -345,7 +355,7 @@ const LandingPage = () => {
         <CountdownTimer compact />
         <button
           onClick={handleBuy}
-          className="ml-2 px-3 py-1 text-xs font-display font-bold rounded-lg bg-primary text-primary-foreground border border-primary/60 flex-shrink-0"
+          className="ml-2 px-3 py-1 text-xs font-display font-bold rounded-lg bg-primary text-primary-foreground border border-primary/60 flex-shrink-0 hover:scale-105 transition-transform"
           style={{ boxShadow: '0 0 10px hsl(40 70% 50% / 0.3)' }}
         >
           GARANTIR
@@ -354,10 +364,9 @@ const LandingPage = () => {
 
       {/* ══════════ HERO ══════════ */}
       <section className="relative min-h-[95vh] flex flex-col items-center justify-center px-5 py-16 text-center overflow-hidden">
-        {/* Background — more visible */}
         <div className="absolute inset-0">
-          <img src={heroImg} alt="Jornada do Peregrino" className="w-full h-full object-cover opacity-60" width={1920} height={1080} />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" />
+          <img src={cidadeDestruicao} alt="Cidade da Destruição" className="w-full h-full object-cover opacity-50" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/30 to-background" />
         </div>
 
         <div className="relative z-10 max-w-2xl mx-auto space-y-5">
@@ -379,7 +388,7 @@ const LandingPage = () => {
           </h1>
 
           <p
-            className="text-lg md:text-xl text-foreground/90 leading-relaxed max-w-lg mx-auto font-body"
+            className="text-base md:text-xl text-foreground/90 leading-relaxed max-w-lg mx-auto font-body"
             style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}
           >
             A obra-prima de <strong>John Bunyan</strong> transformada em uma experiência interativa
@@ -401,7 +410,7 @@ const LandingPage = () => {
             </CtaButton>
           </div>
 
-          <div className="flex items-center justify-center gap-4 pt-2 text-xs text-foreground/70" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+          <div className="flex items-center justify-center gap-4 pt-2 text-xs text-foreground/70 flex-wrap" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
             <span className="flex items-center gap-1"><Shield className="w-3.5 h-3.5" /> Garantia 7 dias</span>
             <span>•</span>
             <span className="flex items-center gap-1"><Smartphone className="w-3.5 h-3.5" /> Instale no celular</span>
@@ -415,31 +424,126 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* ══════════ CINEMATIC IMAGES ══════════ */}
+      {/* ══════════ GALERIA DE CENAS DO APP ══════════ */}
       <section className="px-5 py-12">
-        <div className="max-w-3xl mx-auto space-y-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="text-center mb-8">
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Imagens Reais do App</p>
+            <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
+              Cada cena é uma <span className="text-primary">obra de arte</span>
+            </h2>
+            <p className="text-sm text-muted-foreground mt-2">Essas são as imagens reais que você verá durante o jogo</p>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <CinematicImage
-              src={battleImg}
-              alt="Batalha contra Apolião"
-              caption="⚔️ Enfrente Apolião"
-              subcaption="O terrível demônio que bloqueia o Vale da Humilhação"
+              src={valeHumilhacao}
+              alt="Vale da Humilhação"
+              caption="⚔️ Vale da Humilhação"
+              subcaption="Enfrente Apolião em um duelo épico pela sua alma"
               rotate={-2}
             />
             <CinematicImage
-              src={giantImg}
-              alt="Gigante Desespero"
-              caption="👹 Gigante Desespero"
-              subcaption="Prisioneiro no Castelo da Dúvida — você consegue escapar?"
+              src={casteloDuvida}
+              alt="Castelo da Dúvida"
+              caption="🏰 Castelo da Dúvida"
+              subcaption="Preso pelo Gigante Desespero — você consegue escapar?"
               rotate={2}
             />
           </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            <CinematicImage
+              src={feiraVaidade}
+              alt="Feira da Vaidade"
+              caption="🎪 Feira da Vaidade"
+              subcaption="Tentações a cada passo"
+              rotate={-1}
+            />
+            <CinematicImage
+              src={valeSombra}
+              alt="Vale da Sombra"
+              caption="💀 Vale da Sombra"
+              subcaption="A escuridão mais profunda"
+            />
+            <CinematicImage
+              src={rioFinal}
+              alt="Travessia do Rio"
+              caption="🌊 Rio da Morte"
+              subcaption="O desafio final"
+              rotate={1}
+            />
+          </div>
           <CinematicImage
-            src={journeyImg}
-            alt="A Jornada"
-            caption="🌉 A Travessia do Rio da Morte"
-            subcaption="O último e mais difícil desafio. Seus atributos determinam o desfecho."
+            src={cidadeCelestial}
+            alt="Cidade Celestial"
+            caption="✨ Cidade Celestial — O Destino Final"
+            subcaption="Após uma jornada de batalhas, fé e perseverança — a recompensa aguarda os fiéis."
           />
+        </div>
+      </section>
+
+      <SectionDivider />
+
+      {/* ══════════ PERSONAGENS DO APP ══════════ */}
+      <section className="px-5 py-16 bg-card/30">
+        <div className="max-w-3xl mx-auto space-y-8">
+          <div className="text-center">
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Personagens Reais do App</p>
+            <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
+              Conheça quem faz parte <span className="text-primary">desta jornada</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-4 md:grid-cols-8 gap-4 justify-items-center">
+            <CharacterPortrait src={cristao} name="Cristão" role="Protagonista" />
+            <CharacterPortrait src={evangelista} name="Evangelista" role="O Guia" />
+            <CharacterPortrait src={fiel} name="Fiel" role="Companheiro" />
+            <CharacterPortrait src={esperanca} name="Esperança" role="Amigo Fiel" />
+            <CharacterPortrait src={apolion} name="Apolião" role="O Destruidor" />
+            <CharacterPortrait src={giganteDesespero} name="Gigante" role="Desespero" />
+            <CharacterPortrait src={crista} name="Cristã" role="A Peregrina" />
+            <CharacterPortrait src={valentePelaVerdade} name="Valente" role="Pela Verdade" />
+          </div>
+
+          <p className="text-center text-sm text-muted-foreground font-body">
+            + mais de <strong className="text-primary">40 personagens</strong> com arte original em cada cena
+          </p>
+        </div>
+      </section>
+
+      <SectionDivider />
+
+      {/* ══════════ MAIS CENAS REAIS ══════════ */}
+      <section className="px-5 py-12">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="text-center mb-4">
+            <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
+              Mais cenários <span className="text-primary">cinematográficos</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {[
+              { img: portaoEstreito, label: 'Portão Estreito' },
+              { img: pantanoDesanimo, label: 'Pântano do Desânimo' },
+              { img: casaInterprete, label: 'Casa do Intérprete' },
+              { img: palacioBelo, label: 'Palácio Belo' },
+              { img: cruzFardo, label: 'A Cruz e o Fardo' },
+              { img: julgamentoFeira, label: 'Julgamento na Feira' },
+              { img: giganteMataBons, label: 'Gigante Mata-Bons' },
+              { img: montanhasDeleitosas, label: 'Montanhas Deleitosas' },
+            ].map((scene, i) => (
+              <div
+                key={i}
+                className="relative rounded-xl overflow-hidden group aspect-square"
+                style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
+              >
+                <img src={scene.img} alt={scene.label} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                <p className="absolute bottom-2 left-2 right-2 font-display text-[11px] text-white font-bold leading-tight">{scene.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -460,6 +564,8 @@ const LandingPage = () => {
               'Quer ensinar valores bíblicos mas os jovens não se engajam?',
               'Procura algo diferente para seu grupo de jovens e não encontra?',
               'Deseja uma experiência bíblica profunda mas acessível e moderna?',
+              'Sente que está espiritualmente estagnado e precisa de algo novo?',
+              'Quer algo que una diversão e edificação espiritual ao mesmo tempo?',
             ].map((pain, i) => (
               <MedievalCard key={i} className="flex items-start gap-3 p-4">
                 <X className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
@@ -495,9 +601,12 @@ const LandingPage = () => {
             {[
               { icon: <BookOpen className="w-6 h-6" />, stat: '30+', label: 'Capítulos narrativos' },
               { icon: <Gamepad2 className="w-6 h-6" />, stat: '9', label: 'Tipos de desafios' },
+              { icon: <Users className="w-6 h-6" />, stat: '6', label: 'Jogadores simultâneos' },
+              { icon: <Swords className="w-6 h-6" />, stat: '10+', label: 'Duelos épicos' },
               { icon: <Trophy className="w-6 h-6" />, stat: '∞', label: 'Rejogabilidade' },
+              { icon: <Map className="w-6 h-6" />, stat: '40+', label: 'Personagens' },
             ].map((s, i) => (
-              <MedievalCard key={i} glow className="text-center">
+              <MedievalCard key={i} glow={i < 3} className="text-center">
                 <div className="text-primary mb-2 flex justify-center">{s.icon}</div>
                 <p className="font-display text-2xl text-primary font-bold">{s.stat}</p>
                 <p className="text-xs text-muted-foreground">{s.label}</p>
@@ -509,45 +618,63 @@ const LandingPage = () => {
 
       <SectionDivider />
 
+      {/* ══════════ CTA intermediário ══════════ */}
+      <section className="px-5 py-10 bg-card/30">
+        <div className="max-w-lg mx-auto text-center space-y-4">
+          <p className="font-display text-lg text-foreground font-bold">
+            Não espere mais — <span className="text-primary">sua jornada começa agora</span>
+          </p>
+          <CtaButton onClick={handleBuy} variant="primary" className="w-full">
+            <Crown className="w-5 h-5" />
+            Garantir Meu Acesso — R$147/ano
+          </CtaButton>
+          <p className="text-xs text-muted-foreground flex items-center justify-center gap-2">
+            <Shield className="w-3.5 h-3.5" /> 7 dias de garantia · Pagamento seguro
+          </p>
+        </div>
+      </section>
+
+      <SectionDivider />
+
       {/* ══════════ PHONE MOCKUP TOUR ══════════ */}
-      <section className="px-5 py-16 bg-card/30">
+      <section className="px-5 py-16">
         <div className="max-w-2xl mx-auto text-center space-y-8">
           <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Veja por Dentro</p>
           <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
             Um tour <span className="text-primary">real</span> pelo app
           </h2>
           <p className="text-sm text-muted-foreground font-body">
-            Assista o app funcionando — cada tela mostra uma parte da experiência completa
+            Cada tela mostra exatamente o que você verá — imagens reais do app
           </p>
 
           <PhoneMockupTour />
-
-          <p className="text-xs text-muted-foreground italic">Tour automático — aguarde para ver todas as telas</p>
         </div>
       </section>
 
       <SectionDivider />
 
       {/* ══════════ FEATURES — HOW IT WORKS ══════════ */}
-      <section className="px-5 py-16">
+      <section className="px-5 py-16 bg-card/30">
         <div className="max-w-2xl mx-auto space-y-8">
           <div className="text-center">
             <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Como Funciona</p>
             <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
-              Uma experiência <span className="text-primary">completa e profunda</span>
+              Tudo o que o app <span className="text-primary">entrega para você</span>
             </h2>
           </div>
 
           <div className="space-y-4">
             {[
-              { icon: <BookOpen className="w-6 h-6" />, title: 'Narrativa Interativa', desc: 'A história de O Peregrino ganha vida através de escolhas que você faz. Cada decisão altera seus 4 atributos — Fé, Perseverança, Discernimento e Coragem — e determina qual caminho você seguirá.' },
-              { icon: <Swords className="w-6 h-6" />, title: 'Duelos Espirituais', desc: 'Enfrente Apolião, o Gigante Desespero e outros inimigos usando a Armadura de Deus: Espada (ataque), Escudo (defesa) e Oração (poder espiritual) em combates estratégicos.' },
-              { icon: <Gamepad2 className="w-6 h-6" />, title: '9 Tipos de Mini-Games', desc: 'Reflexos rápidos (QTE), esquiva de tentações, memória bíblica, furtividade, caça ao tesouro, duelo de dados, puzzles de escrituras e muito mais.' },
-              { icon: <Users className="w-6 h-6" />, title: 'Modo Multiplayer', desc: 'Jogue online com amigos ou reúna o grupo presencialmente. Um tabuleiro digital premium com dados 3D, eventos coletivos e chat.' },
-              { icon: <Zap className="w-6 h-6" />, title: 'Sistema de Combo', desc: 'Sequências de boas escolhas ativam combos que amplificam suas recompensas. Mantenha a série e veja seus atributos dispararem.' },
-              { icon: <Eye className="w-6 h-6" />, title: 'Efeitos Visuais e Atmosféricos', desc: 'Partículas de fogo, chuva, luz sagrada. Efeitos de câmera como terremoto e brilho divino em momentos críticos da história.' },
-              { icon: <Map className="w-6 h-6" />, title: 'Funciona 100% Offline', desc: 'Instale no celular como app (PWA). Todo conteúdo funciona sem internet. Ideal para viagens, retiros e qualquer lugar.' },
-              { icon: <Star className="w-6 h-6" />, title: 'Rejogabilidade Infinita', desc: 'Eventos aleatórios, variações narrativas e múltiplos finais garantem que cada jogada seja uma experiência nova e surpreendente.' },
+              { icon: <BookOpen className="w-6 h-6" />, title: 'Narrativa Interativa Completa', desc: 'A história de O Peregrino e A Peregrina em 30+ capítulos. Cada decisão altera seus 4 atributos — Fé, Perseverança, Discernimento e Coragem — e muda o rumo da história.' },
+              { icon: <Swords className="w-6 h-6" />, title: 'Duelos Espirituais com Dados 3D', desc: 'Enfrente Apolião, o Gigante Desespero e outros usando Espada (ataque), Escudo (defesa) e Oração (poder) com dados 3D animados e sistema de combate estratégico.' },
+              { icon: <Gamepad2 className="w-6 h-6" />, title: '9 Tipos de Mini-Games', desc: 'QTE de reflexo, esquiva de tentações, memória bíblica, stealth, caça ao tesouro, duelo de dados, puzzles de versículos, caminho da fé e muito mais.' },
+              { icon: <Users className="w-6 h-6" />, title: 'Multiplayer Online e Presencial', desc: 'Até 6 jogadores com tabuleiro premium digital, dados 3D, eventos coletivos e chat. Perfeito para grupos de jovens e famílias.' },
+              { icon: <Zap className="w-6 h-6" />, title: 'Sistema de Combo e Atributos', desc: 'Sequências de boas escolhas ativam combos que amplificam recompensas. 4 barras de atributos evoluem com cada decisão.' },
+              { icon: <Eye className="w-6 h-6" />, title: 'Efeitos Visuais Cinematográficos', desc: 'Partículas, chuva, luz sagrada, tremor de câmera, brilho divino. Arte concept art em cada cena com atmosfera imersiva.' },
+              { icon: <Brain className="w-6 h-6" />, title: 'Eventos Aleatórios Dinâmicos', desc: 'A cada jogada, eventos diferentes surgem. Personagens invisíveis, dados secretos e variações narrativas tornam cada experiência única.' },
+              { icon: <Star className="w-6 h-6" />, title: 'Múltiplos Finais e Rejogabilidade', desc: 'Finais diferentes baseados nos seus atributos. Final da Cidade Celestial, finais alternativos e caminhos secretos para descobrir.' },
+              { icon: <Smartphone className="w-6 h-6" />, title: 'Funciona 100% Offline (PWA)', desc: 'Instale no celular como app nativo. Funciona sem internet. Ideal para viagens, retiros, escolas dominicais e qualquer lugar.' },
+              { icon: <Heart className="w-6 h-6" />, title: 'Reflexões Espirituais Profundas', desc: 'Cada capítulo traz reflexões baseadas nas verdades bíblicas da obra de Bunyan. Momentos de meditação e crescimento real na fé.' },
             ].map((f, i) => (
               <MedievalCard key={i} glow={i < 3} className="flex gap-4">
                 <div
@@ -559,6 +686,39 @@ const LandingPage = () => {
                 <div>
                   <h3 className="font-display text-base font-bold text-foreground">{f.title}</h3>
                   <p className="text-sm text-muted-foreground mt-1 leading-relaxed font-body">{f.desc}</p>
+                </div>
+              </MedievalCard>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <SectionDivider />
+
+      {/* ══════════ RESULTADOS / TRANSFORMAÇÃO ══════════ */}
+      <section className="px-5 py-16">
+        <div className="max-w-2xl mx-auto space-y-8">
+          <div className="text-center">
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Resultados</p>
+            <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
+              O que acontece quando você <span className="text-primary">joga O Peregrino</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[
+              { icon: '🔥', title: 'Fé Renovada', desc: 'Cada escolha e desafio te confronta com verdades bíblicas profundas que reacendem sua chama espiritual.' },
+              { icon: '🧠', title: 'Conhecimento Bíblico', desc: 'Aprenda sobre a jornada cristã de forma prática e memorável, não apenas teórica.' },
+              { icon: '💪', title: 'Perseverança Fortalecida', desc: 'Ao enfrentar tentações e batalhas no jogo, você desenvolve resiliência real na vida.' },
+              { icon: '👥', title: 'Comunhão Profunda', desc: 'Jogue com seu grupo e crie momentos de discussão e crescimento que transcendem o jogo.' },
+              { icon: '📖', title: 'Amor pela Obra de Bunyan', desc: 'Descubra (ou redescubra) uma das maiores obras da literatura cristã de todos os tempos.' },
+              { icon: '🎯', title: 'Propósito Renovado', desc: 'A jornada de Cristão espelha a sua — e ao final, você sairá com uma visão mais clara do seu propósito.' },
+            ].map((r, i) => (
+              <MedievalCard key={i} glow className="flex gap-3">
+                <span className="text-2xl flex-shrink-0">{r.icon}</span>
+                <div>
+                  <h3 className="font-display text-sm font-bold text-foreground">{r.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-1 font-body leading-relaxed">{r.desc}</p>
                 </div>
               </MedievalCard>
             ))}
@@ -592,6 +752,7 @@ const LandingPage = () => {
                   'Gosta de jogos narrativos com escolhas reais',
                   'Valoriza conteúdo que edifica e entretém',
                   'Quer algo que funcione offline e no celular',
+                  'Quer algo para usar em retiros e encontros',
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-foreground/80 font-body">
                     <Check className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
@@ -612,6 +773,7 @@ const LandingPage = () => {
                   'Quer gráficos 3D AAA de console',
                   'Espera um jogo de ação puro sem narrativa',
                   'Não gosta de ler e tomar decisões',
+                  'Quer algo descartável sem valor duradouro',
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-foreground/80 font-body">
                     <X className="w-4 h-4 text-destructive/60 flex-shrink-0 mt-0.5" />
@@ -626,54 +788,102 @@ const LandingPage = () => {
 
       <SectionDivider />
 
+      {/* ══════════ CTA intermediário 2 ══════════ */}
+      <section className="relative px-5 py-12 overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={cruzFardo} alt="" className="w-full h-full object-cover opacity-20" />
+          <div className="absolute inset-0 bg-background/80" />
+        </div>
+        <div className="relative z-10 max-w-lg mx-auto text-center space-y-4">
+          <p className="font-display text-xl text-foreground font-bold">
+            ✝️ Assim como Cristão largou o fardo na Cruz...<br />
+            <span className="text-primary">largue a sua hesitação agora</span>
+          </p>
+          <CtaButton onClick={handleBuy} variant="primary" className="w-full">
+            <Flame className="w-5 h-5" />
+            Quero Começar Minha Jornada — R$147/ano
+          </CtaButton>
+        </div>
+      </section>
+
+      <SectionDivider />
+
       {/* ══════════ JOHN BUNYAN STORY ══════════ */}
-      <section className="px-5 py-16">
+      <section className="px-5 py-16 bg-card/30">
         <div className="max-w-2xl mx-auto space-y-8">
           <div className="text-center">
             <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">A Obra Original</p>
             <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
-              A História por trás de <span className="text-primary">O Peregrino</span>
+              A Incrível História por trás de <span className="text-primary">O Peregrino</span>
             </h2>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-6 items-start">
-            <div
-              className="flex-shrink-0 w-full md:w-56 rounded-xl overflow-hidden"
-              style={{
-                transform: 'perspective(800px) rotateY(3deg)',
-                boxShadow: '0 0 25px hsl(40 70% 50% / 0.2), 0 15px 40px rgba(0,0,0,0.5)',
-              }}
-            >
-              <img src={bunyanImg} alt="John Bunyan" className="w-full" loading="lazy" width={768} height={1024} />
-            </div>
+          <MedievalCard glow className="space-y-4 font-body text-foreground/80 text-sm leading-relaxed">
+            <p>
+              <strong className="text-foreground text-lg font-display">1678.</strong> Uma cela úmida e fria na prisão de Bedford, Inglaterra.
+              Um homem que recusou parar de pregar o Evangelho — mesmo sob ameaça de morte — pega uma pena e começa a escrever.
+            </p>
+            <p>
+              Esse homem era <strong className="text-primary">John Bunyan</strong>. Filho de um caldeireiro pobre,
+              ex-soldado, autodidata, que passou <strong>12 anos preso</strong> por se recusar a silenciar sua fé.
+            </p>
+            <p>
+              Dentro daquelas paredes, ele teve uma visão que mudou a história da literatura:
+              a jornada de um homem chamado <em className="text-primary">Cristão</em>, que abandona a Cidade da Destruição
+              carregando um fardo pesado nas costas e caminha rumo à Cidade Celestial.
+            </p>
+            <p>
+              <strong className="text-primary">"O Peregrino"</strong> (The Pilgrim's Progress) se tornou o
+              <strong className="text-foreground"> segundo livro mais lido da história da humanidade</strong> — perdendo apenas para a Bíblia.
+              Traduzido para mais de <strong>200 idiomas</strong>. Milhões de cópias vendidas em 4 séculos.
+            </p>
+            <p>
+              Bunyan escreveu também <strong className="text-primary">"A Peregrina"</strong>, contando a jornada
+              de <em>Cristã</em> — esposa de Cristão — e seus filhos. Uma história de coragem feminina, maternidade
+              e fé inabalável que complementa a obra original.
+            </p>
+            <p className="text-primary font-display text-base italic border-l-2 border-primary/40 pl-4">
+              "Este app transforma essas obras-primas em algo que você não apenas lê —
+              mas <strong>vive, sente e experimenta</strong> como se estivesse lá."
+            </p>
+          </MedievalCard>
+        </div>
+      </section>
 
-            <div className="space-y-4 font-body text-foreground/80 text-sm leading-relaxed">
-              <p>
-                Em <strong className="text-foreground">1678</strong>, um homem preso por pregar o Evangelho escreveu,
-                de dentro de uma cela úmida e fria, a obra que se tornaria o <strong className="text-primary">segundo livro
-                mais lido da história</strong> — perdendo apenas para a Bíblia.
-              </p>
-              <p>
-                <strong className="text-foreground">John Bunyan</strong> passou 12 anos na prisão de Bedford, na Inglaterra,
-                por se recusar a parar de pregar. Dentro daquelas paredes, ele teve uma visão:
-                a jornada de um homem chamado <em>Cristão</em>, que abandona a Cidade da Destruição
-                e caminha até a Cidade Celestial.
-              </p>
-              <p>
-                <strong className="text-primary">"O Peregrino"</strong> (The Pilgrim's Progress) já foi traduzido para
-                mais de <strong>200 idiomas</strong>. É uma alegoria poderosa sobre a vida cristã, onde cada personagem
-                — <em>Evangelista, Fiel, Esperançoso, Apolião, o Gigante Desespero</em> — representa lutas
-                e verdades que todo cristão enfrenta.
-              </p>
-              <p>
-                Bunyan também escreveu <strong className="text-primary">"A Peregrina"</strong>, a continuação que conta a jornada
-                de Cristina, esposa de Cristão, e seus filhos. Uma história de coragem feminina, maternidade e fé inabalável.
-              </p>
-              <p className="text-primary font-display text-base italic">
-                "Este app transforma essas obras-primas em algo que você não apenas lê —
-                mas <strong>vive</strong>."
-              </p>
-            </div>
+      <SectionDivider />
+
+      {/* ══════════ METODOLOGIA ══════════ */}
+      <section className="px-5 py-16">
+        <div className="max-w-2xl mx-auto space-y-8">
+          <div className="text-center">
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Metodologia</p>
+            <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
+              Como o app <span className="text-primary">transforma</span> sua experiência
+            </h2>
+          </div>
+
+          <div className="space-y-4">
+            {[
+              { step: '01', title: 'Narrativa Imersiva', desc: 'Você lê a história como um livro, mas com arte cinematográfica em cada cena e a capacidade de fazer escolhas que alteram o rumo.' },
+              { step: '02', title: 'Escolhas com Consequências', desc: 'Cada decisão impacta seus 4 atributos (Fé, Perseverança, Discernimento, Coragem). Atributos baixos = caminhos mais difíceis.' },
+              { step: '03', title: 'Desafios Interativos', desc: '9 tipos de mini-games testam reflexo, conhecimento bíblico, estratégia e coragem. Cada um conectado à narrativa.' },
+              { step: '04', title: 'Duelos Épicos com Dados 3D', desc: 'Combata inimigos usando Espada, Escudo e Oração. Dados 3D animados determinam o resultado.' },
+              { step: '05', title: 'Multiplayer Social', desc: 'Jogue com até 6 amigos online ou presencialmente com tabuleiro digital premium.' },
+              { step: '06', title: 'Finais Baseados em Suas Escolhas', desc: 'Seus atributos determinam qual final você alcança — e existem finais secretos para os mais dedicados.' },
+            ].map((m, i) => (
+              <div key={i} className="flex gap-4 items-start">
+                <div
+                  className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center font-display text-sm text-primary font-bold"
+                  style={{ boxShadow: '0 0 10px hsl(40 70% 50% / 0.2)' }}
+                >
+                  {m.step}
+                </div>
+                <div>
+                  <h3 className="font-display text-sm font-bold text-foreground">{m.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-1 font-body leading-relaxed">{m.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -696,6 +906,7 @@ const LandingPage = () => {
               { name: 'Ana P.', role: 'Professora de ED', text: 'Joguei com meu grupo de jovens no modo presencial. Foi incrível! Melhor que qualquer jogo de tabuleiro. As discussões depois foram profundas.' },
               { name: 'Rafael S.', role: 'Gamer Cristão', text: 'A história é envolvente e os mini-games são muito bem feitos. Já joguei 3 vezes e cada uma foi diferente. Os duelos contra Apolião são épicos!' },
               { name: 'Débora L.', role: 'Mãe e Educadora', text: 'Meus filhos adoraram. Finalmente algo que ensina valores bíblicos de forma que eles realmente querem participar. Vale cada centavo.' },
+              { name: 'Pastor Marcos', role: 'Pastor de Jovens', text: 'Revolucionou nossos encontros de sábado. Os jovens chegam empolgados para jogar e saem refletindo sobre as verdades bíblicas.' },
             ].map((t, i) => (
               <MedievalCard key={i} glow={i === 0}>
                 <div className="flex items-center gap-1.5 mb-2">
@@ -729,6 +940,7 @@ const LandingPage = () => {
               { item: 'Material de estudo bíblico anual', price: 'R$ 300+' },
               { item: 'Curso de discipulado online', price: 'R$ 497+' },
               { item: 'Retiro de jovens (por pessoa)', price: 'R$ 250+' },
+              { item: 'Livros e comentários bíblicos', price: 'R$ 200+' },
             ].map((a, i) => (
               <div key={i} className="flex items-center justify-between py-2 border-b border-border/50">
                 <span className="text-sm text-foreground/60">{a.item}</span>
@@ -738,7 +950,7 @@ const LandingPage = () => {
           </div>
 
           <p className="text-base text-foreground/70 font-body">
-            Tudo isso junto custaria mais de <span className="line-through text-foreground/40">R$ 1.200</span>
+            Tudo isso junto custaria mais de <span className="line-through text-foreground/40">R$ 1.400</span>
           </p>
 
           <MedievalCard glow className="max-w-sm mx-auto text-center">
@@ -760,9 +972,11 @@ const LandingPage = () => {
             <div className="space-y-2 text-left mb-6">
               {[
                 'Acesso a todos os 30+ capítulos',
+                'Parte I (O Peregrino) e Parte II (A Peregrina)',
                 'Todos os 9 tipos de mini-games',
                 'Modo multiplayer online e presencial',
                 'Múltiplos finais e eventos aleatórios',
+                '40+ personagens com arte original',
                 'Funciona 100% offline',
                 'Atualizações futuras inclusas',
                 'Instale em quantos dispositivos quiser',
@@ -779,6 +993,9 @@ const LandingPage = () => {
               Quero Começar Minha Jornada
             </CtaButton>
           </MedievalCard>
+
+          <CountdownTimer />
+          <p className="text-xs text-destructive font-display animate-pulse">⚠️ Essa oferta expira hoje!</p>
         </div>
       </section>
 
@@ -795,7 +1012,7 @@ const LandingPage = () => {
           </div>
 
           <MedievalCard glow className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
-            <img src={sealImg} alt="Selo de Garantia 7 Dias" className="w-28 h-28 object-contain" loading="lazy" width={512} height={512} />
+            <img src={sealImg} alt="Selo de Garantia 7 Dias" className="w-28 h-28 object-contain" loading="lazy" />
             <div>
               <h3 className="font-display text-lg text-foreground font-bold mb-2">
                 Garantia Incondicional de 7 Dias
@@ -879,7 +1096,10 @@ const LandingPage = () => {
 
       {/* ══════════ FINAL CTA ══════════ */}
       <section className="relative px-5 py-20 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/10 via-transparent to-transparent" />
+        <div className="absolute inset-0">
+          <img src={cidadeCelestial} alt="" className="w-full h-full object-cover opacity-20" />
+          <div className="absolute inset-0 bg-background/70" />
+        </div>
         <div className="relative z-10 max-w-lg mx-auto space-y-6">
           <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
             A jornada começa com <span className="text-primary">um passo</span>
@@ -891,6 +1111,8 @@ const LandingPage = () => {
           <p className="text-sm text-primary font-display italic">
             "Fuja da ira vindoura!" — Evangelista
           </p>
+
+          <CountdownTimer />
 
           <div className="flex flex-col gap-3 max-w-sm mx-auto pt-4">
             <CtaButton onClick={handleBuy} variant="primary" className="w-full text-base">
@@ -904,7 +1126,7 @@ const LandingPage = () => {
           </div>
 
           <div className="flex items-center justify-center gap-4 pt-3">
-            <img src={sealImg} alt="Garantia" className="w-12 h-12 object-contain" loading="lazy" width={512} height={512} />
+            <img src={sealImg} alt="Garantia" className="w-12 h-12 object-contain" loading="lazy" />
             <div className="text-left">
               <p className="text-xs font-display text-foreground font-bold">7 Dias de Garantia</p>
               <p className="text-[10px] text-muted-foreground">100% do dinheiro de volta</p>
