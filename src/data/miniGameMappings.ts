@@ -157,7 +157,7 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     intro: 'Um treinamento no Palácio Belo! Pratique com as armas espirituais antes do grande combate.',
     successBonus: { coragem: 1 },
     failurePenalty: {},
-    duelEnemy: { name: 'Instrutor', emoji: '⚔️', power: 3 },
+    duelEnemy: { name: 'Discrição', emoji: '⚔️', power: 3 },
   },
 
   // ╔══════════════════════════════════════╗
