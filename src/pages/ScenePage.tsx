@@ -38,6 +38,8 @@ const ScenePage = () => {
   const [surprise, setSurprise] = useState<Surprise | null>(null);
   const [surpriseShown, setSurpriseShown] = useState(false);
   const { triggerChoiceEffect } = useVisualEffects();
+  const { bonus: supportBonus, newSupportCount } = useSupportBonus();
+  const [supportToastShown, setSupportToastShown] = useState(false);
   const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
   // Recent decision effects for trend analysis
   const recentEffects = useMemo(() => {
