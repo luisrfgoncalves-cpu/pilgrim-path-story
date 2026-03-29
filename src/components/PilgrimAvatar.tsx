@@ -81,8 +81,8 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
 
   const sizeConfig = {
     sm: { container: 'w-10 h-10', rounded: 'rounded-full', showParticles: false },
-    md: { container: 'w-20 h-20', rounded: 'rounded-2xl', showParticles: false },
-    lg: { container: 'w-44 h-56', rounded: 'rounded-2xl', showParticles: true },
+    md: { container: 'w-24 h-24', rounded: 'rounded-2xl', showParticles: false },
+    lg: { container: 'w-56 h-72', rounded: 'rounded-2xl', showParticles: true },
   }[size];
 
   const enableAnimations = size === 'md' || size === 'lg';
