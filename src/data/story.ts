@@ -5,18 +5,29 @@ export interface ChoiceEffect {
   coragem?: number;
 }
 
+/** Conditional bonus/penalty applied on top of base effects */
+export interface ConditionalEffect {
+  /** Attribute to check */
+  attr: keyof ChoiceEffect;
+  /** Minimum value to trigger (if met, apply bonus; if not met, apply penalty) */
+  threshold: number;
+  /** Extra effects when player meets the threshold */
+  bonus?: ChoiceEffect;
+  /** Extra effects when player is below the threshold */
+  penalty?: ChoiceEffect;
+}
+
 export interface StoryChoice {
   text: string;
   nextChapterId: string;
   consequence?: string;
   effects: ChoiceEffect;
   requires?: Partial<ChoiceEffect>;
-  /** Flag key to set when this choice is made (e.g. "entrou_casa", "caminho_facil") */
   flag?: string;
-  /** Only show this choice if the player HAS this flag */
   requiresFlag?: string;
-  /** Only show this choice if the player does NOT have this flag */
   excludesFlag?: string;
+  /** Delayed consequences: bonus/penalty based on current attributes */
+  conditionalEffects?: ConditionalEffect[];
 }
 
 export interface StoryChapter {
