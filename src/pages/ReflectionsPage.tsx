@@ -2,8 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { reflections } from '@/data/story';
 import { part2Reflections } from '@/data/storyPart2';
-import { ArrowLeft, Lock, ScrollText } from 'lucide-react';
+import { ArrowLeft, Lock, ScrollText, BookOpen } from 'lucide-react';
 import { useState } from 'react';
+import ScreenHero from '@/components/ScreenHero';
 
 const ReflectionsPage = () => {
   const navigate = useNavigate();
@@ -21,7 +22,17 @@ const ReflectionsPage = () => {
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-5 py-6 space-y-3">
+      <div className="max-w-lg mx-auto">
+        <ScreenHero
+          icon={<BookOpen className="w-full h-full" />}
+          name="Reflexões Espirituais"
+          subtitle="Meditações e lições da jornada"
+          sfx="accept"
+          size="md"
+        />
+      </div>
+
+      <main className="max-w-lg mx-auto px-5 pb-6 space-y-3">
         {[...reflections, ...part2Reflections].map(ref => {
           const unlocked = progress.visitedChapters.includes(ref.unlockedAtChapter);
           const isExpanded = expandedId === ref.id;

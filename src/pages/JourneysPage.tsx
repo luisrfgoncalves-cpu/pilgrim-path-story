@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { storyChapters, chapterOrder } from '@/data/story';
-import { ArrowLeft, Lock, CheckCircle2, MapPin, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Lock, CheckCircle2, MapPin, ChevronDown, ChevronUp, RotateCcw, Compass } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import ScreenHero from '@/components/ScreenHero';
 
 import mapFase1 from '@/assets/map-fase1.jpg';
 import mapFase2 from '@/assets/map-fase2.jpg';
@@ -150,6 +151,16 @@ const JourneysPage = () => {
       </header>
 
       {/* Scrollable vertical map */}
+      <div className="max-w-lg mx-auto">
+        <ScreenHero
+          icon={<Compass className="w-full h-full" />}
+          name="Mapa do Peregrino"
+          subtitle={`${Math.round((totalVisited / total) * 100)}% explorado`}
+          sfx="gameStart"
+          size="md"
+        />
+      </div>
+
       <main className="max-w-lg mx-auto pb-12">
         {/* Map title */}
         <div className="text-center py-6 px-4">
