@@ -566,6 +566,7 @@ const ScenePage = () => {
         {/* Scene image with preloading */}
         {bgImage && (
           <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px', minHeight: '180px', background: 'hsl(var(--card))' }}>
+            <img
               src={bgImage}
               alt={chapter.title}
               width={1024}
