@@ -12,6 +12,7 @@ import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
+import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
 import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX } from 'lucide-react';
 
 const ScenePage = () => {
@@ -22,6 +23,9 @@ const ScenePage = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [audioOn, setAudioOn] = useState(true);
+  const [sceneEventDone, setSceneEventDone] = useState(false);
+  const [suspenseActive, setSuspenseActive] = useState(false);
+  const [pendingChoice, setPendingChoice] = useState<(() => void) | null>(null);
   const { triggerChoiceEffect } = useVisualEffects();
   const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
   const atmosphere = useAtmosphere(progress.attributes);
@@ -73,6 +77,9 @@ const ScenePage = () => {
     setShowChoices(false);
     setImageLoaded(false);
     setPlaythroughRecorded(false);
+    setSceneEventDone(false);
+    setSuspenseActive(false);
+    setPendingChoice(null);
   }, [progress.currentChapterId]);
 
   // Audio: set ambience when scene or emotional state changes
