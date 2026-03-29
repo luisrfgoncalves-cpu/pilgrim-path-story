@@ -648,7 +648,7 @@ const JourneysPage = () => {
         </div>
 
         {/* Reset button */}
-        <div className="flex justify-center pb-4">
+        <div className="flex justify-center pb-4 px-3">
           <button
             onClick={() => {
               if (window.confirm('Tem certeza que deseja recomeçar toda a jornada do início?')) {
@@ -656,7 +656,7 @@ const JourneysPage = () => {
                 navigate('/');
               }
             }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all active:scale-95 whitespace-nowrap"
+            className="w-full max-w-[280px] inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition-all active:scale-95"
             style={{
               background: 'hsl(0 30% 18% / 0.6)',
               border: '1.5px solid hsl(0 30% 30% / 0.5)',
@@ -664,7 +664,7 @@ const JourneysPage = () => {
             }}
           >
             <RotateCcw className="w-4 h-4 flex-shrink-0" />
-            <span className="text-sm font-display">Recomeçar do Início</span>
+            <span className="text-sm font-display whitespace-nowrap">Recomeçar do Início</span>
           </button>
         </div>
 
