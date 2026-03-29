@@ -4,7 +4,8 @@ import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect, ToneNarrative } from '@/data/story';
 import { sceneImages } from '@/data/sceneImages';
 import { getEmotionalState, getEmotionalClasses } from '@/lib/emotionalIntensity';
-import { MapPin, Home, ScrollText, Lock } from 'lucide-react';
+import { analyzePerformance } from '@/lib/performanceAnalysis';
+import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle } from 'lucide-react';
 
 const ScenePage = () => {
   const navigate = useNavigate();
@@ -156,55 +157,73 @@ const ScenePage = () => {
           {/* Choices or Ending */}
           {showChoices && (
             <div className="space-y-3 slide-up pb-8">
-              {chapter.isEnding && chapter.endingType === 'final_good' ? (
-                <div className="text-center space-y-6 py-6">
-                  <div className="flex items-center gap-3 justify-center">
-                    <div className="h-px w-12 bg-primary/30" />
-                    <span className="text-primary font-display text-sm">✦ JORNADA COMPLETA ✦</span>
-                    <div className="h-px w-12 bg-primary/30" />
-                  </div>
-                  <p className="narrative-text text-foreground italic">Você chegou à Cidade Celestial. A jornada terminou, mas a história permanece.</p>
-                  <div className="bg-card border border-border rounded-lg p-4 text-left space-y-2">
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Seus Atributos Finais</p>
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      <span className="text-foreground">🔥 Fé: <strong className="text-gold">{progress.attributes.fe}</strong></span>
-                      <span className="text-foreground">⛰️ Perseverança: <strong className="text-gold">{progress.attributes.perseveranca}</strong></span>
-                      <span className="text-foreground">👁️ Discernimento: <strong className="text-gold">{progress.attributes.discernimento}</strong></span>
-                      <span className="text-foreground">🛡️ Coragem: <strong className="text-gold">{progress.attributes.coragem}</strong></span>
+              {chapter.isEnding && (chapter.endingType === 'final_good' || chapter.endingType === 'final_bad') ? (() => {
+                const analysis = analyzePerformance(
+                  progress.attributes,
+                  progress.choicesMade,
+                  progress.visitedChapters,
+                  progress.flags,
+                  chapter.endingType
+                );
+                const isComplete = analysis.result === 'complete';
+                const isDifficult = analysis.result === 'difficult';
+                const isIncomplete = analysis.result === 'incomplete';
+                const ResultIcon = isComplete ? Trophy : isDifficult ? AlertTriangle : XCircle;
+                const accentColor = isComplete ? 'text-primary' : isDifficult ? 'text-yellow-500' : 'text-destructive';
+                const borderColor = isComplete ? 'border-primary/30' : isDifficult ? 'border-yellow-500/30' : 'border-destructive/30';
+                const bgAccent = isComplete ? 'bg-primary/10' : isDifficult ? 'bg-yellow-500/10' : 'bg-destructive/10';
+
+                return (
+                  <div className="text-center space-y-5 py-6">
+                    <div className={`inline-flex items-center justify-center w-14 h-14 rounded-full ${bgAccent} mx-auto`}>
+                      <ResultIcon className={`w-7 h-7 ${accentColor}`} />
                     </div>
-                    <p className="text-xs text-muted-foreground pt-1">Decisões: {progress.choicesMade} · Capítulos: {progress.visitedChapters.length}</p>
-                  </div>
-                  <div className="space-y-3">
-                    <button onClick={() => navigate('/progresso')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-display text-sm w-full">
-                      <ScrollText className="w-4 h-4" /> Ver Jornada Completa
-                    </button>
-                    <button onClick={() => { localStorage.removeItem('peregrino-progress'); window.location.href = '/'; }} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-secondary text-secondary-foreground font-display text-sm w-full">
-                      <Home className="w-4 h-4" /> Recomeçar Jornada
-                    </button>
-                  </div>
-                </div>
-              ) : chapter.isEnding && chapter.endingType === 'final_bad' ? (
-                <div className="text-center space-y-6 py-6">
-                  <div className="flex items-center gap-3 justify-center">
-                    <div className="h-px w-12 bg-destructive/30" />
-                    <span className="text-destructive font-display text-sm">✦ JORNADA INTERROMPIDA ✦</span>
-                    <div className="h-px w-12 bg-destructive/30" />
-                  </div>
-                  <p className="narrative-text text-muted-foreground italic">A cidade brilha ao longe, mas você não conseguiu alcançá-la. Toda jornada pode ser recomeçada.</p>
-                  <div className="bg-card border border-border rounded-lg p-4 text-left space-y-2">
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Seus Atributos</p>
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      <span className="text-foreground">🔥 Fé: <strong className="text-gold">{progress.attributes.fe}</strong></span>
-                      <span className="text-foreground">⛰️ Perseverança: <strong className="text-gold">{progress.attributes.perseveranca}</strong></span>
-                      <span className="text-foreground">👁️ Discernimento: <strong className="text-gold">{progress.attributes.discernimento}</strong></span>
-                      <span className="text-foreground">🛡️ Coragem: <strong className="text-gold">{progress.attributes.coragem}</strong></span>
+                    <div className="flex items-center gap-3 justify-center">
+                      <div className={`h-px w-12 ${borderColor.replace('border', 'bg')}`} />
+                      <span className={`${accentColor} font-display text-sm`}>✦ {analysis.title.toUpperCase()} ✦</span>
+                      <div className={`h-px w-12 ${borderColor.replace('border', 'bg')}`} />
+                    </div>
+                    <p className="narrative-text text-foreground/90 italic text-sm">{analysis.message}</p>
+
+                    {/* Performance details */}
+                    <div className={`bg-card border ${borderColor} rounded-lg p-4 text-left space-y-3`}>
+                      <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Análise da Jornada</p>
+                      <ul className="space-y-1.5">
+                        {analysis.details.map((detail, i) => (
+                          <li key={i} className="text-xs text-foreground/80 flex items-start gap-2">
+                            <span className={`mt-0.5 ${accentColor}`}>•</span>
+                            {detail}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Attributes */}
+                    <div className="bg-card border border-border rounded-lg p-4 text-left space-y-2">
+                      <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Atributos Finais</p>
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <span className="text-foreground">🔥 Fé: <strong className="text-gold">{progress.attributes.fe}</strong></span>
+                        <span className="text-foreground">⛰️ Perseverança: <strong className="text-gold">{progress.attributes.perseveranca}</strong></span>
+                        <span className="text-foreground">👁️ Discernimento: <strong className="text-gold">{progress.attributes.discernimento}</strong></span>
+                        <span className="text-foreground">🛡️ Coragem: <strong className="text-gold">{progress.attributes.coragem}</strong></span>
+                      </div>
+                      <p className="text-xs text-muted-foreground pt-1">Decisões: {progress.choicesMade} · Capítulos: {progress.visitedChapters.length}</p>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="space-y-3">
+                      {!isIncomplete && (
+                        <button onClick={() => navigate('/progresso')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-display text-sm w-full">
+                          <ScrollText className="w-4 h-4" /> Ver Jornada Completa
+                        </button>
+                      )}
+                      <button onClick={() => { localStorage.removeItem('peregrino-progress'); window.location.href = '/'; }} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-secondary text-secondary-foreground font-display text-sm w-full">
+                        <Home className="w-4 h-4" /> Recomeçar Jornada
+                      </button>
                     </div>
                   </div>
-                  <button onClick={() => { localStorage.removeItem('peregrino-progress'); window.location.href = '/'; }} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-display text-sm">
-                    <Home className="w-4 h-4" /> Recomeçar Jornada
-                  </button>
-                </div>
-              ) : chapter.isEnding ? (
+                );
+              })() : chapter.isEnding ? (
                 <div className="text-center space-y-6 py-6">
                   <div className="flex items-center gap-3 justify-center">
                     <div className="h-px w-12 bg-primary/30" />
