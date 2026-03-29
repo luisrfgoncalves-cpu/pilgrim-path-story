@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useMemo, useState, useEffect } from 'react';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
+import { useCloudSync } from '@/hooks/useCloudSync';
 import { getChapter, storyChapters, chapterOrder } from '@/data/story';
 import { getReplayIncentive, getUnlockableHints } from '@/data/sceneVariations';
 import { useAuth } from '@/contexts/AuthContext';
