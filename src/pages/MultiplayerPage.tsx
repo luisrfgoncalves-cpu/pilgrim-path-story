@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMultiplayer } from '@/hooks/useMultiplayer';
 import { useAuth } from '@/contexts/AuthContext';
@@ -6,8 +6,9 @@ import PremiumDice from '@/components/multiplayer/PremiumDice';
 import PremiumBoard from '@/components/multiplayer/PremiumBoard';
 import EventReveal from '@/components/multiplayer/EventReveal';
 import { BOARD_SIZE, boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
-import { playMove, playVictory } from '@/components/multiplayer/BoardSounds';
-import { ArrowLeft, Copy, Crown, Users, MapPin, Trophy, LogIn, Share2, Swords, Loader2, Eye } from 'lucide-react';
+import { playMove, playVictory, playTurnStart } from '@/components/multiplayer/BoardSounds';
+import { playGameSfx } from '@/lib/gameSfx';
+import { ArrowLeft, Copy, Crown, Users, MapPin, Trophy, LogIn, Share2, Swords, Loader2, Eye, Flame, Shield, Star, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
 const MultiplayerPage = () => {
@@ -24,6 +25,8 @@ const MultiplayerPage = () => {
   const [view, setView] = useState<'menu' | 'lobby' | 'game'>('menu');
   const [revealEvent, setRevealEvent] = useState<{ event: BoardEvent; playerName: string; dice: number; challengeResult?: 'win' | 'fail' | null } | null>(null);
   const [selectedTile, setSelectedTile] = useState<{ pos: number; event: BoardEvent | undefined } | null>(null);
+  const [turnAnnounce, setTurnAnnounce] = useState<string | null>(null);
+  const prevTurnRef = useRef<string | null>(null);
 
   // Auto-join via link
   useEffect(() => {
@@ -32,6 +35,26 @@ const MultiplayerPage = () => {
       joinRoom(codeFromUrl);
     }
   }, [searchParams, user]);
+
+  // Turn announcement with sound
+  useEffect(() => {
+    if (!room || room.status !== 'playing') return;
+    const turnId = room.current_turn_player_id;
+    if (turnId && turnId !== prevTurnRef.current) {
+      prevTurnRef.current = turnId;
+      const turnPlayer = players.find(p => p.user_id === turnId);
+      if (turnPlayer) {
+        playTurnStart();
+        if (turnId === user?.id) {
+          playGameSfx('suspense');
+          setTurnAnnounce('Sua vez!');
+        } else {
+          setTurnAnnounce(`Vez de ${turnPlayer.display_name}`);
+        }
+        setTimeout(() => setTurnAnnounce(null), 2500);
+      }
+    }
+  }, [room?.current_turn_player_id, players, user?.id]);
 
   const currentView = room
     ? room.status === 'playing' || room.status === 'finished' ? 'game' : 'lobby'
@@ -288,6 +311,29 @@ const MultiplayerPage = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Turn announcement overlay */}
+      {turnAnnounce && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[45] animate-fade-in">
+          <div className="px-6 py-3 rounded-2xl font-display text-lg" style={{
+            background: turnAnnounce === 'Sua vez!'
+              ? 'linear-gradient(135deg, hsl(40 60% 20%), hsl(40 50% 15%))'
+              : 'linear-gradient(135deg, hsl(30 20% 15%), hsl(30 15% 10%))',
+            border: turnAnnounce === 'Sua vez!'
+              ? '1px solid hsl(40 60% 55% / 0.5)'
+              : '1px solid hsl(30 15% 25%)',
+            color: turnAnnounce === 'Sua vez!'
+              ? 'hsl(40 80% 70%)'
+              : 'hsl(38 30% 70%)',
+            boxShadow: turnAnnounce === 'Sua vez!'
+              ? '0 0 40px hsl(40 60% 55% / 0.2)'
+              : '0 8px 24px rgba(0,0,0,0.4)',
+            animation: 'charRevealName 0.5s ease-out both',
+          }}>
+            {turnAnnounce === 'Sua vez!' ? '⚔️ ' : '🎲 '}{turnAnnounce}
+          </div>
+        </div>
+      )}
+
       {/* Event reveal overlay */}
       {revealEvent && (
         <EventReveal
@@ -434,8 +480,25 @@ const MultiplayerPage = () => {
         {/* Game over ranking */}
         {isGameOver && (
           <div className="space-y-4 py-4 animate-fade-in">
-            <div className="text-center space-y-2">
-              <h2 className="font-display text-2xl text-foreground">🏆 Resultado Final</h2>
+            {/* Particles */}
+            <div className="fixed inset-0 pointer-events-none z-30 overflow-hidden">
+              {[...Array(20)].map((_, i) => (
+                <span key={i} className="absolute rounded-full" style={{
+                  width: `${2 + Math.random() * 3}px`,
+                  height: `${2 + Math.random() * 3}px`,
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  background: `hsl(40 70% ${50 + Math.random() * 20}% / ${0.4 + Math.random() * 0.4})`,
+                  animation: `pilgrimDust ${2 + i * 0.3}s ease-in-out infinite`,
+                  animationDelay: `${i * 0.15}s`,
+                }} />
+              ))}
+            </div>
+            <div className="text-center space-y-3">
+              <span className="text-5xl block" style={{ animation: 'pulse 2s infinite' }}>🏆</span>
+              <h2 className="font-display text-2xl" style={{ color: 'hsl(40 80% 70%)', textShadow: '0 0 20px hsl(40 60% 55% / 0.3)' }}>
+                Resultado Final
+              </h2>
               <p className="text-xs text-muted-foreground">A jornada chegou ao fim!</p>
             </div>
 
