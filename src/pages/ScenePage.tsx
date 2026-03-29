@@ -11,6 +11,7 @@ import { useVisualEffects } from '@/hooks/useVisualEffects';
 import { useAudioEngine } from '@/hooks/useAudioEngine';
 import { useAtmosphere } from '@/hooks/useAtmosphere';
 import { useDynamicEvents } from '@/hooks/useDynamicEvents';
+import { rollInvisibleDice, applyDiceToEffects, getDiceNarrativeHint } from '@/lib/invisibleDice';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
@@ -134,29 +135,39 @@ const ScenePage = () => {
   }, [narrativeIndex, chapter, fullNarrative.length]);
 
   const executeChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
-    triggerChoiceEffect(effects as Record<string, number>);
-    sfxForChoice(effects as Record<string, number>);
+    // Roll the invisible dice — modifies effects based on attributes + luck
+    const diceOutcome = rollInvisibleDice(progress.attributes);
+    const modifiedEffects = applyDiceToEffects(effects, diceOutcome);
+    const diceHint = getDiceNarrativeHint(diceOutcome);
+
+    triggerChoiceEffect(modifiedEffects as Record<string, number>);
+    sfxForChoice(modifiedEffects as Record<string, number>);
 
     if (item) {
       addItem(item);
     }
 
-    if (consequence) {
+    // Enrich consequence text with dice narrative hint
+    const enrichedConsequence = consequence && diceHint
+      ? `${consequence}\n\n${diceHint}`
+      : consequence;
+
+    if (enrichedConsequence) {
       navigate('/resultado', {
         state: {
-          consequence,
+          consequence: enrichedConsequence,
           nextChapterId,
           choiceText,
-          effects,
+          effects: modifiedEffects,
           currentChapterId: chapter?.id,
-          attributeChanges: effects,
+          attributeChanges: modifiedEffects,
           flag,
           conditionalEffects,
           item,
         }
       });
     } else {
-      makeChoice(chapter!.id, nextChapterId, choiceText, effects, flag, conditionalEffects);
+      makeChoice(chapter!.id, nextChapterId, choiceText, modifiedEffects, flag, conditionalEffects);
     }
   };
 
