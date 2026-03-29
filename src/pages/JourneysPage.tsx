@@ -346,7 +346,6 @@ const JourneysPage = () => {
                           {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                         </button>
                       </div>
-                      </button>
 
                       {/* Expanded chapter list */}
                       {expanded && (
