@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
+import { isEmailAllowed } from '@/data/allowedEmails';
 import { User, LogIn, UserPlus, KeyRound } from 'lucide-react';
 
 const AuthPage: React.FC = () => {
