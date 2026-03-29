@@ -111,6 +111,7 @@ const MultiplayerPage = () => {
   }
 
   if (!user) {
+    return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6 px-5">
         <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center" style={{
           boxShadow: '0 0 40px hsl(40 60% 55% / 0.1)',
