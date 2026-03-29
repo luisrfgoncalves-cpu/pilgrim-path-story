@@ -187,6 +187,27 @@ const ScenePage = () => {
   );
   const lockedChoices = chapter.choices.filter(c => !meetsRequirements(c.requires) && !c.requiresFlag && !c.excludesFlag);
 
+  // Dynamic choices from event pools (converted to StoryChoice format)
+  const dynamicChoicesMapped: StoryChoice[] = dynamicEvents.extraChoices.map(dc => ({
+    text: dc.text,
+    nextChapterId: dc.nextChapterId || progress.currentChapterId,
+    effects: {
+      ...dc.effects,
+      // Apply consequence bonuses from past dynamic decisions
+      ...(dynamicEvents.consequenceBonus ? Object.fromEntries(
+        Object.entries(dynamicEvents.consequenceBonus).map(([k, v]) => [k, (dc.effects[k as keyof ChoiceEffect] || 0) + (v || 0)])
+      ) : {}),
+    },
+    consequence: dc.consequence,
+    flag: dc.consequenceKey || dc.flag,
+    requires: dc.requires,
+    requiresFlag: dc.requiresFlag,
+    excludesFlag: dc.excludesFlag,
+  }));
+
+  // Merge all choices: base + dynamic
+  const allChoices = [...availableChoices, ...dynamicChoicesMapped];
+
   return (
     <div id="scene-container" className={`min-h-screen bg-background flex flex-col transition-all duration-[2000ms] ease-in-out ${emotionalClass} ${atmosphere.wobbleClass}`} style={atmosphere.containerStyle}>
       {/* Atmosphere overlays — gradual transitions */}
