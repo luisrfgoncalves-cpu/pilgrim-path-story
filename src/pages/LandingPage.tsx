@@ -165,15 +165,29 @@ const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
               <div className="absolute right-[18px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full" style={{ background: 'radial-gradient(circle, #1a3a5c, #0a1a2c)' }} />
             </div>
 
-            {/* Real app iframe */}
-            <iframe
-              ref={iframeRef}
-              src="/?preview=landing"
-              className="absolute inset-0 w-full h-full z-10 border-0"
-              style={{ borderRadius: '2rem' }}
-              title="Preview do App"
-              sandbox="allow-scripts allow-same-origin"
-            />
+            {/* Real app iframe — renders at 375px and scales down */}
+            {(() => {
+              const phoneInnerWidth = 264; // ~280 - 2*8px padding
+              const virtualWidth = 375;
+              const scale = phoneInnerWidth / virtualWidth;
+              return (
+                <div className="absolute inset-0 z-10 overflow-hidden" style={{ borderRadius: '2rem' }}>
+                  <iframe
+                    ref={iframeRef}
+                    src="/?preview=landing"
+                    className="border-0"
+                    style={{
+                      width: virtualWidth,
+                      height: `${100 / scale}%`,
+                      transform: `scale(${scale})`,
+                      transformOrigin: 'top left',
+                    }}
+                    title="Preview do App"
+                    sandbox="allow-scripts allow-same-origin"
+                  />
+                </div>
+              );
+            })()}
 
             {/* Paywall overlay */}
             {showPaywall && (
