@@ -882,6 +882,106 @@ export const eventPools: Record<string, PhaseEventPool> = {
         ],
         weight: 3,
       },
+      // ── Terra Encantada: tentações do sono ──
+      {
+        id: 'f5-sono-encantado',
+        type: 'variable',
+        narrative: [
+          'O ar da Terra Encantada engrossa como mel. Seus olhos pesam. As flores exalam um perfume que adormece a alma.',
+          'Esperança tropeça: "Só... um momento... só fechar os olhos..."',
+        ],
+        choices: [
+          {
+            text: 'Sacudir Esperança e gritar: "Quem dorme aqui, nunca acorda!"',
+            effects: { coragem: 2, perseveranca: 1 },
+            consequence: 'Esperança abre os olhos, assustado. A urgência na sua voz quebrou o feitiço.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Concordar em descansar — só um instante',
+            effects: { perseveranca: -2, fe: -1 },
+            consequence: 'Os olhos se fecham. O tempo se dissolve. Quando acorda, horas se passaram.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.5,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
+      },
+      // ── Lisonjeiro: reflexão sobre enganos ──
+      {
+        id: 'f5-lisonjeiro-reflexao',
+        type: 'variable',
+        narrative: [
+          'Após escapar da rede, Esperança reflete: "Como caímos tão facilmente? Ele parecia tão sincero."',
+          '"Os pastores nos avisaram", responde você. "Mas avisos sem vigilância são como armaduras no armário."',
+        ],
+        choices: [
+          {
+            text: '"Devemos ser sábios como serpentes e simples como pombas"',
+            effects: { discernimento: 2, fe: 1 },
+            consequence: 'A lição se cristaliza: nem toda luz branca vem de Deus. Discernir é vital.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: '"Não confio mais em ninguém no caminho"',
+            effects: { discernimento: 1, fe: -1 },
+            consequence: 'Desconfiança total é tão perigosa quanto confiança cega.',
+            consequenceKey: 'fugiu_do_conflito',
+            appearance: 0.6,
+          },
+        ],
+        weight: 2,
+      },
+      // ── País de Beulá: flores e paz ──
+      {
+        id: 'f5-beula-canto',
+        type: 'variable',
+        narrative: [
+          'No País de Beulá, vozes cantam ao longe: "Dize à filha de Sião: eis que vem o teu Salvador."',
+          'As flores perfumam o ar com uma fragrância que não pertence a este mundo. Pássaros cantam melodias que fazem a alma chorar de alegria.',
+        ],
+        choices: [
+          {
+            text: 'Parar e absorver a beleza com gratidão profunda',
+            effects: { fe: 2, perseveranca: 1 },
+            consequence: 'Cada prova da jornada parece distante agora. A promessa é real. O destino é certo.',
+            consequenceKey: 'perseverou_na_dor',
+          },
+          {
+            text: 'Seguir rapidamente — a Cidade está perto',
+            effects: { coragem: 1 },
+            consequence: 'A pressa tem razão, mas Beulá é um presente para ser saboreado, não apenas atravessado.',
+          },
+        ],
+        weight: 2,
+        emotionalWeight: 3,
+      },
+      // ── Ateísmo: eco da dúvida ──
+      {
+        id: 'f5-ateismo-eco',
+        type: 'variable',
+        narrative: [
+          'As palavras do Ateísmo ecoam na sua mente: "Vinte anos buscando algo que não existe."',
+          'A dúvida é um veneno lento. Mesmo após vê-lo partir rindo, a pergunta persiste: e se ele tiver razão?',
+        ],
+        choices: [
+          {
+            text: '"Eu vi a Cidade com meus próprios olhos na luneta dos pastores"',
+            effects: { fe: 2, discernimento: 1 },
+            consequence: 'A memória da visão dispersa a névoa da dúvida. O que você viu é mais real que qualquer argumento.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Deixar a dúvida roer em silêncio',
+            effects: { fe: -1, discernimento: -1 },
+            consequence: 'O silêncio alimenta a dúvida como madeira alimenta fogo.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.5,
+          },
+        ],
+        weight: 3,
+      },
     ],
   },
 
@@ -890,7 +990,7 @@ export const eventPools: Record<string, PhaseEventPool> = {
   // ═══════════════════════════════════════
   fase6: {
     phaseId: 'fase6',
-    variableCount: 3,
+    variableCount: 4,
     events: [
       // ── Personagem: Evangelista reaparece ──
       {
@@ -1001,6 +1101,74 @@ export const eventPools: Record<string, PhaseEventPool> = {
           },
         ],
         weight: 4,
+      },
+      // ── Beulá: visão da Cidade ──
+      {
+        id: 'f6-visao-cidade',
+        type: 'variable',
+        narrative: [
+          'Do País de Beulá, a Cidade Celestial brilha com uma luz que não vem do sol. Torres de ouro, muralhas de jaspe, portões de pérola.',
+          'Anjos voam entre as torres, e o som de cânticos chega até você como ondas de calor.',
+        ],
+        choices: [
+          {
+            text: 'Ajoelhar-se e adorar com lágrimas de alegria',
+            effects: { fe: 2, coragem: 1, perseveranca: 1 },
+            consequence: 'Toda dor da jornada se dissolve neste momento. O destino é real. A promessa é verdadeira.',
+            consequenceKey: 'perseverou_na_dor',
+          },
+          {
+            text: 'Correr em direção à Cidade com entusiasmo',
+            effects: { coragem: 2, fe: 1 },
+            consequence: 'A urgência te leva adiante. O rio ainda separa, mas a visão te dá asas.',
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 3,
+      },
+      // ── Recordação de Fiel ──
+      {
+        id: 'f6-fiel-memoria',
+        type: 'variable',
+        narrative: [
+          'Na margem do rio, você pensa em Fiel. Ele nunca chegou aqui — foi levado direto ao céu por uma carruagem.',
+          '"Ele pagou o preço máximo", murmura Esperança. "E recebeu a recompensa máxima."',
+        ],
+        requiresFlag: 'permaneceu_diferente',
+        choices: [
+          {
+            text: '"Seu sacrifício não foi em vão — olhe quantos converteu na feira"',
+            effects: { fe: 2, discernimento: 1 },
+            consequence: 'O legado de Fiel vive em Esperança, em você, e em todos que ouviram sua história.',
+            consequenceKey: 'mostrou_misericordia',
+          },
+          {
+            text: 'Chorar em silêncio pela saudade do amigo',
+            effects: { fe: 1, perseveranca: 1 },
+            consequence: 'As lágrimas são um tributo. Em breve, vocês se encontrarão do outro lado.',
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 3,
+      },
+      // ── Trombetas da Cidade ──
+      {
+        id: 'f6-trombetas',
+        type: 'variable',
+        narrative: [
+          'Sons de trombetas ecoam da Cidade Celestial. O ar vibra. O chão treme levemente.',
+          'Dois Seres Resplandecentes descem ao encontro de vocês: "Bem-vindos, peregrinos. O Rei ordenou que os escoltássemos."',
+        ],
+        choices: [
+          {
+            text: 'Seguir os Seres Resplandecentes com reverência',
+            effects: { fe: 2, coragem: 1 },
+            consequence: 'Cada passo é mais leve que o anterior. As vestes de peregrino começam a brilhar.',
+            consequenceKey: 'perseverou_na_dor',
+          },
+        ],
+        weight: 2,
+        emotionalWeight: 4,
       },
     ],
   },
@@ -1118,6 +1286,65 @@ export const replayExclusiveEvents: Record<string, PhaseEventPool> = {
       },
     ],
   },
+  fase4: {
+    phaseId: 'fase4',
+    variableCount: 1,
+    events: [
+      {
+        id: 'f4-replay-feira-familiar',
+        type: 'variable',
+        narrative: [
+          'A Feira da Vaidade te reconhece. Vendedores sussurram: "Ele voltou! O que não quis comprar da última vez..."',
+          'As ofertas são diferentes agora — mais sutis, mais pessoais, como se soubessem exatamente suas fraquezas.',
+        ],
+        choices: [
+          {
+            text: '"Conheço seus truques. Minha resposta não mudou."',
+            effects: { fe: 2, discernimento: 2 },
+            consequence: 'A feira treme. Alguém que já resistiu uma vez é mais perigoso que um novato.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Sentir a tentação renovada — são ofertas melhores agora',
+            effects: { fe: -1, discernimento: -1 },
+            consequence: 'O inimigo aprende. Cada replay traz tentações mais refinadas.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.5,
+          },
+        ],
+        weight: 4,
+      },
+    ],
+  },
+  fase6: {
+    phaseId: 'fase6',
+    variableCount: 1,
+    events: [
+      {
+        id: 'f6-replay-rio-raso',
+        type: 'variable',
+        narrative: [
+          'O rio parece diferente desta vez. As águas são mais claras, menos turbulentas.',
+          '"Da última vez, quase afogou você", lembra Esperança. "Mas a fé cresce com cada travessia."',
+        ],
+        choices: [
+          {
+            text: 'Entrar com confiança — a profundidade é proporcional à fé',
+            effects: { fe: 3, coragem: 2 },
+            consequence: 'A água mal chega à cintura. A fé construída em duas jornadas transformou o rio em riacho.',
+            consequenceKey: 'perseverou_na_dor',
+          },
+          {
+            text: 'Mesmo assim, entrar com cautela',
+            effects: { fe: 1, perseveranca: 1, discernimento: 1 },
+            consequence: 'Cautela não é falta de fé. É respeito pelo caminho.',
+          },
+        ],
+        weight: 5,
+        emotionalWeight: 3,
+      },
+    ],
+  },
 };
 
 /**
@@ -1150,6 +1377,22 @@ export const routeVariants: Record<string, Array<{
       condition: (ctx) => !!ctx.flags['chave_promessa'],
       nextChapterId: 'fase5-cena5',
       hint: 'A Chave da Promessa brilha no seu bolso. Você sabe o que fazer.',
+    },
+  ],
+  // High-discernment players see through the Flatterer immediately
+  'fase5-cena11': [
+    {
+      condition: (ctx) => ctx.attributes.discernimento >= 9,
+      nextChapterId: 'fase5-cena12',
+      hint: 'Seu discernimento vê através do disfarce. "Esse homem é o Lisonjeiro que os pastores mencionaram!"',
+    },
+  ],
+  // High-perseverance players breeze through Enchanted Ground
+  'fase5-cena13': [
+    {
+      condition: (ctx) => ctx.attributes.perseveranca >= 9,
+      nextChapterId: 'fase5-cena14',
+      hint: 'Sua perseverança é inabalável. A Terra Encantada não tem poder sobre você.',
     },
   ],
   // Replay-exclusive routes
