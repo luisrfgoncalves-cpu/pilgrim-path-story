@@ -336,11 +336,11 @@ function SwipeDodgeGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'intro') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-4xl">🌪️</div>
-        <h3 className="font-display text-xl text-primary">Esquiva de Tentações</h3>
-        <p className="text-sm text-foreground/80">{config.intro}</p>
-        <div className="text-xs text-muted-foreground space-y-1">
+      <div className="game-card text-center space-y-4 animate-scale-in">
+        <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 12px hsl(220 60% 50% / 0.5))' }}>🌪️</div>
+        <h3 className="game-title">Esquiva de Tentações</h3>
+        <p className="game-subtitle">{config.intro}</p>
+        <div className="game-text-muted space-y-1">
           <p>⬆️ Deslize para <strong>CIMA</strong> para <strong>esquivar</strong> tentações</p>
           <p>⬇️ Deslize para <strong>BAIXO</strong> para <strong>aceitar</strong> bênçãos</p>
         </div>
@@ -353,19 +353,17 @@ function SwipeDodgeGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'result') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-4xl">{success ? '🛡️' : '😔'}</div>
-        <h3 className="font-display text-xl text-primary">
+      <div className="game-card text-center space-y-4 animate-scale-in">
+        <div className="text-5xl" style={{ filter: `drop-shadow(0 0 15px ${success ? 'hsl(40 70% 50% / 0.5)' : 'hsl(0 60% 50% / 0.4)'})` }}>{success ? '🛡️' : '😔'}</div>
+        <h3 className="game-title">
           {success ? 'Resistiu com firmeza!' : 'As tentações prevaleceram...'}
         </h3>
-        <p className="text-sm text-foreground/80">
+        <p className="game-subtitle">
           Acertou {correctCount} de {totalRounds} ({finalScore}%)
         </p>
-        <div className="h-3 bg-secondary rounded-full overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all duration-1000 ${success ? 'bg-primary' : 'bg-destructive'}`}
-            style={{ width: `${finalScore}%` }}
-          />
+        <div className="game-progress-bar">
+          <div className={success ? 'game-progress-fill-success' : 'game-progress-fill-fail'}
+            style={{ width: `${finalScore}%` }} />
         </div>
       </div>
     );
@@ -373,35 +371,38 @@ function SwipeDodgeGame({ config, onComplete }: MiniGameProps) {
 
   return (
     <div
-      className="relative bg-card/50 border-2 border-primary/20 rounded-2xl overflow-hidden select-none"
-      style={{ height: '250px' }}
+      className="relative rounded-2xl overflow-hidden select-none"
+      style={{
+        height: '280px',
+        background: 'linear-gradient(180deg, hsl(220 30% 10%) 0%, hsl(30 20% 8%) 100%)',
+        border: '3px solid hsl(40 60% 45%)',
+        boxShadow: '0 0 20px hsl(40 60% 40% / 0.15)',
+      }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
       {/* HUD */}
       <div className="absolute top-2 left-3 right-3 flex justify-between z-10">
-        <span className="text-xs font-display text-primary bg-card/80 px-2 py-1 rounded-lg">
-          ✓ {correctCount}
-        </span>
-        <span className="text-xs font-display text-muted-foreground bg-card/80 px-2 py-1 rounded-lg">
-          {round}/{totalRounds}
-        </span>
+        <span className="game-hud-tag">✓ {correctCount}</span>
+        <span className="game-hud-tag">{round}/{totalRounds}</span>
       </div>
 
       {/* Direction hints */}
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 text-xs text-primary/40 font-display">⬆️ Esquivar</div>
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-xs text-primary/40 font-display">⬇️ Aceitar</div>
+      <div className="absolute top-10 left-1/2 -translate-x-1/2 text-xs font-display font-bold" style={{ color: 'hsl(40 50% 45%)' }}>⬆️ Esquivar</div>
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-xs font-display font-bold" style={{ color: 'hsl(40 50% 45%)' }}>⬇️ Aceitar</div>
 
       {/* Current item */}
       {currentItem && (
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-scale-in">
-          <div className={`flex flex-col items-center gap-2 px-6 py-4 rounded-2xl border-2 ${
-            currentItem.good
-              ? 'border-primary/50 bg-primary/10'
-              : 'border-destructive/50 bg-destructive/10'
-          }`}>
-            <span className="text-4xl">{currentItem.emoji}</span>
-            <span className="text-sm font-display text-foreground">{currentItem.text}</span>
+          <div className="flex flex-col items-center gap-2 px-8 py-5 rounded-2xl" style={{
+            background: currentItem.good
+              ? 'linear-gradient(180deg, hsl(120 30% 18%) 0%, hsl(120 25% 12%) 100%)'
+              : 'linear-gradient(180deg, hsl(0 35% 18%) 0%, hsl(0 30% 12%) 100%)',
+            border: `3px solid ${currentItem.good ? 'hsl(120 50% 45%)' : 'hsl(0 55% 50%)'}`,
+            boxShadow: `0 0 15px ${currentItem.good ? 'hsl(120 50% 40% / 0.3)' : 'hsl(0 55% 45% / 0.3)'}`,
+          }}>
+            <span className="text-5xl">{currentItem.emoji}</span>
+            <span className="text-sm font-display font-bold" style={{ color: currentItem.good ? 'hsl(120 55% 65%)' : 'hsl(0 60% 70%)' }}>{currentItem.text}</span>
           </div>
         </div>
       )}
@@ -411,13 +412,23 @@ function SwipeDodgeGame({ config, onComplete }: MiniGameProps) {
         <div className="absolute bottom-3 left-3 right-3 flex gap-2">
           <button
             onClick={() => handleSwipe('up')}
-            className="flex-1 py-2 rounded-xl bg-primary/20 border border-primary/30 text-sm font-display text-primary active:scale-95"
+            className="flex-1 py-3 rounded-xl text-sm font-display font-bold active:scale-95 transition-all" style={{
+              background: 'linear-gradient(180deg, hsl(220 40% 22%) 0%, hsl(220 35% 15%) 100%)',
+              border: '3px solid hsl(220 50% 50%)',
+              color: 'hsl(220 60% 70%)',
+              boxShadow: '0 3px 0 hsl(220 40% 12%)',
+            }}
           >
             ⬆️ Esquivar
           </button>
           <button
             onClick={() => handleSwipe('down')}
-            className="flex-1 py-2 rounded-xl bg-primary/20 border border-primary/30 text-sm font-display text-primary active:scale-95"
+            className="flex-1 py-3 rounded-xl text-sm font-display font-bold active:scale-95 transition-all" style={{
+              background: 'linear-gradient(180deg, hsl(120 35% 22%) 0%, hsl(120 30% 15%) 100%)',
+              border: '3px solid hsl(120 45% 45%)',
+              color: 'hsl(120 55% 65%)',
+              boxShadow: '0 3px 0 hsl(120 35% 12%)',
+            }}
           >
             ⬇️ Aceitar
           </button>
@@ -427,7 +438,12 @@ function SwipeDodgeGame({ config, onComplete }: MiniGameProps) {
       {/* Feedback */}
       {feedback && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-          <span className="text-2xl font-display text-foreground bg-card/90 px-4 py-2 rounded-xl animate-fade-in">
+          <span className="text-2xl font-display font-bold px-5 py-3 rounded-xl animate-fade-in" style={{
+            background: 'hsl(30 20% 12% / 0.95)',
+            border: '3px solid hsl(40 60% 45%)',
+            color: 'hsl(40 70% 70%)',
+            boxShadow: '0 0 20px hsl(40 60% 40% / 0.3)',
+          }}>
             {feedback}
           </span>
         </div>
