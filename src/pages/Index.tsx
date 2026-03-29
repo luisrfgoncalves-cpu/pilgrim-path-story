@@ -1,15 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { useCloudSync } from '@/hooks/useCloudSync';
 import { getChapter, storyChapters } from '@/data/story';
 import { getPart2Chapter, part2Chapters } from '@/data/storyPart2';
 import { useAuth } from '@/contexts/AuthContext';
 import { getStreak, getDashboardMessage } from '@/lib/gameLoop';
+import { downloadBackup, importBackup } from '@/lib/progressBackup';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import SplashScreen from '@/components/SplashScreen';
 import GameNotification from '@/components/GameNotification';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen, Home } from 'lucide-react';
+import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen, Home, Download, Upload } from 'lucide-react';
+import { toast } from 'sonner';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -191,6 +193,38 @@ const Index = () => {
             <Users className="w-6 h-6 text-muted-foreground" />
             <span className="text-xs text-muted-foreground font-display">Social</span>
           </button>
+        </div>
+
+        {/* Backup actions */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => { downloadBackup(); toast.success('Backup salvo!'); }}
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
+          >
+            <Download className="w-4 h-4" />
+            Salvar Backup
+          </button>
+          <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all cursor-pointer">
+            <Upload className="w-4 h-4" />
+            Restaurar
+            <input
+              type="file"
+              accept=".json"
+              className="hidden"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const result = await importBackup(file);
+                if (result.success) {
+                  toast.success('Progresso restaurado! Recarregando...');
+                  setTimeout(() => window.location.reload(), 1000);
+                } else {
+                  toast.error(result.error || 'Erro ao restaurar');
+                }
+                e.target.value = '';
+              }}
+            />
+          </label>
         </div>
 
         {/* Restart */}
