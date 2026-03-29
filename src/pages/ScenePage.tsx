@@ -294,9 +294,8 @@ const ScenePage = () => {
             />
           )}
 
-          {/* Choices or Ending */}
           {showChoices && !suspenseActive && (
-            <div className="space-y-3 slide-up pb-8">
+            <div className="space-y-3 slide-up pb-6">
               {chapter.isEnding && (chapter.endingType === 'final_good' || chapter.endingType === 'final_bad') ? (() => {
                 const analysis = analyzePerformance(
                   progress.attributes,
@@ -387,9 +386,10 @@ const ScenePage = () => {
                 </div>
               ) : (
                 <>
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3 font-medium">O que Cristão deve fazer?</p>
-
-                  {/* DRAG interaction */}
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2 font-medium">Escolha seu caminho</p>
+                  {availableChoices.map((choice, i) => (
+                    <p key={`label-${i}`} className="hidden">{/* spacer */}</p>
+                  ))}
                   {chapter.interactionType === 'drag' && availableChoices.length >= 2 ? (
                     <DragToChoose
                       leftChoice={{ label: availableChoices[0].text, description: availableChoices[0].item ? '✦ Concede um item' : undefined }}
