@@ -230,7 +230,7 @@ const Index = () => {
             onClick={handleContinue}
             className="btn-medieval w-full flex items-center justify-center gap-3"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-6 h-6" />
             Continuar Jornada
           </button>
         ) : (
@@ -240,12 +240,12 @@ const Index = () => {
           >
             {history.totalPlaythroughs > 0 ? (
               <>
-                <RotateCcw className="w-5 h-5" />
+                <RotateCcw className="w-6 h-6" />
                 Nova Jornada
               </>
             ) : (
               <>
-                <Sparkles className="w-5 h-5" />
+                <Sparkles className="w-6 h-6" />
                 Iniciar Jornada
               </>
             )}
@@ -258,7 +258,7 @@ const Index = () => {
             onClick={() => handleNewJourney('part2')}
             className="btn-medieval-secondary w-full flex items-center justify-center gap-3"
           >
-            <BookOpen className="w-5 h-5 text-primary" />
+            <BookOpen className="w-6 h-6 text-primary" />
             Parte II — A Peregrina
           </button>
         )}
