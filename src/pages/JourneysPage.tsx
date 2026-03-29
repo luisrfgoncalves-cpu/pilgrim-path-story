@@ -180,7 +180,7 @@ const JourneysPage = () => {
           </button>
           <div className="flex-1">
             <h1 className="font-display text-lg" style={{ color: 'hsl(40 60% 70%)' }}>
-              📜 Mapa do Peregrino
+              📜 {isPart2 ? 'Mapa da Peregrina' : 'Mapa do Peregrino'}
             </h1>
             <div className="flex items-center gap-2">
               <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'hsl(30 20% 15%)', border: '1px solid hsl(40 30% 25% / 0.4)' }}>
@@ -203,7 +203,7 @@ const JourneysPage = () => {
       <div className="max-w-lg mx-auto">
         <ScreenHero
           icon={<Compass className="w-full h-full" />}
-          name="Mapa do Peregrino"
+          name={isPart2 ? 'Mapa da Peregrina' : 'Mapa do Peregrino'}
           subtitle={`${Math.round((totalVisited / total) * 100)}% explorado`}
           sfx="gameStart"
           size="md"
@@ -219,10 +219,10 @@ const JourneysPage = () => {
             <div className="h-px w-10" style={{ background: 'hsl(40 50% 45% / 0.4)' }} />
           </div>
           <h2 className="font-display text-xl" style={{ color: 'hsl(38 50% 72%)', textShadow: '0 2px 8px hsl(0 0% 0% / 0.6)' }}>
-            O Progresso do Peregrino
+            {isPart2 ? 'A Jornada da Peregrina' : 'O Progresso do Peregrino'}
           </h2>
           <p className="text-xs italic font-body mt-1" style={{ color: 'hsl(35 25% 50%)' }}>
-            Da Cidade da Destruição à Cidade Celestial
+            {isPart2 ? 'A caminhada de Cristã e seus companheiros' : 'Da Cidade da Destruição à Cidade Celestial'}
           </p>
         </div>
 
@@ -509,7 +509,7 @@ const JourneysPage = () => {
           <button
             onClick={() => {
               if (window.confirm('Tem certeza que deseja recomeçar toda a jornada do início?')) {
-                resetProgress('part1');
+                resetProgress(progress.campaign || 'part1');
                 navigate('/');
               }
             }}
