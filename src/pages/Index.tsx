@@ -52,7 +52,7 @@ const Index = () => {
       localStorage.setItem('pwa_installed', '1');
     } else if (!alreadyInstalled && !sessionStorage.getItem('install_banner_dismissed')) {
       const timeout = window.setTimeout(() => {
-        if (isIOS) setShowInstallBanner(true);
+        if (isMobile) setShowInstallBanner(true);
       }, 3000);
 
       return () => {
@@ -66,7 +66,7 @@ const Index = () => {
       window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt);
       window.removeEventListener('appinstalled', onAppInstalled);
     };
-  }, [alreadyInstalled, isIOS, isStandalone]);
+  }, [alreadyInstalled, isIOS, isMobile, isStandalone]);
 
   const handleInstall = async () => {
     if (installPrompt) {
@@ -76,7 +76,7 @@ const Index = () => {
       return;
     }
 
-    if (isIOS) {
+    if (isMobile) {
       setShowInstallInstructions(true);
       return;
     }

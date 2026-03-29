@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,12 @@ const AuthPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setEmail('');
+    setPassword('');
+    if (mode !== 'signup') setDisplayName('');
+  }, [mode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,7 +100,7 @@ const AuthPage: React.FC = () => {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
           {mode === 'signup' && (
             <div>
               <label className="text-sm text-muted-foreground mb-1 block">Nome do Peregrino</label>
@@ -111,9 +117,15 @@ const AuthPage: React.FC = () => {
             <label className="text-sm text-muted-foreground mb-1 block">Email</label>
             <Input
               type="email"
+              name="login_email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="peregrino0001@centrobiblico.online"
+              placeholder="Digite seu e-mail de acesso"
+              autoComplete="off"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              inputMode="email"
               required
               className="bg-card border-border"
             />
@@ -124,9 +136,11 @@ const AuthPage: React.FC = () => {
               <label className="text-sm text-muted-foreground mb-1 block">Senha</label>
               <Input
                 type="password"
+                name="login_password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
+                autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                 required
                 minLength={6}
                 className="bg-card border-border"
