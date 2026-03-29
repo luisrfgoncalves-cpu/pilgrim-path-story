@@ -27,8 +27,10 @@ import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEve
 import { MiniGame, MiniGameResult } from '@/components/MiniGames';
 import { FullscreenMiniGame, FULLSCREEN_GAMES } from '@/components/FullscreenMiniGame';
 import { miniGameMappings } from '@/data/miniGameMappings';
+import { playGameSfx } from '@/lib/gameSfx';
 import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, ArrowLeft, Zap, Star, Shield, Flame } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
+import { useAuth } from '@/contexts/AuthContext';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
   fe: { label: 'Fé', emoji: '🔥', icon: Flame },
@@ -49,6 +51,7 @@ interface InlineConsequence {
 const ScenePage = () => {
   const navigate = useNavigate();
   const { progress, makeChoice, goToChapter, meetsRequirements, hasFlag, isReplay, completePlaythrough, hadFlagBefore, addItem, history } = useStoryProgress();
+  const { profile } = useAuth();
   useProgressSync(progress);
   const [narrativeIndex, setNarrativeIndex] = useState(0);
   const [showChoices, setShowChoices] = useState(false);
@@ -75,6 +78,8 @@ const ScenePage = () => {
   const [miniGameReady, setMiniGameReady] = useState(false);
   // Character entrance reveal
   const [charReveal, setCharReveal] = useState<{ name: string; img: string; role?: string } | null>(null);
+  const [charRevealDone, setCharRevealDone] = useState(false); // After reveal, show persistent portrait
+  const [persistentChar, setPersistentChar] = useState<{ name: string; img: string; role?: string } | null>(null);
   const { triggerChoiceEffect, triggerSceneEntryVFX } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
@@ -190,11 +195,11 @@ const ScenePage = () => {
     setMiniGameDone(false);
     setMiniGameResult(null);
     setShowMiniGameResult(false);
-    setMiniGameReady(false);
     setCharReveal(null);
+    setCharRevealDone(false);
+    setPersistentChar(null);
     const t = setTimeout(() => {
       setTransitioning(false);
-      // Auto-trigger dramatic VFX on scene entry
       triggerSceneEntryVFX(progress.currentChapterId);
     }, 100);
     return () => clearTimeout(t);
@@ -213,16 +218,28 @@ const ScenePage = () => {
       .map(id => {
         const char = allChars.find(c => c.id === id);
         const img = characterImages[id];
-        return char && img ? { name: char.name, img, role: char.role } : null;
+        if (!char || !img) return null;
+        // Determine character type for sound
+        const isVillain = ['apolion', 'gigante_desespero', 'juiz_odio_ao_bem', 'amor_dinheiro', 'hipocrisia', 'formalista', 'ateismo', 'lisonjeiro'].includes(id);
+        return { name: char.name, img, role: char.role, isVillain };
       })
       .find(Boolean);
     
     if (revealChar) {
       const delay = setTimeout(() => {
+        // Play entrance sound
+        playGameSfx('suspense');
+        setTimeout(() => {
+          playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
+        }, 400);
         setCharReveal(revealChar);
-        // Auto-dismiss after 3 seconds
-        setTimeout(() => setCharReveal(null), 3000);
-      }, 800); // Show after scene image loads
+        // After 6 seconds, dismiss reveal and set persistent portrait
+        setTimeout(() => {
+          setCharReveal(null);
+          setCharRevealDone(true);
+          setPersistentChar(revealChar);
+        }, 6000);
+      }, 1000);
       return () => clearTimeout(delay);
     }
   }, [chapter?.id, transitioning]);
@@ -511,66 +528,56 @@ const ScenePage = () => {
           </div>
         )}
 
-        {/* Character portraits — always show protagonist + scene characters */}
-        {(() => {
-          const allChars = [...characters, ...part2Characters];
-          const isPart2 = progress.campaign === 'part2';
-          const protagonistId = isPart2 ? 'crista' : 'cristao';
-          
-          // Build character list: always include protagonist + scene characters
-          const sceneCharIds = chapter.characters || [];
-          const charIds = sceneCharIds.includes(protagonistId) 
-            ? sceneCharIds 
-            : [protagonistId, ...sceneCharIds];
-          
-          const sceneChars = charIds
-            .map(id => ({ id, char: allChars.find(c => c.id === id), img: characterImages[id] }))
-            .filter(c => c.img);
-          
-          if (sceneChars.length === 0) return null;
-          
-          return (
-            <div className="px-4 py-4">
-              <div className="flex items-start gap-3 overflow-x-auto pb-1">
-                {sceneChars.map(({ id, char, img }, i) => {
-                  const isProtagonist = id === protagonistId;
-                  return (
-                    <button
-                      key={id}
-                      onClick={() => navigate('/personagens')}
-                      className={`flex-shrink-0 flex flex-col items-center gap-2 rounded-xl transition-all active:scale-95 ${
-                        isProtagonist 
-                          ? 'bg-card border-2 border-primary/40 px-4 py-3 shadow-lg shadow-primary/10' 
-                          : 'bg-card border-2 border-border px-3 py-2.5'
-                      }`}
-                      style={{ animationDelay: `${i * 0.1}s` }}
-                    >
-                      <img
-                        src={img}
-                        alt={char?.name || id}
-                        className={`rounded-full object-cover border-2 ${
-                          isProtagonist 
-                            ? 'w-16 h-16 border-primary/50 shadow-md' 
-                            : 'w-14 h-14 border-primary/30'
-                        }`}
-                      />
-                      <div className="text-center">
-                        <p className={`font-display leading-tight ${
-                          isProtagonist ? 'text-sm text-primary' : 'text-xs text-foreground'
-                        }`}>{char?.name || id}</p>
-                        {char?.role && (
-                          <p className={`text-muted-foreground mt-0.5 ${
-                            isProtagonist ? 'text-[10px]' : 'text-[9px]'
-                          }`}>{char.role}</p>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
+        {/* Character portraits — protagonist with user name + persistent NPC */}
+        <div className="px-4 py-3">
+          <div className="flex items-center gap-4">
+            {/* Protagonist — always visible */}
+            {(() => {
+              const isPart2 = progress.campaign === 'part2';
+              const protagonistId = isPart2 ? 'crista' : 'cristao';
+              const protImg = characterImages[protagonistId];
+              const protChar = [...characters, ...part2Characters].find(c => c.id === protagonistId);
+              const userName = profile?.display_name || protChar?.name || 'Peregrino';
+              if (!protImg) return null;
+              return (
+                <button onClick={() => navigate('/personagens')} className="flex items-center gap-3 flex-shrink-0 active:scale-95 transition-transform">
+                  <img
+                    src={protImg}
+                    alt={userName}
+                    className="w-14 h-14 rounded-2xl object-cover"
+                    style={{
+                      border: '2px solid hsl(40 60% 50%)',
+                      boxShadow: '0 4px 16px hsl(0 0% 0% / 0.4), 0 0 12px hsl(40 50% 45% / 0.3)',
+                    }}
+                  />
+                  <div className="text-left">
+                    <p className="font-display text-sm font-bold text-primary leading-tight">{userName}</p>
+                    <p className="text-[10px] text-muted-foreground">Protagonista</p>
+                  </div>
+                </button>
+              );
+            })()}
+
+            {/* Persistent NPC portrait — appears after reveal animation finishes */}
+            {persistentChar && charRevealDone && (
+              <div className="flex items-center gap-3 flex-shrink-0 animate-fade-in ml-auto">
+                <div className="text-right">
+                  <p className="font-display text-sm font-bold leading-tight" style={{ color: 'hsl(35 50% 65%)' }}>{persistentChar.name}</p>
+                  <p className="text-[10px] text-muted-foreground">{persistentChar.role || 'Personagem'}</p>
+                </div>
+                <img
+                  src={persistentChar.img}
+                  alt={persistentChar.name}
+                  className="w-14 h-14 rounded-2xl object-cover"
+                  style={{
+                    border: '2px solid hsl(35 40% 40%)',
+                    boxShadow: '0 4px 16px hsl(0 0% 0% / 0.4), 0 0 10px hsl(35 40% 40% / 0.25)',
+                  }}
+                />
               </div>
-            </div>
-          );
-        })()}
+            )}
+          </div>
+        </div>
 
         <div className="px-5 py-5">
           <h1 className="font-display text-2xl md:text-3xl text-foreground mb-4 fade-in leading-tight">{chapter.title}</h1>
@@ -1042,42 +1049,66 @@ const ScenePage = () => {
         </div>
       )}
 
-      {/* ═══ CHARACTER ENTRANCE REVEAL ═══ */}
+      {/* ═══ CHARACTER ENTRANCE REVEAL — 3D style, no circle ═══ */}
       {charReveal && (
         <div
-          className="fixed inset-0 z-[55] flex items-center justify-center pointer-events-none"
-          onClick={() => setCharReveal(null)}
-          style={{ animation: 'charRevealBg 3s ease-out forwards' }}
+          className="fixed inset-0 z-[55] flex items-end justify-center pointer-events-auto"
+          onClick={() => {
+            setCharReveal(null);
+            setCharRevealDone(true);
+            setPersistentChar(charReveal);
+          }}
+          style={{ animation: 'charRevealBg 6s ease-out forwards' }}
         >
+          {/* Dark cinematic backdrop */}
           <div className="absolute inset-0" style={{
-            background: 'radial-gradient(ellipse at center, hsl(0 0% 0% / 0.7) 0%, hsl(0 0% 0% / 0.3) 60%, transparent 100%)',
+            background: 'linear-gradient(180deg, hsl(0 0% 0% / 0.3) 0%, hsl(0 0% 0% / 0.75) 50%, hsl(0 0% 0% / 0.85) 100%)',
           }} />
-          <div className="relative z-10 text-center" style={{ animation: 'charRevealIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}>
-            <img
-              src={charReveal.img}
-              alt={charReveal.name}
-              className="w-40 h-40 md:w-52 md:h-52 rounded-full object-cover mx-auto"
-              style={{
-                border: '4px solid hsl(40 60% 50%)',
-                boxShadow: '0 0 40px hsl(40 60% 50% / 0.5), 0 0 80px hsl(40 50% 40% / 0.3), 0 20px 60px hsl(0 0% 0% / 0.5)',
-              }}
-            />
-            <div className="mt-4" style={{ animation: 'charRevealName 0.6s ease-out 0.4s both' }}>
-              <p className="font-display text-2xl md:text-3xl font-bold" style={{
-                color: 'hsl(40 70% 70%)',
-                textShadow: '0 2px 12px hsl(0 0% 0% / 0.8), 0 0 30px hsl(40 60% 50% / 0.4)',
-              }}>
-                {charReveal.name}
-              </p>
-              {charReveal.role && (
-                <p className="text-sm md:text-base mt-1 font-display" style={{
-                  color: 'hsl(40 40% 55%)',
-                  textShadow: '0 1px 6px hsl(0 0% 0% / 0.6)',
+
+          {/* Character image — BIG, no circle, 3D-style with shadow */}
+          <div className="relative z-10 w-full max-w-lg mx-auto flex flex-col items-center pb-8" style={{ animation: 'charRevealIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
+            <div className="relative">
+              <img
+                src={charReveal.img}
+                alt={charReveal.name}
+                className="w-52 h-64 md:w-64 md:h-80 object-cover object-top mx-auto"
+                style={{
+                  borderRadius: '16px 16px 0 0',
+                  boxShadow: '0 -8px 40px hsl(40 50% 45% / 0.3), 0 20px 60px hsl(0 0% 0% / 0.7), -20px 0 40px hsl(0 0% 0% / 0.4), 20px 0 40px hsl(0 0% 0% / 0.4)',
+                  filter: 'contrast(1.1) brightness(1.05)',
+                }}
+              />
+              {/* 3D depth effect — bottom gradient fade */}
+              <div className="absolute bottom-0 left-0 right-0 h-24" style={{
+                background: 'linear-gradient(180deg, transparent 0%, hsl(0 0% 0% / 0.9) 100%)',
+                borderRadius: '0 0 0 0',
+              }} />
+              {/* Name overlay on image */}
+              <div className="absolute bottom-4 left-0 right-0 text-center" style={{ animation: 'charRevealName 0.7s ease-out 0.5s both' }}>
+                <p className="font-display text-3xl md:text-4xl font-bold" style={{
+                  color: 'hsl(40 80% 75%)',
+                  textShadow: '0 3px 16px hsl(0 0% 0% / 0.9), 0 0 40px hsl(40 60% 50% / 0.5)',
+                  letterSpacing: '0.02em',
                 }}>
-                  {charReveal.role}
+                  {charReveal.name}
                 </p>
-              )}
+                {charReveal.role && (
+                  <p className="text-sm md:text-base mt-1.5 font-display uppercase tracking-widest" style={{
+                    color: 'hsl(40 50% 60%)',
+                    textShadow: '0 2px 8px hsl(0 0% 0% / 0.8)',
+                  }}>
+                    {charReveal.role}
+                  </p>
+                )}
+              </div>
             </div>
+            {/* Tap to dismiss hint */}
+            <p className="text-[10px] mt-4 font-display uppercase tracking-widest" style={{
+              color: 'hsl(0 0% 50%)',
+              animation: 'charRevealName 0.5s ease-out 1.5s both',
+            }}>
+              Toque para continuar
+            </p>
           </div>
         </div>
       )}
