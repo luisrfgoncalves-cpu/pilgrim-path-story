@@ -589,6 +589,7 @@ const ScenePage = () => {
             <div className="mb-5 animate-scale-in">
               <MiniGame
                 config={miniGameMappings[chapter.id]}
+                characterPortraits={scenePortraits}
                 onComplete={(result) => {
                   setMiniGameResult(result);
                   setMiniGameDone(true);
