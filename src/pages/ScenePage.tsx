@@ -646,7 +646,7 @@ const ScenePage = () => {
             />
           )}
 
-          {showChoices && !suspenseActive && (!miniGameMappings[chapter.id] || miniGameDone) && (
+          {showChoices && !suspenseActive && (
             <div className="space-y-3 slide-up pb-6">
               {chapter.isEnding && (chapter.endingType === 'final_good' || chapter.endingType === 'final_bad') ? (() => {
                 const analysis = analyzePerformance(

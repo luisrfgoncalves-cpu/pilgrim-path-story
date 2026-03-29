@@ -14,7 +14,7 @@ import { EmotionalTone } from '@/lib/emotionalIntensity';
  */
 
 export type AmbienceType = 'pastoral' | 'solemn' | 'shadow' | 'glory' | 'contemplative' | 'silence';
-export type SfxType = 'decision' | 'positive' | 'negative';
+export type SfxType = 'decision' | 'positive' | 'negative' | 'attack' | 'defend' | 'pray' | 'critical' | 'miss' | 'heal' | 'combo' | 'victory' | 'defeat' | 'diceRoll' | 'itemFound' | 'timerTick' | 'gameStart' | 'swipeDodge' | 'swipeAccept' | 'memoryCorrect' | 'memoryWrong' | 'stealthPass' | 'stealthFail';
 
 const FADE = 2.5;
 const MASTER_VOL = 0.08; // very quiet — background music level
@@ -275,33 +275,171 @@ export function useAudioEngine() {
     currentType.current = type;
   }, [getMaster, stopAmbience]);
 
-  /** One-shot SFX — soft, melodic chimes */
+  /** One-shot SFX — distinct sounds for every action */
   const playSfx = useCallback((type: SfxType) => {
     if (!enabled.current) return;
     const ctx = getCtx();
     const master = getMaster();
     const now = ctx.currentTime;
 
-    if (type === 'decision') {
-      // Soft bell: two notes, gentle
-      playMelodicNote(ctx, master, midiToFreq(67), now, 0.8, 0.06); // G4
-      playMelodicNote(ctx, master, midiToFreq(72), now + 0.08, 0.7, 0.04); // C5
-    }
-
-    if (type === 'positive') {
-      // Ascending warm chord — like a harp strum
-      const notes = [60, 64, 67, 72]; // C E G C (major)
-      notes.forEach((n, i) => {
-        playMelodicNote(ctx, master, midiToFreq(n), now + i * 0.1, 1.0 - i * 0.1, 0.05);
-      });
-    }
-
-    if (type === 'negative') {
-      // Gentle descending minor — soft, not alarming
-      const notes = [65, 63, 60, 58]; // F Eb C Bb — minor descent
-      notes.forEach((n, i) => {
-        playMelodicNote(ctx, master, midiToFreq(n), now + i * 0.15, 0.8, 0.035);
-      });
+    switch (type) {
+      case 'decision': {
+        // Soft bell: two notes
+        playMelodicNote(ctx, master, midiToFreq(67), now, 0.8, 0.06);
+        playMelodicNote(ctx, master, midiToFreq(72), now + 0.08, 0.7, 0.04);
+        break;
+      }
+      case 'positive': {
+        // Ascending warm chord — harp strum
+        [60, 64, 67, 72].forEach((n, i) => {
+          playMelodicNote(ctx, master, midiToFreq(n), now + i * 0.1, 1.0 - i * 0.1, 0.05);
+        });
+        break;
+      }
+      case 'negative': {
+        // Gentle descending minor
+        [65, 63, 60, 58].forEach((n, i) => {
+          playMelodicNote(ctx, master, midiToFreq(n), now + i * 0.15, 0.8, 0.035);
+        });
+        break;
+      }
+      case 'attack': {
+        // Fast aggressive downstroke — power chord hit
+        playMelodicNote(ctx, master, midiToFreq(40), now, 0.3, 0.09);
+        playMelodicNote(ctx, master, midiToFreq(47), now + 0.02, 0.25, 0.07);
+        playMelodicNote(ctx, master, midiToFreq(52), now + 0.04, 0.2, 0.05);
+        // Impact thump
+        playMelodicNote(ctx, master, midiToFreq(28), now, 0.15, 0.1);
+        break;
+      }
+      case 'defend': {
+        // Metallic shield clang — bright, resonant
+        playMelodicNote(ctx, master, midiToFreq(76), now, 0.6, 0.07);
+        playMelodicNote(ctx, master, midiToFreq(79), now + 0.03, 0.5, 0.05);
+        playMelodicNote(ctx, master, midiToFreq(83), now + 0.06, 0.4, 0.03);
+        break;
+      }
+      case 'pray': {
+        // Ethereal ascending — choir-like
+        [60, 64, 67, 72, 76].forEach((n, i) => {
+          playMelodicNote(ctx, master, midiToFreq(n), now + i * 0.2, 2.0, 0.035);
+        });
+        // Low hum underneath
+        playMelodicNote(ctx, master, midiToFreq(48), now, 2.5, 0.025);
+        break;
+      }
+      case 'critical': {
+        // Explosive impact + ascending fanfare
+        playMelodicNote(ctx, master, midiToFreq(36), now, 0.2, 0.12);
+        playMelodicNote(ctx, master, midiToFreq(48), now + 0.05, 0.3, 0.09);
+        [60, 64, 67, 72, 76, 79].forEach((n, i) => {
+          playMelodicNote(ctx, master, midiToFreq(n), now + 0.1 + i * 0.08, 0.6, 0.06);
+        });
+        break;
+      }
+      case 'miss': {
+        // Sad whoosh — descending
+        playMelodicNote(ctx, master, midiToFreq(65), now, 0.4, 0.04);
+        playMelodicNote(ctx, master, midiToFreq(60), now + 0.1, 0.4, 0.03);
+        playMelodicNote(ctx, master, midiToFreq(55), now + 0.2, 0.5, 0.02);
+        break;
+      }
+      case 'heal': {
+        // Warm rising glow — major chord arpeggiated slowly
+        [48, 55, 60, 64, 67].forEach((n, i) => {
+          playMelodicNote(ctx, master, midiToFreq(n), now + i * 0.25, 1.5, 0.04);
+        });
+        break;
+      }
+      case 'combo': {
+        // Fast ascending power scale
+        [60, 62, 64, 67, 69, 72, 76].forEach((n, i) => {
+          playMelodicNote(ctx, master, midiToFreq(n), now + i * 0.06, 0.4, 0.05);
+        });
+        break;
+      }
+      case 'victory': {
+        // Triumphant fanfare — major chord spread
+        playPadChord(ctx, master, [48, 55, 60, 64, 67], now, 3, 0.04);
+        [72, 76, 79, 84].forEach((n, i) => {
+          playMelodicNote(ctx, master, midiToFreq(n), now + 0.5 + i * 0.15, 1.5, 0.05);
+        });
+        break;
+      }
+      case 'defeat': {
+        // Solemn minor — slow descending
+        playPadChord(ctx, master, [48, 51, 55], now, 3, 0.03);
+        [63, 60, 58, 55].forEach((n, i) => {
+          playMelodicNote(ctx, master, midiToFreq(n), now + 0.3 + i * 0.3, 1.2, 0.03);
+        });
+        break;
+      }
+      case 'diceRoll': {
+        // Rattling percussive clicks
+        for (let i = 0; i < 8; i++) {
+          const freq = midiToFreq(80 + Math.floor(Math.random() * 15));
+          playMelodicNote(ctx, master, freq, now + i * 0.07, 0.05, 0.06);
+        }
+        break;
+      }
+      case 'itemFound': {
+        // Sparkle discovery — bright ascending
+        [72, 76, 79, 84, 88].forEach((n, i) => {
+          playMelodicNote(ctx, master, midiToFreq(n), now + i * 0.12, 0.5, 0.05);
+        });
+        break;
+      }
+      case 'timerTick': {
+        // Single sharp tick
+        playMelodicNote(ctx, master, midiToFreq(80), now, 0.05, 0.07);
+        break;
+      }
+      case 'gameStart': {
+        // Dramatic intro — low rumble + ascending
+        playMelodicNote(ctx, master, midiToFreq(36), now, 1.5, 0.06);
+        [48, 55, 60, 64, 67, 72].forEach((n, i) => {
+          playMelodicNote(ctx, master, midiToFreq(n), now + 0.3 + i * 0.15, 0.8, 0.04);
+        });
+        break;
+      }
+      case 'swipeDodge': {
+        // Quick whoosh up
+        playMelodicNote(ctx, master, midiToFreq(55), now, 0.15, 0.06);
+        playMelodicNote(ctx, master, midiToFreq(67), now + 0.05, 0.15, 0.05);
+        playMelodicNote(ctx, master, midiToFreq(79), now + 0.1, 0.2, 0.04);
+        break;
+      }
+      case 'swipeAccept': {
+        // Gentle chime
+        playMelodicNote(ctx, master, midiToFreq(72), now, 0.5, 0.05);
+        playMelodicNote(ctx, master, midiToFreq(76), now + 0.1, 0.4, 0.04);
+        break;
+      }
+      case 'memoryCorrect': {
+        // Quick bright ding
+        playMelodicNote(ctx, master, midiToFreq(72), now, 0.3, 0.06);
+        playMelodicNote(ctx, master, midiToFreq(79), now + 0.05, 0.3, 0.05);
+        break;
+      }
+      case 'memoryWrong': {
+        // Flat buzz
+        playMelodicNote(ctx, master, midiToFreq(50), now, 0.4, 0.05);
+        playMelodicNote(ctx, master, midiToFreq(49), now + 0.05, 0.4, 0.04);
+        break;
+      }
+      case 'stealthPass': {
+        // Very quiet whisper — soft high notes
+        playMelodicNote(ctx, master, midiToFreq(84), now, 0.3, 0.02);
+        playMelodicNote(ctx, master, midiToFreq(88), now + 0.1, 0.2, 0.015);
+        break;
+      }
+      case 'stealthFail': {
+        // Alarm-like — fast alternating
+        playMelodicNote(ctx, master, midiToFreq(72), now, 0.15, 0.06);
+        playMelodicNote(ctx, master, midiToFreq(76), now + 0.12, 0.15, 0.06);
+        playMelodicNote(ctx, master, midiToFreq(72), now + 0.24, 0.15, 0.05);
+        break;
+      }
     }
   }, [getMaster]);
 

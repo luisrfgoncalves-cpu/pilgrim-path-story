@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ChoiceEffect } from '@/data/story';
 import { Dice3D } from '@/components/Dice3D';
+import { playGameSfx } from '@/lib/gameSfx';
 
 /**
  * 4 Active Gameplay Mechanics:
@@ -116,6 +117,7 @@ function QTEGame({ config, onComplete }: MiniGameProps) {
   const hitTarget = (id: number) => {
     setTargets(prev => prev.filter(t => t.id !== id));
     setScore(s => s + 1);
+    playGameSfx('hit');
   };
 
   const finalScore = maxTargets > 0 ? Math.round((score / maxTargets) * 100) : 0;
@@ -141,7 +143,7 @@ function QTEGame({ config, onComplete }: MiniGameProps) {
         <h3 className="game-title">Reflexos de Batalha</h3>
         <p className="game-subtitle">{config.intro}</p>
         <p className="game-text-muted">Toque nos alvos antes que desapareçam!</p>
-        <button onClick={() => setPhase('playing')} className="btn-medieval w-full">
+        <button onClick={() => { playGameSfx('gameStart'); setPhase('playing'); }} className="btn-medieval w-full">
           Começar!
         </button>
       </div>
@@ -299,8 +301,10 @@ function SwipeDodgeGame({ config, onComplete }: MiniGameProps) {
     if (correct) {
       setCorrectCount(c => c + 1);
       setFeedback(dodged ? '🛡️ Esquivou!' : '✨ Aceitou!');
+      playGameSfx(dodged ? 'dodge' : 'accept');
     } else {
       setFeedback(dodged ? '❌ Era bênção!' : '💔 Era tentação!');
+      playGameSfx('wrong');
     }
     setRound(r => r + 1);
     setCurrentItem(null);
@@ -344,7 +348,7 @@ function SwipeDodgeGame({ config, onComplete }: MiniGameProps) {
           <p>⬆️ Deslize para <strong>CIMA</strong> para <strong>esquivar</strong> tentações</p>
           <p>⬇️ Deslize para <strong>BAIXO</strong> para <strong>aceitar</strong> bênçãos</p>
         </div>
-        <button onClick={() => setPhase('playing')} className="btn-medieval w-full">
+        <button onClick={() => { playGameSfx('gameStart'); setPhase('playing'); }} className="btn-medieval w-full">
           Começar!
         </button>
       </div>
@@ -514,6 +518,7 @@ function MemoryGame({ config, onComplete }: MiniGameProps) {
     if (newInput[idx] !== sequence[idx]) {
       // Wrong!
       setFeedbackText('❌ Sequência errada!');
+      playGameSfx('wrong');
       setPhase('feedback');
       setTimeout(() => {
         const nextRound = round + 1;
@@ -531,6 +536,7 @@ function MemoryGame({ config, onComplete }: MiniGameProps) {
       // Correct!
       setWins(w => w + 1);
       setFeedbackText('✨ Correto!');
+      playGameSfx('correct');
       setPhase('feedback');
       setTimeout(() => {
         const nextRound = round + 1;
@@ -567,7 +573,7 @@ function MemoryGame({ config, onComplete }: MiniGameProps) {
         <h3 className="game-title">Sequência de Memória</h3>
         <p className="game-subtitle">{config.intro}</p>
         <p className="game-text-muted">Memorize a sequência de símbolos e repita na ordem correta!</p>
-        <button onClick={() => { setPhase('showing'); startRound(); }} className="btn-medieval w-full">
+        <button onClick={() => { playGameSfx('gameStart'); setPhase('showing'); startRound(); }} className="btn-medieval w-full">
           Começar!
         </button>
       </div>
@@ -711,8 +717,10 @@ function StealthGame({ config, onComplete }: MiniGameProps) {
     if (inSafe) {
       setSuccesses(s => s + 1);
       setFeedback('🤫 Passou!');
+      playGameSfx('stealthPass');
     } else {
       setFeedback('⚠️ Detectado!');
+      playGameSfx('stealthFail');
     }
 
     setTimeout(() => {
@@ -753,7 +761,7 @@ function StealthGame({ config, onComplete }: MiniGameProps) {
         <h3 className="game-title">Furtividade</h3>
         <p className="game-subtitle">{config.intro}</p>
         <p className="game-text-muted">Toque quando o indicador estiver na zona segura (verde)!</p>
-        <button onClick={() => setPhase('playing')} className="btn-medieval w-full">
+        <button onClick={() => { playGameSfx('gameStart'); setPhase('playing'); }} className="btn-medieval w-full">
           Começar!
         </button>
       </div>
@@ -859,6 +867,8 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
     setAction(chosenAction);
     setPhase('rolling');
     setDice({ player: 1, enemy: 1, rolling: true });
+    playGameSfx('diceRoll');
+    playGameSfx(chosenAction);
 
     // Animate dice
     let ticks = 0;
@@ -936,7 +946,11 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
     }
 
     setCriticalHit(isCrit);
-    if (combo >= 2) log += ` 🔥Combo x${combo + 1}!`;
+    if (isCrit) playGameSfx('critical');
+    else if (eDmg > 0) playGameSfx('hit');
+    else if (pDmg > 0) playGameSfx('miss');
+    if (act === 'pray' && pDmg === 0) playGameSfx('heal');
+    if (combo >= 2) { log += ` 🔥Combo x${combo + 1}!`; playGameSfx('combo'); }
 
     setPlayerHP(h => Math.max(0, h - pDmg));
     setEnemyHP(h => Math.max(0, h - eDmg));
@@ -1012,7 +1026,7 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
           <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>💡 Repetir a mesma ação gera combo (+15% por vez)</p>
         </div>
 
-        <button onClick={() => setPhase('choose')} className="btn-medieval w-full">
+        <button onClick={() => { playGameSfx('gameStart'); setPhase('choose'); }} className="btn-medieval w-full">
           Enfrentar {enemy.name}!
         </button>
       </div>
@@ -1248,6 +1262,7 @@ function TreasureHuntGame({ config, onComplete }: MiniGameProps) {
     if (item) {
       setFound(f => f + 1);
       setLastFound(`${item.emoji} ${item.label}`);
+      playGameSfx('itemFound');
       setTimeout(() => setLastFound(null), 1500);
     }
     // Check if all found
@@ -1288,7 +1303,7 @@ function TreasureHuntGame({ config, onComplete }: MiniGameProps) {
         <h3 className="game-title">Caça ao Tesouro</h3>
         <p className="game-subtitle">{config.intro}</p>
         <p className="game-text-muted">Encontre os tesouros escondidos antes do tempo acabar! Fique atento às dicas ✨</p>
-        <button onClick={() => { initItems(); setPhase('hunting'); }} className="btn-medieval w-full">
+        <button onClick={() => { playGameSfx('gameStart'); initItems(); setPhase('hunting'); }} className="btn-medieval w-full">
           Começar a busca!
         </button>
       </div>
@@ -1504,7 +1519,7 @@ function ReflexGame({ config, onComplete }: MiniGameProps) {
         <h3 className="game-title">Reflexo Divino</h3>
         <p className="game-subtitle">{config.intro}</p>
         <p className="game-text-muted">Observe a sequência de direções e repita! A cada rodada fica mais rápido.</p>
-        <button onClick={() => { startRound(); }} className="btn-medieval w-full">
+        <button onClick={() => { playGameSfx('gameStart'); startRound(); }} className="btn-medieval w-full">
           Começar!
         </button>
       </div>
