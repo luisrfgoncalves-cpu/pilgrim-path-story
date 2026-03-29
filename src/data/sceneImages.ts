@@ -26,6 +26,11 @@ import julgamentoFeira from '@/assets/scenes/julgamento-feira.jpg';
 import colinaDificuldadeSubida from '@/assets/scenes/colina-dificuldade-subida.jpg';
 import leoesPalacio from '@/assets/scenes/leoes-palacio.jpg';
 import minaDemas from '@/assets/scenes/mina-demas.jpg';
+import hospedariaGaio from '@/assets/scenes/hospedaria-gaio.jpg';
+import giganteMataBons from '@/assets/scenes/gigante-mata-bons.jpg';
+import casteloDestruido from '@/assets/scenes/castelo-destruido.jpg';
+import chamadoRio from '@/assets/scenes/chamado-rio.jpg';
+import valenteEncontro from '@/assets/scenes/valente-encontro.jpg';
 
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
