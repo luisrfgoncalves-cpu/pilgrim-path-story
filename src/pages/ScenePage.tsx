@@ -549,8 +549,25 @@ const ScenePage = () => {
             </>
           )}
 
+          {/* ═══ MINI-GAME TRIGGER BUTTON ═══ */}
+          {showChoices && !miniGameDone && miniGameMappings[chapter.id] && !miniGameReady && (
+            <div className="mb-5 animate-scale-in">
+              <button
+                onClick={() => setMiniGameReady(true)}
+                className="btn-medieval w-full flex items-center justify-center gap-3"
+              >
+                <Zap className="w-5 h-5" />
+                <span>
+                  {FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type)
+                    ? '⚔️ Iniciar Desafio'
+                    : '🎮 Iniciar Mini-Game'}
+                </span>
+              </button>
+            </div>
+          )}
+
           {/* ═══ MINI-GAME (inline for minor games) ═══ */}
-          {showChoices && !miniGameDone && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
+          {showChoices && !miniGameDone && miniGameReady && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
             <div className="mb-5 animate-scale-in">
               <MiniGame
                 config={miniGameMappings[chapter.id]}
@@ -569,7 +586,7 @@ const ScenePage = () => {
           )}
 
           {/* ═══ FULLSCREEN MINI-GAME (major games) ═══ */}
-          {showChoices && !miniGameDone && miniGameMappings[chapter.id] && FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
+          {showChoices && !miniGameDone && miniGameReady && miniGameMappings[chapter.id] && FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
             <FullscreenMiniGame
               config={miniGameMappings[chapter.id]}
               chapterId={chapter.id}
