@@ -44,7 +44,7 @@ const ResultPage = () => {
         makeChoice(state.currentChapterId, state.nextChapterId, state.choiceText, state.effects, state.flag, state.conditionalEffects);
         navigate('/cena', { replace: true });
       }
-    }, 3500);
+    }, 7000);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [state, makeChoice, navigate, autoAdvance]);
 

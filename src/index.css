@@ -118,6 +118,122 @@
   .choice-btn:active {
     transform: translateY(0);
   }
+
+  /* Medieval 3D Button Style */
+  .btn-medieval {
+    @apply relative font-display text-sm tracking-wide;
+    background: linear-gradient(180deg, hsl(var(--primary) / 0.95) 0%, hsl(var(--primary) / 0.75) 100%);
+    color: hsl(var(--primary-foreground));
+    border: 2px solid hsl(40 70% 40%);
+    border-radius: 0.5rem;
+    box-shadow:
+      0 4px 0 0 hsl(30 50% 25%),
+      0 6px 12px hsl(0 0% 0% / 0.4),
+      inset 0 1px 0 hsl(40 80% 75% / 0.4),
+      inset 0 -2px 4px hsl(30 50% 20% / 0.3);
+    text-shadow: 0 1px 2px hsl(0 0% 0% / 0.3);
+    transition: all 0.15s ease;
+    padding: 0.75rem 1.5rem;
+  }
+  .btn-medieval:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 5px 0 0 hsl(30 50% 25%),
+      0 8px 16px hsl(0 0% 0% / 0.5),
+      inset 0 1px 0 hsl(40 80% 75% / 0.5),
+      inset 0 -2px 4px hsl(30 50% 20% / 0.3);
+  }
+  .btn-medieval:active {
+    transform: translateY(2px);
+    box-shadow:
+      0 1px 0 0 hsl(30 50% 25%),
+      0 2px 4px hsl(0 0% 0% / 0.3),
+      inset 0 1px 0 hsl(40 80% 75% / 0.2),
+      inset 0 2px 4px hsl(30 50% 20% / 0.4);
+  }
+
+  .btn-medieval-secondary {
+    @apply relative font-display text-sm tracking-wide;
+    background: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--secondary)) 100%);
+    color: hsl(var(--foreground));
+    border: 2px solid hsl(var(--border));
+    border-radius: 0.5rem;
+    box-shadow:
+      0 3px 0 0 hsl(30 15% 12%),
+      0 5px 10px hsl(0 0% 0% / 0.3),
+      inset 0 1px 0 hsl(var(--foreground) / 0.08),
+      inset 0 -2px 4px hsl(0 0% 0% / 0.15);
+    transition: all 0.15s ease;
+    padding: 0.75rem 1.5rem;
+  }
+  .btn-medieval-secondary:hover {
+    transform: translateY(-1px);
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow:
+      0 4px 0 0 hsl(30 15% 12%),
+      0 7px 14px hsl(0 0% 0% / 0.4),
+      inset 0 1px 0 hsl(var(--foreground) / 0.1),
+      inset 0 -2px 4px hsl(0 0% 0% / 0.15);
+  }
+  .btn-medieval-secondary:active {
+    transform: translateY(2px);
+    box-shadow:
+      0 1px 0 0 hsl(30 15% 12%),
+      0 2px 4px hsl(0 0% 0% / 0.2),
+      inset 0 2px 4px hsl(0 0% 0% / 0.2);
+  }
+
+  .btn-medieval-icon {
+    @apply relative;
+    background: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--secondary)) 100%);
+    border: 2px solid hsl(var(--border));
+    border-radius: 0.75rem;
+    box-shadow:
+      0 3px 0 0 hsl(30 15% 12%),
+      0 4px 8px hsl(0 0% 0% / 0.25),
+      inset 0 1px 0 hsl(var(--foreground) / 0.06);
+    transition: all 0.15s ease;
+    padding: 0.75rem 0.5rem;
+  }
+  .btn-medieval-icon:hover {
+    transform: translateY(-1px);
+    border-color: hsl(var(--primary) / 0.4);
+    box-shadow:
+      0 4px 0 0 hsl(30 15% 12%),
+      0 6px 12px hsl(0 0% 0% / 0.35),
+      inset 0 1px 0 hsl(var(--foreground) / 0.08);
+  }
+  .btn-medieval-icon:active {
+    transform: translateY(2px);
+    box-shadow:
+      0 1px 0 0 hsl(30 15% 12%),
+      0 1px 3px hsl(0 0% 0% / 0.2);
+  }
+
+  .choice-btn-medieval {
+    @apply w-full text-left p-4 rounded-lg transition-all duration-300 relative font-body;
+    background: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.85) 100%);
+    border: 2px solid hsl(var(--border));
+    box-shadow:
+      0 3px 0 0 hsl(30 15% 10%),
+      0 4px 8px hsl(0 0% 0% / 0.2),
+      inset 0 1px 0 hsl(var(--foreground) / 0.05);
+    transition: all 0.2s ease;
+  }
+  .choice-btn-medieval:hover {
+    border-color: hsl(var(--primary) / 0.5);
+    transform: translateY(-1px);
+    box-shadow:
+      0 4px 0 0 hsl(30 15% 10%),
+      0 6px 14px hsl(var(--primary) / 0.15),
+      inset 0 1px 0 hsl(var(--foreground) / 0.08);
+  }
+  .choice-btn-medieval:active {
+    transform: translateY(2px);
+    box-shadow:
+      0 1px 0 0 hsl(30 15% 10%),
+      0 1px 3px hsl(0 0% 0% / 0.15);
+  }
 }
 
 @keyframes fadeIn {
