@@ -155,6 +155,36 @@ export const sceneVariations: Record<string, SceneVariation[]> = {
     },
   ],
 
+  // ── FASE 2 (novas cenas: Colina e Leões) ──
+  "fase2-cena12": [
+    {
+      text: "A colina parece familiar. Seus pés conhecem essas pedras — porque você já as subiu antes.",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+    {
+      text: "Da última vez, você dormiu no caramanchão e perdeu o pergaminho. Desta vez, seus olhos ficam abertos.",
+      condition: (ctx) => ctx.history.playthroughs.some(p => p.flags.includes('dormiu_caramanchao')),
+    },
+  ],
+
+  "fase2-cena14": [
+    {
+      text: "Os leões rugem, mas suas correntes brilham sob a luz. Você já passou por aqui — sabe que são inofensivos para quem mantém o centro.",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+  ],
+
+  "fase4-cena11b": [
+    {
+      text: "A mina de Demas brilha como da última vez. Mas agora você reconhece o brilho falso — prata que custa a alma.",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+    {
+      text: "Da última vez, a curiosidade te levou perto demais. A mina quase engoliu você.",
+      condition: (ctx) => ctx.history.playthroughs.some(p => p.flags.includes('cedeu_demas')),
+    },
+  ],
+
   // ── FASE 4 (novas cenas) ──
   "fase4-cena11": [
     {
