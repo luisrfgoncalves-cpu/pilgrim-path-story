@@ -427,7 +427,7 @@ const CommunityPage: React.FC = () => {
             {otherPilgrims.length > 0 && (
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium mb-2">
-                  Outros peregrinos
+                  Companheiros de caminhada
                 </p>
                 <div className="space-y-2">
                   {otherPilgrims.map(p => (
