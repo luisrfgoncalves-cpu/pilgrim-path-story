@@ -12,6 +12,16 @@ import pilgrimFree from '@/assets/pilgrim-free.png';
 import pilgrimConflict from '@/assets/pilgrim-conflict.png';
 import pilgrimRecovery from '@/assets/pilgrim-recovery.png';
 
+import pilgrimFBurdened from '@/assets/pilgrim-f-burdened.png';
+import pilgrimFDoubt from '@/assets/pilgrim-f-doubt.png';
+import pilgrimFStanding from '@/assets/pilgrim-f-standing.png';
+import pilgrimFAdvancing from '@/assets/pilgrim-f-advancing.png';
+import pilgrimFRadiant from '@/assets/pilgrim-f-radiant.png';
+import pilgrimFDifficulty from '@/assets/pilgrim-f-difficulty.png';
+import pilgrimFFree from '@/assets/pilgrim-f-free.png';
+import pilgrimFConflict from '@/assets/pilgrim-f-conflict.png';
+import pilgrimFRecovery from '@/assets/pilgrim-f-recovery.png';
+
 interface PilgrimAvatarProps {
   attributes: PlayerAttributes;
   tone?: EmotionalTone;
@@ -20,6 +30,8 @@ interface PilgrimAvatarProps {
   showLabel?: boolean;
   /** Story flag that can override posture (e.g. 'livre' after the cross) */
   storyFlag?: string;
+  /** Which campaign — determines male (part1) or female (part2) avatar */
+  campaign?: 'part1' | 'part2';
 }
 
 export type PostureState =
@@ -73,6 +85,18 @@ const postureAssets: Record<PostureState, string> = {
   vitoria_final: pilgrimRadiant,
 };
 
+const postureAssetsFemale: Record<PostureState, string> = {
+  abatido: pilgrimFBurdened,
+  confuso: pilgrimFDoubt,
+  determinado: pilgrimFStanding,
+  em_dificuldade: pilgrimFDifficulty,
+  esperancoso: pilgrimFAdvancing,
+  livre: pilgrimFFree,
+  em_conflito: pilgrimFConflict,
+  recuperacao: pilgrimFRecovery,
+  vitoria_final: pilgrimFRadiant,
+};
+
 const postureLabels: Record<PostureState, string> = {
   abatido: 'Abatido',
   confuso: 'Confuso',
@@ -109,10 +133,11 @@ const swayDuration: Record<PostureState, string> = {
   vitoria_final: '6s',
 };
 
-const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = '', showLabel = false, storyFlag }: PilgrimAvatarProps) => {
+const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = '', showLabel = false, storyFlag, campaign = 'part1' }: PilgrimAvatarProps) => {
   const { fe, coragem, perseveranca, discernimento } = attributes;
   const avg = (fe + coragem + perseveranca + discernimento) / 4;
   const posture = resolvePosture(avg, tone, storyFlag);
+  const assets = campaign === 'part2' ? postureAssetsFemale : postureAssets;
 
   // Track previous posture for crossfade
   const [displayedPosture, setDisplayedPosture] = useState(posture);
@@ -182,7 +207,7 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
         {/* Previous image (fading out during crossfade) */}
         {crossfading && prevPosture && (
           <img
-            src={postureAssets[prevPosture]}
+            src={assets[prevPosture]}
             alt=""
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out ${size === 'lg' ? 'scale-110' : ''}`}
             style={{ ...imgStyle(prevPosture), opacity: 0 }}
@@ -193,7 +218,7 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
 
         {/* Current image (fading in during crossfade, or fully visible) */}
         <img
-          src={postureAssets[crossfading ? posture : displayedPosture]}
+          src={assets[crossfading ? posture : displayedPosture]}
           alt={postureLabels[activePosture]}
           className={`w-full h-full object-cover transition-all duration-[1200ms] ease-in-out ${visual.overlayClass} ${size === 'lg' ? 'scale-110' : ''}`}
           style={{
