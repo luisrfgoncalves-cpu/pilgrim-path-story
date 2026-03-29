@@ -4,7 +4,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ArrowLeft, Heart, HandHeart, Sparkles, MapPin, Users, MessageCircle, Activity, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Heart, HandHeart, Sparkles, MapPin, Users, MessageCircle, Activity, ChevronRight, Trophy, Clock, Target, Gift } from 'lucide-react';
+import { useCollectiveEvent } from '@/hooks/useCollectiveEvent';
+import { Progress } from '@/components/ui/progress';
 import { NavLink } from '@/components/NavLink';
 
 // ─── Types ───
@@ -90,11 +92,12 @@ function isRecentlyActive(updatedAt: string): boolean {
 const CommunityPage: React.FC = () => {
   const { user } = useAuth();
   const { progress } = useStoryProgress();
+  const collectiveEvent = useCollectiveEvent();
   const [pilgrims, setPilgrims] = useState<PilgrimSummary[]>([]);
   const [messages, setMessages] = useState<PilgrimMessage[]>([]);
   const [supports, setSupports] = useState<SupportRecord[]>([]);
   const [myReceivedSupport, setMyReceivedSupport] = useState<SupportRecord[]>([]);
-  const [tab, setTab] = useState<'pilgrims' | 'feed' | 'messages'>('pilgrims');
+  const [tab, setTab] = useState<'pilgrims' | 'feed' | 'messages' | 'events'>('pilgrims');
   const [sending, setSending] = useState<string | null>(null);
   const [selectedPilgrim, setSelectedPilgrim] = useState<PilgrimSummary | null>(null);
 
@@ -260,13 +263,14 @@ const CommunityPage: React.FC = () => {
         <div className="flex gap-1 mb-5 bg-card rounded-lg p-1 border border-border">
           {([
             { key: 'pilgrims', label: 'Peregrinos', icon: Users },
+            { key: 'events', label: 'Eventos', icon: Trophy },
             { key: 'feed', label: 'Atividade', icon: Activity },
             { key: 'messages', label: 'Mensagens', icon: MessageCircle },
           ] as const).map(t => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${
+              className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-md text-[11px] font-medium transition-all ${
                 tab === t.key
                   ? 'bg-primary text-primary-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
@@ -274,9 +278,123 @@ const CommunityPage: React.FC = () => {
             >
               <t.icon className="w-3.5 h-3.5" />
               {t.label}
+              {t.key === 'events' && collectiveEvent.canClaim && (
+                <span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />
+              )}
             </button>
           ))}
         </div>
+
+        {/* ═══ TAB: Eventos Coletivos ═══ */}
+        {tab === 'events' && (
+          <div className="space-y-4">
+            {/* Current Event */}
+            <div className="rounded-xl border border-primary/30 bg-gradient-to-br from-card to-primary/5 p-4 relative overflow-hidden">
+              <div className="absolute top-2 right-3 flex items-center gap-1 text-[10px] text-muted-foreground">
+                <Clock className="w-3 h-3" />
+                {collectiveEvent.daysLeft} dias restantes
+              </div>
+
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-2xl">{collectiveEvent.event.emoji}</span>
+                <div>
+                  <h3 className="text-sm font-display text-foreground">{collectiveEvent.event.title}</h3>
+                  <span className="text-[10px] text-primary font-medium uppercase tracking-wider">Evento Semanal</span>
+                </div>
+              </div>
+
+              <p className="text-xs text-foreground/80 mb-4 leading-relaxed">
+                {collectiveEvent.event.description}
+              </p>
+
+              {/* Progress bar */}
+              <div className="space-y-1.5 mb-3">
+                <div className="flex items-center justify-between text-[10px]">
+                  <span className="text-muted-foreground flex items-center gap-1">
+                    <Target className="w-3 h-3" /> Progresso coletivo
+                  </span>
+                  <span className="text-foreground font-medium">
+                    {collectiveEvent.progress.current}/{collectiveEvent.progress.target}
+                  </span>
+                </div>
+                <Progress value={collectiveEvent.progress.percentage} className="h-2.5" />
+                <div className="flex items-center justify-between text-[10px]">
+                  <span className="text-muted-foreground">
+                    {collectiveEvent.progress.participants.length} participante{collectiveEvent.progress.participants.length !== 1 ? 's' : ''}
+                  </span>
+                  <span className={collectiveEvent.progress.completed ? 'text-primary font-medium' : 'text-muted-foreground'}>
+                    {collectiveEvent.progress.percentage}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Reward */}
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-background/50 border border-border">
+                <Gift className="w-4 h-4 text-primary" />
+                <div className="flex-1">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Recompensa</p>
+                  <p className="text-xs text-foreground font-medium">{collectiveEvent.event.reward.label}</p>
+                </div>
+                {collectiveEvent.canClaim && (
+                  <button
+                    onClick={() => {
+                      const reward = collectiveEvent.claim();
+                      toast.success(`🎁 Recompensa coletada! ${reward.label}`);
+                    }}
+                    className="px-3 py-1.5 text-xs font-medium bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity animate-pulse"
+                  >
+                    Coletar
+                  </button>
+                )}
+                {collectiveEvent.claimed && (
+                  <span className="text-[10px] text-primary font-medium">✓ Coletado</span>
+                )}
+                {!collectiveEvent.canClaim && !collectiveEvent.claimed && (
+                  <span className="text-[10px] text-muted-foreground">Em andamento</span>
+                )}
+              </div>
+            </div>
+
+            {/* Next Event Preview */}
+            <div className="rounded-lg border border-border bg-card/50 p-3">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium mb-2">
+                Próximo evento
+              </p>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">{collectiveEvent.nextEvent.emoji}</span>
+                <div>
+                  <p className="text-xs font-medium text-foreground">{collectiveEvent.nextEvent.title}</p>
+                  <p className="text-[10px] text-muted-foreground">{collectiveEvent.nextEvent.description.slice(0, 80)}...</p>
+                </div>
+              </div>
+            </div>
+
+            {/* How it works */}
+            <div className="rounded-lg border border-border bg-card p-3">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium mb-2">
+                Como funciona
+              </p>
+              <ul className="space-y-1.5 text-xs text-foreground/80">
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-0.5">•</span>
+                  Eventos mudam toda semana automaticamente
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-0.5">•</span>
+                  Todos contribuem para o objetivo coletivo
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-0.5">•</span>
+                  Ao completar, todos podem coletar a recompensa
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-0.5">•</span>
+                  Recompensas dão bônus reais nos seus atributos
+                </li>
+              </ul>
+            </div>
+          </div>
+        )}
 
         {/* ═══ TAB: Peregrinos ═══ */}
         {tab === 'pilgrims' && (
