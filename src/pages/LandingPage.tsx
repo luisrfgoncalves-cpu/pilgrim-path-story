@@ -549,6 +549,12 @@ const LandingPage = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
+  const [showInstallInstructions, setShowInstallInstructions] = useState(false);
+
+  // Detect mobile + not already installed as standalone
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true;
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -557,17 +563,36 @@ const LandingPage = () => {
       setShowInstallBanner(true);
     };
     window.addEventListener('beforeinstallprompt', handler);
+
+    // If on mobile, not standalone, and no beforeinstallprompt after 3s → show manual banner
+    if (isMobile && !isStandalone) {
+      const timeout = setTimeout(() => {
+        setShowInstallBanner((prev) => {
+          if (!prev) return true; // show manual banner if native didn't fire
+          return prev;
+        });
+      }, 3000);
+      return () => {
+        clearTimeout(timeout);
+        window.removeEventListener('beforeinstallprompt', handler);
+      };
+    }
+
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
   const handleInstall = async () => {
-    if (!installPrompt) return;
-    installPrompt.prompt();
-    const result = await installPrompt.userChoice;
-    if (result.outcome === 'accepted') {
-      setShowInstallBanner(false);
+    if (installPrompt) {
+      installPrompt.prompt();
+      const result = await installPrompt.userChoice;
+      if (result.outcome === 'accepted') {
+        setShowInstallBanner(false);
+      }
+      setInstallPrompt(null);
+    } else {
+      // No native prompt available — show instructions
+      setShowInstallInstructions(true);
     }
-    setInstallPrompt(null);
   };
 
   const handleBuy = () => {
