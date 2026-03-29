@@ -2,8 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { getChapter, storyChapters, chapterOrder } from '@/data/story';
+import { useAuth } from '@/contexts/AuthContext';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users } from 'lucide-react';
+import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn } from 'lucide-react';
 
 const replayMessages = [
   "Escolhas diferentes levam a caminhos diferentes. Descubra o que mudaria.",
@@ -25,6 +26,7 @@ const getPlayerState = (attrs: { fe: number; coragem: number; perseveranca: numb
 const Index = () => {
   const navigate = useNavigate();
   const { hasProgress, startJourney, resetProgress, progress, history, isReplay } = useStoryProgress();
+  const { user, profile } = useAuth();
 
   const handleContinue = () => {
     startJourney();
@@ -184,19 +186,18 @@ const Index = () => {
             <span className="text-[10px] text-muted-foreground font-medium">Mapa</span>
           </button>
           <button
-            onClick={() => navigate('/progresso')}
+            onClick={() => user ? navigate('/perfil') : navigate('/auth')}
             className="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors"
           >
-            <User className="w-4 h-4 text-muted-foreground" />
-            <span className="text-[10px] text-muted-foreground font-medium">Perfil</span>
+            {user ? <User className="w-4 h-4 text-muted-foreground" /> : <LogIn className="w-4 h-4 text-muted-foreground" />}
+            <span className="text-[10px] text-muted-foreground font-medium">{user ? (profile?.display_name || 'Perfil') : 'Entrar'}</span>
           </button>
           <button
-            onClick={() => {}}
-            className="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl bg-card border border-border opacity-50 cursor-not-allowed relative"
+            onClick={() => navigate('/comunidade')}
+            className="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors"
           >
             <Users className="w-4 h-4 text-muted-foreground" />
             <span className="text-[10px] text-muted-foreground font-medium">Comunidade</span>
-            <span className="absolute -top-1 -right-1 text-[8px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded-full font-medium">Em breve</span>
           </button>
         </div>
 
