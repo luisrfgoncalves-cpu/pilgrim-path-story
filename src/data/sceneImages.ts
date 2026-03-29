@@ -4,6 +4,7 @@ import portaoEstreito from '@/assets/scenes/portao-estreito.jpg';
 import sabedoriaMundana from '@/assets/scenes/sabedoria-mundana.jpg';
 import colinaDificuldade from '@/assets/scenes/colina-dificuldade.jpg';
 import casaInterprete from '@/assets/scenes/casa-interprete.jpg';
+import valeHumilhacao from '@/assets/scenes/vale-humilhacao.jpg';
 
 export const sceneImages: Record<string, string> = {
   'cena1': cidadeDestruicao,
@@ -32,4 +33,14 @@ export const sceneImages: Record<string, string> = {
   'fase2-cena9': casaInterprete,
   'fase2-cena10': casaInterprete,
   'fase2-cena11': casaInterprete,
+  'fase3-cena1': valeHumilhacao,
+  'fase3-cena2': valeHumilhacao,
+  'fase3-cena3': valeHumilhacao,
+  'fase3-cena4': valeHumilhacao,
+  'fase3-cena5': valeHumilhacao,
+  'fase3-cena6': valeHumilhacao,
+  'fase3-cena7': valeHumilhacao,
+  'fase3-cena8': valeHumilhacao,
+  'fase3-cena9': valeHumilhacao,
+  'fase3-cena10': valeHumilhacao,
 };
