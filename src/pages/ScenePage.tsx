@@ -194,6 +194,11 @@ const ScenePage = () => {
   }, [chapter, playthroughRecorded]);
 
   useEffect(() => {
+    // SCROLL TO TOP on every scene change
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
     setTransitioning(true);
     setNarrativeIndex(0);
     setShowChoices(false);
@@ -211,6 +216,8 @@ const ScenePage = () => {
     const t = setTimeout(() => {
       setTransitioning(false);
       triggerSceneEntryVFX(progress.currentChapterId);
+      // Second scroll after content renders
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
     }, 100);
     return () => clearTimeout(t);
   }, [progress.currentChapterId]);
