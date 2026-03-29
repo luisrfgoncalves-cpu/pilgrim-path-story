@@ -171,6 +171,7 @@ const ScenePage = () => {
     setMiniGameDone(false);
     setMiniGameResult(null);
     setShowMiniGameResult(false);
+    setMiniGameReady(false);
     const t = setTimeout(() => {
       setTransitioning(false);
       // Auto-trigger dramatic VFX on scene entry
