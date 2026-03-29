@@ -453,7 +453,7 @@ const JourneysPage = () => {
                                   </div>
 
                                   <div className="flex-1 min-w-0">
-                                    <p className="font-display text-sm leading-snug truncate"
+                                    <p className="font-display text-sm leading-snug"
                                       style={{ color: isCurrent ? phase.color : unlocked ? 'hsl(38 40% 68%)' : 'hsl(30 12% 32%)' }}>
                                       {unlocked ? item.chapter!.title : '— terra desconhecida —'}
                                     </p>
@@ -611,7 +611,7 @@ const JourneysPage = () => {
                                     {isCurrent ? <MapPin className="w-3.5 h-3.5" /> : unlocked ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Lock className="w-3 h-3" />}
                                   </div>
                                   <div className="flex-1 min-w-0">
-                                    <p className="font-display text-sm leading-snug truncate" style={{ color: isCurrent ? phase.color : unlocked ? 'hsl(38 40% 68%)' : 'hsl(30 12% 32%)' }}>{unlocked ? item.chapter!.title : '— terra desconhecida —'}</p>
+                                    <p className="font-display text-sm leading-snug" style={{ color: isCurrent ? phase.color : unlocked ? 'hsl(38 40% 68%)' : 'hsl(30 12% 32%)' }}>{unlocked ? item.chapter!.title : '— terra desconhecida —'}</p>
                                     {unlocked && item.chapter?.location && <p className="text-xs mt-0.5 truncate" style={{ color: 'hsl(35 20% 45%)' }}>📍 {item.chapter.location}</p>}
                                   </div>
                                   {isCurrent && <span className="text-[10px] font-display px-2 py-0.5 rounded flex-shrink-0" style={{ background: `${phase.color}30`, color: phase.color, border: `1px solid ${phase.color}50` }}>AQUI</span>}
