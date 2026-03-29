@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { FIRST_CHAPTER_ID, ChoiceEffect, ConditionalEffect } from '@/data/story';
+import { PART2_FIRST_CHAPTER_ID } from '@/data/storyPart2';
 import { loadProgressFromCloud, loadHistoryFromCloud, savePlaythroughToCloud } from '@/lib/cloudSave';
 
 const STORAGE_KEY = 'peregrino-progress';
@@ -33,6 +34,8 @@ export interface PlayHistory {
   totalPlaythroughs: number;
 }
 
+export type CampaignId = 'part1' | 'part2';
+
 export interface StoryProgress {
   currentChapterId: string;
   visitedChapters: string[];
@@ -43,6 +46,7 @@ export interface StoryProgress {
   items: string[];
   started: boolean;
   playthrough: number;
+  campaign: CampaignId;
 }
 
 const defaultAttributes: PlayerAttributes = {
@@ -73,6 +77,7 @@ const getInitialProgress = (): StoryProgress => {
         items: parsed.items || [],
         started: parsed.started ?? false,
         playthrough: parsed.playthrough ?? 1,
+        campaign: parsed.campaign || 'part1',
       };
     }
   } catch {}
@@ -87,6 +92,7 @@ const getInitialProgress = (): StoryProgress => {
     items: [],
     started: false,
     playthrough: history.totalPlaythroughs + 1,
+    campaign: 'part1',
   };
 };
 
