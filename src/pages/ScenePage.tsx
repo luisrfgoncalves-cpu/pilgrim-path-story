@@ -651,14 +651,20 @@ const ScenePage = () => {
             <div className="mb-5 animate-scale-in" id="minigame-trigger">
               <button
                 onClick={() => {
+                  // Always scroll to top first so user sees the mini-game immediately
+                  window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+                  document.documentElement.scrollTop = 0;
+                  document.body.scrollTop = 0;
                   setMiniGameReady(true);
-                  // Scroll to the mini-game area, not top of page
+                  // Then scroll to mini-game area after render
                   setTimeout(() => {
                     const el = document.getElementById('minigame-area');
                     if (el) {
                       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                      window.scrollTo({ top: 0, left: 0 });
                     }
-                  }, 100);
+                  }, 150);
                 }}
                 className="btn-medieval w-full flex items-center justify-center gap-3"
               >
