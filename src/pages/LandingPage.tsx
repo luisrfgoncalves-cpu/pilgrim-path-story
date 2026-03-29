@@ -340,18 +340,10 @@ const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
         <p className="text-xs text-muted-foreground">Navegue livremente pelo app — toque, role, explore!</p>
       </div>
 
-      <button
-        onClick={onBuy}
-        className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-display text-sm font-bold text-primary-foreground"
-        style={{
-          background: 'linear-gradient(135deg, hsl(40 70% 45%), hsl(40 60% 30%))',
-          boxShadow: '0 0 20px hsl(40 70% 50% / 0.3), 0 4px 15px rgba(0,0,0,0.4)',
-          border: '1px solid hsl(40 70% 55% / 0.3)',
-        }}
-      >
+      <CtaButton onClick={onBuy} variant="primary" className="text-sm min-h-[48px] px-6">
         <Crown className="w-4 h-4" />
         Quero o Acesso Completo — R$67/ano
-      </button>
+      </CtaButton>
     </div>
   );
 };
