@@ -41,6 +41,9 @@ const ScenePage = () => {
   const chapter = getChapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
+  // Dynamic events system
+  const dynamicEvents = useDynamicEvents(progress, progress.currentChapterId);
+
   // Emotional state system (9 postures)
   const emotional = useMemo(() => 
     chapter ? resolveEmotionalState(progress.attributes, chapter.id, Object.entries(progress.flags).filter(([, v]) => v).map(([k]) => k), recentEffects) : null
@@ -59,7 +62,7 @@ const ScenePage = () => {
     attributes: progress.attributes,
   }), [progress, history]);
 
-  // Build full narrative with adaptive + flag-based + tone-based + emotional + replay + variation segments
+  // Build full narrative: base + variations + dynamic events + consequence hints
   const fullNarrative = chapter ? [
     ...chapter.narrative,
     ...(isReplay && chapter.replayNarrative ? chapter.replayNarrative : []),
@@ -82,6 +85,10 @@ const ScenePage = () => {
       if (val <= tone.lowThreshold) return tone.lowText;
       return null;
     }).filter((t): t is string => t !== null),
+    // Dynamic events narrative (randomly selected per playthrough)
+    ...dynamicEvents.extraNarrative,
+    // Consequence echoes from past dynamic choices
+    ...dynamicEvents.consequenceHints.map(h => `_${h}_`),
     ...(emotional?.atmosphereLine ? [emotional.atmosphereLine] : []),
   ] : [];
 
