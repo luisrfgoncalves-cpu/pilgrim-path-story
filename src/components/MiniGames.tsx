@@ -989,36 +989,69 @@ function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps)
   const diceEmoji = (n: number) => ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][n - 1] || '⚀';
 
   const playerPortrait = characterPortraits?.[0];
-  const enemyPortrait = characterPortraits?.find(c => c.id !== playerPortrait?.id) || characterPortraits?.[1];
+  // Match enemy portrait: try by name similarity with duelEnemy, or fall back to second portrait
+  const enemyPortrait = characterPortraits?.find(c => {
+    if (c.id === playerPortrait?.id) return false;
+    const enemyNameLower = enemy.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const cNameLower = c.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return cNameLower.includes(enemyNameLower) || enemyNameLower.includes(cNameLower);
+  }) || characterPortraits?.find(c => c.id !== playerPortrait?.id) || null;
 
   if (phase === 'intro') {
     return (
-      <div className="game-card game-card-red text-center space-y-4 animate-scale-in">
-        {/* Character portraits in intro */}
-        <div className="flex items-center justify-center gap-6">
-          {playerPortrait && (
-            <div className="text-center">
-              <img src={playerPortrait.img} alt={playerPortrait.name} className="w-16 h-16 rounded-full object-cover border-2" style={{ borderColor: 'hsl(120 40% 45%)' }} />
-              <p className="text-[10px] font-display font-bold mt-1" style={{ color: 'hsl(120 50% 60%)' }}>{playerPortrait.name}</p>
-            </div>
-          )}
-          <span className="text-2xl font-display font-bold" style={{ color: 'hsl(0 60% 55%)' }}>⚔️</span>
-          <div className="text-center">
-            {enemyPortrait ? (
-              <>
-                <img src={enemyPortrait.img} alt={enemyPortrait.name} className="w-16 h-16 rounded-full object-cover border-2" style={{ borderColor: 'hsl(0 50% 45%)' }} />
-                <p className="text-[10px] font-display font-bold mt-1" style={{ color: 'hsl(0 50% 60%)' }}>{enemyPortrait.name}</p>
-              </>
+      <div className="game-card game-card-red text-center space-y-5 animate-scale-in">
+        <h3 className="game-title">⚔️ Duelo Espiritual</h3>
+
+        {/* Large character portraits VS screen */}
+        <div className="flex items-center justify-center gap-4 py-2">
+          <div className="text-center flex-1">
+            {playerPortrait ? (
+              <img src={playerPortrait.img} alt={playerPortrait.name}
+                className="w-24 h-24 mx-auto rounded-full object-cover"
+                style={{
+                  border: '3px solid hsl(120 50% 45%)',
+                  boxShadow: '0 0 24px hsl(120 60% 45% / 0.5), 0 0 60px hsl(120 50% 40% / 0.2)',
+                }}
+              />
             ) : (
-              <>
-                <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl" style={{ background: 'hsl(0 30% 20%)', border: '2px solid hsl(0 50% 45%)' }}>{enemy.emoji}</div>
-                <p className="text-[10px] font-display font-bold mt-1" style={{ color: 'hsl(0 50% 60%)' }}>{enemy.name}</p>
-              </>
+              <div className="w-24 h-24 mx-auto rounded-full flex items-center justify-center text-4xl"
+                style={{ background: 'hsl(120 30% 15%)', border: '3px solid hsl(120 50% 45%)' }}>⚔️</div>
             )}
+            <p className="text-sm font-display font-bold mt-2" style={{ color: 'hsl(120 50% 65%)' }}>
+              {playerPortrait?.name || 'Você'}
+            </p>
+            <p className="text-[10px]" style={{ color: 'hsl(120 30% 50%)' }}>Peregrino</p>
+          </div>
+
+          <div className="flex flex-col items-center gap-1 flex-shrink-0">
+            <span className="text-3xl font-display font-bold" style={{
+              color: 'hsl(0 70% 55%)',
+              textShadow: '0 0 20px hsl(0 60% 50% / 0.6)',
+            }}>VS</span>
+          </div>
+
+          <div className="text-center flex-1">
+            {enemyPortrait ? (
+              <img src={enemyPortrait.img} alt={enemyPortrait.name}
+                className="w-24 h-24 mx-auto rounded-full object-cover"
+                style={{
+                  border: '3px solid hsl(0 50% 45%)',
+                  boxShadow: '0 0 24px hsl(0 60% 50% / 0.5), 0 0 60px hsl(0 50% 40% / 0.2)',
+                }}
+              />
+            ) : (
+              <div className="w-24 h-24 mx-auto rounded-full flex items-center justify-center text-4xl"
+                style={{ background: 'hsl(0 30% 15%)', border: '3px solid hsl(0 50% 45%)' }}>
+                {enemy.emoji}
+              </div>
+            )}
+            <p className="text-sm font-display font-bold mt-2" style={{ color: 'hsl(0 50% 65%)' }}>
+              {enemyPortrait?.name || enemy.name}
+            </p>
+            <p className="text-[10px]" style={{ color: 'hsl(0 30% 50%)' }}>Oponente</p>
           </div>
         </div>
 
-        <h3 className="game-title">Duelo Espiritual</h3>
         <p className="game-subtitle">{config.intro}</p>
 
         <div className="space-y-3 text-left" style={{
@@ -1033,29 +1066,29 @@ function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps)
               <span className="text-lg">⚔️</span>
               <div>
                 <span className="font-display font-bold text-sm" style={{ color: 'hsl(0 60% 70%)' }}>Atacar</span>
-                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Se seu dado ≥ inimigo: causa dano. Senão: leva contra-ataque. Dado 6 = crítico (1.5x dano)!</p>
+                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Se seu dado ≥ inimigo: causa dano. Senão: leva contra-ataque. Dado 6 = crítico!</p>
               </div>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-lg">🛡️</span>
               <div>
                 <span className="font-display font-bold text-sm" style={{ color: 'hsl(220 60% 70%)' }}>Defender</span>
-                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Bloqueia o dano do inimigo com seu dado. Dado 6 = riposte (devolve 2 de dano)!</p>
+                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Bloqueia dano. Dado 6 = riposte!</p>
               </div>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-lg">🙏</span>
               <div>
                 <span className="font-display font-bold text-sm" style={{ color: 'hsl(40 70% 70%)' }}>Orar</span>
-                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Cura metade do dado. Dado ≥ 5 também causa dano espiritual ao inimigo!</p>
+                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Cura + dano espiritual se dado ≥ 5!</p>
               </div>
             </div>
           </div>
-          <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>💡 Repetir a mesma ação gera combo (+15% por vez)</p>
+          <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>💡 Repetir mesma ação = combo (+15%)</p>
         </div>
 
         <button onClick={() => { playGameSfx('gameStart'); setPhase('choose'); }} className="btn-medieval w-full">
-          Enfrentar {enemy.name}!
+          Enfrentar {enemyPortrait?.name || enemy.name}!
         </button>
       </div>
     );
