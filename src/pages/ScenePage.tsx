@@ -375,28 +375,63 @@ const ScenePage = () => {
           </div>
         )}
 
-        {/* Character portraits */}
-        {chapter.characters && chapter.characters.length > 0 && (() => {
+        {/* Character portraits — always show protagonist + scene characters */}
+        {(() => {
           const allChars = [...characters, ...part2Characters];
-          const sceneChars = chapter.characters
+          const isPart2 = progress.campaign === 'part2';
+          const protagonistId = isPart2 ? 'crista' : 'cristao';
+          
+          // Build character list: always include protagonist + scene characters
+          const sceneCharIds = chapter.characters || [];
+          const charIds = sceneCharIds.includes(protagonistId) 
+            ? sceneCharIds 
+            : [protagonistId, ...sceneCharIds];
+          
+          const sceneChars = charIds
             .map(id => ({ id, char: allChars.find(c => c.id === id), img: characterImages[id] }))
             .filter(c => c.img);
+          
           if (sceneChars.length === 0) return null;
+          
           return (
-            <div className="px-4 py-3 flex items-center gap-3 overflow-x-auto">
-              {sceneChars.map(({ id, char, img }) => (
-                <div key={id} className="flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg bg-card border border-border">
-                  <img
-                    src={img}
-                    alt={char?.name || id}
-                    className="w-10 h-10 rounded-full object-cover border-2 border-primary/30"
-                  />
-                  <div>
-                    <p className="text-xs font-display text-foreground leading-tight">{char?.name || id}</p>
-                    {char?.role && <p className="text-[9px] text-muted-foreground">{char.role}</p>}
-                  </div>
-                </div>
-              ))}
+            <div className="px-4 py-4">
+              <div className="flex items-start gap-3 overflow-x-auto pb-1">
+                {sceneChars.map(({ id, char, img }, i) => {
+                  const isProtagonist = id === protagonistId;
+                  return (
+                    <button
+                      key={id}
+                      onClick={() => navigate('/personagens')}
+                      className={`flex-shrink-0 flex flex-col items-center gap-2 rounded-xl transition-all active:scale-95 ${
+                        isProtagonist 
+                          ? 'bg-card border-2 border-primary/40 px-4 py-3 shadow-lg shadow-primary/10' 
+                          : 'bg-card border-2 border-border px-3 py-2.5'
+                      }`}
+                      style={{ animationDelay: `${i * 0.1}s` }}
+                    >
+                      <img
+                        src={img}
+                        alt={char?.name || id}
+                        className={`rounded-full object-cover border-2 ${
+                          isProtagonist 
+                            ? 'w-16 h-16 border-primary/50 shadow-md' 
+                            : 'w-14 h-14 border-primary/30'
+                        }`}
+                      />
+                      <div className="text-center">
+                        <p className={`font-display leading-tight ${
+                          isProtagonist ? 'text-sm text-primary' : 'text-xs text-foreground'
+                        }`}>{char?.name || id}</p>
+                        {char?.role && (
+                          <p className={`text-muted-foreground mt-0.5 ${
+                            isProtagonist ? 'text-[10px]' : 'text-[9px]'
+                          }`}>{char.role}</p>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           );
         })()}
