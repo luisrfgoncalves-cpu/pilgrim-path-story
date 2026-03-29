@@ -180,10 +180,10 @@ const ScenePage = () => {
   const lockedChoices = chapter.choices.filter(c => !meetsRequirements(c.requires) && !c.requiresFlag && !c.excludesFlag);
 
   return (
-    <div id="scene-container" className={`min-h-screen bg-background flex flex-col transition-all duration-700 ${emotionalClass} ${atmosphere.wobbleClass}`} style={atmosphere.containerStyle}>
-      {/* Atmosphere overlays */}
-      <div className="atmo-vignette" style={{ '--vignette-opacity': atmosphere.vignetteOpacity, opacity: atmosphere.vignetteOpacity > 0.02 ? 1 : 0 } as React.CSSProperties} />
-      <div className="atmo-glow" style={{ '--glow-opacity': atmosphere.glowOpacity, opacity: atmosphere.glowOpacity > 0.02 ? 1 : 0 } as React.CSSProperties} />
+    <div id="scene-container" className={`min-h-screen bg-background flex flex-col transition-all duration-[2000ms] ease-in-out ${emotionalClass} ${atmosphere.wobbleClass}`} style={atmosphere.containerStyle}>
+      {/* Atmosphere overlays — gradual transitions */}
+      <div className="atmo-vignette transition-opacity duration-[2000ms] ease-in-out" style={{ '--vignette-opacity': atmosphere.vignetteOpacity, opacity: atmosphere.vignetteOpacity > 0.02 ? 1 : 0 } as React.CSSProperties} />
+      <div className="atmo-glow transition-opacity duration-[2000ms] ease-in-out" style={{ '--glow-opacity': atmosphere.glowOpacity, opacity: atmosphere.glowOpacity > 0.02 ? 1 : 0 } as React.CSSProperties} />
       {/* Header with avatar */}
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
