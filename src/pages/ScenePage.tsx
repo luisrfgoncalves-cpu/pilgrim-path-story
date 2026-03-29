@@ -103,13 +103,44 @@ const ScenePage = () => {
     const protagonistId = isPart2 ? 'crista' : 'cristao';
     const sceneCharIds = chapter.characters || [];
     const charIds = sceneCharIds.includes(protagonistId) ? sceneCharIds : [protagonistId, ...sceneCharIds];
-    return charIds
+    const portraits = charIds
       .map(id => {
         const char = allChars.find(c => c.id === id);
         const img = characterImages[id];
         return img ? { id, name: char?.name || id, img } : null;
       })
       .filter(Boolean) as { id: string; name: string; img: string }[];
+
+    // For dice duels: ensure enemy portrait exists by matching duelEnemy name to characters
+    const mapping = miniGameMappings[chapter.id];
+    if (mapping?.duelEnemy && portraits.length <= 1) {
+      const enemyName = mapping.duelEnemy.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      // Try to find matching character by name
+      const matchedChar = allChars.find(c => {
+        const cName = c.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return cName.includes(enemyName) || enemyName.includes(cName);
+      });
+      if (matchedChar) {
+        const img = characterImages[matchedChar.id];
+        if (img && !portraits.find(p => p.id === matchedChar.id)) {
+          portraits.push({ id: matchedChar.id, name: matchedChar.name, img });
+        }
+      }
+      // Fallback mapping for enemies without character matches
+      if (portraits.length <= 1) {
+        const fallbackMap: Record<string, string> = {
+          'instrutor': 'discricao', // Discrição trains at the Palace
+          'acusador': 'juiz_odio_ao_bem', // Judge Hatred-of-Good
+        };
+        const fallbackId = fallbackMap[enemyName];
+        if (fallbackId && characterImages[fallbackId] && !portraits.find(p => p.id === fallbackId)) {
+          const fChar = allChars.find(c => c.id === fallbackId);
+          portraits.push({ id: fallbackId, name: mapping.duelEnemy.name, img: characterImages[fallbackId] });
+        }
+      }
+    }
+
+    return portraits;
   }, [chapter, progress.campaign]);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
