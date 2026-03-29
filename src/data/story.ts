@@ -809,16 +809,25 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Mesmo sob pressão, você se mantém firme. A força vem de algo além de você."
     ],
+    adaptiveNarrative: [
+      { minAttr: "fe", minValue: 8, text: "Sua fé acumulada brilha neste momento. A força parece mais acessível." }
+    ],
     choices: [
       {
         text: "Confiar",
         nextChapterId: "fase3-cena8",
-        effects: { fe: 2 }
+        effects: { fe: 2 },
+        conditionalEffects: [
+          { attr: "fe", threshold: 10, bonus: { fe: 2, perseveranca: 1 }, penalty: { fe: -1 } }
+        ]
       },
       {
         text: "Duvidar",
         nextChapterId: "fase3-cena7",
-        effects: { fe: -1 }
+        effects: { fe: -1 },
+        conditionalEffects: [
+          { attr: "fe", threshold: 5, bonus: {}, penalty: { coragem: -1 } }
+        ]
       }
     ]
   },
@@ -880,12 +889,18 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Buscar força",
         nextChapterId: "fase3-cena6",
-        effects: { fe: 1 }
+        effects: { fe: 1 },
+        conditionalEffects: [
+          { attr: "perseveranca", threshold: 7, bonus: { coragem: 2 }, penalty: {} }
+        ]
       },
       {
         text: "Permanecer parado",
         nextChapterId: "fase3-cena9",
-        effects: { coragem: -1 }
+        effects: { coragem: -1 },
+        conditionalEffects: [
+          { attr: "fe", threshold: 4, bonus: {}, penalty: { fe: -1 } }
+        ]
       }
     ]
   },
