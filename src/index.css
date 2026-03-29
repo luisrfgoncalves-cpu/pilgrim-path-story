@@ -126,6 +126,7 @@
 
   .font-display {
     font-family: 'Playfair Display', serif;
+    word-spacing: 0.12em;
   }
 
   .font-body {
@@ -145,8 +146,8 @@
   }
 
   .scene-title {
-    letter-spacing: normal;
-    word-spacing: normal;
+    letter-spacing: 0.02em;
+    word-spacing: 0.15em;
     overflow-wrap: anywhere;
   }
 
