@@ -27,7 +27,7 @@ import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEve
 import { MiniGame, MiniGameResult } from '@/components/MiniGames';
 import { FullscreenMiniGame, FULLSCREEN_GAMES } from '@/components/FullscreenMiniGame';
 import { miniGameMappings } from '@/data/miniGameMappings';
-import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, Zap, Star, Shield, Flame } from 'lucide-react';
+import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, ArrowLeft, Zap, Star, Shield, Flame } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
@@ -48,7 +48,7 @@ interface InlineConsequence {
 
 const ScenePage = () => {
   const navigate = useNavigate();
-  const { progress, makeChoice, meetsRequirements, hasFlag, isReplay, completePlaythrough, hadFlagBefore, addItem, history } = useStoryProgress();
+  const { progress, makeChoice, goToChapter, meetsRequirements, hasFlag, isReplay, completePlaythrough, hadFlagBefore, addItem, history } = useStoryProgress();
   useProgressSync(progress);
   const [narrativeIndex, setNarrativeIndex] = useState(0);
   const [showChoices, setShowChoices] = useState(false);
@@ -402,7 +402,24 @@ const ScenePage = () => {
               <span className="text-xs text-muted-foreground flex-shrink-0 font-display">{progressPercent}%</span>
             </div>
           </div>
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Back to previous scene */}
+            {progress.visitedChapters.length > 1 && (
+              <button
+                onClick={() => {
+                  const visited = progress.visitedChapters;
+                  const currentIdx = visited.indexOf(progress.currentChapterId);
+                  const prevId = currentIdx > 0 ? visited[currentIdx - 1] : visited[visited.length - 2];
+                  if (prevId && prevId !== progress.currentChapterId) {
+                    goToChapter(prevId);
+                  }
+                }}
+                className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95"
+                aria-label="Cena anterior"
+              >
+                <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+              </button>
+            )}
             <button
               onClick={() => { const next = !audioOn; setAudioOn(next); toggleAudio(next); }}
               className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95"
@@ -428,7 +445,7 @@ const ScenePage = () => {
       <main className={`flex-1 max-w-lg mx-auto w-full ${transitioning ? 'opacity-0' : 'scene-transition-enter'}`}>
         {/* Scene image with preloading */}
         {bgImage && (
-          <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px' }}>
+          <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px', minHeight: '180px', background: 'hsl(25 20% 12%)' }}>
             <img
               src={bgImage}
               alt={chapter.title}
@@ -436,12 +453,15 @@ const ScenePage = () => {
               height={576}
               loading="eager"
               decoding="async"
+              fetchPriority="high"
               onLoad={() => setImageLoaded(true)}
-              className={`w-full h-auto object-cover transition-all duration-500 scene-image scene-image-alive ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`w-full h-auto object-cover transition-opacity duration-500 scene-image scene-image-alive ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               style={atmosphere.imageStyle}
             />
             {!imageLoaded && (
-              <div className="absolute inset-0 bg-card animate-pulse" />
+              <div className="absolute inset-0 bg-card flex items-center justify-center">
+                <div className="w-8 h-8 border-2 border-primary/40 border-t-primary rounded-full animate-spin" />
+              </div>
             )}
             {/* Particle effects overlay */}
             {imageLoaded && (() => {
@@ -569,9 +589,18 @@ const ScenePage = () => {
 
           {/* ═══ MINI-GAME TRIGGER BUTTON ═══ */}
           {showChoices && !miniGameDone && miniGameMappings[chapter.id] && !miniGameReady && (
-            <div className="mb-5 animate-scale-in">
+            <div className="mb-5 animate-scale-in" id="minigame-trigger">
               <button
-                onClick={() => { setMiniGameReady(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                onClick={() => {
+                  setMiniGameReady(true);
+                  // Scroll to the mini-game area, not top of page
+                  setTimeout(() => {
+                    const el = document.getElementById('minigame-area');
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }, 100);
+                }}
                 className="btn-medieval w-full flex items-center justify-center gap-3"
               >
                 <Zap className="w-5 h-5" />
@@ -586,7 +615,7 @@ const ScenePage = () => {
 
           {/* ═══ MINI-GAME (inline for minor games) ═══ */}
           {showChoices && !miniGameDone && miniGameReady && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
-            <div className="mb-5 animate-scale-in space-y-4">
+            <div id="minigame-area" className="mb-5 animate-scale-in space-y-4">
               {scenePortraits.length > 0 && (
                 <div className="flex items-center justify-center gap-3 overflow-x-auto pb-1">
                   {scenePortraits.slice(0, 3).map((p, idx) => (
@@ -627,24 +656,27 @@ const ScenePage = () => {
 
           {/* ═══ FULLSCREEN MINI-GAME (major games) ═══ */}
           {showChoices && !miniGameDone && miniGameReady && miniGameMappings[chapter.id] && FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
-            <FullscreenMiniGame
-              config={miniGameMappings[chapter.id]}
-              chapterId={chapter.id}
-              characterPortraits={scenePortraits}
-              onComplete={(result) => {
-                setMiniGameResult(result);
-                setMiniGameDone(true);
-                setShowMiniGameResult(true);
-                if (result.effects) {
-                  triggerChoiceEffect(result.effects as Record<string, number>);
-                  sfxForChoice(result.effects as Record<string, number>);
-                }
-                setTimeout(() => setShowMiniGameResult(false), 3000);
-              }}
-              onSkip={() => {
-                setMiniGameDone(true);
-              }}
-            />
+            <>
+              <div id="minigame-area" />
+              <FullscreenMiniGame
+                config={miniGameMappings[chapter.id]}
+                chapterId={chapter.id}
+                characterPortraits={scenePortraits}
+                onComplete={(result) => {
+                  setMiniGameResult(result);
+                  setMiniGameDone(true);
+                  setShowMiniGameResult(true);
+                  if (result.effects) {
+                    triggerChoiceEffect(result.effects as Record<string, number>);
+                    sfxForChoice(result.effects as Record<string, number>);
+                  }
+                  setTimeout(() => setShowMiniGameResult(false), 3000);
+                }}
+                onSkip={() => {
+                  setMiniGameDone(true);
+                }}
+              />
+            </>
           )}
 
           {/* Mini-game result toast */}
