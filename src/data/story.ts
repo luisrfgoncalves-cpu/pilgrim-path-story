@@ -196,6 +196,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     interactionType: 'timed',
     timeLimit: 12,
     timeoutChoiceIndex: 1,
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000 },
     narrative: [
       "O peso se torna insuportável. Você já não consegue fingir que está tudo bem."
     ],
@@ -359,6 +360,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     reflection: "r5",
     interactionType: 'hold',
+    sceneEvent: { type: 'tension', intensity: 1, duration: 2500, message: 'O chão estremece sob seus pés...' },
     narrative: [
       "O terreno começa a ficar instável. Você entra em uma área difícil de atravessar."
     ],
@@ -409,6 +411,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     interactionType: 'timed',
     timeLimit: 10,
     timeoutChoiceIndex: 1,
+    sceneEvent: { type: 'sinking', duration: 12000, message: 'O pântano te puxa para baixo!' },
     narrative: [
       "Você começa a afundar. O terreno era mais perigoso do que parecia."
     ],
