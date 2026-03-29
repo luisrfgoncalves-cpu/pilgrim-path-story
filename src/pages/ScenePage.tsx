@@ -340,7 +340,7 @@ const ScenePage = () => {
               className={`w-full h-auto object-cover transition-all duration-500 scene-image ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               style={atmosphere.imageStyle}
             />
-            <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background via-background/40 to-transparent" />
+            <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background via-background/20 to-transparent" />
             <div className="absolute bottom-3 left-4 flex items-center gap-2">
               <MapPin className="w-3 h-3 text-primary" />
               <span className="text-[11px] uppercase tracking-widest text-primary font-medium drop-shadow-lg">{chapter.location}</span>

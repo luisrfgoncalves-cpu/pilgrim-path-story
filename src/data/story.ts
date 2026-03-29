@@ -88,10 +88,19 @@ export interface Reflection {
 
 export const characters: Character[] = [
   { id: "cristao", name: "Cristão", description: "Um homem chamado Gracioso que, ao ler um livro, descobre que sua cidade será destruída. O peso de seus pecados o esmaga, e ele parte em busca da Porta Estreita e da Cidade Celestial.", role: "Protagonista", unlockedAtChapter: "cena1" },
+  { id: "obstinado", name: "Obstinado", description: "Vizinho de Cristão que zomba de sua decisão e tenta convencê-lo a abandonar a jornada. Representa aqueles que se recusam a ouvir qualquer chamado espiritual.", role: "Opositor", unlockedAtChapter: "cena2" },
+  { id: "flexivel", name: "Flexível", description: "Vizinho que inicialmente se junta a Cristão, mas desiste ao primeiro sinal de dificuldade no Pântano do Desânimo. Representa a fé superficial.", role: "Companheiro temporário", unlockedAtChapter: "cena2" },
   { id: "evangelista", name: "Evangelista", description: "O mensageiro que aponta para Cristão a Porta Estreita e o pergaminho luminoso. Ele reaparece nos momentos em que Cristão se desvia do caminho.", role: "Guia", unlockedAtChapter: "cena5" },
+  { id: "prudencia_mundana", name: "Prudência Mundana", description: "Um homem astuto que aconselha Cristão a buscar alívio no vilarejo da Moralidade, tentando desviá-lo do caminho estreito com soluções fáceis e mundanas.", role: "Tentador", unlockedAtChapter: "cena8" },
+  { id: "auxilio", name: "Auxílio", description: "O homem que estende a mão a Cristão quando ele está afundando no Pântano do Desânimo. Representa a ajuda divina nos momentos de maior fraqueza.", role: "Ajudante", unlockedAtChapter: "cena13" },
   { id: "interprete", name: "Intérprete", description: "O sábio guardião da Casa do Intérprete, que revela verdades espirituais através de visões e parábolas vivas.", role: "Mestre", unlockedAtChapter: "fase2-cena1" },
+  { id: "homem_gaiola", name: "Homem na Gaiola de Ferro", description: "Um ex-peregrino que abandonou o caminho e agora está preso no desespero, incapaz de recuperar a graça que rejeitou. Serve como aviso solene.", role: "Advertência", unlockedAtChapter: "fase2-cena8" },
   { id: "apolion", name: "Apolião", description: "O terrível governante do Vale da Humilhação, uma criatura coberta de escamas com asas de dragão, que tenta destruir Cristão.", role: "Antagonista", unlockedAtChapter: "fase3-cena3" },
-  { id: "gigante_desespero", name: "Gigante Desespero", description: "O dono do Castelo da Dúvida, que aprisiona peregrinos que se desviam do caminho e tenta convencê-los a desistir da vida.", role: "Antagonista", unlockedAtChapter: "fase5-cena4" },
+  { id: "fiel", name: "Fiel", description: "Um peregrino corajoso que se junta a Cristão após o Vale da Humilhação. Na Feira da Vaidade, ele é martirizado por se recusar a negar a verdade, e sua morte inspira outros.", role: "Companheiro e Mártir", unlockedAtChapter: "fase3-cena8" },
+  { id: "esperanca", name: "Esperança", description: "Convertido pelo testemunho e martírio de Fiel na Feira da Vaidade. Torna-se o companheiro fiel de Cristão até a Cidade Celestial, encorajando-o nos momentos mais sombrios.", role: "Companheiro", unlockedAtChapter: "fase4-cena8" },
+  { id: "gigante_desespero", name: "Gigante Desespero", description: "O dono do Castelo da Dúvida, que aprisiona peregrinos que se desviam do caminho e tenta convencê-los a desistir da vida.", role: "Antagonista", unlockedAtChapter: "fase5-cena2" },
+  { id: "desconfianca", name: "Desconfiança", description: "A esposa do Gigante Desespero, que sussurra conselhos cruéis ao marido sobre como torturar os prisioneiros.", role: "Antagonista", unlockedAtChapter: "fase5-cena3" },
+  { id: "pastores", name: "Os Pastores das Montanhas", description: "Conhecimento, Experiência, Vigilante e Sincero — os quatro pastores das Montanhas Deleitosas que mostram aos peregrinos uma visão distante da Cidade Celestial.", role: "Guias", unlockedAtChapter: "fase5-cena9" },
 ];
 
 export const reflections: Reflection[] = [
