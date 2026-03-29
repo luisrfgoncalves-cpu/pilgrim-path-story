@@ -543,6 +543,53 @@ const ScenePage = () => {
             </>
           )}
 
+          {/* ═══ MINI-GAME ═══ */}
+          {showChoices && !miniGameDone && miniGameMappings[chapter.id] && (
+            <div className="mb-5 animate-scale-in">
+              <MiniGame
+                config={miniGameMappings[chapter.id]}
+                onComplete={(result) => {
+                  setMiniGameResult(result);
+                  setMiniGameDone(true);
+                  setShowMiniGameResult(true);
+                  // Apply effects from mini-game
+                  if (result.effects) {
+                    triggerChoiceEffect(result.effects as Record<string, number>);
+                    sfxForChoice(result.effects as Record<string, number>);
+                  }
+                  setTimeout(() => setShowMiniGameResult(false), 3000);
+                }}
+              />
+            </div>
+          )}
+
+          {/* Mini-game result toast */}
+          {showMiniGameResult && miniGameResult && (
+            <div className="mb-4 animate-fade-in">
+              <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 ${
+                miniGameResult.success
+                  ? 'bg-primary/10 border-primary/30 text-primary'
+                  : 'bg-destructive/10 border-destructive/30 text-destructive'
+              }`}>
+                <span className="text-xl">{miniGameResult.success ? '🏆' : '💔'}</span>
+                <div className="flex-1">
+                  <p className="text-sm font-display">
+                    {miniGameResult.success ? 'Desafio superado!' : 'Desafio falhou...'}
+                  </p>
+                  <p className="text-xs opacity-80">
+                    {Object.entries(miniGameResult.effects)
+                      .filter(([, v]) => v !== 0)
+                      .map(([k, v]) => {
+                        const labels: Record<string, string> = { fe: 'Fé', perseveranca: 'Perseverança', discernimento: 'Discernimento', coragem: 'Coragem' };
+                        return `${labels[k] || k} ${(v as number) > 0 ? '+' : ''}${v}`;
+                      })
+                      .join(', ')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Suspense overlay */}
           {suspenseActive && pendingChoice && (
             <SuspenseDelay
