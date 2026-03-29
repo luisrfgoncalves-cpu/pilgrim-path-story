@@ -250,6 +250,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Você vê dois caminhos: um fácil e outro estreito e difícil."
     ],
+    replayNarrative: [
+      "Você já conhece essa encruzilhada. Da última vez, fez uma escolha. Desta vez, pode fazer outra."
+    ],
     toneNarrative: [
       { attr: "discernimento", highThreshold: 6, highText: "Seu discernimento te permite ver além das aparências. O caminho fácil esconde armadilhas.", lowThreshold: 3, lowText: "Os dois parecem iguais. Você não consegue distinguir qual é melhor." },
       { attr: "coragem", highThreshold: 6, highText: "Algo dentro de você se inclina para o desafio. O difícil não te assusta.", lowThreshold: 3, lowText: "O medo te puxa para o caminho mais seguro. Será que vale arriscar?" }
@@ -446,6 +449,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "interprete"],
     narrative: [
       "Após avançar no caminho, você encontra uma casa diferente. Há algo especial naquele lugar."
+    ],
+    replayNarrative: [
+      "A casa é a mesma, mas você é diferente. O que descobrirá desta vez?"
     ],
     choices: [
       {
@@ -704,6 +710,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     narrative: [
       "O caminho desce para um vale escuro. O ambiente muda. Tudo parece mais pesado."
+    ],
+    replayNarrative: [
+      "O vale é o mesmo. Mas as decisões que te trouxeram aqui são diferentes. O que mudará desta vez?"
     ],
     flagNarrative: [
       { flag: "entrou_casa_interprete", text: "As lições da casa ecoam na sua mente. Você sabe que precisará delas aqui." }
@@ -968,6 +977,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     narrative: [
       "Você chega a um lugar movimentado. Pessoas, ofertas e distrações estão por toda parte."
+    ],
+    replayNarrative: [
+      "A feira continua a mesma — barulhenta, sedutora. Mas você já sabe o que ela esconde. Ou será que sabe?"
     ],
     flagNarrative: [
       { flag: "enfrentou_vale", text: "Depois do vale escuro, a luz e o barulho da feira são quase um alívio — mas algo parece errado." }
