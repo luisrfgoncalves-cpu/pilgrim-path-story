@@ -47,6 +47,8 @@ export interface MiniGameResult {
 interface MiniGameProps {
   config: MiniGameConfig;
   onComplete: (result: MiniGameResult) => void;
+  /** Character portraits from the scene: { id, name, img }[] */
+  characterPortraits?: { id: string; name: string; img: string }[];
 }
 
 // ═══════════════════════════════════════════
