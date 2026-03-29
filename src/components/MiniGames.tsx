@@ -47,6 +47,8 @@ export interface MiniGameResult {
 interface MiniGameProps {
   config: MiniGameConfig;
   onComplete: (result: MiniGameResult) => void;
+  /** Character portraits from the scene: { id, name, img }[] */
+  characterPortraits?: { id: string; name: string; img: string }[];
 }
 
 // ═══════════════════════════════════════════
@@ -845,7 +847,7 @@ interface DiceState {
   rolling: boolean;
 }
 
-function DiceDuelGame({ config, onComplete }: MiniGameProps) {
+function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps) {
   const enemy = config.duelEnemy || { name: 'Inimigo', emoji: '👹', power: 5 };
   const diff = config.difficulty || 'normal';
   const totalRounds = diff === 'easy' ? 5 : diff === 'hard' ? 8 : 6;
@@ -986,10 +988,36 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
 
   const diceEmoji = (n: number) => ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][n - 1] || '⚀';
 
+  const playerPortrait = characterPortraits?.[0];
+  const enemyPortrait = characterPortraits?.find(c => c.id !== playerPortrait?.id) || characterPortraits?.[1];
+
   if (phase === 'intro') {
     return (
       <div className="game-card game-card-red text-center space-y-4 animate-scale-in">
-        <div className="text-6xl" style={{ filter: 'drop-shadow(0 0 15px hsl(0 60% 50% / 0.5))' }}>{enemy.emoji}</div>
+        {/* Character portraits in intro */}
+        <div className="flex items-center justify-center gap-6">
+          {playerPortrait && (
+            <div className="text-center">
+              <img src={playerPortrait.img} alt={playerPortrait.name} className="w-16 h-16 rounded-full object-cover border-2" style={{ borderColor: 'hsl(120 40% 45%)' }} />
+              <p className="text-[10px] font-display font-bold mt-1" style={{ color: 'hsl(120 50% 60%)' }}>{playerPortrait.name}</p>
+            </div>
+          )}
+          <span className="text-2xl font-display font-bold" style={{ color: 'hsl(0 60% 55%)' }}>⚔️</span>
+          <div className="text-center">
+            {enemyPortrait ? (
+              <>
+                <img src={enemyPortrait.img} alt={enemyPortrait.name} className="w-16 h-16 rounded-full object-cover border-2" style={{ borderColor: 'hsl(0 50% 45%)' }} />
+                <p className="text-[10px] font-display font-bold mt-1" style={{ color: 'hsl(0 50% 60%)' }}>{enemyPortrait.name}</p>
+              </>
+            ) : (
+              <>
+                <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl" style={{ background: 'hsl(0 30% 20%)', border: '2px solid hsl(0 50% 45%)' }}>{enemy.emoji}</div>
+                <p className="text-[10px] font-display font-bold mt-1" style={{ color: 'hsl(0 50% 60%)' }}>{enemy.name}</p>
+              </>
+            )}
+          </div>
+        </div>
+
         <h3 className="game-title">Duelo Espiritual</h3>
         <p className="game-subtitle">{config.intro}</p>
 
@@ -1053,54 +1081,65 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
       border: '3px solid hsl(40 60% 45%)',
       boxShadow: '0 0 20px hsl(40 60% 40% / 0.2), inset 0 1px 0 hsl(40 60% 60% / 0.1)',
     }}>
-      {/* HP bars */}
-      <div className="space-y-3">
+      {/* Character portraits + HP bars */}
+      <div className="space-y-2">
         <div className="flex items-center gap-3">
-          <span className="text-lg font-bold" style={{ textShadow: '0 0 8px hsl(40 60% 50% / 0.5)' }}>⚔️</span>
-          <div className="flex-1 h-5 rounded-full overflow-hidden" style={{
-            background: 'hsl(0 0% 8%)',
-            border: '2px solid hsl(120 40% 35%)',
-            boxShadow: '0 0 8px hsl(120 50% 40% / 0.3)',
-          }}>
-            <div className="h-full rounded-full transition-all duration-500" style={{
-              width: `${(playerHP / maxHP) * 100}%`,
-              background: 'linear-gradient(90deg, hsl(120 60% 35%), hsl(90 70% 45%))',
-              boxShadow: 'inset 0 1px 2px hsl(0 0% 100% / 0.3), 0 0 6px hsl(120 60% 45% / 0.4)',
-            }} />
+          {playerPortrait && (
+            <img src={playerPortrait.img} alt={playerPortrait.name} className="w-10 h-10 rounded-full object-cover border-2 flex-shrink-0" style={{ borderColor: 'hsl(120 40% 45%)' }} />
+          )}
+          {!playerPortrait && <span className="text-lg font-bold" style={{ textShadow: '0 0 8px hsl(40 60% 50% / 0.5)' }}>⚔️</span>}
+          <div className="flex-1">
+            <p className="text-[10px] font-display font-bold mb-0.5" style={{ color: 'hsl(120 50% 60%)' }}>{playerPortrait?.name || 'Você'}</p>
+            <div className="h-4 rounded-full overflow-hidden" style={{
+              background: 'hsl(0 0% 8%)',
+              border: '2px solid hsl(120 40% 35%)',
+            }}>
+              <div className="h-full rounded-full transition-all duration-500" style={{
+                width: `${(playerHP / maxHP) * 100}%`,
+                background: 'linear-gradient(90deg, hsl(120 60% 35%), hsl(90 70% 45%))',
+              }} />
+            </div>
           </div>
           <span className="text-sm font-display font-bold min-w-[2rem] text-right" style={{ color: 'hsl(120 60% 55%)' }}>{playerHP}</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-lg">{enemy.emoji}</span>
-          <div className="flex-1 h-5 rounded-full overflow-hidden" style={{
-            background: 'hsl(0 0% 8%)',
-            border: '2px solid hsl(0 50% 40%)',
-            boxShadow: '0 0 8px hsl(0 60% 45% / 0.3)',
-          }}>
-            <div className="h-full rounded-full transition-all duration-500" style={{
-              width: `${(enemyHP / maxHP) * 100}%`,
-              background: 'linear-gradient(90deg, hsl(0 70% 40%), hsl(350 80% 50%))',
-              boxShadow: 'inset 0 1px 2px hsl(0 0% 100% / 0.3), 0 0 6px hsl(0 70% 50% / 0.4)',
-            }} />
+          {enemyPortrait ? (
+            <img src={enemyPortrait.img} alt={enemyPortrait.name} className="w-10 h-10 rounded-full object-cover border-2 flex-shrink-0" style={{ borderColor: 'hsl(0 50% 45%)' }} />
+          ) : (
+            <span className="text-lg">{enemy.emoji}</span>
+          )}
+          <div className="flex-1">
+            <p className="text-[10px] font-display font-bold mb-0.5" style={{ color: 'hsl(0 50% 60%)' }}>{enemyPortrait?.name || enemy.name}</p>
+            <div className="h-4 rounded-full overflow-hidden" style={{
+              background: 'hsl(0 0% 8%)',
+              border: '2px solid hsl(0 50% 40%)',
+            }}>
+              <div className="h-full rounded-full transition-all duration-500" style={{
+                width: `${(enemyHP / maxHP) * 100}%`,
+                background: 'linear-gradient(90deg, hsl(0 70% 40%), hsl(350 80% 50%))',
+              }} />
+            </div>
           </div>
           <span className="text-sm font-display font-bold min-w-[2rem] text-right" style={{ color: 'hsl(0 60% 60%)' }}>{enemyHP}</span>
         </div>
       </div>
 
-      {/* 3D Dice display */}
+      {/* 3D Dice display — names ABOVE, dice below, number shown */}
       {(phase === 'rolling' || roundLog) && (
-        <div className="flex items-center justify-center gap-8 py-4">
+        <div className="flex items-center justify-center gap-6 py-2">
           <div className="text-center">
-            <Dice3D value={dice.player} rolling={dice.rolling} size={72} color="gold" />
-            <p className="text-xs font-display font-bold mt-2" style={{ color: 'hsl(40 70% 65%)' }}>Você</p>
+            <p className="text-xs font-display font-bold mb-1" style={{ color: 'hsl(120 50% 60%)' }}>{playerPortrait?.name || 'Você'}</p>
+            <Dice3D value={dice.player} rolling={dice.rolling} size={56} color="gold" />
+            <p className="text-lg font-display font-bold mt-1" style={{ color: 'hsl(0 0% 85%)' }}>{!dice.rolling && dice.player}</p>
           </div>
-          <span className="text-2xl font-display font-bold" style={{
+          <span className="text-xl font-display font-bold" style={{
             color: 'hsl(0 60% 55%)',
             textShadow: '0 0 12px hsl(0 60% 50% / 0.5)',
           }}>VS</span>
           <div className="text-center">
-            <Dice3D value={dice.enemy} rolling={dice.rolling} size={72} color="red" />
-            <p className="text-xs font-display font-bold mt-2" style={{ color: 'hsl(0 60% 60%)' }}>{enemy.name}</p>
+            <p className="text-xs font-display font-bold mb-1" style={{ color: 'hsl(0 50% 60%)' }}>{enemyPortrait?.name || enemy.name}</p>
+            <Dice3D value={dice.enemy} rolling={dice.rolling} size={56} color="red" />
+            <p className="text-lg font-display font-bold mt-1" style={{ color: 'hsl(0 0% 85%)' }}>{!dice.rolling && dice.enemy}</p>
           </div>
         </div>
       )}
@@ -1616,22 +1655,22 @@ function ReflexGame({ config, onComplete }: MiniGameProps) {
 import { ScripturePuzzle } from '@/components/games/ScripturePuzzle';
 import { PathOfFaith } from '@/components/games/PathOfFaith';
 
-export function MiniGame({ config, onComplete }: MiniGameProps) {
+export function MiniGame({ config, onComplete, characterPortraits }: MiniGameProps) {
   switch (config.type) {
     case 'qte':
-      return <QTEGame config={config} onComplete={onComplete} />;
+      return <QTEGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'swipe':
-      return <SwipeDodgeGame config={config} onComplete={onComplete} />;
+      return <SwipeDodgeGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'memory':
-      return <MemoryGame config={config} onComplete={onComplete} />;
+      return <MemoryGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'stealth':
-      return <StealthGame config={config} onComplete={onComplete} />;
+      return <StealthGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'diceduel':
-      return <DiceDuelGame config={config} onComplete={onComplete} />;
+      return <DiceDuelGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'treasure':
-      return <TreasureHuntGame config={config} onComplete={onComplete} />;
+      return <TreasureHuntGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'reflex':
-      return <ReflexGame config={config} onComplete={onComplete} />;
+      return <ReflexGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'wordpuzzle':
       return <ScripturePuzzle config={config} onComplete={onComplete} />;
     case 'pathchoice':
