@@ -691,8 +691,60 @@ export const eventPools: Record<string, PhaseEventPool> = {
   // ═══════════════════════════════════════
   fase5: {
     phaseId: 'fase5',
-    variableCount: 2,
+    variableCount: 3,
     events: [
+      // ── Personagem: Gigante Desespero e Desconfiança ──
+      {
+        id: 'f5-desconfianca-conselho',
+        type: 'variable',
+        narrative: [
+          'Através das paredes da masmorra, ouve-se a voz de Desconfiança, esposa do Gigante:',
+          '"Faça-os passar fome. Depois, diga que a morte é a única saída. Eles são fracos — todos são."',
+        ],
+        choices: [
+          {
+            text: 'Sussurrar para Esperança: "Eles querem que desistamos. Isso prova que podemos escapar."',
+            effects: { discernimento: 2, coragem: 1 },
+            consequence: 'Se não houvesse saída, o gigante não precisaria convencê-los a desistir.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Deixar as palavras de Desconfiança corroer sua esperança',
+            effects: { fe: -1, perseveranca: -1 },
+            consequence: 'O veneno das palavras se espalha. Desconfiança sabia exatamente onde acertar.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.5,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 3,
+      },
+      // ── Personagem: Ignorância ──
+      {
+        id: 'f5-ignorancia-encontro',
+        type: 'variable',
+        narrative: [
+          'No caminho, encontram um jovem chamado Ignorância, da terra da Presunção.',
+          '"Eu também vou para a Cidade Celestial!", diz ele alegremente. "Meu coração é bom. Não preciso de porta estreita ou cruz."',
+        ],
+        choices: [
+          {
+            text: '"Amigo, sem passar pela porta e pela cruz, os portões não se abrirão"',
+            effects: { discernimento: 2, fe: 1 },
+            consequence: 'Ignorância ri: "Vocês pensam demais. Deus aceita pessoas boas." Ele segue sozinho, sorrindo.',
+            consequenceKey: 'mostrou_misericordia',
+          },
+          {
+            text: 'Deixá-lo seguir seu próprio caminho sem avisar',
+            effects: { discernimento: -1 },
+            consequence: 'Você se perguntará depois se deveria ter insistido mais.',
+            consequenceKey: 'abandonou_companheiro',
+            appearance: 0.7,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
+      },
       {
         id: 'f5-sonho-perturbador',
         type: 'variable',
