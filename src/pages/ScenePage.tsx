@@ -110,14 +110,23 @@ const ScenePage = () => {
   }, [chapter, progress.campaign]);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
-  // Preload next scene images for instant loading
+  // Preload next scene images + character images for instant loading
   useEffect(() => {
-    if (!chapter?.choices) return;
-    const nextImages = chapter.choices
-      .map(c => sceneImages[c.nextChapterId])
-      .filter((img): img is string => !!img);
-    const uniqueImages = [...new Set(nextImages)];
-    uniqueImages.forEach(src => {
+    if (!chapter) return;
+    const toPreload: string[] = [];
+    // Next scene images
+    if (chapter.choices) {
+      chapter.choices.forEach(c => {
+        const img = sceneImages[c.nextChapterId];
+        if (img) toPreload.push(img);
+      });
+    }
+    // Character images for this scene
+    (chapter.characters || []).forEach(id => {
+      const img = characterImages[id];
+      if (img) toPreload.push(img);
+    });
+    [...new Set(toPreload)].forEach(src => {
       const img = new Image();
       img.src = src;
     });
