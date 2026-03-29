@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { FIRST_CHAPTER_ID, ChoiceEffect } from '@/data/story';
+import { FIRST_CHAPTER_ID, ChoiceEffect, ConditionalEffect } from '@/data/story';
 
 const STORAGE_KEY = 'peregrino-progress';
 
