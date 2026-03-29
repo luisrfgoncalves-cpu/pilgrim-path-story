@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { User, LogIn, UserPlus } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { User, LogIn, UserPlus, Mail } from 'lucide-react';
 
 const AuthPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -22,7 +23,11 @@ const AuthPage: React.FC = () => {
     if (isLogin) {
       const { error } = await signIn(email, password);
       if (error) {
-        toast.error(error.message);
+        if (error.message === 'Email not confirmed') {
+          toast.error('Email ainda não confirmado. Verifique sua caixa de entrada (e spam) pelo link de confirmação.');
+        } else {
+          toast.error(error.message);
+        }
       } else {
         toast.success('Bem-vindo de volta, peregrino!');
         navigate('/');
@@ -109,13 +114,27 @@ const AuthPage: React.FC = () => {
           </Button>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center space-y-2">
           <button
             onClick={() => setIsLogin(!isLogin)}
             className="text-sm text-primary hover:underline"
           >
             {isLogin ? 'Não tem conta? Crie uma agora' : 'Já tem conta? Entre aqui'}
           </button>
+          {isLogin && (
+            <button
+              onClick={async () => {
+                if (!email) { toast.error('Digite seu email primeiro'); return; }
+                const { error } = await supabase.auth.resend({ type: 'signup', email });
+                if (error) toast.error(error.message);
+                else toast.success('Email de confirmação reenviado! Verifique sua caixa.');
+              }}
+              className="block mx-auto text-xs text-muted-foreground hover:text-primary hover:underline"
+            >
+              <Mail className="w-3 h-3 inline mr-1" />
+              Reenviar email de confirmação
+            </button>
+          )}
         </div>
       </div>
     </div>

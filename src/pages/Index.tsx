@@ -58,6 +58,9 @@ const Index = () => {
 
   const currentPhase = useMemo(() => {
     const id = progress.currentChapterId;
+    if (id.startsWith('fase6') || id.startsWith('final')) return { num: 6, name: 'O Rio e a Cidade Celestial' };
+    if (id.startsWith('fase5')) return { num: 5, name: 'O Castelo da Dúvida' };
+    if (id.startsWith('fase4')) return { num: 4, name: 'A Feira da Vaidade' };
     if (id.startsWith('fase3')) return { num: 3, name: 'O Vale da Sombra' };
     if (id.startsWith('fase2')) return { num: 2, name: 'O Caminho Estreito' };
     return { num: 1, name: 'A Partida' };
