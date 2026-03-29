@@ -1,6 +1,7 @@
 import { useMemo, useEffect } from 'react';
 import { StoryProgress, PlayerAttributes, PlayHistory } from '@/hooks/useStoryProgress';
 import { eventPools, routeVariants, replayExclusiveEvents } from '@/data/eventPools';
+import { eventPoolsPart2, replayExclusiveEventsPart2 } from '@/data/eventPoolsPart2';
 import {
   DynamicEvent,
   DynamicChoice,
@@ -50,15 +51,25 @@ export function useDynamicEvents(progress: StoryProgress, chapterId: string, his
       seed,
     };
 
-    // Determine phase from chapter ID
-    const phase = chapterId.startsWith('fase')
-      ? chapterId.split('-')[0]
-      : 'fase1';
+    // Determine phase from chapter ID — support Part II prefixes
+    const isPart2 = chapterId.startsWith('p2-');
+    let phase: string;
+    if (isPart2) {
+      // p2-fase3-cena2 → p2-fase3, p2-cena1 → p2-fase1
+      const match = chapterId.match(/^p2-(fase\d+)/);
+      phase = match ? `p2-${match[1]}` : 'p2-fase1';
+    } else {
+      phase = chapterId.startsWith('fase')
+        ? chapterId.split('-')[0]
+        : 'fase1';
+    }
 
     // Build merged pool: base + replay-exclusive events (if replay)
-    let pool = eventPools[phase];
-    if (progress.playthrough > 1 && replayExclusiveEvents[phase]) {
-      const replayPool = replayExclusiveEvents[phase];
+    const basePools = isPart2 ? eventPoolsPart2 : eventPools;
+    const replayPools = isPart2 ? replayExclusiveEventsPart2 : replayExclusiveEvents;
+    let pool = basePools[phase];
+    if (progress.playthrough > 1 && replayPools[phase]) {
+      const replayPool = replayPools[phase];
       pool = pool ? {
         ...pool,
         variableCount: pool.variableCount + replayPool.variableCount,

@@ -894,6 +894,46 @@ export const part2Chapters: Record<string, StoryChapter> = {
     choices: [],
     isEnding: true,
     endingType: "final_good"
+  },
+
+  // ═══════════════════════════════════════════════
+  // FINAIS ALTERNATIVOS
+  // ═══════════════════════════════════════════════
+
+  "p2-final-desistencia": {
+    id: "p2-final-desistencia",
+    title: "A Desistência de Cristã",
+    location: "Caminho Estreito",
+    characters: ["crista"],
+    narrative: [
+      "O peso da jornada se tornou insuportável. Os filhos choram, os companheiros vacilam, e a estrada parece não ter fim.",
+      "Cristã para. Olha para trás. A Cidade da Destruição parece tão distante quanto a Cidade Celestial. Presa no meio, ela se senta e não se levanta.",
+      "\"Cristão conseguiu\", sussurra. \"Mas Cristão era mais forte que eu. Talvez nem todos sejam feitos para esta jornada.\"",
+      "O caminho continua sem ela. Misericórdia chora. Os filhos esperam. Mas Cristã não se levanta. Não desta vez."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 5, highText: "Mesmo na desistência, algo queima dentro de Cristã. Um fio de fé que não se apaga totalmente. Talvez, num outro dia, ela se levante.", lowThreshold: 2, lowText: "A chama se apagou. O fardo que ela carregava não era como o de Cristão — era o peso de quem nunca teve certeza de que devia partir." }
+    ],
+    choices: [],
+    isEnding: true,
+    endingType: "final_bad"
+  },
+
+  "p2-final-terra-encantada": {
+    id: "p2-final-terra-encantada",
+    title: "O Sono Eterno",
+    location: "Terra Encantada",
+    characters: ["crista", "misericordia"],
+    narrative: [
+      "O ar da Terra Encantada é doce demais. Os filhos adormecem primeiro. Depois Misericórdia. Depois Cristã.",
+      "Grande-Coração tenta acordá-los, mas o sono é profundo — o sono de quem está cansado demais para continuar.",
+      "\"Acorde!\", grita ele. \"A Cidade está tão perto! Uma hora de caminhada!\"",
+      "Mas os olhos de Cristã não se abrem. A Terra Encantada cobra seu preço. Tão perto do fim, e tão distante.",
+      "Bunyan alertou: 'Há peregrinos que dormem a um passo da glória.' Este é o sono dos que quase chegaram."
+    ],
+    choices: [],
+    isEnding: true,
+    endingType: "final_bad"
   }
 };
 

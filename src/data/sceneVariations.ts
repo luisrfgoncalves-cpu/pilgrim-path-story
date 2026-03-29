@@ -278,6 +278,139 @@ export const sceneVariations: Record<string, SceneVariation[]> = {
       condition: (ctx) => ctx.playthrough >= 3 && ctx.attributes.fe >= 7,
     },
   ],
+
+  // ══════════════════════════════════════════
+  // PARTE II — Scene Variations
+  // ══════════════════════════════════════════
+
+  "p2-cena1": [
+    {
+      text: "O sonho de Cristão é mais vívido desta vez. Ele fala diretamente a você: \"Não cometa meu erro. Traga todos.\"",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+    {
+      text: "A carta do Rei contém uma frase que você não notou antes: \"O caminho é mais gentil para quem traz outros.\"",
+      condition: (ctx) => ctx.playthrough >= 3,
+    },
+  ],
+
+  "p2-cena2": [
+    {
+      text: "Misericórdia hesita menos desta vez. Ela sabe o que vem — e escolhe ir mesmo assim.",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+    {
+      text: "Da última vez, você hesitou em aceitar Misericórdia. A culpa daquela hesitação ainda pesa.",
+      condition: (ctx) => ctx.history.playthroughs.some(p => p.flags.includes('hesitou_misericordia')),
+    },
+  ],
+
+  "p2-cena3": [
+    {
+      text: "O pântano parece mais raso. As pedras de promessa que estavam submersas agora aparecem — como se alguém as tivesse limpado.",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+  ],
+
+  "p2-cena4": [
+    {
+      text: "O portão se abre mais rápido desta vez. O guardião sorri: \"Ah, de novo. Eu esperava por você.\"",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+    {
+      text: "Desta vez, quando Misericórdia desmaia, você já sabe o que fazer. A experiência é uma forma de graça.",
+      condition: (ctx) => ctx.playthrough >= 2 && ctx.history.playthroughs.some(p => p.flags.includes('intercedeu_por_misericordia')),
+    },
+  ],
+
+  "p2-fase2-cena1": [
+    {
+      text: "Grande-Coração olha para você com reconhecimento: \"Você parece alguém que já percorreu este caminho. Seus olhos conhecem a estrada.\"",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+  ],
+
+  "p2-fase2-cena2": [
+    {
+      text: "Ao pé da Cruz, a experiência é diferente. Não é surpresa — é reencontro. A graça não envelhece.",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+  ],
+
+  "p2-fase3-cena1": [
+    {
+      text: "O Vale da Humilhação está ainda mais florido. Os lírios parecem crescer com cada peregrino que passa.",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+  ],
+
+  "p2-fase3-cena3": [
+    {
+      text: "O Gigante Maul parece menor desta vez. Ou talvez Grande-Coração pareça maior.",
+      condition: (ctx) => ctx.playthrough >= 2 && ctx.attributes.coragem >= 7,
+    },
+  ],
+
+  "p2-fase3-cena4": [
+    {
+      text: "Gaio prepara um prato especial: \"Para os que retornam, sirvo o melhor vinho. A segunda visita merece celebração dobrada.\"",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+  ],
+
+  "p2-fase4-cena3": [
+    {
+      text: "Valente-pela-Verdade limpa a espada e olha para você: \"Já nos vimos antes, não é? Há algo nos seus olhos que diz que você já conhece esta luta.\"",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+  ],
+
+  "p2-fase5-cena2": [
+    {
+      text: "O Gigante Desespero parece mais fraco. Cada jornada que destrói seu castelo enfraquece a dúvida em todos os mundos.",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+    {
+      text: "Da última vez, a batalha foi mais difícil. Desta vez, Grande-Coração ataca com a certeza de quem já venceu.",
+      condition: (ctx) => ctx.playthrough >= 2 && ctx.history.playthroughs.some(p => p.flags.includes('entrou_castelo_destruido')),
+    },
+  ],
+
+  "p2-fase5-cena4": [
+    {
+      text: "As ruínas do castelo são mais completas. Cada jornada que o destrói torna mais difícil reconstruí-lo.",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+  ],
+
+  "p2-fase6-cena1": [
+    {
+      text: "Firme levanta mais rápido ao ver o grupo. \"Vocês de novo? Desta vez, a oração foi mais curta. Madame Bolha está perdendo poder.\"",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+  ],
+
+  "p2-fase6-cena5": [
+    {
+      text: "O rio é mais raso a cada travessia. A fé acumulada de todas as jornadas pavimenta o leito com pedras de promessa.",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+    {
+      text: "Cristão, do outro lado, sorri com o reconhecimento de quem já recebeu sua esposa antes: \"Outra vez, meu amor. E sempre.\"",
+      condition: (ctx) => ctx.playthrough >= 3,
+    },
+  ],
+
+  "p2-fase6-cena6": [
+    {
+      text: "Os portões se abrem antes mesmo de Cristã bater. O Rei já sabe que ela vem — e quantas vezes veio.",
+      condition: (ctx) => ctx.playthrough >= 2,
+    },
+    {
+      text: "Desta vez, ao entrar, Cristã percebe rostos de peregrinos de todas as suas jornadas passadas, celebrando juntos.",
+      condition: (ctx) => ctx.playthrough >= 3 && ctx.attributes.fe >= 8,
+    },
+  ],
 };
 
 /**
