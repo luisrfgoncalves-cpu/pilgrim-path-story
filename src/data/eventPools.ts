@@ -189,8 +189,58 @@ export const eventPools: Record<string, PhaseEventPool> = {
   // ═══════════════════════════════════════
   fase2: {
     phaseId: 'fase2',
-    variableCount: 3,
+    variableCount: 4,
     events: [
+      // ── Personagem: Formalista e Hipocrisia ──
+      {
+        id: 'f2-formalista-hipocrisia',
+        type: 'variable',
+        narrative: [
+          'No caminho, dois homens pulam o muro e caem na estrada ao seu lado. "Sou Formalista", diz um. "E eu, Hipocrisia", diz o outro.',
+          '"Entramos pelo atalho — mais rápido que sua Porta Estreita. O resultado é o mesmo, não?"',
+        ],
+        choices: [
+          {
+            text: '"O Senhor do caminho disse para entrar pela porta. Não há atalhos."',
+            effects: { discernimento: 2, fe: 1 },
+            consequence: 'Eles riem e seguem adiante. Mais tarde, você os vê desaparecer em caminhos falsos.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Caminhar com eles por um tempo — parecem inofensivos',
+            effects: { discernimento: -1 },
+            consequence: 'A companhia deles o distrai. Quando olha de novo, o caminho estreito quase se perdeu.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.7,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 1,
+      },
+      // ── Personagem: Donzelas do Palácio Belo ──
+      {
+        id: 'f2-donzelas-palacio',
+        type: 'variable',
+        narrative: [
+          'No Palácio Belo, quatro donzelas o recebem: Discrição, Prudência, Piedade e Caridade.',
+          'Discrição o examina: "De onde vem e para onde vai?" Prudência pergunta: "O que te motiva?" Piedade descreve as maravilhas da Cidade Celestial. Caridade pergunta: "E sua família?"',
+        ],
+        choices: [
+          {
+            text: 'Responder com sinceridade a todas as perguntas',
+            effects: { fe: 1, discernimento: 2, perseveranca: 1 },
+            consequence: 'As donzelas sorriem. "Você é um peregrino verdadeiro." Elas lhe servem uma refeição e armadura para o vale.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Responder superficialmente, com pressa de seguir',
+            effects: { perseveranca: 1 },
+            consequence: 'Elas se calam. A refeição é simples. A armadura, básica. Pressa nem sempre é virtude.',
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
+      },
       {
         id: 'f2-visao-fogo',
         type: 'variable',
