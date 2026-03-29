@@ -9,7 +9,7 @@ import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle } from '
 
 const ScenePage = () => {
   const navigate = useNavigate();
-  const { progress, makeChoice, meetsRequirements, hasFlag } = useStoryProgress();
+  const { progress, makeChoice, meetsRequirements, hasFlag, isReplay, completePlaythrough, hadFlagBefore } = useStoryProgress();
   const [narrativeIndex, setNarrativeIndex] = useState(0);
   const [showChoices, setShowChoices] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
