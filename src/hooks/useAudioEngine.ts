@@ -2,28 +2,24 @@ import { useRef, useCallback, useEffect } from 'react';
 import { EmotionalTone } from '@/lib/emotionalIntensity';
 
 /**
- * Procedural audio engine using Web Audio API.
- * Generates ambient soundscapes and SFX without external files.
- *
- * Ambiences:
- *  - wind: filtered noise for open areas (fase 1)
- *  - tense: low drone + dissonance for difficult moments (fase 2)
- *  - dark: rumble + eerie harmonic for shadow valleys (fase 3)
- *  - peaceful: warm pad for hopeful moments
- *  - silence: fade everything out
- *
- * SFX:
- *  - decision: short tonal hit on choice
- *  - positive: upward arpeggio
- *  - negative: descending minor tone
+ * Procedural audio engine — Game Soundtrack Style
+ * 
+ * Instead of continuous drones, this engine plays:
+ * - Musical phrases that breathe (play → silence → play)
+ * - Gentle ambient pads with slow LFO volume modulation (swell in/out)
+ * - Melodic motifs based on pentatonic/modal scales
+ * - Much lower master volume to stay non-intrusive
+ * 
+ * Ambiences cycle between 8-15s of soft music and 4-8s of silence,
+ * so the sound never becomes irritating or monotonous.
  */
 
 export type AmbienceType = 'wind' | 'tense' | 'dark' | 'peaceful' | 'silence';
 export type SfxType = 'decision' | 'positive' | 'negative';
 
-const FADE = 1.5; // seconds
+const FADE = 2; // slower fades for smoother transitions
+const MASTER_VOL = 0.12; // much quieter overall
 
-// Lazy-init AudioContext (needs user gesture)
 let _ctx: AudioContext | null = null;
 const getCtx = (): AudioContext => {
   if (!_ctx) _ctx = new AudioContext();
@@ -31,25 +27,44 @@ const getCtx = (): AudioContext => {
   return _ctx;
 };
 
-/* ---- Noise buffer (cached) ---- */
-let _noiseBuf: AudioBuffer | null = null;
-const getNoiseBuf = (ctx: AudioContext): AudioBuffer => {
-  if (_noiseBuf) return _noiseBuf;
-  const len = ctx.sampleRate * 4;
-  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
-  const data = buf.getChannelData(0);
-  for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
-  _noiseBuf = buf;
-  return buf;
-};
+/* Musical scales */
+const PENTATONIC_MINOR = [0, 3, 5, 7, 10]; // semitones
+const DORIAN = [0, 2, 3, 5, 7, 9, 10];
+const LYDIAN = [0, 2, 4, 6, 7, 9, 11];
 
-interface AmbienceNodes {
+const midiToFreq = (midi: number) => 440 * Math.pow(2, (midi - 69) / 12);
+const pickRandom = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+
+/** Play a single gentle note */
+function playNote(
+  ctx: AudioContext, dest: AudioNode,
+  freq: number, startTime: number, duration: number,
+  type: OscillatorType = 'sine', vol = 0.06
+) {
+  const osc = ctx.createOscillator();
+  osc.type = type;
+  osc.frequency.value = freq;
+  const g = ctx.createGain();
+  const attack = Math.min(0.4, duration * 0.2);
+  const release = Math.min(0.8, duration * 0.4);
+  g.gain.setValueAtTime(0, startTime);
+  g.gain.linearRampToValueAtTime(vol, startTime + attack);
+  g.gain.setValueAtTime(vol, startTime + duration - release);
+  g.gain.linearRampToValueAtTime(0, startTime + duration);
+  osc.connect(g);
+  g.connect(dest);
+  osc.start(startTime);
+  osc.stop(startTime + duration + 0.1);
+}
+
+interface AmbienceState {
   gain: GainNode;
-  sources: AudioNode[];
+  intervalId: ReturnType<typeof setTimeout>;
+  stopped: boolean;
 }
 
 export function useAudioEngine() {
-  const currentAmbience = useRef<AmbienceNodes | null>(null);
+  const currentAmbience = useRef<AmbienceState | null>(null);
   const currentType = useRef<AmbienceType | null>(null);
   const masterGain = useRef<GainNode | null>(null);
   const enabled = useRef(true);
@@ -58,7 +73,7 @@ export function useAudioEngine() {
     if (masterGain.current) return masterGain.current;
     const ctx = getCtx();
     const g = ctx.createGain();
-    g.gain.value = 0.35;
+    g.gain.value = MASTER_VOL;
     g.connect(ctx.destination);
     masterGain.current = g;
     return g;
@@ -66,18 +81,23 @@ export function useAudioEngine() {
 
   const stopAmbience = useCallback((fadeTime = FADE) => {
     if (!currentAmbience.current) return;
-    const { gain, sources } = currentAmbience.current;
+    const state = currentAmbience.current;
+    state.stopped = true;
+    clearInterval(state.intervalId);
     const ctx = getCtx();
-    gain.gain.setTargetAtTime(0, ctx.currentTime, fadeTime / 3);
-    const ref = currentAmbience.current;
+    state.gain.gain.setTargetAtTime(0, ctx.currentTime, fadeTime / 3);
     currentAmbience.current = null;
     currentType.current = null;
     setTimeout(() => {
-      sources.forEach(s => { try { (s as any).stop?.(); } catch {} });
-      try { gain.disconnect(); } catch {}
+      try { state.gain.disconnect(); } catch {}
     }, fadeTime * 1000 + 500);
   }, []);
 
+  /**
+   * Each ambience type defines a "playPhrase" function that schedules
+   * a short musical phrase (3-8s), then returns. The engine calls it
+   * periodically with silence gaps in between.
+   */
   const startAmbience = useCallback((type: AmbienceType) => {
     if (!enabled.current) return;
     if (type === currentType.current) return;
@@ -95,122 +115,111 @@ export function useAudioEngine() {
     g.connect(master);
     g.gain.setTargetAtTime(1, ctx.currentTime, FADE / 3);
 
-    const sources: AudioNode[] = [];
+    // Add a gentle reverb-like effect via delay
+    const delay = ctx.createDelay(0.5);
+    delay.delayTime.value = 0.3;
+    const feedback = ctx.createGain();
+    feedback.gain.value = 0.15;
+    const delayFilter = ctx.createBiquadFilter();
+    delayFilter.type = 'lowpass';
+    delayFilter.frequency.value = 1200;
+    g.connect(delay);
+    delay.connect(delayFilter);
+    delayFilter.connect(feedback);
+    feedback.connect(delay);
+    delay.connect(master);
 
-    if (type === 'wind') {
-      // Filtered white noise
-      const noise = ctx.createBufferSource();
-      noise.buffer = getNoiseBuf(ctx);
-      noise.loop = true;
-      const lp = ctx.createBiquadFilter();
-      lp.type = 'lowpass';
-      lp.frequency.value = 800;
-      lp.Q.value = 0.7;
-      // LFO modulating filter freq for wind gusts
-      const lfo = ctx.createOscillator();
-      lfo.type = 'sine';
-      lfo.frequency.value = 0.15;
-      const lfoGain = ctx.createGain();
-      lfoGain.gain.value = 400;
-      lfo.connect(lfoGain);
-      lfoGain.connect(lp.frequency);
-      lfo.start();
-      noise.connect(lp);
-      lp.connect(g);
-      noise.start();
-      sources.push(noise, lfo as any);
-    }
+    const playPhrase = () => {
+      if (state.stopped) return;
+      const now = ctx.currentTime;
 
-    if (type === 'tense') {
-      // Low drone
-      const osc1 = ctx.createOscillator();
-      osc1.type = 'sawtooth';
-      osc1.frequency.value = 55;
-      const droneGain = ctx.createGain();
-      droneGain.gain.value = 0.25;
-      const lp = ctx.createBiquadFilter();
-      lp.type = 'lowpass';
-      lp.frequency.value = 200;
-      osc1.connect(lp);
-      lp.connect(droneGain);
-      droneGain.connect(g);
-      osc1.start();
-      // Dissonant minor second
-      const osc2 = ctx.createOscillator();
-      osc2.type = 'sine';
-      osc2.frequency.value = 58.27; // ~minor second above A1
-      const dissGain = ctx.createGain();
-      dissGain.gain.value = 0.08;
-      osc2.connect(dissGain);
-      dissGain.connect(g);
-      osc2.start();
-      // Subtle noise bed
-      const noise = ctx.createBufferSource();
-      noise.buffer = getNoiseBuf(ctx);
-      noise.loop = true;
-      const noiseGain = ctx.createGain();
-      noiseGain.gain.value = 0.06;
-      const hp = ctx.createBiquadFilter();
-      hp.type = 'highpass';
-      hp.frequency.value = 2000;
-      noise.connect(hp);
-      hp.connect(noiseGain);
-      noiseGain.connect(g);
-      noise.start();
-      sources.push(osc1, osc2, noise);
-    }
+      switch (type) {
+        case 'wind': {
+          // Gentle wind-like pad with slow melody — pentatonic, airy
+          const root = 60; // C4
+          const scale = PENTATONIC_MINOR;
+          const noteCount = 3 + Math.floor(Math.random() * 3);
+          for (let i = 0; i < noteCount; i++) {
+            const degree = pickRandom(scale);
+            const octave = pickRandom([0, 0, 12, -12]);
+            const freq = midiToFreq(root + degree + octave);
+            const start = now + i * (1.2 + Math.random() * 1.5);
+            const dur = 2 + Math.random() * 3;
+            playNote(ctx, g, freq, start, dur, 'sine', 0.04 + Math.random() * 0.03);
+          }
+          break;
+        }
+        case 'tense': {
+          // Low minor notes, sparse, with occasional dissonance
+          const root = 48; // C3
+          const scale = DORIAN;
+          const noteCount = 2 + Math.floor(Math.random() * 2);
+          for (let i = 0; i < noteCount; i++) {
+            const degree = pickRandom(scale);
+            const freq = midiToFreq(root + degree);
+            const start = now + i * (1.5 + Math.random() * 2);
+            const dur = 3 + Math.random() * 3;
+            playNote(ctx, g, freq, start, dur, 'triangle', 0.03 + Math.random() * 0.02);
+          }
+          // Occasional low rumble note
+          if (Math.random() > 0.5) {
+            playNote(ctx, g, midiToFreq(36), now + 1, 5, 'sine', 0.025);
+          }
+          break;
+        }
+        case 'dark': {
+          // Very low, sparse, haunting — single long notes
+          const notes = [36, 38, 41, 43]; // C2, D2, F2, G2
+          const midi = pickRandom(notes);
+          playNote(ctx, g, midiToFreq(midi), now, 6 + Math.random() * 4, 'sine', 0.03);
+          // Eerie high harmonic (barely audible)
+          if (Math.random() > 0.4) {
+            const hiNote = pickRandom([72, 74, 77, 79]);
+            playNote(ctx, g, midiToFreq(hiNote), now + 2, 4, 'sine', 0.012);
+          }
+          break;
+        }
+        case 'peaceful': {
+          // Warm major arpeggios, lydian mode, gentle
+          const root = 60;
+          const scale = LYDIAN;
+          const noteCount = 4 + Math.floor(Math.random() * 3);
+          for (let i = 0; i < noteCount; i++) {
+            const degree = scale[i % scale.length];
+            const octave = i < 4 ? 0 : 12;
+            const freq = midiToFreq(root + degree + octave);
+            const start = now + i * (0.8 + Math.random() * 0.6);
+            const dur = 2.5 + Math.random() * 2;
+            playNote(ctx, g, freq, start, dur, 'sine', 0.05 + Math.random() * 0.02);
+          }
+          break;
+        }
+      }
+    };
 
-    if (type === 'dark') {
-      // Deep rumble
-      const osc = ctx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = 35;
-      const rumbleGain = ctx.createGain();
-      rumbleGain.gain.value = 0.3;
-      osc.connect(rumbleGain);
-      rumbleGain.connect(g);
-      osc.start();
-      // Eerie harmonic
-      const osc2 = ctx.createOscillator();
-      osc2.type = 'triangle';
-      osc2.frequency.value = 220;
-      const eerieGain = ctx.createGain();
-      eerieGain.gain.value = 0.04;
-      // Slow vibrato
-      const vib = ctx.createOscillator();
-      vib.type = 'sine';
-      vib.frequency.value = 3;
-      const vibGain = ctx.createGain();
-      vibGain.gain.value = 8;
-      vib.connect(vibGain);
-      vibGain.connect(osc2.frequency);
-      vib.start();
-      osc2.connect(eerieGain);
-      eerieGain.connect(g);
-      osc2.start();
-      sources.push(osc, osc2, vib as any);
-    }
+    // Breathing pattern: play phrase, then wait silence, repeat
+    const phraseDuration = type === 'dark' ? 10000 : 8000;
+    const silenceMin = type === 'peaceful' ? 3000 : 5000;
+    const silenceMax = type === 'peaceful' ? 6000 : 10000;
 
-    if (type === 'peaceful') {
-      // Warm pad (stacked fifths)
-      [261.63, 329.63, 392.0].forEach(freq => {
-        const osc = ctx.createOscillator();
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-        const padGain = ctx.createGain();
-        padGain.gain.value = 0.08;
-        osc.connect(padGain);
-        padGain.connect(g);
-        osc.start();
-        sources.push(osc);
-      });
-    }
+    const scheduleNext = () => {
+      if (state.stopped) return;
+      playPhrase();
+      const silence = silenceMin + Math.random() * (silenceMax - silenceMin);
+      state.intervalId = setTimeout(scheduleNext, phraseDuration + silence);
+    };
 
-    currentAmbience.current = { gain: g, sources };
+    const state: AmbienceState = {
+      gain: g,
+      intervalId: setTimeout(scheduleNext, 500), // start after brief pause
+      stopped: false,
+    };
+
+    currentAmbience.current = state;
     currentType.current = type;
   }, [getMaster, stopAmbience]);
 
-  /** One-shot SFX */
+  /** One-shot SFX — short, musical, non-harsh */
   const playSfx = useCallback((type: SfxType) => {
     if (!enabled.current) return;
     const ctx = getCtx();
@@ -218,77 +227,36 @@ export function useAudioEngine() {
     const now = ctx.currentTime;
 
     if (type === 'decision') {
-      const osc = ctx.createOscillator();
-      osc.type = 'triangle';
-      osc.frequency.value = 440;
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0.15, now);
-      g.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-      osc.connect(g);
-      g.connect(master);
-      osc.start(now);
-      osc.stop(now + 0.35);
+      // Gentle bell-like chime
+      playNote(ctx, master, midiToFreq(72), now, 0.6, 'sine', 0.08); // C5
+      playNote(ctx, master, midiToFreq(76), now + 0.05, 0.5, 'sine', 0.05); // E5
     }
 
     if (type === 'positive') {
-      [523, 659, 784].forEach((freq, i) => {
-        const osc = ctx.createOscillator();
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-        const g = ctx.createGain();
-        const t = now + i * 0.08;
-        g.gain.setValueAtTime(0, t);
-        g.gain.linearRampToValueAtTime(0.12, t + 0.04);
-        g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
-        osc.connect(g);
-        g.connect(master);
-        osc.start(t);
-        osc.stop(t + 0.45);
+      // Ascending major triad — gentle harp-like
+      const notes = [60, 64, 67, 72]; // C E G C
+      notes.forEach((n, i) => {
+        playNote(ctx, master, midiToFreq(n), now + i * 0.12, 0.8 - i * 0.1, 'sine', 0.07);
       });
     }
 
     if (type === 'negative') {
-      [392, 311, 261].forEach((freq, i) => {
-        const osc = ctx.createOscillator();
-        osc.type = 'sawtooth';
-        osc.frequency.value = freq;
-        const lp = ctx.createBiquadFilter();
-        lp.type = 'lowpass';
-        lp.frequency.value = 600;
-        const g = ctx.createGain();
-        const t = now + i * 0.1;
-        g.gain.setValueAtTime(0, t);
-        g.gain.linearRampToValueAtTime(0.08, t + 0.03);
-        g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-        osc.connect(lp);
-        lp.connect(g);
-        g.connect(master);
-        osc.start(t);
-        osc.stop(t + 0.55);
+      // Descending minor — soft, not harsh
+      const notes = [67, 63, 60, 56]; // G Eb C Ab
+      notes.forEach((n, i) => {
+        playNote(ctx, master, midiToFreq(n), now + i * 0.15, 0.6, 'triangle', 0.05);
       });
     }
   }, [getMaster]);
 
-  /** Derive ambience from chapter id + emotional tone */
   const setAmbienceForScene = useCallback((chapterId: string, tone: EmotionalTone) => {
-    if (tone === 'heavy') {
-      startAmbience('tense');
-      return;
-    }
-    if (tone === 'hopeful') {
-      startAmbience('peaceful');
-      return;
-    }
-    if (chapterId.startsWith('fase3')) {
-      startAmbience('dark');
-    } else if (chapterId.startsWith('fase2')) {
-      startAmbience('tense');
-    } else {
-      startAmbience('wind');
-    }
+    if (tone === 'heavy') { startAmbience('tense'); return; }
+    if (tone === 'hopeful') { startAmbience('peaceful'); return; }
+    if (chapterId.startsWith('fase3')) startAmbience('dark');
+    else if (chapterId.startsWith('fase2')) startAmbience('tense');
+    else startAmbience('wind');
   }, [startAmbience]);
 
-  /** Derive SFX from choice effects */
   const sfxForChoice = useCallback((effects: Record<string, number>) => {
     const total = Object.values(effects).reduce((a, b) => a + (b || 0), 0);
     if (total > 0) playSfx('positive');
@@ -301,11 +269,8 @@ export function useAudioEngine() {
     if (!on) stopAmbience(0.3);
   }, [stopAmbience]);
 
-  // Cleanup on unmount
   useEffect(() => {
-    return () => {
-      stopAmbience(0.1);
-    };
+    return () => { stopAmbience(0.1); };
   }, [stopAmbience]);
 
   return {
