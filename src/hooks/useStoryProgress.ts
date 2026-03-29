@@ -1,13 +1,20 @@
 import { useState, useCallback, useEffect } from 'react';
-import { FIRST_CHAPTER_ID } from '@/data/story';
+import { FIRST_CHAPTER_ID, ChoiceEffect, getEndingChapterId } from '@/data/story';
 
 const STORAGE_KEY = 'peregrino-progress';
 
 export interface PlayerAttributes {
   fe: number;
+  perseveranca: number;
+  discernimento: number;
   coragem: number;
-  sabedoria: number;
-  humildade: number;
+}
+
+export interface DecisionRecord {
+  chapterId: string;
+  choiceText: string;
+  timestamp: number;
+  effects: ChoiceEffect;
 }
 
 export interface StoryProgress {
@@ -15,14 +22,15 @@ export interface StoryProgress {
   visitedChapters: string[];
   choicesMade: number;
   attributes: PlayerAttributes;
+  decisions: DecisionRecord[];
   started: boolean;
 }
 
 const defaultAttributes: PlayerAttributes = {
-  fe: 10,
-  coragem: 10,
-  sabedoria: 5,
-  humildade: 5,
+  fe: 5,
+  perseveranca: 5,
+  discernimento: 5,
+  coragem: 5,
 };
 
 const getInitialProgress = (): StoryProgress => {
@@ -30,7 +38,12 @@ const getInitialProgress = (): StoryProgress => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      return { ...parsed, attributes: parsed.attributes || defaultAttributes, started: parsed.started ?? false };
+      return {
+        ...parsed,
+        attributes: parsed.attributes || defaultAttributes,
+        decisions: parsed.decisions || [],
+        started: parsed.started ?? false,
+      };
     }
   } catch {}
   return {
@@ -38,26 +51,9 @@ const getInitialProgress = (): StoryProgress => {
     visitedChapters: [FIRST_CHAPTER_ID],
     choicesMade: 0,
     attributes: defaultAttributes,
+    decisions: [],
     started: false,
   };
-};
-
-// Attribute changes per chapter based on choices
-const chapterAttributeEffects: Record<string, Partial<PlayerAttributes>> = {
-  "pantano-desanimo": { fe: 5, humildade: 3 },
-  "pantano-desanimo-sozinho": { fe: 3, coragem: 5 },
-  "pantano-orgulho": { humildade: 8, sabedoria: 3 },
-  "familia-recusa": { coragem: 3, fe: 2 },
-  "portao-estreito": { fe: 5, coragem: 3 },
-  "casa-interprete": { sabedoria: 10, fe: 3 },
-  "cruz-fardo": { fe: 15, humildade: 5 },
-  "vale-sombra": { coragem: 10, fe: 5 },
-  "fiel-encontro": { sabedoria: 3, fe: 3 },
-  "feira-vaidade": { coragem: 8, fe: 5 },
-  "feira-inevitavel": { sabedoria: 3 },
-  "esperanca-encontro": { fe: 3, sabedoria: 3 },
-  "castelo-duvida": { humildade: 10, sabedoria: 5 },
-  "cidade-celestial": { fe: 20, coragem: 10, sabedoria: 10, humildade: 10 },
 };
 
 export const useStoryProgress = () => {
@@ -67,24 +63,54 @@ export const useStoryProgress = () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
   }, [progress]);
 
-  const goToChapter = useCallback((chapterId: string) => {
+  const makeChoice = useCallback((
+    chapterId: string,
+    nextChapterId: string,
+    choiceText: string,
+    effects: ChoiceEffect
+  ) => {
     setProgress(prev => {
-      const effects = chapterAttributeEffects[chapterId] || {};
       const newAttrs = { ...prev.attributes };
       for (const [key, val] of Object.entries(effects)) {
-        newAttrs[key as keyof PlayerAttributes] = (newAttrs[key as keyof PlayerAttributes] || 0) + (val as number);
+        if (val) newAttrs[key as keyof PlayerAttributes] += val;
       }
+
+      // Determine actual destination — if going to the generic ending, pick based on attributes
+      let destination = nextChapterId;
+      if (nextChapterId === 'cidade-celestial') {
+        destination = getEndingChapterId(newAttrs);
+      }
+
+      const decision: DecisionRecord = {
+        chapterId,
+        choiceText,
+        timestamp: Date.now(),
+        effects,
+      };
+
       return {
         ...prev,
-        currentChapterId: chapterId,
-        visitedChapters: prev.visitedChapters.includes(chapterId)
+        currentChapterId: destination,
+        visitedChapters: prev.visitedChapters.includes(destination)
           ? prev.visitedChapters
-          : [...prev.visitedChapters, chapterId],
+          : [...prev.visitedChapters, destination],
         choicesMade: prev.choicesMade + 1,
         attributes: newAttrs,
+        decisions: [...prev.decisions, decision],
         started: true,
       };
     });
+  }, []);
+
+  const goToChapter = useCallback((chapterId: string) => {
+    setProgress(prev => ({
+      ...prev,
+      currentChapterId: chapterId,
+      visitedChapters: prev.visitedChapters.includes(chapterId)
+        ? prev.visitedChapters
+        : [...prev.visitedChapters, chapterId],
+      started: true,
+    }));
   }, []);
 
   const startJourney = useCallback(() => {
@@ -97,11 +123,20 @@ export const useStoryProgress = () => {
       visitedChapters: [FIRST_CHAPTER_ID],
       choicesMade: 0,
       attributes: defaultAttributes,
+      decisions: [],
       started: false,
     });
   }, []);
 
   const hasProgress = progress.started || progress.choicesMade > 0;
 
-  return { progress, goToChapter, resetProgress, startJourney, hasProgress };
+  const meetsRequirements = useCallback((requires?: Partial<ChoiceEffect>): boolean => {
+    if (!requires) return true;
+    for (const [key, val] of Object.entries(requires)) {
+      if (val && progress.attributes[key as keyof PlayerAttributes] < val) return false;
+    }
+    return true;
+  }, [progress.attributes]);
+
+  return { progress, makeChoice, goToChapter, resetProgress, startJourney, hasProgress, meetsRequirements };
 };
