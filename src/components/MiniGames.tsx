@@ -519,6 +519,7 @@ function MemoryGame({ config, onComplete }: MiniGameProps) {
       // Wrong!
       setFeedbackText('❌ Sequência errada!');
       playGameSfx('wrong');
+      setPhase('feedback');
       setTimeout(() => {
         const nextRound = round + 1;
         setRound(nextRound);
