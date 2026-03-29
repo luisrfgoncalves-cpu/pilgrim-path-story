@@ -254,10 +254,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Fora da Cidade",
     characters: ["cristao"],
     reflection: "r4",
+    interactionType: 'drag',
     narrative: [
       "Você vê dois caminhos: um fácil e outro estreito e difícil."
     ],
-    interactionType: 'drag',
+    replayNarrative: [
       "Você já conhece essa encruzilhada. Da última vez, fez uma escolha. Desta vez, pode fazer outra."
     ],
     toneNarrative: [
