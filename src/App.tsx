@@ -23,6 +23,7 @@ import PresentialMultiplayer from "./pages/PresentialMultiplayer.tsx";
 import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
 import TermsPage from "./pages/TermsPage.tsx";
 import LandingPage from "./pages/LandingPage.tsx";
+import ThankYouPage from "./pages/ThankYouPage.tsx";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ const App = () => (
             <Route path="/reset-password" element={isPreviewMode ? <PreviewPaywall /> : <ResetPasswordPage />} />
             <Route path="/perfil" element={isPreviewMode ? <PreviewPaywall /> : <ProfilePage />} />
             <Route path="/multiplayer/presencial" element={isPreviewMode ? <PreviewPaywall /> : <PresentialMultiplayer />} />
+            <Route path="/obrigado" element={<ThankYouPage />} />
             <Route path="/termos" element={<TermsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
