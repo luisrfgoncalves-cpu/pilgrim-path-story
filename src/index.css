@@ -947,3 +947,33 @@ html, body, #root {
   94% { transform: translateY(-3480px); }
   100% { transform: translateY(0); }
 }
+
+/* ══ CTA Neon Pulse — Landing Page ══ */
+@keyframes ctaNeonPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 8px hsl(40 80% 55% / 0.6),
+      0 0 20px hsl(40 80% 50% / 0.4),
+      0 0 40px hsl(40 70% 45% / 0.25),
+      0 0 80px hsl(40 70% 45% / 0.1),
+      0 8px 20px rgba(0,0,0,0.5),
+      inset 0 2px 0 hsl(40 90% 80% / 0.5),
+      inset 0 -3px 6px hsl(40 50% 15% / 0.6);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 12px hsl(40 90% 60% / 0.8),
+      0 0 30px hsl(40 85% 55% / 0.6),
+      0 0 60px hsl(40 75% 50% / 0.35),
+      0 0 100px hsl(40 70% 45% / 0.15),
+      0 8px 25px rgba(0,0,0,0.5),
+      inset 0 2px 0 hsl(40 90% 80% / 0.6),
+      inset 0 -3px 6px hsl(40 50% 15% / 0.6);
+    transform: scale(1.02);
+  }
+}
+
+.cta-neon-pulse {
+  animation: ctaNeonPulse 2s ease-in-out infinite;
+}
