@@ -841,8 +841,56 @@ export const eventPools: Record<string, PhaseEventPool> = {
   // ═══════════════════════════════════════
   fase6: {
     phaseId: 'fase6',
-    variableCount: 2,
+    variableCount: 3,
     events: [
+      // ── Personagem: Evangelista reaparece ──
+      {
+        id: 'f6-evangelista-final',
+        type: 'variable',
+        narrative: [
+          'Evangelista aparece mais uma vez — o mesmo que apontou a Porta Estreita no início.',
+          '"Peregrino, você obedeceu. O caminho foi duro, mas veja: a Cidade está ali. Eu sabia que chegaria."',
+        ],
+        choices: [
+          {
+            text: 'Abraçar Evangelista com lágrimas de gratidão',
+            effects: { fe: 2, perseveranca: 1 },
+            consequence: '"Não me agradeça", diz ele. "Agradeça Àquele que preparou o caminho." Ele desaparece com um sorriso.',
+            consequenceKey: 'mostrou_misericordia',
+          },
+          {
+            text: '"Sem você, eu nunca teria encontrado a porta"',
+            effects: { fe: 1, discernimento: 1 },
+            consequence: 'Evangelista acena: "A porta sempre esteve ali. Eu apenas apontei."',
+          },
+        ],
+        weight: 4,
+        emotionalWeight: 3,
+      },
+      // ── Personagem: Ignorância no rio ──
+      {
+        id: 'f6-ignorancia-destino',
+        type: 'variable',
+        narrative: [
+          'Ignorância chega ao rio por outro caminho. Ele encontra um barqueiro chamado Vã Esperança que o leva ao outro lado sem sofrer.',
+          'Nos portões, ele entrega suas próprias credenciais — não o pergaminho da Porta Estreita. Os portões não se abrem. Anjos o levam embora.',
+        ],
+        choices: [
+          {
+            text: 'Lamentar profundamente por Ignorância',
+            effects: { fe: 1, discernimento: 2 },
+            consequence: 'Bunyan encerra com essa cena: até do portão do Céu há caminho para o inferno. A lição gela o sangue.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Sentir alívio por ter passado pela Porta Estreita',
+            effects: { fe: 1 },
+            consequence: 'O alívio vem misturado com tristeza. A graça não é mérito — é presente aceito.',
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 3,
+      },
       {
         id: 'f6-rio-final',
         type: 'variable',
