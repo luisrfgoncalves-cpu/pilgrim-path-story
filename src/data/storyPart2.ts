@@ -50,6 +50,9 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Uma noite, ela tem um sonho: vê o marido na Cidade Celestial, vestido de branco, entre anjos, olhando para ela com saudade e amor.",
       "Ao acordar, encontra uma carta deixada à sua porta. É do Rei da Cidade Celestial: \"Convido-te, Cristã, a vir ao meu palácio. O mesmo caminho que teu marido percorreu está aberto para ti e teus filhos.\""
     ],
+    adaptiveNarrative: [
+      { minAttr: "fe", minValue: 0, text: "Cristã reconhece o caminho que seu marido percorreu. Cada marco que ele enfrentou — o pântano, a cruz, o vale, a feira — agora aguarda por ela." }
+    ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "A carta queima em suas mãos como uma promessa viva. Não há dúvida — é hora de partir.", lowThreshold: 4, lowText: "As palavras da carta tremem diante dos seus olhos. Partir? Com quatro filhos? Pelo mesmo caminho perigoso?" }
     ],
@@ -605,6 +608,14 @@ export const part2Chapters: Record<string, StoryChapter> = {
         text: "Olhar para o prado com saudade mas obedecer a Grande-Coração",
         nextChapterId: "p2-fase5-cena1",
         effects: { perseveranca: 1 }
+      },
+      {
+        text: "Sentar no prado para descansar — os filhos estão exaustos",
+        nextChapterId: "p2-final-desistencia",
+        effects: { fe: -2, perseveranca: -2 },
+        requires: { fe: -99 },
+        flag: "desistiu_prado_p2",
+        consequence: "O prado é confortável. Perigosamente confortável. Os olhos pesam..."
       }
     ]
   },
@@ -737,6 +748,14 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase6-cena1",
         effects: { discernimento: 2, fe: 1 },
         flag: "pediu_conselho_pastores_p2"
+      },
+      {
+        text: "Deitar na grama macia das montanhas... os olhos pesam...",
+        nextChapterId: "p2-final-terra-encantada",
+        effects: { fe: -3 },
+        requires: { perseveranca: -99 },
+        flag: "dormiu_montanhas_p2",
+        consequence: "O sono das Montanhas é doce. Doce demais."
       }
     ]
   },
@@ -894,6 +913,46 @@ export const part2Chapters: Record<string, StoryChapter> = {
     choices: [],
     isEnding: true,
     endingType: "final_good"
+  },
+
+  // ═══════════════════════════════════════════════
+  // FINAIS ALTERNATIVOS
+  // ═══════════════════════════════════════════════
+
+  "p2-final-desistencia": {
+    id: "p2-final-desistencia",
+    title: "A Desistência de Cristã",
+    location: "Caminho Estreito",
+    characters: ["crista"],
+    narrative: [
+      "O peso da jornada se tornou insuportável. Os filhos choram, os companheiros vacilam, e a estrada parece não ter fim.",
+      "Cristã para. Olha para trás. A Cidade da Destruição parece tão distante quanto a Cidade Celestial. Presa no meio, ela se senta e não se levanta.",
+      "\"Cristão conseguiu\", sussurra. \"Mas Cristão era mais forte que eu. Talvez nem todos sejam feitos para esta jornada.\"",
+      "O caminho continua sem ela. Misericórdia chora. Os filhos esperam. Mas Cristã não se levanta. Não desta vez."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 5, highText: "Mesmo na desistência, algo queima dentro de Cristã. Um fio de fé que não se apaga totalmente. Talvez, num outro dia, ela se levante.", lowThreshold: 2, lowText: "A chama se apagou. O fardo que ela carregava não era como o de Cristão — era o peso de quem nunca teve certeza de que devia partir." }
+    ],
+    choices: [],
+    isEnding: true,
+    endingType: "final_bad"
+  },
+
+  "p2-final-terra-encantada": {
+    id: "p2-final-terra-encantada",
+    title: "O Sono Eterno",
+    location: "Terra Encantada",
+    characters: ["crista", "misericordia"],
+    narrative: [
+      "O ar da Terra Encantada é doce demais. Os filhos adormecem primeiro. Depois Misericórdia. Depois Cristã.",
+      "Grande-Coração tenta acordá-los, mas o sono é profundo — o sono de quem está cansado demais para continuar.",
+      "\"Acorde!\", grita ele. \"A Cidade está tão perto! Uma hora de caminhada!\"",
+      "Mas os olhos de Cristã não se abrem. A Terra Encantada cobra seu preço. Tão perto do fim, e tão distante.",
+      "Bunyan alertou: 'Há peregrinos que dormem a um passo da glória.' Este é o sono dos que quase chegaram."
+    ],
+    choices: [],
+    isEnding: true,
+    endingType: "final_bad"
   }
 };
 

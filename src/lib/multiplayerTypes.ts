@@ -128,6 +128,18 @@ export const boardEvents: BoardEvent[] = [
   { id: 'ev49', type: 'challenge', title: 'Grande-Coração Mata o Gigante', description: 'Grande-Coração lidera ataque ao Castelo da Dúvida! Role 3+ para ajudar e avançar 4!', effect: { target: 'self', positions: 4 }, emoji: '🗡️' },
   { id: 'ev50', type: 'safe', title: 'Pronto-para-Parar Caminha', description: 'Pronto-para-Parar caminha com muletas, mas não desiste. Se ele pode, você também pode. Fé +1.', effect: { target: 'self', attribute: 'fe', amount: 1 }, emoji: '🩼' },
 
+  // ═══ Parte II — Eventos adicionais ═══
+  { id: 'ev56', type: 'advance', title: 'Banho Cerimonial', description: 'O Intérprete prepara um banho cerimonial para Cristã. Vestes novas e o selo do Rei! Avance!', effect: { target: 'self', positions: 2 }, emoji: '🛁' },
+  { id: 'ev57', type: 'challenge', title: 'Gigante Maul', description: 'O Gigante Maul bloqueia o caminho! Role 4+ para que Grande-Coração o derrote e avance 3!', effect: { target: 'self', positions: 3 }, emoji: '👹' },
+  { id: 'ev58', type: 'boost', title: 'Casamento na Hospedaria', description: 'Gaio organiza o casamento de Mateus com Misericórdia! A alegria fortalece todos. Fé +2.', effect: { target: 'all', attribute: 'fe', amount: 1 }, emoji: '💒' },
+  { id: 'ev59', type: 'advance', title: 'Demolição do Castelo', description: 'Grande-Coração destrói o Castelo da Dúvida pedra por pedra! Nenhum peregrino será preso aqui de novo. Avance 4!', effect: { target: 'self', positions: 4 }, emoji: '🏚️' },
+  { id: 'ev60', type: 'retreat', title: 'Mal-Encarados Atacam', description: 'Os Mal-Encarados, servos de Belzebu, atacam logo após o Portão! Recue enquanto o guardião os afugenta.', effect: { target: 'self', positions: -2 }, emoji: '👿' },
+  { id: 'ev61', type: 'boost', title: 'Misericórdia Aceita', description: 'Misericórdia é aceita no Portão mesmo sem carta do Rei! Seu amor é carta suficiente. Discernimento +2.', effect: { target: 'self', attribute: 'discernimento', amount: 2 }, emoji: '💝' },
+  { id: 'ev62', type: 'challenge', title: 'Resistir ao Sono Encantado', description: 'A Terra Encantada sussurra sonhos doces! Role 4+ para resistir e avançar, senão perde a vez.', effect: { target: 'self', stunTurns: 1 }, emoji: '😴' },
+  { id: 'ev63', type: 'safe', title: 'Sr. Desânimo Livre', description: '"Adeus, noite. Bem-vindo, dia." Sr. Desânimo deixa o desânimo na margem do rio. Perseverança +2.', effect: { target: 'self', attribute: 'perseveranca', amount: 2 }, emoji: '🌅' },
+  { id: 'ev64', type: 'advance', title: 'Muito-Medo Canta', description: 'Muito-Medo entra no rio cantando! Ela que viveu em terror morre com um hino. Todos avançam inspirados.', effect: { target: 'all', positions: 1 }, emoji: '🎵' },
+  { id: 'ev65', type: 'boost', title: 'Pilar de Fogo', description: 'Um pilar de fogo ilumina o Vale da Sombra para o grupo de Cristã! Os demônios recuam. Coragem +2.', effect: { target: 'self', attribute: 'coragem', amount: 2 }, emoji: '🔥' },
+
   // ═══ Episódios faltantes da Parte I ═══
   { id: 'ev51', type: 'challenge', title: 'Colina da Dificuldade', description: 'A colina é íngreme! Suba direto ou tente o atalho Perigo? Role 4+ para subir e avançar 2!', effect: { target: 'self', positions: 2 }, emoji: '⛰️' },
   { id: 'ev52', type: 'stun', title: 'Sono no Caramanchão', description: 'Você adormeceu no caramanchão e perdeu o pergaminho! Perde uma rodada buscando-o.', effect: { target: 'self', stunTurns: 1 }, emoji: '😴' },

@@ -138,4 +138,41 @@ export const storyItems: Record<string, StoryItem> = {
     icon: '📯',
     rarity: 'legendary',
   },
+
+  // ══ Itens exclusivos da Parte II — Cristã ══
+  carta_do_rei: {
+    id: 'carta_do_rei',
+    name: 'Carta do Rei',
+    description: 'O convite pessoal que Cristã recebeu do Rei da Cidade Celestial: "Convido-te a vir ao meu palácio." A carta que iniciou sua peregrinação.',
+    icon: '💌',
+    rarity: 'legendary',
+  },
+  balsamo_gaio: {
+    id: 'balsamo_gaio',
+    name: 'Bálsamo de Gaio',
+    description: 'Um ungüento curativo dado pelo hospitaleiro Gaio. Restaura corpo e alma após longas jornadas.',
+    icon: '🫙',
+    rarity: 'rare',
+  },
+  espada_jerusalem: {
+    id: 'espada_jerusalem',
+    name: 'Espada de Jerusalém',
+    description: 'A lâmina legítima de Jerusalém empunhada por Valente-pela-Verdade. Com ela, venceu Coração-Fraco, Desconfiança e Culpa.',
+    icon: '🗡️',
+    rarity: 'legendary',
+  },
+  muletas_perseveranca: {
+    id: 'muletas_perseveranca',
+    name: 'Muletas de Pronto-para-Parar',
+    description: 'As muletas gastas pelo uso de Pronto-para-Parar. Simbolizam que nenhuma limitação física é maior que a determinação espiritual.',
+    icon: '🩼',
+    rarity: 'rare',
+  },
+  diario_cristao: {
+    id: 'diario_cristao',
+    name: 'Diário de Cristão',
+    description: 'O diário pessoal que Cristão escreveu antes de partir da Cidade da Destruição. Encontrado por Cristã, contém suas dúvidas, medos e certezas.',
+    icon: '📔',
+    rarity: 'legendary',
+  },
 };
