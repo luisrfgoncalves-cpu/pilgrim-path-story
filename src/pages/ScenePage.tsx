@@ -6,10 +6,11 @@ import { sceneImages } from '@/data/sceneImages';
 import { getEmotionalState, getEmotionalClasses } from '@/lib/emotionalIntensity';
 import { analyzePerformance } from '@/lib/performanceAnalysis';
 import { useVisualEffects } from '@/hooks/useVisualEffects';
+import { useAudioEngine } from '@/hooks/useAudioEngine';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
-import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle } from 'lucide-react';
+import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX } from 'lucide-react';
 
 const ScenePage = () => {
   const navigate = useNavigate();
