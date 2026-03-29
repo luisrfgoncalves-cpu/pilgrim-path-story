@@ -1030,20 +1030,15 @@ const ScenePage = () => {
       )}
 
       {/* ═══ STREAK BURST ═══ */}
-      {showStreakBurst && streak >= 3 && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[60] pointer-events-none"
-          style={{ animation: 'streakBurst 2s ease-out forwards' }}>
-          <div className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-primary/90 text-primary-foreground shadow-xl">
-            <Zap className="w-5 h-5" />
-            <span className="font-display text-lg">
-              {streak}x Combo!
-            </span>
-            <span className="text-sm opacity-80">
-              {lastStreakEffect === 'positive' ? '🔥 Em chamas!' : '💔 Sequência sombria'}
-            </span>
-          </div>
+      <GameNotification visible={showStreakBurst && streak >= 3} onDismiss={() => setShowStreakBurst(false)} duration={8000} position="top-offset">
+        <div className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-primary/90 text-primary-foreground shadow-xl">
+          <Zap className="w-5 h-5" />
+          <span className="font-display text-lg">{streak}x Combo!</span>
+          <span className="text-sm opacity-80">
+            {lastStreakEffect === 'positive' ? '🔥 Em chamas!' : '💔 Sequência sombria'}
+          </span>
         </div>
-      )}
+      </GameNotification>
 
       {/* ═══ CHARACTER ENTRANCE REVEAL — 3D style, no circle ═══ */}
       {charReveal && (
