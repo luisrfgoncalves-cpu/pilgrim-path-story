@@ -97,7 +97,7 @@ const postureAssetsFemale: Record<PostureState, string> = {
   vitoria_final: pilgrimFRadiant,
 };
 
-const postureLabels: Record<PostureState, string> = {
+export const postureLabels: Record<PostureState, string> = {
   abatido: 'Abatido',
   confuso: 'Confuso',
   determinado: 'Determinado',
@@ -109,7 +109,7 @@ const postureLabels: Record<PostureState, string> = {
   vitoria_final: 'Vitória',
 };
 
-const postureLabelsFemale: Record<PostureState, string> = {
+export const postureLabelsFemale: Record<PostureState, string> = {
   abatido: 'Abatida',
   confuso: 'Confusa',
   determinado: 'Determinada',
