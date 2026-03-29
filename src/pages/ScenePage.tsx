@@ -681,7 +681,7 @@ const ScenePage = () => {
                     triggerChoiceEffect(result.effects as Record<string, number>);
                     sfxForChoice(result.effects as Record<string, number>);
                   }
-                  setTimeout(() => setShowMiniGameResult(false), 3000);
+                  // GameNotification handles dismiss
                 }}
               />
             </div>
@@ -703,7 +703,7 @@ const ScenePage = () => {
                     triggerChoiceEffect(result.effects as Record<string, number>);
                     sfxForChoice(result.effects as Record<string, number>);
                   }
-                  setTimeout(() => setShowMiniGameResult(false), 3000);
+                  // GameNotification handles dismiss
                 }}
                 onSkip={() => {
                   setMiniGameDone(true);
