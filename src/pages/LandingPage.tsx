@@ -126,21 +126,24 @@ const PhoneMockupTour = () => {
     'Tela de Resultado',
   ];
 
-  // Auto-scroll
+  // Auto-scroll — section by section, slow and smooth
   useEffect(() => {
     if (isPaused) return;
     autoRef.current = setInterval(() => {
       if (!scrollRef.current) return;
       const el = scrollRef.current;
-      const maxScroll = el.scrollHeight - el.clientHeight;
-      if (el.scrollTop >= maxScroll - 2) {
+      const sectionEls = el.querySelectorAll('[data-section]');
+      const nextIdx = activeSection + 1;
+      if (nextIdx >= sectionEls.length) {
         el.scrollTo({ top: 0, behavior: 'smooth' });
+        setActiveSection(0);
       } else {
-        el.scrollBy({ top: 60, behavior: 'smooth' });
+        sectionEls[nextIdx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setActiveSection(nextIdx);
       }
-    }, 120);
+    }, 3500);
     return () => clearInterval(autoRef.current);
-  }, [isPaused]);
+  }, [isPaused, activeSection]);
 
   // Track active section
   useEffect(() => {
@@ -669,8 +672,8 @@ const PhoneMockupTour = () => {
         {/* Play/Pause */}
         <button
           onClick={() => setIsPaused(p => !p)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-primary/30 bg-card/80 hover:border-primary/60 transition-all text-sm"
-          style={{ boxShadow: '0 0 10px hsl(40 70% 50% / 0.1)' }}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl border-2 border-primary/40 bg-card/80 hover:border-primary/70 transition-all text-sm hover:scale-105"
+          style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.2), 0 0 40px hsl(40 70% 50% / 0.08), inset 0 1px 0 hsl(40 80% 75% / 0.1)' }}
         >
           {isPaused ? (
             <><Play className="w-4 h-4 text-primary" /> <span className="text-foreground text-xs font-display">Retomar Tour</span></>
@@ -744,17 +747,18 @@ const CtaButton = ({ children, onClick, variant = 'primary', className = '' }: {
     className={`
       relative font-display text-base tracking-wide rounded-xl transition-all duration-300
       flex items-center justify-center gap-2 min-h-[56px] px-8
-      hover:scale-[1.02] active:scale-[0.98]
+      hover:scale-[1.03] active:scale-[0.97]
       ${variant === 'primary'
         ? 'bg-gradient-to-b from-primary to-primary/80 text-primary-foreground border-2 border-primary/60'
-        : 'bg-card/80 text-foreground border-2 border-primary/30 hover:border-primary/60'
+        : 'bg-card/80 text-foreground border-2 border-primary/40 hover:border-primary/70'
       }
       ${className}
     `}
     style={{
       boxShadow: variant === 'primary'
-        ? '0 0 25px hsl(40 70% 50% / 0.4), 0 0 50px hsl(40 70% 50% / 0.15), 0 8px 20px rgba(0,0,0,0.5), inset 0 1px 0 hsl(40 80% 75% / 0.3)'
-        : '0 0 15px hsl(40 70% 50% / 0.15), 0 4px 12px rgba(0,0,0,0.3), inset 0 1px 0 hsl(40 80% 75% / 0.1)',
+        ? '0 0 30px hsl(40 70% 50% / 0.6), 0 0 60px hsl(40 70% 50% / 0.25), 0 0 100px hsl(40 70% 50% / 0.1), 0 8px 20px rgba(0,0,0,0.5), inset 0 2px 0 hsl(40 80% 75% / 0.4), inset 0 -2px 4px hsl(40 50% 20% / 0.5)'
+        : '0 0 20px hsl(40 70% 50% / 0.2), 0 0 40px hsl(40 70% 50% / 0.08), 0 6px 16px rgba(0,0,0,0.4), inset 0 1px 0 hsl(40 80% 75% / 0.15), inset 0 -1px 3px hsl(40 50% 20% / 0.3)',
+      textShadow: variant === 'primary' ? '0 0 12px hsl(40 70% 50% / 0.6)' : 'none',
     }}
   >
     {children}
@@ -767,22 +771,59 @@ const MedievalCard = ({ children, className = '', glow = false }: {
   glow?: boolean;
 }) => (
   <div
-    className={`rounded-xl border border-border bg-card/80 backdrop-blur-sm p-6 ${className}`}
+    className={`rounded-xl border bg-card/80 backdrop-blur-sm p-6 relative ${glow ? 'border-primary/40' : 'border-border'} ${className}`}
     style={{
       boxShadow: glow
-        ? '0 0 20px hsl(40 70% 50% / 0.2), 0 0 40px hsl(40 70% 50% / 0.08), 0 8px 30px rgba(0,0,0,0.4)'
-        : '0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 hsl(40 80% 75% / 0.05)',
+        ? '0 0 25px hsl(40 70% 50% / 0.3), 0 0 50px hsl(40 70% 50% / 0.1), 0 8px 30px rgba(0,0,0,0.5), inset 0 1px 0 hsl(40 80% 75% / 0.1), inset 0 -1px 0 hsl(40 50% 20% / 0.2)'
+        : '0 4px 20px rgba(0,0,0,0.4), 0 0 10px hsl(40 70% 50% / 0.05), inset 0 1px 0 hsl(40 80% 75% / 0.05), inset 0 -1px 0 hsl(40 50% 20% / 0.15)',
     }}
   >
-    {children}
+    {glow && (
+      <div className="absolute inset-0 rounded-xl pointer-events-none" style={{
+        background: 'radial-gradient(ellipse at top center, hsl(40 70% 50% / 0.06), transparent 70%)',
+      }} />
+    )}
+    <div className="relative">{children}</div>
+  </div>
+);
+
+const MedievalOrnament = ({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) => {
+  const w = size === 'sm' ? 'w-32' : size === 'md' ? 'w-48' : 'w-64';
+  return (
+    <div className={`flex items-center justify-center mx-auto ${w}`}>
+      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/40 to-primary/20" />
+      <div className="mx-2 flex items-center gap-1">
+        <span className="text-primary/30 text-[10px]">✦</span>
+        <span className="text-primary/50 text-xs">⚜</span>
+        <span className="text-primary/30 text-[10px]">✦</span>
+      </div>
+      <div className="h-px flex-1 bg-gradient-to-l from-transparent via-primary/40 to-primary/20" />
+    </div>
+  );
+};
+
+const SealBadge = ({ icon, text, subtext }: { icon: string; text: string; subtext?: string }) => (
+  <div className="flex flex-col items-center gap-1">
+    <div
+      className="w-14 h-14 rounded-full flex items-center justify-center border-2 border-primary/40 bg-gradient-to-b from-primary/15 to-primary/5"
+      style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.25), inset 0 2px 4px hsl(40 80% 75% / 0.15), inset 0 -2px 4px rgba(0,0,0,0.3)' }}
+    >
+      <span className="text-xl">{icon}</span>
+    </div>
+    <span className="text-[10px] text-foreground font-display font-bold uppercase tracking-wider">{text}</span>
+    {subtext && <span className="text-[8px] text-muted-foreground">{subtext}</span>}
   </div>
 );
 
 const SectionDivider = () => (
-  <div className="flex items-center justify-center py-4">
-    <div className="h-px w-16 bg-gradient-to-r from-transparent to-primary/30" />
-    <Sparkles className="w-4 h-4 text-primary/40 mx-3" />
-    <div className="h-px w-16 bg-gradient-to-l from-transparent to-primary/30" />
+  <div className="flex items-center justify-center py-6">
+    <div className="h-px w-12 bg-gradient-to-r from-transparent to-primary/30" />
+    <div className="mx-2 flex items-center gap-1.5">
+      <span className="text-primary/20 text-[8px]">✦</span>
+      <Sparkles className="w-4 h-4 text-primary/40" />
+      <span className="text-primary/20 text-[8px]">✦</span>
+    </div>
+    <div className="h-px w-12 bg-gradient-to-l from-transparent to-primary/30" />
   </div>
 );
 
@@ -809,13 +850,13 @@ const CinematicImage = ({ src, alt, caption, subcaption, rotate = 0 }: {
 const CharacterPortrait = ({ src, name, role }: { src: string; name: string; role: string }) => (
   <div className="flex flex-col items-center gap-2">
     <div
-      className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-primary/40"
-      style={{ boxShadow: '0 0 15px hsl(40 70% 50% / 0.25), 0 4px 15px rgba(0,0,0,0.5)' }}
+      className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-primary/50 relative"
+      style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.35), 0 0 40px hsl(40 70% 50% / 0.12), 0 4px 15px rgba(0,0,0,0.5), inset 0 2px 4px hsl(40 80% 75% / 0.1)' }}
     >
       <img src={src} alt={name} className="w-full h-full object-cover" loading="lazy" />
     </div>
     <div className="text-center">
-      <p className="font-display text-xs font-bold text-foreground">{name}</p>
+      <p className="font-display text-xs font-bold text-foreground" style={{ textShadow: '0 0 8px hsl(40 70% 50% / 0.3)' }}>{name}</p>
       <p className="text-[10px] text-muted-foreground">{role}</p>
     </div>
   </div>
@@ -916,6 +957,19 @@ const LandingPage = () => {
 
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce">
           <ChevronDown className="w-6 h-6 text-primary/50" />
+        </div>
+      </section>
+
+      {/* ══════════ TRUST SEAL BADGES ══════════ */}
+      <section className="px-5 py-8 bg-card/20">
+        <div className="max-w-lg mx-auto">
+          <div className="flex items-center justify-center gap-6 flex-wrap">
+            <SealBadge icon="🛡️" text="Garantia" subtext="7 Dias" />
+            <SealBadge icon="⚔️" text="30+ Capítulos" />
+            <SealBadge icon="🏆" text="100% Offline" />
+            <SealBadge icon="👥" text="Multiplayer" subtext="Até 6 jogadores" />
+          </div>
+          <MedievalOrnament size="lg" />
         </div>
       </section>
 
@@ -1180,6 +1234,7 @@ const LandingPage = () => {
       <section className="px-5 py-16">
         <div className="max-w-2xl mx-auto text-center space-y-8">
           <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Veja por Dentro</p>
+          <MedievalOrnament size="sm" />
           <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
             O app <span className="text-primary">por dentro</span> — tour real
           </h2>
@@ -1470,6 +1525,7 @@ const LandingPage = () => {
       <section className="px-5 py-16">
         <div className="max-w-2xl mx-auto text-center space-y-8">
           <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Investimento</p>
+          <MedievalOrnament />
           <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
             Quanto vale uma <span className="text-primary">transformação</span> assim?
           </h2>
@@ -1493,7 +1549,22 @@ const LandingPage = () => {
             Tudo isso junto custaria mais de <span className="line-through text-foreground/40">R$ 1.400</span>
           </p>
 
-          <MedievalCard glow className="max-w-sm mx-auto text-center">
+          {/* Medieval crest */}
+          <div className="flex justify-center mb-2">
+            <div
+              className="w-20 h-20 rounded-full flex items-center justify-center border-2 border-primary/50 bg-gradient-to-b from-primary/20 to-primary/5"
+              style={{ boxShadow: '0 0 30px hsl(40 70% 50% / 0.35), 0 0 60px hsl(40 70% 50% / 0.15), inset 0 2px 6px hsl(40 80% 75% / 0.2), inset 0 -3px 6px rgba(0,0,0,0.4)' }}
+            >
+              <span className="text-3xl">⚔️</span>
+            </div>
+          </div>
+
+          <MedievalCard glow className="max-w-sm mx-auto text-center relative overflow-hidden">
+            {/* Corner ornaments */}
+            <div className="absolute top-2 left-2 text-primary/15 text-lg">⚜</div>
+            <div className="absolute top-2 right-2 text-primary/15 text-lg">⚜</div>
+            <div className="absolute bottom-2 left-2 text-primary/15 text-lg">⚜</div>
+            <div className="absolute bottom-2 right-2 text-primary/15 text-lg">⚜</div>
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-display mb-1">Acesso completo por apenas</p>
             <div className="flex items-baseline justify-center gap-1 mb-1">
               <span className="text-sm text-muted-foreground">R$</span>
