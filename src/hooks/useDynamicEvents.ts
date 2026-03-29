@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
-import { StoryProgress, PlayerAttributes } from '@/hooks/useStoryProgress';
-import { eventPools, routeVariants } from '@/data/eventPools';
+import { useMemo, useEffect } from 'react';
+import { StoryProgress, PlayerAttributes, PlayHistory } from '@/hooks/useStoryProgress';
+import { eventPools, routeVariants, replayExclusiveEvents } from '@/data/eventPools';
 import {
   DynamicEvent,
   DynamicChoice,
@@ -10,20 +10,29 @@ import {
   filterDynamicChoices,
   getConsequenceModifiers,
   shuffleMicroEvents,
+  PhaseEventPool,
 } from '@/lib/dynamicEvents';
+import {
+  buildPlaythroughMemory,
+  calculateIntensity,
+  getIntensityMultipliers,
+  getReplayNarrative,
+  getSeenEventIds,
+  markEventsSeen,
+  boostUnseenEvents,
+  IntensityLevel,
+} from '@/lib/replayEngine';
 
 /**
  * Hook that resolves dynamic events for the current scene.
- * Returns extra narrative, extra choices, consequence hints,
- * and alternate route info.
+ * Now includes replay memory, adaptive intensity, and unseen-event boosting.
  */
-export function useDynamicEvents(progress: StoryProgress, chapterId: string) {
-  return useMemo(() => {
+export function useDynamicEvents(progress: StoryProgress, chapterId: string, history?: PlayHistory) {
+  const result = useMemo(() => {
     const flagList = Object.entries(progress.flags)
       .filter(([, v]) => v)
       .map(([k]) => k);
 
-    // Consequence keys from previous dynamic choices
     const consequenceKeys = flagList.filter(f =>
       ['mostrou_misericordia', 'foi_corajoso', 'buscou_sabedoria', 'perseverou_na_dor',
        'ignorou_aviso', 'abandonou_companheiro', 'cedeu_tentacao', 'fugiu_do_conflito'].includes(f)
@@ -46,25 +55,59 @@ export function useDynamicEvents(progress: StoryProgress, chapterId: string) {
       ? chapterId.split('-')[0]
       : 'fase1';
 
-    const pool = eventPools[phase];
+    // Build merged pool: base + replay-exclusive events (if replay)
+    let pool = eventPools[phase];
+    if (progress.playthrough > 1 && replayExclusiveEvents[phase]) {
+      const replayPool = replayExclusiveEvents[phase];
+      pool = pool ? {
+        ...pool,
+        variableCount: pool.variableCount + replayPool.variableCount,
+        events: [...pool.events, ...replayPool.events],
+      } : replayPool;
+    }
 
-    // Select events for this scene
+    // Boost unseen events for variety
+    if (pool) {
+      const seenIds = getSeenEventIds();
+      pool = {
+        ...pool,
+        events: boostUnseenEvents(pool.events, seenIds),
+      };
+    }
+
+    // Select events
     const events = selectEventsForScene(chapterId, pool, ctx);
 
-    // Collect extra narrative from events
-    const extraNarrative = events.flatMap(e => e.narrative);
+    // Replay memory & intensity
+    const memory = history ? buildPlaythroughMemory(history) : null;
+    const intensity = memory
+      ? calculateIntensity(memory, progress.attributes, progress.playthrough)
+      : 'normal' as IntensityLevel;
+    const intensityInfo = getIntensityMultipliers(intensity);
 
-    // Collect and filter extra choices from events
+    // Replay-exclusive narrative
+    const replayNarrative = memory
+      ? getReplayNarrative(memory, chapterId, progress.playthrough)
+      : [];
+
+    // Collect extra narrative
+    const eventNarrative = events.flatMap(e => e.narrative);
+    const allExtraNarrative = [...replayNarrative, ...eventNarrative];
+    if (intensityInfo.extraNarrativeTone) {
+      allExtraNarrative.push(intensityInfo.extraNarrativeTone);
+    }
+
+    // Choices
     const rawChoices = events.flatMap(e => e.choices || []);
     const extraChoices = filterDynamicChoices(rawChoices, ctx);
 
-    // Get consequence modifiers from past dynamic decisions
+    // Consequence modifiers
     const { attrBonus, narrativeHints } = getConsequenceModifiers(consequenceKeys);
 
-    // Shuffle narrative for micro-variation
-    const shuffledNarrative = shuffleMicroEvents(extraNarrative, seed + chapterId.length);
+    // Shuffle
+    const shuffledNarrative = shuffleMicroEvents(allExtraNarrative, seed + chapterId.length);
 
-    // Check alternate routes
+    // Alternate routes
     const routes = routeVariants[chapterId];
     const alternateRoute = routes?.find(r => r.condition({
       attributes: progress.attributes as unknown as Record<string, number>,
@@ -73,20 +116,26 @@ export function useDynamicEvents(progress: StoryProgress, chapterId: string) {
     })) || null;
 
     return {
-      /** Extra narrative paragraphs from dynamic events */
       extraNarrative: shuffledNarrative,
-      /** Extra choices from dynamic events */
       extraChoices,
-      /** Narrative hints from past consequence keys */
       consequenceHints: narrativeHints,
-      /** Attribute bonuses/penalties from past dynamic choices */
       consequenceBonus: attrBonus,
-      /** Alternate route available for this scene */
       alternateRoute,
-      /** All selected events for debugging/tracking */
       selectedEvents: events,
-      /** The seed used for this selection */
       seed,
+      /** Current intensity level */
+      intensity,
+      /** Replay memory info */
+      memory,
     };
-  }, [chapterId, progress.playthrough, progress.choicesMade, progress.flags, progress.visitedChapters, progress.decisions, progress.attributes]);
+  }, [chapterId, progress.playthrough, progress.choicesMade, progress.flags, progress.visitedChapters, progress.decisions, progress.attributes, history]);
+
+  // Mark selected events as seen for future unseen-boosting
+  useEffect(() => {
+    if (result.selectedEvents.length > 0) {
+      markEventsSeen(result.selectedEvents.map(e => e.id));
+    }
+  }, [result.selectedEvents]);
+
+  return result;
 }
