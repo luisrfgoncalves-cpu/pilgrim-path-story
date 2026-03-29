@@ -239,8 +239,48 @@ const ScenePage = () => {
             ))}
           </div>
 
+          {/* Scene events */}
+          {chapter.sceneEvent && !sceneEventDone && showChoices && (
+            <>
+              {chapter.sceneEvent.type === 'sinking' && (
+                <div className="mb-5">
+                  <SinkingEvent
+                    duration={chapter.sceneEvent.duration}
+                    message={chapter.sceneEvent.message}
+                    onEscape={() => setSceneEventDone(true)}
+                    onDrown={() => {
+                      setSceneEventDone(true);
+                      // Auto-pick worst choice on drown
+                      const worst = availableChoices[chapter.timeoutChoiceIndex ?? availableChoices.length - 1];
+                      if (worst) handleChoice(worst.nextChapterId, worst.text, worst.effects, worst.consequence, worst.flag, worst.conditionalEffects, worst.item);
+                    }}
+                  />
+                </div>
+              )}
+              {chapter.sceneEvent.type === 'tension' && (
+                <TensionPulse
+                  intensity={chapter.sceneEvent.intensity || 2}
+                  duration={chapter.sceneEvent.duration || 3000}
+                  onComplete={() => setSceneEventDone(true)}
+                />
+              )}
+            </>
+          )}
+
+          {/* Suspense overlay */}
+          {suspenseActive && pendingChoice && (
+            <SuspenseDelay
+              duration={2500}
+              message="O destino pondera sua escolha..."
+              onComplete={() => {
+                setSuspenseActive(false);
+                pendingChoice();
+              }}
+            />
+          )}
+
           {/* Choices or Ending */}
-          {showChoices && (
+          {showChoices && !suspenseActive && (
             <div className="space-y-3 slide-up pb-8">
               {chapter.isEnding && (chapter.endingType === 'final_good' || chapter.endingType === 'final_bad') ? (() => {
                 const analysis = analyzePerformance(
