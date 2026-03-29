@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useMemo, useState, useEffect } from 'react';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
+import { useCloudSync } from '@/hooks/useCloudSync';
 import { getChapter, storyChapters, chapterOrder } from '@/data/story';
 import { getReplayIncentive, getUnlockableHints } from '@/data/sceneVariations';
 import { useAuth } from '@/contexts/AuthContext';
@@ -19,8 +20,9 @@ const getPlayerState = (attrs: { fe: number; coragem: number; perseveranca: numb
 
 const Index = () => {
   const navigate = useNavigate();
-  const { hasProgress, startJourney, resetProgress, progress, history, isReplay } = useStoryProgress();
+  const { hasProgress, startJourney, resetProgress, progress, history, isReplay, loadFromCloud } = useStoryProgress();
   const { user, profile } = useAuth();
+  useCloudSync(loadFromCloud);
   const [streakShown, setStreakShown] = useState(false);
 
   const streak = useMemo(() => getStreak(), []);

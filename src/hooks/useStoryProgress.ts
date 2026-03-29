@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { FIRST_CHAPTER_ID, ChoiceEffect, ConditionalEffect } from '@/data/story';
+import { loadProgressFromCloud, loadHistoryFromCloud, savePlaythroughToCloud } from '@/lib/cloudSave';
 
 const STORAGE_KEY = 'peregrino-progress';
 const HISTORY_KEY = 'peregrino-history';
@@ -170,17 +171,29 @@ export const useStoryProgress = () => {
   }, []);
 
   const completePlaythrough = useCallback((result: 'complete' | 'difficult' | 'incomplete') => {
+    const record: PlaythroughRecord = {
+      completedAt: Date.now(),
+      result,
+      attributes: { ...progress.attributes },
+      choicesMade: progress.choicesMade,
+      flags: Object.keys(progress.flags).filter(k => progress.flags[k]),
+    };
     setHistory(prev => ({
-      playthroughs: [...prev.playthroughs, {
-        completedAt: Date.now(),
-        result,
-        attributes: { ...progress.attributes },
-        choicesMade: progress.choicesMade,
-        flags: Object.keys(progress.flags).filter(k => progress.flags[k]),
-      }],
+      playthroughs: [...prev.playthroughs, record],
       totalPlaythroughs: prev.totalPlaythroughs + 1,
     }));
+    // Also save to cloud if userId is provided later via syncCloudPlaythrough
+    (window as any).__lastPlaythroughRecord = { record, playthrough: progress.playthrough };
   }, [progress]);
+
+  /** Save last completed playthrough to cloud */
+  const syncCloudPlaythrough = useCallback(async (userId: string) => {
+    const last = (window as any).__lastPlaythroughRecord;
+    if (last) {
+      await savePlaythroughToCloud(userId, last.record, last.playthrough);
+      (window as any).__lastPlaythroughRecord = null;
+    }
+  }, []);
 
   const resetProgress = useCallback(() => {
     const hist = getPlayHistory();
@@ -195,6 +208,26 @@ export const useStoryProgress = () => {
       started: false,
       playthrough: hist.totalPlaythroughs + 1,
     });
+  }, []);
+
+  /** Load progress from Supabase cloud save */
+  const loadFromCloud = useCallback(async (userId: string) => {
+    const [progressResult, historyResult] = await Promise.all([
+      loadProgressFromCloud(userId),
+      loadHistoryFromCloud(userId),
+    ]);
+
+    if (progressResult.data) {
+      setProgress(progressResult.data);
+    }
+    if (historyResult.data) {
+      setHistory(historyResult.data);
+    }
+
+    return {
+      hasCloudSave: !!progressResult.data,
+      error: progressResult.error || historyResult.error,
+    };
   }, []);
 
   const hasProgress = progress.started || progress.choicesMade > 0;
@@ -212,7 +245,6 @@ export const useStoryProgress = () => {
     return true;
   }, [progress.attributes]);
 
-  /** Check if a flag was set in any previous playthrough */
   const hadFlagBefore = useCallback((flag: string): boolean => {
     return history.playthroughs.some(p => p.flags.includes(flag));
   }, [history.playthroughs]);
@@ -232,5 +264,6 @@ export const useStoryProgress = () => {
     progress, makeChoice, goToChapter, resetProgress, startJourney,
     hasProgress, hasFlag, meetsRequirements, history, isReplay,
     completePlaythrough, hadFlagBefore, addItem, hasItem,
+    loadFromCloud, syncCloudPlaythrough,
   };
 };

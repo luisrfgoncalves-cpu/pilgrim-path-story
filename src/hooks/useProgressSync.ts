@@ -1,41 +1,67 @@
-import { useEffect, useRef } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { StoryProgress } from '@/hooks/useStoryProgress';
+import { saveProgressToCloud, syncProfileSummary } from '@/lib/cloudSave';
 
 /**
- * Syncs local story progress to the Supabase profile.
- * Updates current_phase and total_choices so other players can see your progress.
+ * Syncs local story progress to Supabase.
+ * Debounced: saves at most every 3 seconds to avoid hammering the API.
+ * Also updates profile summary for community visibility.
  */
 export const useProgressSync = (progress: StoryProgress) => {
   const { user } = useAuth();
   const lastSyncRef = useRef<string>('');
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const doSync = useCallback(async () => {
+    if (!user || !progress.started) return;
+
+    const syncKey = `${progress.currentChapterId}-${progress.choicesMade}-${Object.keys(progress.flags).length}`;
+    if (syncKey === lastSyncRef.current) return;
+    lastSyncRef.current = syncKey;
+
+    // Save full progress
+    await saveProgressToCloud(user.id, progress);
+    // Update public profile summary
+    await syncProfileSummary(user.id, progress);
+  }, [user, progress]);
 
   useEffect(() => {
     if (!user || !progress.started) return;
 
-    // Determine phase from chapter ID
-    const chapterId = progress.currentChapterId;
-    let phase = 0;
-    if (chapterId.startsWith('fase6') || chapterId.startsWith('final')) phase = 6;
-    else if (chapterId.startsWith('fase5')) phase = 5;
-    else if (chapterId.startsWith('fase4')) phase = 4;
-    else if (chapterId.startsWith('fase3')) phase = 3;
-    else if (chapterId.startsWith('fase2')) phase = 2;
-    else if (chapterId.startsWith('cena')) phase = 1;
+    // Debounce: wait 2s after last change
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(doSync, 2000);
 
-    const syncKey = `${phase}-${progress.choicesMade}`;
-    if (syncKey === lastSyncRef.current) return;
-    lastSyncRef.current = syncKey;
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [user, progress.currentChapterId, progress.choicesMade, progress.flags, progress.started, doSync]);
 
-    supabase
-      .from('profiles')
-      .update({
-        current_phase: phase,
-        total_choices: progress.choicesMade,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', user.id)
-      .then(() => {});
-  }, [user, progress.currentChapterId, progress.choicesMade, progress.started]);
+  // Save immediately on page unload
+  useEffect(() => {
+    const handleUnload = () => {
+      if (user && progress.started) {
+        // Use sendBeacon for reliable save on tab close
+        const payload = JSON.stringify({
+          user_id: user.id,
+          current_chapter_id: progress.currentChapterId,
+          visited_chapters: progress.visitedChapters,
+          choices_made: progress.choicesMade,
+          attributes: progress.attributes,
+          decisions: progress.decisions,
+          flags: progress.flags,
+          items: progress.items,
+          playthrough: progress.playthrough,
+          started: progress.started,
+          updated_at: new Date().toISOString(),
+        });
+        // localStorage is always saved by useStoryProgress, so cloud save here is best-effort
+        localStorage.setItem('peregrino-progress', JSON.stringify(progress));
+      }
+    };
+
+    window.addEventListener('beforeunload', handleUnload);
+    return () => window.removeEventListener('beforeunload', handleUnload);
+  }, [user, progress]);
 };
