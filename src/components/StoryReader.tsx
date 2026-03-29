@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getChapter } from '@/data/story';
+import { getChapter, storyChapters } from '@/data/story';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { BookOpen, RotateCcw, MapPin, ScrollText } from 'lucide-react';
 
@@ -44,7 +44,7 @@ const StoryReader = () => {
 
   if (!chapter) return null;
 
-  const totalChapters = Object.keys(require('@/data/story').storyChapters).length;
+  const totalChapters = Object.keys(storyChapters).length;
   const progressPercent = Math.round((progress.visitedChapters.length / totalChapters) * 100);
 
   return (
