@@ -2,23 +2,22 @@ import { useRef, useCallback, useEffect } from 'react';
 import { EmotionalTone } from '@/lib/emotionalIntensity';
 
 /**
- * Procedural audio engine — Game Soundtrack Style
+ * Melodic Audio Engine — Game Soundtrack Style
  * 
- * Instead of continuous drones, this engine plays:
- * - Musical phrases that breathe (play → silence → play)
- * - Gentle ambient pads with slow LFO volume modulation (swell in/out)
- * - Melodic motifs based on pentatonic/modal scales
- * - Much lower master volume to stay non-intrusive
- * 
- * Ambiences cycle between 8-15s of soft music and 4-8s of silence,
- * so the sound never becomes irritating or monotonous.
+ * Generates gentle, melodic ambient music that varies per scene.
+ * Each ambience type has its own musical character:
+ *  - Uses warm tones (sine waves only, no harsh oscillators)
+ *  - Very low volume with long attack/release envelopes
+ *  - Breathing pattern: music plays for ~6-10s then rests for 6-12s
+ *  - Each scene gets a unique seed so the melody is always fresh
+ *  - No sharp/agudo sounds — everything is filtered through a lowpass
  */
 
-export type AmbienceType = 'wind' | 'tense' | 'dark' | 'peaceful' | 'silence';
+export type AmbienceType = 'pastoral' | 'solemn' | 'shadow' | 'glory' | 'contemplative' | 'silence';
 export type SfxType = 'decision' | 'positive' | 'negative';
 
-const FADE = 2; // slower fades for smoother transitions
-const MASTER_VOL = 0.12; // much quieter overall
+const FADE = 2.5;
+const MASTER_VOL = 0.08; // very quiet — background music level
 
 let _ctx: AudioContext | null = null;
 const getCtx = (): AudioContext => {
@@ -27,41 +26,70 @@ const getCtx = (): AudioContext => {
   return _ctx;
 };
 
-/* Musical scales */
-const PENTATONIC_MINOR = [0, 3, 5, 7, 10]; // semitones
-const DORIAN = [0, 2, 3, 5, 7, 9, 10];
-const LYDIAN = [0, 2, 4, 6, 7, 9, 11];
+/* ── Musical Scales (semitone offsets from root) ── */
+const PENTATONIC_MAJOR = [0, 2, 4, 7, 9];     // warm, open
+const AEOLIAN = [0, 2, 3, 5, 7, 8, 10];       // natural minor, melancholic
+const MIXOLYDIAN = [0, 2, 4, 5, 7, 9, 10];    // heroic, warm
+const PHRYGIAN = [0, 1, 3, 5, 7, 8, 10];      // dark, exotic
+const LYDIAN = [0, 2, 4, 6, 7, 9, 11];        // bright, dreamy
+const DORIAN = [0, 2, 3, 5, 7, 9, 10];        // gentle minor
 
 const midiToFreq = (midi: number) => 440 * Math.pow(2, (midi - 69) / 12);
-const pickRandom = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+const rand = (min: number, max: number) => min + Math.random() * (max - min);
 
-/** Play a single gentle note */
-function playNote(
+/** Play a single very gentle note through a lowpass filter */
+function playMelodicNote(
   ctx: AudioContext, dest: AudioNode,
   freq: number, startTime: number, duration: number,
-  type: OscillatorType = 'sine', vol = 0.06
+  vol = 0.04
 ) {
   const osc = ctx.createOscillator();
-  osc.type = type;
+  osc.type = 'sine';
   osc.frequency.value = freq;
+
+  // Lowpass filter to remove any harshness
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = Math.min(freq * 3, 2000); // never above 2kHz
+  filter.Q.value = 0.5;
+
   const g = ctx.createGain();
-  const attack = Math.min(0.4, duration * 0.2);
-  const release = Math.min(0.8, duration * 0.4);
+  const attack = Math.min(0.8, duration * 0.25);
+  const release = Math.min(1.5, duration * 0.4);
+
   g.gain.setValueAtTime(0, startTime);
   g.gain.linearRampToValueAtTime(vol, startTime + attack);
   g.gain.setValueAtTime(vol, startTime + duration - release);
   g.gain.linearRampToValueAtTime(0, startTime + duration);
-  osc.connect(g);
+
+  osc.connect(filter);
+  filter.connect(g);
   g.connect(dest);
   osc.start(startTime);
-  osc.stop(startTime + duration + 0.1);
+  osc.stop(startTime + duration + 0.2);
+}
+
+/** Play a soft pad chord (multiple notes layered) */
+function playPadChord(
+  ctx: AudioContext, dest: AudioNode,
+  notes: number[], startTime: number, duration: number,
+  vol = 0.025
+) {
+  notes.forEach((midi, i) => {
+    playMelodicNote(ctx, dest, midiToFreq(midi), startTime + i * 0.1, duration - i * 0.1, vol);
+  });
 }
 
 interface AmbienceState {
   gain: GainNode;
-  intervalId: ReturnType<typeof setTimeout>;
+  timeoutId: ReturnType<typeof setTimeout>;
   stopped: boolean;
+  phraseCount: number;
 }
+
+// Track per-scene seed for variety
+let sceneSeed = 0;
 
 export function useAudioEngine() {
   const currentAmbience = useRef<AmbienceState | null>(null);
@@ -74,7 +102,15 @@ export function useAudioEngine() {
     const ctx = getCtx();
     const g = ctx.createGain();
     g.gain.value = MASTER_VOL;
-    g.connect(ctx.destination);
+
+    // Global lowpass to ensure nothing is ever harsh
+    const globalFilter = ctx.createBiquadFilter();
+    globalFilter.type = 'lowpass';
+    globalFilter.frequency.value = 2500;
+    globalFilter.Q.value = 0.3;
+
+    g.connect(globalFilter);
+    globalFilter.connect(ctx.destination);
     masterGain.current = g;
     return g;
   }, []);
@@ -83,7 +119,7 @@ export function useAudioEngine() {
     if (!currentAmbience.current) return;
     const state = currentAmbience.current;
     state.stopped = true;
-    clearInterval(state.intervalId);
+    clearTimeout(state.timeoutId);
     const ctx = getCtx();
     state.gain.gain.setTargetAtTime(0, ctx.currentTime, fadeTime / 3);
     currentAmbience.current = null;
@@ -93,11 +129,6 @@ export function useAudioEngine() {
     }, fadeTime * 1000 + 500);
   }, []);
 
-  /**
-   * Each ambience type defines a "playPhrase" function that schedules
-   * a short musical phrase (3-8s), then returns. The engine calls it
-   * periodically with silence gaps in between.
-   */
   const startAmbience = useCallback((type: AmbienceType) => {
     if (!enabled.current) return;
     if (type === currentType.current) return;
@@ -115,14 +146,14 @@ export function useAudioEngine() {
     g.connect(master);
     g.gain.setTargetAtTime(1, ctx.currentTime, FADE / 3);
 
-    // Add a gentle reverb-like effect via delay
-    const delay = ctx.createDelay(0.5);
-    delay.delayTime.value = 0.3;
+    // Soft delay for depth
+    const delay = ctx.createDelay(0.6);
+    delay.delayTime.value = 0.35;
     const feedback = ctx.createGain();
-    feedback.gain.value = 0.15;
+    feedback.gain.value = 0.12;
     const delayFilter = ctx.createBiquadFilter();
     delayFilter.type = 'lowpass';
-    delayFilter.frequency.value = 1200;
+    delayFilter.frequency.value = 900;
     g.connect(delay);
     delay.connect(delayFilter);
     delayFilter.connect(feedback);
@@ -132,94 +163,119 @@ export function useAudioEngine() {
     const playPhrase = () => {
       if (state.stopped) return;
       const now = ctx.currentTime;
+      state.phraseCount++;
+      // Vary the musical phrase on each repeat
+      const variation = state.phraseCount + sceneSeed;
 
       switch (type) {
-        case 'wind': {
-          // Gentle wind-like pad with slow melody — pentatonic, airy
-          const root = 60; // C4
-          const scale = PENTATONIC_MINOR;
-          const noteCount = 3 + Math.floor(Math.random() * 3);
+        case 'pastoral': {
+          // Warm, open, like walking through fields — pentatonic major
+          const root = pick([55, 57, 60]); // G3, A3, C4
+          const scale = PENTATONIC_MAJOR;
+          const noteCount = 3 + (variation % 3);
           for (let i = 0; i < noteCount; i++) {
-            const degree = pickRandom(scale);
-            const octave = pickRandom([0, 0, 12, -12]);
+            const degree = scale[(i + variation) % scale.length];
+            const octave = i === noteCount - 1 ? 12 : 0;
             const freq = midiToFreq(root + degree + octave);
-            const start = now + i * (1.2 + Math.random() * 1.5);
-            const dur = 2 + Math.random() * 3;
-            playNote(ctx, g, freq, start, dur, 'sine', 0.04 + Math.random() * 0.03);
+            const start = now + i * rand(1.0, 1.8);
+            const dur = rand(2.5, 4.5);
+            playMelodicNote(ctx, g, freq, start, dur, rand(0.025, 0.04));
+          }
+          // Occasional soft pad underneath
+          if (variation % 3 === 0) {
+            playPadChord(ctx, g, [root, root + 7, root + 12], now + 0.5, 6, 0.015);
           }
           break;
         }
-        case 'tense': {
-          // Low minor notes, sparse, with occasional dissonance
-          const root = 48; // C3
+        case 'solemn': {
+          // Thoughtful, minor — dorian mode, measured pace
+          const root = pick([48, 50, 53]); // C3, D3, F3
           const scale = DORIAN;
-          const noteCount = 2 + Math.floor(Math.random() * 2);
+          const noteCount = 2 + (variation % 2);
           for (let i = 0; i < noteCount; i++) {
-            const degree = pickRandom(scale);
+            const degree = scale[(i + variation) % scale.length];
             const freq = midiToFreq(root + degree);
-            const start = now + i * (1.5 + Math.random() * 2);
-            const dur = 3 + Math.random() * 3;
-            playNote(ctx, g, freq, start, dur, 'triangle', 0.03 + Math.random() * 0.02);
+            const start = now + i * rand(1.5, 2.5);
+            const dur = rand(3, 5);
+            playMelodicNote(ctx, g, freq, start, dur, rand(0.02, 0.035));
           }
-          // Occasional low rumble note
-          if (Math.random() > 0.5) {
-            playNote(ctx, g, midiToFreq(36), now + 1, 5, 'sine', 0.025);
+          // Low sustained note for gravity
+          playMelodicNote(ctx, g, midiToFreq(root - 12), now, rand(5, 8), 0.02);
+          break;
+        }
+        case 'shadow': {
+          // Dark but melodic — phrygian, very slow, sparse
+          const root = pick([43, 45, 48]); // G2, A2, C3
+          const scale = PHRYGIAN;
+          // Just 1-2 notes, long and haunting
+          const degree = scale[(variation) % scale.length];
+          playMelodicNote(ctx, g, midiToFreq(root + degree), now, rand(5, 8), rand(0.02, 0.03));
+          // A distant high harmonic — very quiet
+          if (variation % 2 === 0) {
+            const hiDegree = scale[(variation + 3) % scale.length];
+            playMelodicNote(ctx, g, midiToFreq(root + hiDegree + 24), now + rand(2, 4), rand(3, 5), 0.01);
           }
           break;
         }
-        case 'dark': {
-          // Very low, sparse, haunting — single long notes
-          const notes = [36, 38, 41, 43]; // C2, D2, F2, G2
-          const midi = pickRandom(notes);
-          playNote(ctx, g, midiToFreq(midi), now, 6 + Math.random() * 4, 'sine', 0.03);
-          // Eerie high harmonic (barely audible)
-          if (Math.random() > 0.4) {
-            const hiNote = pickRandom([72, 74, 77, 79]);
-            playNote(ctx, g, midiToFreq(hiNote), now + 2, 4, 'sine', 0.012);
-          }
-          break;
-        }
-        case 'peaceful': {
-          // Warm major arpeggios, lydian mode, gentle
-          const root = 60;
-          const scale = LYDIAN;
-          const noteCount = 4 + Math.floor(Math.random() * 3);
+        case 'glory': {
+          // Triumphant, bright — lydian/mixolydian, ascending motifs
+          const root = pick([60, 62, 64]); // C4, D4, E4
+          const scale = variation % 2 === 0 ? LYDIAN : MIXOLYDIAN;
+          const noteCount = 4 + (variation % 3);
           for (let i = 0; i < noteCount; i++) {
             const degree = scale[i % scale.length];
-            const octave = i < 4 ? 0 : 12;
+            const octave = i >= scale.length ? 12 : 0;
             const freq = midiToFreq(root + degree + octave);
-            const start = now + i * (0.8 + Math.random() * 0.6);
-            const dur = 2.5 + Math.random() * 2;
-            playNote(ctx, g, freq, start, dur, 'sine', 0.05 + Math.random() * 0.02);
+            const start = now + i * rand(0.7, 1.2);
+            const dur = rand(2, 3.5);
+            playMelodicNote(ctx, g, freq, start, dur, rand(0.03, 0.045));
+          }
+          // Warm chord pad
+          playPadChord(ctx, g, [root - 12, root - 5, root], now, 5, 0.02);
+          break;
+        }
+        case 'contemplative': {
+          // Aeolian (natural minor), gentle, reflective
+          const root = pick([55, 57, 59]); // G3, A3, B3
+          const scale = AEOLIAN;
+          const noteCount = 3 + (variation % 2);
+          // Arpeggio-like pattern
+          for (let i = 0; i < noteCount; i++) {
+            const idx = (i + variation) % scale.length;
+            const freq = midiToFreq(root + scale[idx]);
+            const start = now + i * rand(1.0, 1.6);
+            const dur = rand(2.5, 4);
+            playMelodicNote(ctx, g, freq, start, dur, rand(0.025, 0.038));
           }
           break;
         }
       }
     };
 
-    // Breathing pattern: play phrase, then wait silence, repeat
-    const phraseDuration = type === 'dark' ? 10000 : 8000;
-    const silenceMin = type === 'peaceful' ? 3000 : 5000;
-    const silenceMax = type === 'peaceful' ? 6000 : 10000;
+    // Breathing: phrase (6-10s) then silence (6-12s)
+    const phraseDuration = type === 'shadow' ? 10000 : type === 'glory' ? 7000 : 8000;
+    const silenceMin = 6000;
+    const silenceMax = 12000;
 
     const scheduleNext = () => {
       if (state.stopped) return;
       playPhrase();
-      const silence = silenceMin + Math.random() * (silenceMax - silenceMin);
-      state.intervalId = setTimeout(scheduleNext, phraseDuration + silence);
+      const silence = rand(silenceMin, silenceMax);
+      state.timeoutId = setTimeout(scheduleNext, phraseDuration + silence);
     };
 
     const state: AmbienceState = {
       gain: g,
-      intervalId: setTimeout(scheduleNext, 500), // start after brief pause
+      timeoutId: setTimeout(scheduleNext, 800),
       stopped: false,
+      phraseCount: 0,
     };
 
     currentAmbience.current = state;
     currentType.current = type;
   }, [getMaster, stopAmbience]);
 
-  /** One-shot SFX — short, musical, non-harsh */
+  /** One-shot SFX — soft, melodic chimes */
   const playSfx = useCallback((type: SfxType) => {
     if (!enabled.current) return;
     const ctx = getCtx();
@@ -227,34 +283,50 @@ export function useAudioEngine() {
     const now = ctx.currentTime;
 
     if (type === 'decision') {
-      // Gentle bell-like chime
-      playNote(ctx, master, midiToFreq(72), now, 0.6, 'sine', 0.08); // C5
-      playNote(ctx, master, midiToFreq(76), now + 0.05, 0.5, 'sine', 0.05); // E5
+      // Soft bell: two notes, gentle
+      playMelodicNote(ctx, master, midiToFreq(67), now, 0.8, 0.06); // G4
+      playMelodicNote(ctx, master, midiToFreq(72), now + 0.08, 0.7, 0.04); // C5
     }
 
     if (type === 'positive') {
-      // Ascending major triad — gentle harp-like
-      const notes = [60, 64, 67, 72]; // C E G C
+      // Ascending warm chord — like a harp strum
+      const notes = [60, 64, 67, 72]; // C E G C (major)
       notes.forEach((n, i) => {
-        playNote(ctx, master, midiToFreq(n), now + i * 0.12, 0.8 - i * 0.1, 'sine', 0.07);
+        playMelodicNote(ctx, master, midiToFreq(n), now + i * 0.1, 1.0 - i * 0.1, 0.05);
       });
     }
 
     if (type === 'negative') {
-      // Descending minor — soft, not harsh
-      const notes = [67, 63, 60, 56]; // G Eb C Ab
+      // Gentle descending minor — soft, not alarming
+      const notes = [65, 63, 60, 58]; // F Eb C Bb — minor descent
       notes.forEach((n, i) => {
-        playNote(ctx, master, midiToFreq(n), now + i * 0.15, 0.6, 'triangle', 0.05);
+        playMelodicNote(ctx, master, midiToFreq(n), now + i * 0.15, 0.8, 0.035);
       });
     }
   }, [getMaster]);
 
+  /** Map scene/tone to the right ambience — each scene sounds unique */
   const setAmbienceForScene = useCallback((chapterId: string, tone: EmotionalTone) => {
-    if (tone === 'heavy') { startAmbience('tense'); return; }
-    if (tone === 'hopeful') { startAmbience('peaceful'); return; }
-    if (chapterId.startsWith('fase3')) startAmbience('dark');
-    else if (chapterId.startsWith('fase2')) startAmbience('tense');
-    else startAmbience('wind');
+    // Change seed per scene so phrases are different
+    sceneSeed = chapterId.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+
+    // Map by phase + tone for maximum variety
+    if (chapterId.startsWith('fase6')) { startAmbience('glory'); return; }
+    if (chapterId.startsWith('fase5')) {
+      startAmbience(tone === 'hopeful' ? 'contemplative' : 'solemn');
+      return;
+    }
+    if (chapterId.startsWith('fase4')) { startAmbience('solemn'); return; }
+    if (chapterId.startsWith('fase3')) { startAmbience('shadow'); return; }
+    if (chapterId.startsWith('fase2')) {
+      startAmbience(tone === 'heavy' ? 'contemplative' : 'pastoral');
+      return;
+    }
+
+    // Fase 1 and others
+    if (tone === 'heavy') startAmbience('solemn');
+    else if (tone === 'hopeful') startAmbience('pastoral');
+    else startAmbience('contemplative');
   }, [startAmbience]);
 
   const sfxForChoice = useCallback((effects: Record<string, number>) => {
