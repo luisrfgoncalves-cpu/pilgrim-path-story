@@ -253,6 +253,17 @@ const Index = () => {
           </button>
         )}
 
+        {/* Campaign selector — Part II */}
+        {!hasProgress && (
+          <button
+            onClick={() => handleNewJourney('part2')}
+            className="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-xl bg-card border border-primary/30 text-foreground font-display text-sm hover:border-primary/60 transition-colors"
+          >
+            <BookOpen className="w-5 h-5 text-primary" />
+            Parte II — A Peregrina
+          </button>
+        )}
+
         {/* Secondary buttons row */}
         <div className="grid grid-cols-4 gap-2">
           <button
