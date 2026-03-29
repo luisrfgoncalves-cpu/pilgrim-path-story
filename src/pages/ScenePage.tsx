@@ -148,9 +148,18 @@ const ScenePage = () => {
               <span className="text-[10px] text-muted-foreground flex-shrink-0">{progressPercent}%</span>
             </div>
           </div>
-          <button onClick={() => navigate('/')} className="text-muted-foreground hover:text-foreground transition-colors text-xs flex-shrink-0">
-            ← Início
-          </button>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={() => { const next = !audioOn; setAudioOn(next); toggleAudio(next); }}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={audioOn ? 'Desativar som' : 'Ativar som'}
+            >
+              {audioOn ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+            </button>
+            <button onClick={() => navigate('/')} className="text-muted-foreground hover:text-foreground transition-colors text-xs">
+              ← Início
+            </button>
+          </div>
         </div>
 
         {/* Expandable attribute bars */}
