@@ -25,6 +25,8 @@ const MultiplayerPage = () => {
   const [view, setView] = useState<'menu' | 'lobby' | 'game'>('menu');
   const [revealEvent, setRevealEvent] = useState<{ event: BoardEvent; playerName: string; dice: number; challengeResult?: 'win' | 'fail' | null } | null>(null);
   const [selectedTile, setSelectedTile] = useState<{ pos: number; event: BoardEvent | undefined } | null>(null);
+  const [turnAnnounce, setTurnAnnounce] = useState<string | null>(null);
+  const prevTurnRef = useRef<string | null>(null);
 
   // Auto-join via link
   useEffect(() => {
