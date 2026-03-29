@@ -202,6 +202,10 @@ const ScenePage = () => {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
 
+    // Track analytics
+    trackPageView(`scene:${progress.currentChapterId}`);
+    trackSceneComplete(progress.currentChapterId);
+
     setTransitioning(true);
     setNarrativeIndex(0);
     setShowChoices(false);
@@ -488,6 +492,18 @@ const ScenePage = () => {
               aria-label={audioOn ? 'Desativar som' : 'Ativar som'}
             >
               {audioOn ? <Volume2 className="w-5 h-5 text-muted-foreground" /> : <VolumeX className="w-5 h-5 text-muted-foreground" />}
+            </button>
+            <button
+              onClick={() => {
+                const phase = progress.currentChapterId.startsWith('fase') ? parseInt(progress.currentChapterId.charAt(4)) || 1 : 1;
+                shareResult(progress.attributes, progress.choicesMade, phase).then(ok => {
+                  if (ok) toast.success('Compartilhado!');
+                });
+              }}
+              className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95"
+              aria-label="Compartilhar"
+            >
+              <Share2 className="w-5 h-5 text-muted-foreground" />
             </button>
             <button onClick={() => navigate('/')} className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95">
               <Home className="w-5 h-5 text-muted-foreground" />
