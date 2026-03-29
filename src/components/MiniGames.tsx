@@ -13,7 +13,7 @@ import { ChoiceEffect } from '@/data/story';
 // Shared types
 // ═══════════════════════════════════════════
 
-export type MiniGameType = 'qte' | 'swipe' | 'memory' | 'stealth';
+export type MiniGameType = 'qte' | 'swipe' | 'memory' | 'stealth' | 'diceduel' | 'treasure' | 'reflex';
 
 export interface MiniGameConfig {
   type: MiniGameType;
@@ -28,6 +28,12 @@ export interface MiniGameConfig {
   swipeItems?: { text: string; emoji: string; good: boolean }[];
   /** Custom symbols for memory game */
   memorySymbols?: string[];
+  /** Enemy config for dice duel */
+  duelEnemy?: { name: string; emoji: string; power: number };
+  /** Hidden treasures for treasure hunt */
+  treasures?: { emoji: string; label: string; bonus: ChoiceEffect }[];
+  /** Reflex directions config */
+  reflexSpeed?: number;
 }
 
 export interface MiniGameResult {
