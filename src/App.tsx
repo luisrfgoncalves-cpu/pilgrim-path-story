@@ -15,7 +15,7 @@ import ReflectionsPage from "./pages/ReflectionsPage.tsx";
 import AuthPage from "./pages/AuthPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
 import CommunityPage from "./pages/CommunityPage.tsx";
-
+import MultiplayerPage from "./pages/MultiplayerPage.tsx";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -36,6 +36,7 @@ const App = () => (
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/perfil" element={<ProfilePage />} />
             <Route path="/comunidade" element={<CommunityPage />} />
+            <Route path="/multiplayer" element={<MultiplayerPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
