@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { getChapter, storyChapters, ChoiceEffect } from '@/data/story';
 import { sceneImages } from '@/data/sceneImages';
-import { MapPin, BookOpen, Home, ScrollText, Lock } from 'lucide-react';
+import { MapPin, Home, ScrollText, Lock } from 'lucide-react';
 
 const ScenePage = () => {
   const navigate = useNavigate();
