@@ -20,8 +20,9 @@ const getPlayerState = (attrs: { fe: number; coragem: number; perseveranca: numb
 
 const Index = () => {
   const navigate = useNavigate();
-  const { hasProgress, startJourney, resetProgress, progress, history, isReplay } = useStoryProgress();
+  const { hasProgress, startJourney, resetProgress, progress, history, isReplay, loadFromCloud } = useStoryProgress();
   const { user, profile } = useAuth();
+  useCloudSync(loadFromCloud);
   const [streakShown, setStreakShown] = useState(false);
 
   const streak = useMemo(() => getStreak(), []);
