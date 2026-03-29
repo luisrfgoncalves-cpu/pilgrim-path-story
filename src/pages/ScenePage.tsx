@@ -310,27 +310,27 @@ const ScenePage = () => {
       {/* Header with avatar */}
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
-          <button onClick={() => setShowStats(s => !s)} className="flex-shrink-0">
+          <button onClick={() => setShowStats(s => !s)} className="flex-shrink-0 p-1 rounded-lg active:scale-95 transition-transform">
             <PilgrimAvatar attributes={progress.attributes} tone={legacyTone} size="sm" storyFlag={emotional?.flagOverride} />
           </button>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <div className="h-0.5 flex-1 bg-secondary rounded-full overflow-hidden">
+              <div className="h-1 flex-1 bg-secondary rounded-full overflow-hidden">
                 <div className="h-full bg-primary transition-all duration-700 rounded-full" style={{ width: `${progressPercent}%` }} />
               </div>
-              <span className="text-[10px] text-muted-foreground flex-shrink-0">{progressPercent}%</span>
+              <span className="text-xs text-muted-foreground flex-shrink-0 font-display">{progressPercent}%</span>
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-3 flex-shrink-0">
             <button
               onClick={() => { const next = !audioOn; setAudioOn(next); toggleAudio(next); }}
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95"
               aria-label={audioOn ? 'Desativar som' : 'Ativar som'}
             >
-              {audioOn ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+              {audioOn ? <Volume2 className="w-5 h-5 text-muted-foreground" /> : <VolumeX className="w-5 h-5 text-muted-foreground" />}
             </button>
-            <button onClick={() => navigate('/')} className="btn-medieval-icon !p-1.5 !rounded-lg flex items-center justify-center">
-              <Home className="w-3.5 h-3.5 text-muted-foreground" />
+            <button onClick={() => navigate('/')} className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95">
+              <Home className="w-5 h-5 text-muted-foreground" />
             </button>
           </div>
         </div>
