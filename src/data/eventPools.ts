@@ -1286,6 +1286,65 @@ export const replayExclusiveEvents: Record<string, PhaseEventPool> = {
       },
     ],
   },
+  fase4: {
+    phaseId: 'fase4',
+    variableCount: 1,
+    events: [
+      {
+        id: 'f4-replay-feira-familiar',
+        type: 'variable',
+        narrative: [
+          'A Feira da Vaidade te reconhece. Vendedores sussurram: "Ele voltou! O que não quis comprar da última vez..."',
+          'As ofertas são diferentes agora — mais sutis, mais pessoais, como se soubessem exatamente suas fraquezas.',
+        ],
+        choices: [
+          {
+            text: '"Conheço seus truques. Minha resposta não mudou."',
+            effects: { fe: 2, discernimento: 2 },
+            consequence: 'A feira treme. Alguém que já resistiu uma vez é mais perigoso que um novato.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Sentir a tentação renovada — são ofertas melhores agora',
+            effects: { fe: -1, discernimento: -1 },
+            consequence: 'O inimigo aprende. Cada replay traz tentações mais refinadas.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.5,
+          },
+        ],
+        weight: 4,
+      },
+    ],
+  },
+  fase6: {
+    phaseId: 'fase6',
+    variableCount: 1,
+    events: [
+      {
+        id: 'f6-replay-rio-raso',
+        type: 'variable',
+        narrative: [
+          'O rio parece diferente desta vez. As águas são mais claras, menos turbulentas.',
+          '"Da última vez, quase afogou você", lembra Esperança. "Mas a fé cresce com cada travessia."',
+        ],
+        choices: [
+          {
+            text: 'Entrar com confiança — a profundidade é proporcional à fé',
+            effects: { fe: 3, coragem: 2 },
+            consequence: 'A água mal chega à cintura. A fé construída em duas jornadas transformou o rio em riacho.',
+            consequenceKey: 'perseverou_na_dor',
+          },
+          {
+            text: 'Mesmo assim, entrar com cautela',
+            effects: { fe: 1, perseveranca: 1, discernimento: 1 },
+            consequence: 'Cautela não é falta de fé. É respeito pelo caminho.',
+          },
+        ],
+        weight: 5,
+        emotionalWeight: 3,
+      },
+    ],
+  },
 };
 
 /**
@@ -1318,6 +1377,22 @@ export const routeVariants: Record<string, Array<{
       condition: (ctx) => !!ctx.flags['chave_promessa'],
       nextChapterId: 'fase5-cena5',
       hint: 'A Chave da Promessa brilha no seu bolso. Você sabe o que fazer.',
+    },
+  ],
+  // High-discernment players see through the Flatterer immediately
+  'fase5-cena11': [
+    {
+      condition: (ctx) => ctx.attributes.discernimento >= 9,
+      nextChapterId: 'fase5-cena12',
+      hint: 'Seu discernimento vê através do disfarce. "Esse homem é o Lisonjeiro que os pastores mencionaram!"',
+    },
+  ],
+  // High-perseverance players breeze through Enchanted Ground
+  'fase5-cena13': [
+    {
+      condition: (ctx) => ctx.attributes.perseveranca >= 9,
+      nextChapterId: 'fase5-cena14',
+      hint: 'Sua perseverança é inabalável. A Terra Encantada não tem poder sobre você.',
     },
   ],
   // Replay-exclusive routes
