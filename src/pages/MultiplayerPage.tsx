@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMultiplayer } from '@/hooks/useMultiplayer';
 import { useAuth } from '@/contexts/AuthContext';
 import DiceRoller from '@/components/DiceRoller';
