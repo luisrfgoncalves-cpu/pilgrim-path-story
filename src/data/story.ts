@@ -40,6 +40,14 @@ export interface ToneNarrative {
   lowText: string;
 }
 
+export interface SceneEventConfig {
+  type: 'sinking' | 'tension' | 'suspense';
+  delay?: number;
+  duration?: number;
+  message?: string;
+  intensity?: number;
+}
+
 export interface StoryChapter {
   id: string;
   title: string;
@@ -49,19 +57,17 @@ export interface StoryChapter {
   flagNarrative?: { flag: string; text: string }[];
   noFlagNarrative?: { flag: string; text: string }[];
   toneNarrative?: ToneNarrative[];
-  /** Text shown only on replays (playthrough > 1) */
   replayNarrative?: string[];
   choices: StoryChoice[];
   isEnding?: boolean;
   endingType?: 'parte1' | 'final_good' | 'final_bad';
   reflection?: string;
   characters?: string[];
-  /** Interaction type for choices in this chapter */
   interactionType?: 'hold' | 'timed' | 'drag';
-  /** Time limit in seconds (for 'timed' type) */
   timeLimit?: number;
-  /** Default choice index when timer expires (for 'timed' type) */
   timeoutChoiceIndex?: number;
+  /** Immersive event triggered when entering scene */
+  sceneEvent?: SceneEventConfig;
 }
 
 export interface Character {
@@ -190,6 +196,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     interactionType: 'timed',
     timeLimit: 12,
     timeoutChoiceIndex: 1,
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000 },
     narrative: [
       "O peso se torna insuportável. Você já não consegue fingir que está tudo bem."
     ],
@@ -353,6 +360,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     reflection: "r5",
     interactionType: 'hold',
+    sceneEvent: { type: 'tension', intensity: 1, duration: 2500, message: 'O chão estremece sob seus pés...' },
     narrative: [
       "O terreno começa a ficar instável. Você entra em uma área difícil de atravessar."
     ],
@@ -403,6 +411,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     interactionType: 'timed',
     timeLimit: 10,
     timeoutChoiceIndex: 1,
+    sceneEvent: { type: 'sinking', duration: 12000, message: 'O pântano te puxa para baixo!' },
     narrative: [
       "Você começa a afundar. O terreno era mais perigoso do que parecia."
     ],
@@ -587,6 +596,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Fogo que Não Apaga",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+    sceneEvent: { type: 'suspense', duration: 2000, message: 'As chamas dançam diante de seus olhos...' },
     narrative: [
       "Em outra sala, você vê um fogo sendo apagado, mas ele continua queimando."
     ],

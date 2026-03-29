@@ -232,3 +232,12 @@
 .atmo-wobble {
   animation: atmoWobble 4s ease-in-out infinite;
 }
+
+/* Scene event: tension shake */
+@keyframes tensionShake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(calc(-1 * var(--shake-amount, 1px)), calc(0.5 * var(--shake-amount, 1px))); }
+  40% { transform: translate(var(--shake-amount, 1px), calc(-0.5 * var(--shake-amount, 1px))); }
+  60% { transform: translate(calc(-0.5 * var(--shake-amount, 1px)), var(--shake-amount, 1px)); }
+  80% { transform: translate(calc(0.5 * var(--shake-amount, 1px)), calc(-1 * var(--shake-amount, 1px))); }
+}

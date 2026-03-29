@@ -12,6 +12,7 @@ import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
+import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
 import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX } from 'lucide-react';
 
 const ScenePage = () => {
@@ -22,6 +23,9 @@ const ScenePage = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [audioOn, setAudioOn] = useState(true);
+  const [sceneEventDone, setSceneEventDone] = useState(false);
+  const [suspenseActive, setSuspenseActive] = useState(false);
+  const [pendingChoice, setPendingChoice] = useState<(() => void) | null>(null);
   const { triggerChoiceEffect } = useVisualEffects();
   const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
   const atmosphere = useAtmosphere(progress.attributes);
@@ -73,6 +77,9 @@ const ScenePage = () => {
     setShowChoices(false);
     setImageLoaded(false);
     setPlaythroughRecorded(false);
+    setSceneEventDone(false);
+    setSuspenseActive(false);
+    setPendingChoice(null);
   }, [progress.currentChapterId]);
 
   // Audio: set ambience when scene or emotional state changes
@@ -93,7 +100,7 @@ const ScenePage = () => {
     }
   }, [narrativeIndex, chapter, fullNarrative.length]);
 
-  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
+  const executeChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
     triggerChoiceEffect(effects as Record<string, number>);
     sfxForChoice(effects as Record<string, number>);
 
@@ -118,6 +125,18 @@ const ScenePage = () => {
     } else {
       makeChoice(chapter!.id, nextChapterId, choiceText, effects, flag, conditionalEffects);
     }
+  };
+
+  // Wrap choice execution with optional suspense delay
+  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
+    // Check if next chapter has a suspense event
+    const nextChapter = getChapter(nextChapterId);
+    if (nextChapter?.sceneEvent?.type === 'suspense' && !consequence) {
+      setSuspenseActive(true);
+      setPendingChoice(() => () => executeChoice(nextChapterId, choiceText, effects, consequence, flag, conditionalEffects, item));
+      return;
+    }
+    executeChoice(nextChapterId, choiceText, effects, consequence, flag, conditionalEffects, item);
   };
 
   if (!chapter) {
@@ -220,8 +239,48 @@ const ScenePage = () => {
             ))}
           </div>
 
+          {/* Scene events */}
+          {chapter.sceneEvent && !sceneEventDone && showChoices && (
+            <>
+              {chapter.sceneEvent.type === 'sinking' && (
+                <div className="mb-5">
+                  <SinkingEvent
+                    duration={chapter.sceneEvent.duration}
+                    message={chapter.sceneEvent.message}
+                    onEscape={() => setSceneEventDone(true)}
+                    onDrown={() => {
+                      setSceneEventDone(true);
+                      // Auto-pick worst choice on drown
+                      const worst = availableChoices[chapter.timeoutChoiceIndex ?? availableChoices.length - 1];
+                      if (worst) handleChoice(worst.nextChapterId, worst.text, worst.effects, worst.consequence, worst.flag, worst.conditionalEffects, worst.item);
+                    }}
+                  />
+                </div>
+              )}
+              {chapter.sceneEvent.type === 'tension' && (
+                <TensionPulse
+                  intensity={chapter.sceneEvent.intensity || 2}
+                  duration={chapter.sceneEvent.duration || 3000}
+                  onComplete={() => setSceneEventDone(true)}
+                />
+              )}
+            </>
+          )}
+
+          {/* Suspense overlay */}
+          {suspenseActive && pendingChoice && (
+            <SuspenseDelay
+              duration={2500}
+              message="O destino pondera sua escolha..."
+              onComplete={() => {
+                setSuspenseActive(false);
+                pendingChoice();
+              }}
+            />
+          )}
+
           {/* Choices or Ending */}
-          {showChoices && (
+          {showChoices && !suspenseActive && (
             <div className="space-y-3 slide-up pb-8">
               {chapter.isEnding && (chapter.endingType === 'final_good' || chapter.endingType === 'final_bad') ? (() => {
                 const analysis = analyzePerformance(
