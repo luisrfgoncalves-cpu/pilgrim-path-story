@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { FIRST_CHAPTER_ID, ChoiceEffect, ConditionalEffect } from '@/data/story';
 
 const STORAGE_KEY = 'peregrino-progress';
+const HISTORY_KEY = 'peregrino-history';
 
 export interface PlayerAttributes {
   fe: number;
@@ -18,6 +19,19 @@ export interface DecisionRecord {
   flag?: string;
 }
 
+export interface PlaythroughRecord {
+  completedAt: number;
+  result: 'complete' | 'difficult' | 'incomplete';
+  attributes: PlayerAttributes;
+  choicesMade: number;
+  flags: string[];
+}
+
+export interface PlayHistory {
+  playthroughs: PlaythroughRecord[];
+  totalPlaythroughs: number;
+}
+
 export interface StoryProgress {
   currentChapterId: string;
   visitedChapters: string[];
@@ -26,6 +40,7 @@ export interface StoryProgress {
   decisions: DecisionRecord[];
   flags: Record<string, boolean>;
   started: boolean;
+  playthrough: number;
 }
 
 const defaultAttributes: PlayerAttributes = {
@@ -33,6 +48,14 @@ const defaultAttributes: PlayerAttributes = {
   perseveranca: 5,
   discernimento: 5,
   coragem: 5,
+};
+
+const getPlayHistory = (): PlayHistory => {
+  try {
+    const saved = localStorage.getItem(HISTORY_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch {}
+  return { playthroughs: [], totalPlaythroughs: 0 };
 };
 
 const getInitialProgress = (): StoryProgress => {
@@ -46,9 +69,11 @@ const getInitialProgress = (): StoryProgress => {
         decisions: parsed.decisions || [],
         flags: parsed.flags || {},
         started: parsed.started ?? false,
+        playthrough: parsed.playthrough ?? 1,
       };
     }
   } catch {}
+  const history = getPlayHistory();
   return {
     currentChapterId: FIRST_CHAPTER_ID,
     visitedChapters: [FIRST_CHAPTER_ID],
@@ -57,15 +82,21 @@ const getInitialProgress = (): StoryProgress => {
     decisions: [],
     flags: {},
     started: false,
+    playthrough: history.totalPlaythroughs + 1,
   };
 };
 
 export const useStoryProgress = () => {
   const [progress, setProgress] = useState<StoryProgress>(getInitialProgress);
+  const [history, setHistory] = useState<PlayHistory>(getPlayHistory);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
   }, [progress]);
+
+  useEffect(() => {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  }, [history]);
 
   const makeChoice = useCallback((
     chapterId: string,
@@ -77,11 +108,9 @@ export const useStoryProgress = () => {
   ) => {
     setProgress(prev => {
       const newAttrs = { ...prev.attributes };
-      // Apply base effects
       for (const [key, val] of Object.entries(effects)) {
         if (val) newAttrs[key as keyof PlayerAttributes] += val;
       }
-      // Apply conditional effects (delayed consequences)
       if (conditionalEffects) {
         for (const ce of conditionalEffects) {
           const currentVal = prev.attributes[ce.attr] || 0;
@@ -137,7 +166,21 @@ export const useStoryProgress = () => {
     setProgress(prev => ({ ...prev, started: true }));
   }, []);
 
+  const completePlaythrough = useCallback((result: 'complete' | 'difficult' | 'incomplete') => {
+    setHistory(prev => ({
+      playthroughs: [...prev.playthroughs, {
+        completedAt: Date.now(),
+        result,
+        attributes: { ...progress.attributes },
+        choicesMade: progress.choicesMade,
+        flags: Object.keys(progress.flags).filter(k => progress.flags[k]),
+      }],
+      totalPlaythroughs: prev.totalPlaythroughs + 1,
+    }));
+  }, [progress]);
+
   const resetProgress = useCallback(() => {
+    const hist = getPlayHistory();
     setProgress({
       currentChapterId: FIRST_CHAPTER_ID,
       visitedChapters: [FIRST_CHAPTER_ID],
@@ -146,10 +189,12 @@ export const useStoryProgress = () => {
       decisions: [],
       flags: {},
       started: false,
+      playthrough: hist.totalPlaythroughs + 1,
     });
   }, []);
 
   const hasProgress = progress.started || progress.choicesMade > 0;
+  const isReplay = progress.playthrough > 1;
 
   const hasFlag = useCallback((flag: string): boolean => {
     return !!progress.flags[flag];
@@ -163,5 +208,14 @@ export const useStoryProgress = () => {
     return true;
   }, [progress.attributes]);
 
-  return { progress, makeChoice, goToChapter, resetProgress, startJourney, hasProgress, hasFlag, meetsRequirements };
+  /** Check if a flag was set in any previous playthrough */
+  const hadFlagBefore = useCallback((flag: string): boolean => {
+    return history.playthroughs.some(p => p.flags.includes(flag));
+  }, [history.playthroughs]);
+
+  return {
+    progress, makeChoice, goToChapter, resetProgress, startJourney,
+    hasProgress, hasFlag, meetsRequirements, history, isReplay,
+    completePlaythrough, hadFlagBefore,
+  };
 };

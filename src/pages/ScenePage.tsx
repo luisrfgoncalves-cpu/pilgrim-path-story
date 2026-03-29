@@ -9,7 +9,7 @@ import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle } from '
 
 const ScenePage = () => {
   const navigate = useNavigate();
-  const { progress, makeChoice, meetsRequirements, hasFlag } = useStoryProgress();
+  const { progress, makeChoice, meetsRequirements, hasFlag, isReplay, completePlaythrough, hadFlagBefore } = useStoryProgress();
   const [narrativeIndex, setNarrativeIndex] = useState(0);
   const [showChoices, setShowChoices] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -24,9 +24,10 @@ const ScenePage = () => {
 
   const emotionalClass = emotional ? getEmotionalClasses(emotional.tone) : '';
 
-  // Build full narrative with adaptive + flag-based + tone-based + emotional segments
+  // Build full narrative with adaptive + flag-based + tone-based + emotional + replay segments
   const fullNarrative = chapter ? [
     ...chapter.narrative,
+    ...(isReplay && chapter.replayNarrative ? chapter.replayNarrative : []),
     ...(chapter.adaptiveNarrative || [])
       .filter(seg => progress.attributes[seg.minAttr as keyof typeof progress.attributes] >= seg.minValue)
       .map(seg => seg.text),
@@ -42,14 +43,24 @@ const ScenePage = () => {
       if (val <= tone.lowThreshold) return tone.lowText;
       return null;
     }).filter((t): t is string => t !== null),
-    // Auto-injected emotional atmosphere line
     ...(emotional?.atmosphereLine ? [emotional.atmosphereLine] : []),
   ] : [];
+
+  // Record playthrough completion when reaching a final ending
+  const [playthroughRecorded, setPlaythroughRecorded] = useState(false);
+  useEffect(() => {
+    if (chapter?.isEnding && (chapter.endingType === 'final_good' || chapter.endingType === 'final_bad') && !playthroughRecorded) {
+      const analysis = analyzePerformance(progress.attributes, progress.choicesMade, progress.visitedChapters, progress.flags, chapter.endingType);
+      completePlaythrough(analysis.result);
+      setPlaythroughRecorded(true);
+    }
+  }, [chapter, playthroughRecorded]);
 
   useEffect(() => {
     setNarrativeIndex(0);
     setShowChoices(false);
     setImageLoaded(false);
+    setPlaythroughRecorded(false);
   }, [progress.currentChapterId]);
 
   useEffect(() => {
