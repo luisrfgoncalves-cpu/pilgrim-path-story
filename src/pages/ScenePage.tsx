@@ -168,9 +168,14 @@ const ScenePage = () => {
   const executeChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
     // Apply adaptive intensity based on replay history
     const intensityAdjusted = applyIntensityToEffects(effects, dynamicEvents.intensity);
-    // Roll the invisible dice — modifies effects based on attributes + luck
+    // Apply community support bonus to positive effects
+    const withSupport: ChoiceEffect = { ...intensityAdjusted };
+    if (supportBonus.fe > 0 && (withSupport.fe || 0) > 0) withSupport.fe = (withSupport.fe || 0) + 1;
+    if (supportBonus.coragem > 0 && (withSupport.coragem || 0) > 0) withSupport.coragem = (withSupport.coragem || 0) + 1;
+    if (supportBonus.perseveranca > 0 && (withSupport.perseveranca || 0) > 0) withSupport.perseveranca = (withSupport.perseveranca || 0) + 1;
+    // Roll the invisible dice
     const diceOutcome = rollInvisibleDice(progress.attributes);
-    const modifiedEffects = applyDiceToEffects(intensityAdjusted, diceOutcome);
+    const modifiedEffects = applyDiceToEffects(withSupport, diceOutcome);
     const diceHint = getDiceNarrativeHint(diceOutcome);
 
     triggerChoiceEffect(modifiedEffects as Record<string, number>);
