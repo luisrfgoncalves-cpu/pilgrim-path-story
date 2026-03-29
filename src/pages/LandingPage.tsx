@@ -747,17 +747,18 @@ const CtaButton = ({ children, onClick, variant = 'primary', className = '' }: {
     className={`
       relative font-display text-base tracking-wide rounded-xl transition-all duration-300
       flex items-center justify-center gap-2 min-h-[56px] px-8
-      hover:scale-[1.02] active:scale-[0.98]
+      hover:scale-[1.03] active:scale-[0.97]
       ${variant === 'primary'
         ? 'bg-gradient-to-b from-primary to-primary/80 text-primary-foreground border-2 border-primary/60'
-        : 'bg-card/80 text-foreground border-2 border-primary/30 hover:border-primary/60'
+        : 'bg-card/80 text-foreground border-2 border-primary/40 hover:border-primary/70'
       }
       ${className}
     `}
     style={{
       boxShadow: variant === 'primary'
-        ? '0 0 25px hsl(40 70% 50% / 0.4), 0 0 50px hsl(40 70% 50% / 0.15), 0 8px 20px rgba(0,0,0,0.5), inset 0 1px 0 hsl(40 80% 75% / 0.3)'
-        : '0 0 15px hsl(40 70% 50% / 0.15), 0 4px 12px rgba(0,0,0,0.3), inset 0 1px 0 hsl(40 80% 75% / 0.1)',
+        ? '0 0 30px hsl(40 70% 50% / 0.6), 0 0 60px hsl(40 70% 50% / 0.25), 0 0 100px hsl(40 70% 50% / 0.1), 0 8px 20px rgba(0,0,0,0.5), inset 0 2px 0 hsl(40 80% 75% / 0.4), inset 0 -2px 4px hsl(40 50% 20% / 0.5)'
+        : '0 0 20px hsl(40 70% 50% / 0.2), 0 0 40px hsl(40 70% 50% / 0.08), 0 6px 16px rgba(0,0,0,0.4), inset 0 1px 0 hsl(40 80% 75% / 0.15), inset 0 -1px 3px hsl(40 50% 20% / 0.3)',
+      textShadow: variant === 'primary' ? '0 0 12px hsl(40 70% 50% / 0.6)' : 'none',
     }}
   >
     {children}
@@ -770,22 +771,59 @@ const MedievalCard = ({ children, className = '', glow = false }: {
   glow?: boolean;
 }) => (
   <div
-    className={`rounded-xl border border-border bg-card/80 backdrop-blur-sm p-6 ${className}`}
+    className={`rounded-xl border bg-card/80 backdrop-blur-sm p-6 relative ${glow ? 'border-primary/40' : 'border-border'} ${className}`}
     style={{
       boxShadow: glow
-        ? '0 0 20px hsl(40 70% 50% / 0.2), 0 0 40px hsl(40 70% 50% / 0.08), 0 8px 30px rgba(0,0,0,0.4)'
-        : '0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 hsl(40 80% 75% / 0.05)',
+        ? '0 0 25px hsl(40 70% 50% / 0.3), 0 0 50px hsl(40 70% 50% / 0.1), 0 8px 30px rgba(0,0,0,0.5), inset 0 1px 0 hsl(40 80% 75% / 0.1), inset 0 -1px 0 hsl(40 50% 20% / 0.2)'
+        : '0 4px 20px rgba(0,0,0,0.4), 0 0 10px hsl(40 70% 50% / 0.05), inset 0 1px 0 hsl(40 80% 75% / 0.05), inset 0 -1px 0 hsl(40 50% 20% / 0.15)',
     }}
   >
-    {children}
+    {glow && (
+      <div className="absolute inset-0 rounded-xl pointer-events-none" style={{
+        background: 'radial-gradient(ellipse at top center, hsl(40 70% 50% / 0.06), transparent 70%)',
+      }} />
+    )}
+    <div className="relative">{children}</div>
+  </div>
+);
+
+const MedievalOrnament = ({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) => {
+  const w = size === 'sm' ? 'w-32' : size === 'md' ? 'w-48' : 'w-64';
+  return (
+    <div className={`flex items-center justify-center mx-auto ${w}`}>
+      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/40 to-primary/20" />
+      <div className="mx-2 flex items-center gap-1">
+        <span className="text-primary/30 text-[10px]">✦</span>
+        <span className="text-primary/50 text-xs">⚜</span>
+        <span className="text-primary/30 text-[10px]">✦</span>
+      </div>
+      <div className="h-px flex-1 bg-gradient-to-l from-transparent via-primary/40 to-primary/20" />
+    </div>
+  );
+};
+
+const SealBadge = ({ icon, text, subtext }: { icon: string; text: string; subtext?: string }) => (
+  <div className="flex flex-col items-center gap-1">
+    <div
+      className="w-14 h-14 rounded-full flex items-center justify-center border-2 border-primary/40 bg-gradient-to-b from-primary/15 to-primary/5"
+      style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.25), inset 0 2px 4px hsl(40 80% 75% / 0.15), inset 0 -2px 4px rgba(0,0,0,0.3)' }}
+    >
+      <span className="text-xl">{icon}</span>
+    </div>
+    <span className="text-[10px] text-foreground font-display font-bold uppercase tracking-wider">{text}</span>
+    {subtext && <span className="text-[8px] text-muted-foreground">{subtext}</span>}
   </div>
 );
 
 const SectionDivider = () => (
-  <div className="flex items-center justify-center py-4">
-    <div className="h-px w-16 bg-gradient-to-r from-transparent to-primary/30" />
-    <Sparkles className="w-4 h-4 text-primary/40 mx-3" />
-    <div className="h-px w-16 bg-gradient-to-l from-transparent to-primary/30" />
+  <div className="flex items-center justify-center py-6">
+    <div className="h-px w-12 bg-gradient-to-r from-transparent to-primary/30" />
+    <div className="mx-2 flex items-center gap-1.5">
+      <span className="text-primary/20 text-[8px]">✦</span>
+      <Sparkles className="w-4 h-4 text-primary/40" />
+      <span className="text-primary/20 text-[8px]">✦</span>
+    </div>
+    <div className="h-px w-12 bg-gradient-to-l from-transparent to-primary/30" />
   </div>
 );
 
