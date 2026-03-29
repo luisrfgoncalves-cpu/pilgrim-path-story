@@ -136,11 +136,11 @@ function QTEGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'intro') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-4xl">⚔️</div>
-        <h3 className="font-display text-xl text-primary">Reflexos de Batalha</h3>
-        <p className="text-sm text-foreground/80">{config.intro}</p>
-        <p className="text-xs text-muted-foreground">Toque nos alvos antes que desapareçam!</p>
+      <div className="game-card text-center space-y-4 animate-scale-in">
+        <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 12px hsl(40 60% 50% / 0.5))' }}>⚔️</div>
+        <h3 className="game-title">Reflexos de Batalha</h3>
+        <p className="game-subtitle">{config.intro}</p>
+        <p className="game-text-muted">Toque nos alvos antes que desapareçam!</p>
         <button onClick={() => setPhase('playing')} className="btn-medieval w-full">
           Começar!
         </button>
@@ -150,17 +150,17 @@ function QTEGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'result') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-4xl">{success ? '🏆' : '💔'}</div>
-        <h3 className="font-display text-xl text-primary">
+      <div className="game-card text-center space-y-4 animate-scale-in">
+        <div className="text-5xl" style={{ filter: `drop-shadow(0 0 15px ${success ? 'hsl(40 70% 50% / 0.5)' : 'hsl(0 60% 50% / 0.4)'})` }}>{success ? '🏆' : '💔'}</div>
+        <h3 className="game-title">
           {success ? 'Vitória!' : 'Derrotado...'}
         </h3>
-        <p className="text-sm text-foreground/80">
+        <p className="game-subtitle">
           Acertou {score} de {maxTargets} alvos ({finalScore}%)
         </p>
-        <div className="h-3 bg-secondary rounded-full overflow-hidden">
+        <div className="game-progress-bar">
           <div
-            className={`h-full rounded-full transition-all duration-1000 ${success ? 'bg-primary' : 'bg-destructive'}`}
+            className={success ? 'game-progress-fill-success' : 'game-progress-fill-fail'}
             style={{ width: `${finalScore}%` }}
           />
         </div>
@@ -169,18 +169,17 @@ function QTEGame({ config, onComplete }: MiniGameProps) {
   }
 
   return (
-    <div className="relative bg-card/50 border-2 border-primary/20 rounded-2xl overflow-hidden" style={{ height: '280px' }}>
+    <div className="relative rounded-2xl overflow-hidden" style={{
+      height: '300px',
+      background: 'linear-gradient(180deg, hsl(0 30% 10%) 0%, hsl(30 20% 8%) 100%)',
+      border: '3px solid hsl(40 60% 45%)',
+      boxShadow: '0 0 20px hsl(40 60% 40% / 0.15)',
+    }}>
       {/* Score HUD */}
       <div className="absolute top-2 left-3 right-3 flex justify-between z-10">
-        <span className="text-xs font-display text-primary bg-card/80 px-2 py-1 rounded-lg">
-          ✓ {score}
-        </span>
-        <span className="text-xs font-display text-muted-foreground bg-card/80 px-2 py-1 rounded-lg">
-          {spawned}/{maxTargets}
-        </span>
-        <span className="text-xs font-display text-destructive bg-card/80 px-2 py-1 rounded-lg">
-          ✗ {misses}
-        </span>
+        <span className="game-hud-tag">✓ {score}</span>
+        <span className="game-hud-tag">{spawned}/{maxTargets}</span>
+        <span className="game-hud-tag" style={{ borderColor: 'hsl(0 50% 40%)', color: 'hsl(0 60% 65%)' }}>✗ {misses}</span>
       </div>
 
       {/* Targets */}
@@ -199,7 +198,11 @@ function QTEGame({ config, onComplete }: MiniGameProps) {
               transform: `scale(${scale})`,
             }}
           >
-            <div className="w-14 h-14 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center shadow-lg shadow-primary/20 hover:bg-primary/30">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{
+              background: 'radial-gradient(circle, hsl(40 60% 30%) 0%, hsl(40 40% 18%) 100%)',
+              border: '3px solid hsl(40 70% 55%)',
+              boxShadow: '0 0 15px hsl(40 60% 50% / 0.4), inset 0 1px 3px hsl(0 0% 100% / 0.2)',
+            }}>
               <span className="text-2xl">{t.symbol}</span>
             </div>
           </button>
@@ -207,7 +210,9 @@ function QTEGame({ config, onComplete }: MiniGameProps) {
       })}
 
       {/* Pulse background effect */}
-      <div className="absolute inset-0 bg-gradient-radial from-primary/5 to-transparent pointer-events-none animate-pulse" />
+      <div className="absolute inset-0 pointer-events-none animate-pulse" style={{
+        background: 'radial-gradient(circle at center, hsl(40 60% 40% / 0.05) 0%, transparent 70%)',
+      }} />
     </div>
   );
 }
