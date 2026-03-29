@@ -20,6 +20,7 @@ import { rollForSurprise, Surprise } from '@/lib/gameLoop';
 import { applyIntensityToEffects } from '@/lib/replayEngine';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
+import { ParticleEffects, getParticleTypeForScene } from '@/components/ParticleEffects';
 import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
 import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
@@ -347,7 +348,7 @@ const ScenePage = () => {
       <main className={`flex-1 max-w-lg mx-auto w-full ${transitioning ? 'opacity-0' : 'scene-transition-enter'}`}>
         {/* Scene image with preloading */}
         {bgImage && (
-          <div className="relative w-full overflow-hidden" style={{ maxHeight: '260px' }}>
+          <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px' }}>
             <img
               src={bgImage}
               alt={chapter.title}
@@ -356,16 +357,21 @@ const ScenePage = () => {
               loading="eager"
               decoding="async"
               onLoad={() => setImageLoaded(true)}
-              className={`w-full h-auto object-cover transition-all duration-500 scene-image ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`w-full h-auto object-cover transition-all duration-500 scene-image scene-image-alive ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               style={atmosphere.imageStyle}
             />
             {!imageLoaded && (
               <div className="absolute inset-0 bg-card animate-pulse" />
             )}
+            {/* Particle effects overlay */}
+            {imageLoaded && (() => {
+              const pType = getParticleTypeForScene(chapter.id, legacyTone);
+              return pType ? <ParticleEffects type={pType} intensity={0.6} /> : null;
+            })()}
             <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background via-background/10 to-transparent" />
             <div className="absolute bottom-3 left-4 flex items-center gap-2">
-              <MapPin className="w-3 h-3 text-primary" />
-              <span className="text-[11px] uppercase tracking-widest text-primary font-medium drop-shadow-lg">{chapter.location}</span>
+              <MapPin className="w-4 h-4 text-primary" />
+              <span className="text-sm uppercase tracking-widest text-primary font-display drop-shadow-lg">{chapter.location}</span>
             </div>
           </div>
         )}
@@ -437,17 +443,17 @@ const ScenePage = () => {
         })()}
 
         <div className="px-5 py-5">
-          <h1 className="font-display text-xl md:text-2xl text-foreground mb-4 fade-in leading-tight">{chapter.title}</h1>
+          <h1 className="font-display text-2xl md:text-3xl text-foreground mb-4 fade-in leading-tight">{chapter.title}</h1>
 
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px flex-1 bg-primary/20" />
-            <span className="text-primary text-[10px]">✦</span>
+            <span className="text-primary text-sm">✦</span>
             <div className="h-px flex-1 bg-primary/20" />
           </div>
 
           <div className="space-y-3 mb-6" style={atmosphere.textStyle}>
             {fullNarrative.slice(0, narrativeIndex + 1).map((paragraph, i) => (
-              <p key={i} className="narrative-text text-foreground/90 text-[15px] fade-in" style={{ animationDelay: `${i * 0.08}s` }}>
+              <p key={i} className="narrative-text text-foreground/90 fade-in" style={{ animationDelay: `${i * 0.08}s` }}>
                 {paragraph}
               </p>
             ))}
