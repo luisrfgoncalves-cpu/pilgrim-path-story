@@ -443,17 +443,17 @@ const ScenePage = () => {
         })()}
 
         <div className="px-5 py-5">
-          <h1 className="font-display text-xl md:text-2xl text-foreground mb-4 fade-in leading-tight">{chapter.title}</h1>
+          <h1 className="font-display text-2xl md:text-3xl text-foreground mb-4 fade-in leading-tight">{chapter.title}</h1>
 
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px flex-1 bg-primary/20" />
-            <span className="text-primary text-[10px]">✦</span>
+            <span className="text-primary text-sm">✦</span>
             <div className="h-px flex-1 bg-primary/20" />
           </div>
 
           <div className="space-y-3 mb-6" style={atmosphere.textStyle}>
             {fullNarrative.slice(0, narrativeIndex + 1).map((paragraph, i) => (
-              <p key={i} className="narrative-text text-foreground/90 text-[15px] fade-in" style={{ animationDelay: `${i * 0.08}s` }}>
+              <p key={i} className="narrative-text text-foreground/90 fade-in" style={{ animationDelay: `${i * 0.08}s` }}>
                 {paragraph}
               </p>
             ))}
