@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { FIRST_CHAPTER_ID, ChoiceEffect, getEndingChapterId } from '@/data/story';
+import { FIRST_CHAPTER_ID, ChoiceEffect } from '@/data/story';
 
 const STORAGE_KEY = 'peregrino-progress';
 
@@ -75,11 +75,7 @@ export const useStoryProgress = () => {
         if (val) newAttrs[key as keyof PlayerAttributes] += val;
       }
 
-      // Determine actual destination — if going to the generic ending, pick based on attributes
-      let destination = nextChapterId;
-      if (nextChapterId === 'cidade-celestial') {
-        destination = getEndingChapterId(newAttrs);
-      }
+      const destination = nextChapterId;
 
       const decision: DecisionRecord = {
         chapterId,

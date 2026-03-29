@@ -132,19 +132,12 @@ const ScenePage = () => {
                 <div className="text-center space-y-6 py-6">
                   <div className="flex items-center gap-3 justify-center">
                     <div className="h-px w-12 bg-primary/30" />
-                    <span className="text-primary font-display text-sm">
-                      ✦ {chapter.endingType === 'glorioso' ? 'GLÓRIA ETERNA' : chapter.endingType === 'humilde' ? 'SABEDORIA ALCANÇADA' : chapter.endingType === 'sofrido' ? 'PERSEVERANÇA RECOMPENSADA' : chapter.endingType === 'desvio' ? 'CHEGADA INCERTA' : 'FIM'} ✦
-                    </span>
+                    <span className="text-primary font-display text-sm">✦ FIM DA PARTE 1 ✦</span>
                     <div className="h-px w-12 bg-primary/30" />
                   </div>
-                  {chapter.endingType && chapter.endingType !== 'default' && (
-                    <p className="text-xs text-primary uppercase tracking-widest">
-                      Final: {chapter.endingType === 'glorioso' ? 'O Triunfo do Fiel' : chapter.endingType === 'humilde' ? 'O Caminho da Sabedoria' : chapter.endingType === 'desvio' ? 'O Peregrino Desviado' : 'A Resistência do Peregrino'}
-                    </p>
-                  )}
-                  <p className="narrative-text text-muted-foreground italic">A jornada de Cristão chegou ao fim. Mas a sua continua.</p>
+                  <p className="narrative-text text-muted-foreground italic">A primeira parte da jornada chegou ao fim. Mas há muito mais pela frente.</p>
                   <div className="bg-card border border-border rounded-lg p-4 text-left space-y-2">
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Seus Atributos Finais</p>
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Seus Atributos</p>
                     <div className="grid grid-cols-2 gap-2 text-sm">
                       <span className="text-foreground">🔥 Fé: <strong className="text-gold">{progress.attributes.fe}</strong></span>
                       <span className="text-foreground">⛰️ Perseverança: <strong className="text-gold">{progress.attributes.perseveranca}</strong></span>
@@ -153,14 +146,10 @@ const ScenePage = () => {
                     </div>
                     <p className="text-xs text-muted-foreground pt-1">Decisões: {progress.choicesMade} · Capítulos: {progress.visitedChapters.length}</p>
                   </div>
-                  <div className="flex flex-col gap-3">
-                    <button onClick={() => navigate('/')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-display text-sm">
-                      <Home className="w-4 h-4" /> Voltar ao Início
-                    </button>
-                    <button onClick={() => navigate('/reflexoes')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-card border border-border text-foreground font-display text-sm">
-                      <ScrollText className="w-4 h-4" /> Ver Reflexões
-                    </button>
-                  </div>
+                  <p className="text-xs text-muted-foreground">Em breve: Vale da Sombra, Feira da Vaidade, Castelo da Dúvida e mais...</p>
+                  <button onClick={() => navigate('/')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-display text-sm">
+                    <Home className="w-4 h-4" /> Voltar ao Início
+                  </button>
                 </div>
               ) : (
                 <>
