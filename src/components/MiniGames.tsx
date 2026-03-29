@@ -1460,6 +1460,9 @@ function ReflexGame({ config, onComplete }: MiniGameProps) {
 // Main MiniGame Dispatcher
 // ═══════════════════════════════════════════
 
+import { ScripturePuzzle } from '@/components/games/ScripturePuzzle';
+import { PathOfFaith } from '@/components/games/PathOfFaith';
+
 export function MiniGame({ config, onComplete }: MiniGameProps) {
   switch (config.type) {
     case 'qte':
@@ -1476,6 +1479,10 @@ export function MiniGame({ config, onComplete }: MiniGameProps) {
       return <TreasureHuntGame config={config} onComplete={onComplete} />;
     case 'reflex':
       return <ReflexGame config={config} onComplete={onComplete} />;
+    case 'wordpuzzle':
+      return <ScripturePuzzle config={config} onComplete={onComplete} />;
+    case 'pathchoice':
+      return <PathOfFaith config={config} onComplete={onComplete} />;
     default:
       return null;
   }
