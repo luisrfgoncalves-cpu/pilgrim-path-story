@@ -945,8 +945,8 @@ function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps)
   const [dice, setDice] = useState<DiceState>({ player: 1, enemy: 1, rolling: false });
   const [action, setAction] = useState<'attack' | 'defend' | 'pray' | null>(null);
   const [roundLog, setRoundLog] = useState('');
-  const [combo, setCombo] = useState(0);
-  const [lastAction, setLastAction] = useState<string | null>(null);
+  const [_combo, _setCombo] = useState(0); // kept for interface compat
+  const [_lastAction, _setLastAction] = useState<string | null>(null);
   const [criticalHit, setCriticalHit] = useState(false);
   const rollInterval = useRef<ReturnType<typeof setInterval>>();
 
