@@ -11,6 +11,7 @@ import { useVisualEffects } from '@/hooks/useVisualEffects';
 import { useAudioEngine } from '@/hooks/useAudioEngine';
 import { useAtmosphere } from '@/hooks/useAtmosphere';
 import { useDynamicEvents } from '@/hooks/useDynamicEvents';
+import { rollInvisibleDice, applyDiceToEffects, getDiceNarrativeHint } from '@/lib/invisibleDice';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
