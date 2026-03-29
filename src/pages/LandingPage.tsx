@@ -17,9 +17,14 @@ const testimonials = [
   { name: 'Rafael S.', text: 'A história é envolvente e os mini-games são muito bem feitos. Já joguei 3 vezes e cada uma foi diferente.', stars: 5 },
 ];
 
+const SALE_URL = 'https://ocapelao-app.centrobiblico.online/venda';
+
 const LandingPage = () => {
   const navigate = useNavigate();
 
+  const handleBuy = () => {
+    window.open(SALE_URL, '_blank', 'noopener');
+  };
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}

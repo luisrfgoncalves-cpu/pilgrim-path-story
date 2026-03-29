@@ -206,14 +206,21 @@ const Index = () => {
           </button>
         </div>
 
-        {/* Backup actions */}
+        {/* Theme toggle + Backup */}
         <div className="flex gap-2">
+          <button
+            onClick={toggleTheme}
+            className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
+            aria-label={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
           <button
             onClick={() => { downloadBackup(); toast.success('Backup salvo!'); }}
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
           >
             <Download className="w-4 h-4" />
-            Salvar Backup
+            Backup
           </button>
           <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all cursor-pointer">
             <Upload className="w-4 h-4" />
