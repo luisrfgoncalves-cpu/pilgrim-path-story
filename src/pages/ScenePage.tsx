@@ -20,10 +20,10 @@ import { rollForSurprise, Surprise } from '@/lib/gameLoop';
 import { applyIntensityToEffects } from '@/lib/replayEngine';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
+import { ParticleEffects, getParticleTypeForScene } from '@/components/ParticleEffects';
 import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
 import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
-import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
 
 const ScenePage = () => {
@@ -347,7 +347,7 @@ const ScenePage = () => {
       <main className={`flex-1 max-w-lg mx-auto w-full ${transitioning ? 'opacity-0' : 'scene-transition-enter'}`}>
         {/* Scene image with preloading */}
         {bgImage && (
-          <div className="relative w-full overflow-hidden" style={{ maxHeight: '260px' }}>
+          <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px' }}>
             <img
               src={bgImage}
               alt={chapter.title}
@@ -356,16 +356,21 @@ const ScenePage = () => {
               loading="eager"
               decoding="async"
               onLoad={() => setImageLoaded(true)}
-              className={`w-full h-auto object-cover transition-all duration-500 scene-image ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`w-full h-auto object-cover transition-all duration-500 scene-image scene-image-alive ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               style={atmosphere.imageStyle}
             />
             {!imageLoaded && (
               <div className="absolute inset-0 bg-card animate-pulse" />
             )}
+            {/* Particle effects overlay */}
+            {imageLoaded && (() => {
+              const pType = getParticleTypeForScene(chapter.id, legacyTone);
+              return pType ? <ParticleEffects type={pType} intensity={0.6} /> : null;
+            })()}
             <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background via-background/10 to-transparent" />
             <div className="absolute bottom-3 left-4 flex items-center gap-2">
-              <MapPin className="w-3 h-3 text-primary" />
-              <span className="text-[11px] uppercase tracking-widest text-primary font-medium drop-shadow-lg">{chapter.location}</span>
+              <MapPin className="w-4 h-4 text-primary" />
+              <span className="text-sm uppercase tracking-widest text-primary font-display drop-shadow-lg">{chapter.location}</span>
             </div>
           </div>
         )}
