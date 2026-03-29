@@ -30,6 +30,15 @@ export interface StoryChoice {
   conditionalEffects?: ConditionalEffect[];
 }
 
+/** Tone variation: shows different text based on whether an attribute is high or low */
+export interface ToneNarrative {
+  attr: keyof ChoiceEffect;
+  highThreshold: number;
+  highText: string;
+  lowThreshold: number;
+  lowText: string;
+}
+
 export interface StoryChapter {
   id: string;
   title: string;
@@ -40,6 +49,8 @@ export interface StoryChapter {
   flagNarrative?: { flag: string; text: string }[];
   /** Narrative segments shown only if the player does NOT have a flag */
   noFlagNarrative?: { flag: string; text: string }[];
+  /** Tone-based narrative: shows confident or insecure text based on attributes */
+  toneNarrative?: ToneNarrative[];
   choices: StoryChoice[];
   isEnding?: boolean;
   endingType?: 'parte1';
