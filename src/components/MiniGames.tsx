@@ -939,7 +939,11 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
     }
 
     setCriticalHit(isCrit);
-    if (combo >= 2) log += ` 🔥Combo x${combo + 1}!`;
+    if (isCrit) playGameSfx('critical');
+    else if (eDmg > 0) playGameSfx('hit');
+    else if (pDmg > 0) playGameSfx('miss');
+    if (act === 'pray' && pDmg === 0) playGameSfx('heal');
+    if (combo >= 2) { log += ` 🔥Combo x${combo + 1}!`; playGameSfx('combo'); }
 
     setPlayerHP(h => Math.max(0, h - pDmg));
     setEnemyHP(h => Math.max(0, h - eDmg));
