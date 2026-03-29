@@ -13,7 +13,7 @@ import { ChoiceEffect } from '@/data/story';
 // Shared types
 // ═══════════════════════════════════════════
 
-export type MiniGameType = 'qte' | 'swipe' | 'memory' | 'stealth';
+export type MiniGameType = 'qte' | 'swipe' | 'memory' | 'stealth' | 'diceduel' | 'treasure' | 'reflex';
 
 export interface MiniGameConfig {
   type: MiniGameType;
@@ -28,6 +28,12 @@ export interface MiniGameConfig {
   swipeItems?: { text: string; emoji: string; good: boolean }[];
   /** Custom symbols for memory game */
   memorySymbols?: string[];
+  /** Enemy config for dice duel */
+  duelEnemy?: { name: string; emoji: string; power: number };
+  /** Hidden treasures for treasure hunt */
+  treasures?: { emoji: string; label: string; bonus: ChoiceEffect }[];
+  /** Reflex directions config */
+  reflexSpeed?: number;
 }
 
 export interface MiniGameResult {
@@ -794,6 +800,635 @@ function StealthGame({ config, onComplete }: MiniGameProps) {
 }
 
 // ═══════════════════════════════════════════
+// 5. DiceDuel — Spiritual dice combat
+// ═══════════════════════════════════════════
+
+interface DiceState {
+  player: number;
+  enemy: number;
+  rolling: boolean;
+}
+
+function DiceDuelGame({ config, onComplete }: MiniGameProps) {
+  const enemy = config.duelEnemy || { name: 'Inimigo', emoji: '👹', power: 5 };
+  const diff = config.difficulty || 'normal';
+  const totalRounds = diff === 'easy' ? 3 : diff === 'hard' ? 5 : 4;
+
+  const [phase, setPhase] = useState<'intro' | 'choose' | 'rolling' | 'result' | 'final'>('intro');
+  const [round, setRound] = useState(0);
+  const [playerHP, setPlayerHP] = useState(10);
+  const [enemyHP, setEnemyHP] = useState(10);
+  const [dice, setDice] = useState<DiceState>({ player: 1, enemy: 1, rolling: false });
+  const [action, setAction] = useState<'attack' | 'defend' | 'pray' | null>(null);
+  const [roundLog, setRoundLog] = useState('');
+  const rollInterval = useRef<ReturnType<typeof setInterval>>();
+
+  const rollDice = (chosenAction: 'attack' | 'defend' | 'pray') => {
+    setAction(chosenAction);
+    setPhase('rolling');
+    setDice({ player: 1, enemy: 1, rolling: true });
+
+    // Animate dice
+    let ticks = 0;
+    rollInterval.current = setInterval(() => {
+      setDice({
+        player: Math.ceil(Math.random() * 6),
+        enemy: Math.ceil(Math.random() * 6),
+        rolling: true,
+      });
+      ticks++;
+      if (ticks >= 15) {
+        if (rollInterval.current) clearInterval(rollInterval.current);
+        // Final rolls
+        const pRoll = Math.ceil(Math.random() * 6);
+        const eRoll = Math.ceil(Math.random() * 6);
+        setDice({ player: pRoll, enemy: eRoll, rolling: false });
+        resolveCombat(pRoll, eRoll, chosenAction);
+      }
+    }, 100);
+  };
+
+  const resolveCombat = (pRoll: number, eRoll: number, act: 'attack' | 'defend' | 'pray') => {
+    let pDmg = 0;
+    let eDmg = 0;
+    let log = '';
+
+    if (act === 'attack') {
+      // Attack: player deals damage if roll > enemy
+      if (pRoll >= eRoll) {
+        eDmg = pRoll;
+        log = `⚔️ Ataque certeiro! ${pRoll} de dano no inimigo!`;
+      } else {
+        pDmg = Math.ceil(eRoll / 2);
+        log = `💥 Contra-ataque! Você sofreu ${pDmg} de dano.`;
+      }
+    } else if (act === 'defend') {
+      // Defend: reduce incoming damage
+      const incoming = eRoll;
+      const blocked = Math.min(incoming, pRoll);
+      pDmg = Math.max(0, incoming - blocked);
+      if (pDmg === 0) {
+        log = `🛡️ Defesa perfeita! Bloqueou todo o dano!`;
+      } else {
+        log = `🛡️ Bloqueou ${blocked}, mas sofreu ${pDmg}.`;
+      }
+    } else {
+      // Pray: heal + chance to deal spiritual damage
+      const heal = Math.ceil(pRoll / 2);
+      setPlayerHP(h => Math.min(10, h + heal));
+      if (pRoll >= 5) {
+        eDmg = pRoll - 2;
+        log = `🙏 Oração poderosa! Curou ${heal} e causou ${eDmg} de dano espiritual!`;
+      } else {
+        log = `🙏 Oração suave. Curou ${heal} pontos.`;
+      }
+    }
+
+    setPlayerHP(h => Math.max(0, h - pDmg));
+    setEnemyHP(h => Math.max(0, h - eDmg));
+    setRoundLog(log);
+    setRound(r => r + 1);
+
+    setTimeout(() => {
+      setPhase(round + 1 >= totalRounds || playerHP - pDmg <= 0 || enemyHP - eDmg <= 0 ? 'final' : 'choose');
+      setAction(null);
+    }, 2000);
+  };
+
+  useEffect(() => {
+    return () => { if (rollInterval.current) clearInterval(rollInterval.current); };
+  }, []);
+
+  const success = enemyHP <= 0 || (playerHP > 0 && playerHP > enemyHP);
+  const finalScore = Math.round((Math.max(0, playerHP) / 10) * 100);
+
+  useEffect(() => {
+    if (phase === 'final') {
+      const timer = setTimeout(() => {
+        onComplete({
+          success,
+          score: finalScore,
+          effects: success ? config.successBonus : config.failurePenalty,
+        });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [phase]);
+
+  const diceEmoji = (n: number) => ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][n - 1] || '⚀';
+
+  if (phase === 'intro') {
+    return (
+      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
+        <div className="text-5xl">{enemy.emoji}</div>
+        <h3 className="font-display text-xl text-primary">Duelo Espiritual</h3>
+        <p className="text-sm text-foreground/80">{config.intro}</p>
+        <div className="text-xs text-muted-foreground space-y-1">
+          <p>⚔️ <strong>Atacar</strong> — dano alto, risco de contra-ataque</p>
+          <p>🛡️ <strong>Defender</strong> — bloqueia dano inimigo</p>
+          <p>🙏 <strong>Orar</strong> — cura + chance de dano espiritual</p>
+        </div>
+        <button onClick={() => setPhase('choose')} className="btn-medieval w-full">
+          Enfrentar {enemy.name}!
+        </button>
+      </div>
+    );
+  }
+
+  if (phase === 'final') {
+    return (
+      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
+        <div className="text-4xl">{success ? '🏆' : '😢'}</div>
+        <h3 className="font-display text-xl text-primary">
+          {success ? `${enemy.name} foi derrotado!` : `${enemy.name} prevaleceu...`}
+        </h3>
+        <p className="text-sm text-foreground/80">
+          Sua vida: {Math.max(0, playerHP)}/10 · {enemy.name}: {Math.max(0, enemyHP)}/10
+        </p>
+        <div className="h-3 bg-secondary rounded-full overflow-hidden">
+          <div className={`h-full rounded-full transition-all duration-1000 ${success ? 'bg-primary' : 'bg-destructive'}`}
+            style={{ width: `${finalScore}%` }} />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-card/50 border-2 border-primary/20 rounded-2xl p-4 space-y-4">
+      {/* HP bars */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <span className="text-sm">🙂</span>
+          <div className="flex-1 h-3 bg-secondary rounded-full overflow-hidden">
+            <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${playerHP * 10}%` }} />
+          </div>
+          <span className="text-xs font-display text-foreground w-8 text-right">{playerHP}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm">{enemy.emoji}</span>
+          <div className="flex-1 h-3 bg-secondary rounded-full overflow-hidden">
+            <div className="h-full bg-destructive rounded-full transition-all duration-500" style={{ width: `${enemyHP * 10}%` }} />
+          </div>
+          <span className="text-xs font-display text-foreground w-8 text-right">{enemyHP}</span>
+        </div>
+      </div>
+
+      {/* Dice display */}
+      {(phase === 'rolling' || roundLog) && (
+        <div className="flex items-center justify-center gap-6 py-3">
+          <div className="text-center">
+            <span className={`text-4xl ${dice.rolling ? 'animate-pulse' : ''}`}>{diceEmoji(dice.player)}</span>
+            <p className="text-[10px] text-muted-foreground mt-1">Você</p>
+          </div>
+          <span className="text-lg text-muted-foreground font-display">VS</span>
+          <div className="text-center">
+            <span className={`text-4xl ${dice.rolling ? 'animate-pulse' : ''}`}>{diceEmoji(dice.enemy)}</span>
+            <p className="text-[10px] text-muted-foreground mt-1">{enemy.name}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Round log */}
+      {roundLog && phase === 'choose' && (
+        <p className="text-sm text-center text-foreground/80 bg-card/60 rounded-xl px-3 py-2 animate-fade-in">{roundLog}</p>
+      )}
+
+      {/* Action buttons */}
+      {phase === 'choose' && (
+        <div className="grid grid-cols-3 gap-2">
+          <button onClick={() => rollDice('attack')}
+            className="py-4 rounded-xl border-2 border-border bg-card hover:border-primary/50 active:scale-90 transition-all text-center">
+            <span className="text-2xl block">⚔️</span>
+            <span className="text-xs font-display text-foreground mt-1 block">Atacar</span>
+          </button>
+          <button onClick={() => rollDice('defend')}
+            className="py-4 rounded-xl border-2 border-border bg-card hover:border-primary/50 active:scale-90 transition-all text-center">
+            <span className="text-2xl block">🛡️</span>
+            <span className="text-xs font-display text-foreground mt-1 block">Defender</span>
+          </button>
+          <button onClick={() => rollDice('pray')}
+            className="py-4 rounded-xl border-2 border-border bg-card hover:border-primary/50 active:scale-90 transition-all text-center">
+            <span className="text-2xl block">🙏</span>
+            <span className="text-xs font-display text-foreground mt-1 block">Orar</span>
+          </button>
+        </div>
+      )}
+
+      {phase === 'rolling' && (
+        <p className="text-center text-sm text-primary font-display animate-pulse">Rolando dados...</p>
+      )}
+
+      <p className="text-xs text-center text-muted-foreground">Rodada {Math.min(round + 1, totalRounds)}/{totalRounds}</p>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════
+// 6. TreasureHunt — Hidden clickable areas
+// ═══════════════════════════════════════════
+
+interface HiddenItem {
+  id: number;
+  x: number;
+  y: number;
+  emoji: string;
+  label: string;
+  bonus: ChoiceEffect;
+  found: boolean;
+  hint: boolean;
+}
+
+function TreasureHuntGame({ config, onComplete }: MiniGameProps) {
+  const defaultTreasures = [
+    { emoji: '📜', label: 'Pergaminho antigo', bonus: { discernimento: 1 } },
+    { emoji: '🗝️', label: 'Chave dourada', bonus: { fe: 1 } },
+    { emoji: '⚗️', label: 'Frasco de cura', bonus: { perseveranca: 1 } },
+    { emoji: '💎', label: 'Pedra preciosa', bonus: { coragem: 1 } },
+    { emoji: '🕯️', label: 'Vela sagrada', bonus: { fe: 1 } },
+  ];
+  const treasures = config.treasures || defaultTreasures;
+  const timeLimit = config.difficulty === 'easy' ? 20 : config.difficulty === 'hard' ? 10 : 15;
+
+  const [phase, setPhase] = useState<'intro' | 'hunting' | 'result'>('intro');
+  const [items, setItems] = useState<HiddenItem[]>([]);
+  const [found, setFound] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(timeLimit);
+  const [lastFound, setLastFound] = useState<string | null>(null);
+
+  const initItems = useCallback(() => {
+    const placed: HiddenItem[] = treasures.map((t, i) => ({
+      id: i,
+      x: 8 + Math.random() * 80,
+      y: 10 + Math.random() * 70,
+      ...t,
+      found: false,
+      hint: false,
+    }));
+    setItems(placed);
+  }, [treasures]);
+
+  // Timer
+  useEffect(() => {
+    if (phase !== 'hunting') return;
+    const timer = setInterval(() => {
+      setTimeLeft(t => {
+        if (t <= 1) {
+          setPhase('result');
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [phase]);
+
+  // Show hints periodically
+  useEffect(() => {
+    if (phase !== 'hunting') return;
+    const hint = setInterval(() => {
+      setItems(prev => {
+        const unfound = prev.filter(i => !i.found);
+        if (unfound.length === 0) return prev;
+        const target = unfound[Math.floor(Math.random() * unfound.length)];
+        return prev.map(i => i.id === target.id ? { ...i, hint: true } : i);
+      });
+      // Remove hint after 1s
+      setTimeout(() => {
+        setItems(prev => prev.map(i => ({ ...i, hint: false })));
+      }, 1000);
+    }, 3000);
+    return () => clearInterval(hint);
+  }, [phase]);
+
+  const findItem = (id: number) => {
+    setItems(prev => prev.map(i => i.id === id ? { ...i, found: true } : i));
+    const item = items.find(i => i.id === id);
+    if (item) {
+      setFound(f => f + 1);
+      setLastFound(`${item.emoji} ${item.label}`);
+      setTimeout(() => setLastFound(null), 1500);
+    }
+    // Check if all found
+    if (found + 1 >= treasures.length) {
+      setTimeout(() => setPhase('result'), 800);
+    }
+  };
+
+  const finalScore = treasures.length > 0 ? Math.round((found / treasures.length) * 100) : 0;
+  const success = finalScore >= 50;
+
+  useEffect(() => {
+    if (phase === 'result') {
+      const timer = setTimeout(() => {
+        // Merge all found bonuses
+        const mergedEffects: ChoiceEffect = {};
+        items.filter(i => i.found).forEach(i => {
+          Object.entries(i.bonus).forEach(([k, v]) => {
+            (mergedEffects as any)[k] = ((mergedEffects as any)[k] || 0) + (v || 0);
+          });
+        });
+        // Add failure penalty if didn't find enough
+        if (!success) {
+          Object.entries(config.failurePenalty).forEach(([k, v]) => {
+            (mergedEffects as any)[k] = ((mergedEffects as any)[k] || 0) + (v || 0);
+          });
+        }
+        onComplete({ success, score: finalScore, effects: Object.keys(mergedEffects).length > 0 ? mergedEffects : (success ? config.successBonus : config.failurePenalty) });
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [phase]);
+
+  if (phase === 'intro') {
+    return (
+      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
+        <div className="text-4xl">🔍</div>
+        <h3 className="font-display text-xl text-primary">Caça ao Tesouro</h3>
+        <p className="text-sm text-foreground/80">{config.intro}</p>
+        <p className="text-xs text-muted-foreground">Encontre os tesouros escondidos antes do tempo acabar! Fique atento às dicas ✨</p>
+        <button onClick={() => { initItems(); setPhase('hunting'); }} className="btn-medieval w-full">
+          Começar a busca!
+        </button>
+      </div>
+    );
+  }
+
+  if (phase === 'result') {
+    return (
+      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
+        <div className="text-4xl">{success ? '🎉' : '😞'}</div>
+        <h3 className="font-display text-xl text-primary">
+          {success ? 'Bela exploração!' : 'Tesouros ficaram para trás...'}
+        </h3>
+        <p className="text-sm text-foreground/80">
+          Encontrou {found} de {treasures.length} tesouros
+        </p>
+        <div className="flex justify-center gap-2 flex-wrap">
+          {items.map(i => (
+            <span key={i.id} className={`text-2xl ${i.found ? '' : 'opacity-20 grayscale'}`}>{i.emoji}</span>
+          ))}
+        </div>
+        <div className="h-3 bg-secondary rounded-full overflow-hidden">
+          <div className={`h-full rounded-full transition-all duration-1000 ${success ? 'bg-primary' : 'bg-destructive'}`}
+            style={{ width: `${finalScore}%` }} />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative bg-card/30 border-2 border-primary/20 rounded-2xl overflow-hidden" style={{ height: '280px' }}>
+      {/* HUD */}
+      <div className="absolute top-2 left-3 right-3 flex justify-between z-10">
+        <span className="text-xs font-display text-primary bg-card/80 px-2 py-1 rounded-lg">
+          🔍 {found}/{treasures.length}
+        </span>
+        <span className={`text-xs font-display bg-card/80 px-2 py-1 rounded-lg ${timeLeft <= 5 ? 'text-destructive animate-pulse' : 'text-muted-foreground'}`}>
+          ⏳ {timeLeft}s
+        </span>
+      </div>
+
+      {/* Hidden items */}
+      {items.map(item => !item.found ? (
+        <button
+          key={item.id}
+          onClick={() => findItem(item.id)}
+          className={`absolute transition-all duration-300 ${item.hint ? 'scale-125' : 'scale-100'}`}
+          style={{ left: `${item.x}%`, top: `${item.y}%` }}
+        >
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+            item.hint
+              ? 'bg-primary/30 border-2 border-primary shadow-lg shadow-primary/30 animate-pulse'
+              : 'bg-card/20 border border-border/30 hover:bg-card/50'
+          }`}>
+            <span className={`text-lg ${item.hint ? 'opacity-80' : 'opacity-10'}`}>{item.emoji}</span>
+          </div>
+        </button>
+      ) : (
+        <div key={item.id} className="absolute animate-fade-in" style={{ left: `${item.x}%`, top: `${item.y}%` }}>
+          <div className="w-10 h-10 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center">
+            <span className="text-lg">{item.emoji}</span>
+          </div>
+        </div>
+      ))}
+
+      {/* Found toast */}
+      {lastFound && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 animate-fade-in">
+          <span className="bg-card/90 border border-primary/30 px-3 py-2 rounded-xl text-sm font-display text-primary shadow-lg">
+            ✨ {lastFound}!
+          </span>
+        </div>
+      )}
+
+      {/* Ambient sparkles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 rounded-full bg-primary/30 animate-pulse"
+            style={{
+              left: `${20 + i * 15}%`,
+              top: `${10 + (i * 17) % 80}%`,
+              animationDelay: `${i * 0.5}s`,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════
+// 7. DivineReflex — Simon Says with directions
+// ═══════════════════════════════════════════
+
+type Direction = '⬆️' | '⬇️' | '⬅️' | '➡️';
+const DIRECTIONS: Direction[] = ['⬆️', '⬇️', '⬅️', '➡️'];
+
+function ReflexGame({ config, onComplete }: MiniGameProps) {
+  const diff = config.difficulty || 'normal';
+  const maxRounds = diff === 'easy' ? 4 : diff === 'hard' ? 7 : 5;
+  const baseSpeed = config.reflexSpeed || (diff === 'easy' ? 900 : diff === 'hard' ? 500 : 700);
+
+  const [phase, setPhase] = useState<'intro' | 'showing' | 'input' | 'feedback' | 'result'>('intro');
+  const [sequence, setSequence] = useState<Direction[]>([]);
+  const [showIndex, setShowIndex] = useState(-1);
+  const [playerInput, setPlayerInput] = useState<Direction[]>([]);
+  const [round, setRound] = useState(0);
+  const [wins, setWins] = useState(0);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [activeDir, setActiveDir] = useState<Direction | null>(null);
+
+  const generateSequence = useCallback((len: number) => {
+    return Array.from({ length: len }, () => DIRECTIONS[Math.floor(Math.random() * 4)]);
+  }, []);
+
+  const startRound = useCallback(() => {
+    const len = 3 + round; // starts at 3, grows each round
+    const seq = generateSequence(len);
+    setSequence(seq);
+    setPlayerInput([]);
+    setShowIndex(-1);
+    setPhase('showing');
+  }, [round, generateSequence]);
+
+  // Show sequence with decreasing speed
+  useEffect(() => {
+    if (phase !== 'showing') return;
+    if (showIndex >= sequence.length - 1) {
+      const timer = setTimeout(() => {
+        setPhase('input');
+        setShowIndex(-1);
+        setActiveDir(null);
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+    const speed = Math.max(300, baseSpeed - round * 60);
+    const timer = setTimeout(() => {
+      const nextIdx = showIndex + 1;
+      setShowIndex(nextIdx);
+      setActiveDir(sequence[nextIdx]);
+      // Clear active briefly for visual pulse
+      setTimeout(() => setActiveDir(null), speed * 0.6);
+    }, speed);
+    return () => clearTimeout(timer);
+  }, [phase, showIndex, sequence, baseSpeed, round]);
+
+  const handleInput = (dir: Direction) => {
+    if (phase !== 'input') return;
+    setActiveDir(dir);
+    setTimeout(() => setActiveDir(null), 150);
+
+    const newInput = [...playerInput, dir];
+    setPlayerInput(newInput);
+    const idx = newInput.length - 1;
+
+    if (newInput[idx] !== sequence[idx]) {
+      setFeedbackText('❌ Sequência errada!');
+      setPhase('feedback');
+      setTimeout(() => {
+        const next = round + 1;
+        setRound(next);
+        if (next >= maxRounds) setPhase('result');
+        else startRound();
+      }, 1200);
+      return;
+    }
+
+    if (newInput.length === sequence.length) {
+      setWins(w => w + 1);
+      setFeedbackText('✨ Perfeito!');
+      setPhase('feedback');
+      setTimeout(() => {
+        const next = round + 1;
+        setRound(next);
+        if (next >= maxRounds) setPhase('result');
+        else startRound();
+      }, 1200);
+    }
+  };
+
+  const finalScore = maxRounds > 0 ? Math.round((wins / maxRounds) * 100) : 0;
+  const success = finalScore >= 50;
+
+  useEffect(() => {
+    if (phase === 'result') {
+      const timer = setTimeout(() => {
+        onComplete({
+          success,
+          score: finalScore,
+          effects: success ? config.successBonus : config.failurePenalty,
+        });
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [phase]);
+
+  if (phase === 'intro') {
+    return (
+      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
+        <div className="text-4xl">👼</div>
+        <h3 className="font-display text-xl text-primary">Reflexo Divino</h3>
+        <p className="text-sm text-foreground/80">{config.intro}</p>
+        <p className="text-xs text-muted-foreground">Observe a sequência de direções e repita! A cada rodada fica mais rápido.</p>
+        <button onClick={() => { startRound(); }} className="btn-medieval w-full">
+          Começar!
+        </button>
+      </div>
+    );
+  }
+
+  if (phase === 'result') {
+    return (
+      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
+        <div className="text-4xl">{success ? '👼' : '😵‍💫'}</div>
+        <h3 className="font-display text-xl text-primary">
+          {success ? 'Reflexos abençoados!' : 'Precisa de mais prática...'}
+        </h3>
+        <p className="text-sm text-foreground/80">
+          Acertou {wins} de {maxRounds} rodadas ({finalScore}%)
+        </p>
+        <div className="h-3 bg-secondary rounded-full overflow-hidden">
+          <div className={`h-full rounded-full transition-all duration-1000 ${success ? 'bg-primary' : 'bg-destructive'}`}
+            style={{ width: `${finalScore}%` }} />
+        </div>
+      </div>
+    );
+  }
+
+  const dirStyle = (dir: Direction) =>
+    `w-16 h-16 rounded-2xl border-2 flex items-center justify-center text-2xl transition-all duration-150 active:scale-90 ${
+      activeDir === dir
+        ? 'border-primary bg-primary/30 scale-110 shadow-lg shadow-primary/20'
+        : 'border-border bg-card hover:border-primary/30'
+    }`;
+
+  return (
+    <div className="bg-card/50 border-2 border-primary/20 rounded-2xl p-4 space-y-4">
+      <div className="flex justify-between text-xs font-display">
+        <span className="text-primary bg-card/80 px-2 py-1 rounded-lg">Rodada {round + 1}/{maxRounds}</span>
+        <span className="text-muted-foreground bg-card/80 px-2 py-1 rounded-lg">
+          {phase === 'showing' ? '👀 Observe...' : phase === 'input' ? '👆 Sua vez!' : ''}
+        </span>
+        <span className="text-muted-foreground bg-card/80 px-2 py-1 rounded-lg">✓ {wins}</span>
+      </div>
+
+      {/* Progress dots */}
+      {phase === 'input' && (
+        <div className="flex justify-center gap-1">
+          {sequence.map((_, i) => (
+            <div key={i} className={`w-3 h-3 rounded-full transition-all ${
+              i < playerInput.length ? 'bg-primary' : 'bg-secondary'
+            }`} />
+          ))}
+        </div>
+      )}
+
+      {/* Direction pad */}
+      <div className="flex flex-col items-center gap-2">
+        <button onClick={() => handleInput('⬆️')} disabled={phase !== 'input'} className={dirStyle('⬆️')}>⬆️</button>
+        <div className="flex gap-2">
+          <button onClick={() => handleInput('⬅️')} disabled={phase !== 'input'} className={dirStyle('⬅️')}>⬅️</button>
+          <div className="w-16 h-16 rounded-2xl border-2 border-border/30 bg-card/30 flex items-center justify-center">
+            <span className="text-lg">{phase === 'showing' ? '👀' : '✋'}</span>
+          </div>
+          <button onClick={() => handleInput('➡️')} disabled={phase !== 'input'} className={dirStyle('➡️')}>➡️</button>
+        </div>
+        <button onClick={() => handleInput('⬇️')} disabled={phase !== 'input'} className={dirStyle('⬇️')}>⬇️</button>
+      </div>
+
+      {/* Feedback */}
+      {phase === 'feedback' && (
+        <div className="text-center py-2 animate-scale-in">
+          <span className="text-xl font-display">{feedbackText}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════
 // Main MiniGame Dispatcher
 // ═══════════════════════════════════════════
 
@@ -807,6 +1442,12 @@ export function MiniGame({ config, onComplete }: MiniGameProps) {
       return <MemoryGame config={config} onComplete={onComplete} />;
     case 'stealth':
       return <StealthGame config={config} onComplete={onComplete} />;
+    case 'diceduel':
+      return <DiceDuelGame config={config} onComplete={onComplete} />;
+    case 'treasure':
+      return <TreasureHuntGame config={config} onComplete={onComplete} />;
+    case 'reflex':
+      return <ReflexGame config={config} onComplete={onComplete} />;
     default:
       return null;
   }

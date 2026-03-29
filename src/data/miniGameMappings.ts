@@ -58,13 +58,14 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
 
   // ═══ FASE 3 — Vale da Humilhação ═══
 
-  // Batalha contra Apolião — QTE intenso
+  // Batalha contra Apolião — DUELO DE DADOS
   'fase3-cena3': {
-    type: 'qte',
+    type: 'diceduel',
     difficulty: 'hard',
-    intro: 'Apolião ataca com fúria! Use a Espada do Espírito — desvie e contra-ataque!',
+    intro: 'Apolião surge das sombras! Enfrente-o em um duelo espiritual — use ataque, defesa e oração!',
     successBonus: { coragem: 2, fe: 1 },
     failurePenalty: { coragem: -2 },
+    duelEnemy: { name: 'Apolião', emoji: '🐉', power: 7 },
   },
 
   // Vale da Sombra da Morte — stealth
@@ -74,6 +75,15 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     intro: 'O Vale da Sombra da Morte se estende em trevas. Avance em silêncio — os demônios espreitam.',
     successBonus: { coragem: 1, perseveranca: 1 },
     failurePenalty: { coragem: -1 },
+  },
+
+  // Encontro com Fiel — Reflexo Divino
+  'fase3-cena8': {
+    type: 'reflex',
+    difficulty: 'easy',
+    intro: 'Fiel compartilha sinais que aprendeu no caminho. Repita os gestos para absorver sua sabedoria!',
+    successBonus: { fe: 1, discernimento: 1 },
+    failurePenalty: { fe: -1 },
   },
 
   // ═══ FASE 4 — Feira da Vaidade ═══
@@ -98,7 +108,22 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     ],
   },
 
-  // Julgamento de Fiel — memória (lembrar testemunho)
+  // Caça ao tesouro na Feira
+  'fase4-cena3': {
+    type: 'treasure',
+    difficulty: 'normal',
+    intro: 'Em meio ao caos da Feira, há tesouros espirituais escondidos. Encontre-os antes que sejam perdidos para sempre!',
+    successBonus: { discernimento: 1 },
+    failurePenalty: { discernimento: -1 },
+    treasures: [
+      { emoji: '📖', label: 'Escritura escondida', bonus: { discernimento: 1 } },
+      { emoji: '🕊️', label: 'Pomba da paz', bonus: { fe: 1 } },
+      { emoji: '🛡️', label: 'Escudo da fé', bonus: { coragem: 1 } },
+      { emoji: '🗝️', label: 'Chave da verdade', bonus: { perseveranca: 1 } },
+    ],
+  },
+
+  // Julgamento de Fiel — memória
   'fase4-cena5': {
     type: 'memory',
     difficulty: 'normal',
@@ -109,13 +134,39 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
 
   // ═══ FASE 5 — Castelo da Dúvida ═══
 
-  // Prisão do Gigante Desespero — stealth para escapar
+  // Prisão do Gigante Desespero — DUELO DE DADOS
   'fase5-cena3': {
-    type: 'stealth',
-    difficulty: 'hard',
-    intro: 'O Gigante Desespero dorme. Escape das masmorras sem fazer barulho!',
+    type: 'diceduel',
+    difficulty: 'normal',
+    intro: 'O Gigante Desespero bloqueia sua fuga! Enfrente-o com coragem e fé!',
     successBonus: { perseveranca: 2, coragem: 1 },
     failurePenalty: { perseveranca: -2 },
+    duelEnemy: { name: 'Gigante Desespero', emoji: '👹', power: 6 },
+  },
+
+  // Exploração do Castelo — Caça ao tesouro
+  'fase5-cena1': {
+    type: 'treasure',
+    difficulty: 'hard',
+    intro: 'O Castelo da Dúvida esconde segredos antigos. Procure itens que podem ajudar na fuga!',
+    successBonus: { discernimento: 1 },
+    failurePenalty: {},
+    treasures: [
+      { emoji: '🗝️', label: 'Chave da Promessa', bonus: { fe: 2 } },
+      { emoji: '📜', label: 'Mapa secreto', bonus: { discernimento: 1 } },
+      { emoji: '🕯️', label: 'Luz na escuridão', bonus: { coragem: 1 } },
+      { emoji: '⚗️', label: 'Água revitalizante', bonus: { perseveranca: 1 } },
+      { emoji: '💎', label: 'Pedra de esperança', bonus: { fe: 1 } },
+    ],
+  },
+
+  // Montanhas Deleitosas — Reflexo Divino com pastores
+  'fase5-cena6': {
+    type: 'reflex',
+    difficulty: 'normal',
+    intro: 'Os pastores das Montanhas Deleitosas ensinam gestos sagrados. Repita as direções com precisão!',
+    successBonus: { fe: 1, perseveranca: 1 },
+    failurePenalty: { perseveranca: -1 },
   },
 
   // ═══ FASE 6 — Cidade Celestial ═══
@@ -127,5 +178,15 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     intro: 'O Rio da Morte se interpõe entre você e a Cidade Celestial. Lute para atravessar!',
     successBonus: { fe: 2, perseveranca: 1 },
     failurePenalty: { fe: -1 },
+  },
+
+  // Reflexo Divino — Anjos guiando ao portão
+  'fase6-cena3': {
+    type: 'reflex',
+    difficulty: 'hard',
+    intro: 'Anjos celestiais guiam seus passos finais com gestos luminosos. Siga-os até o portão da Cidade Celestial!',
+    successBonus: { fe: 2, coragem: 1 },
+    failurePenalty: { fe: -1 },
+    reflexSpeed: 600,
   },
 };
