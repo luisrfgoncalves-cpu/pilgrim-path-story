@@ -1097,9 +1097,40 @@ function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps)
   if (phase === 'final') {
     return (
       <div className="game-card text-center space-y-4 animate-scale-in">
-        <div className="text-6xl" style={{ filter: `drop-shadow(0 0 20px ${success ? 'hsl(40 70% 50% / 0.6)' : 'hsl(0 60% 50% / 0.4)'})` }}>{success ? '🏆' : '😢'}</div>
-        <h3 className="game-title">{success ? `${enemy.name} foi derrotado!` : `${enemy.name} prevaleceu...`}</h3>
-        <p className="game-subtitle">Sua vida: {Math.max(0, playerHP)}/{maxHP} · {enemy.name}: {Math.max(0, enemyHP)}/{maxHP}</p>
+        {/* Final portraits */}
+        <div className="flex items-center justify-center gap-6">
+          <div className="text-center">
+            {playerPortrait ? (
+              <img src={playerPortrait.img} alt={playerPortrait.name}
+                className="w-20 h-20 mx-auto rounded-full object-cover"
+                style={{
+                  border: `3px solid ${success ? 'hsl(40 70% 55%)' : 'hsl(0 40% 40%)'}`,
+                  boxShadow: success ? '0 0 20px hsl(40 70% 50% / 0.5)' : '0 0 12px hsl(0 40% 40% / 0.3)',
+                  filter: success ? 'brightness(1.1)' : 'brightness(0.7) grayscale(0.3)',
+                }}
+              />
+            ) : <span className="text-4xl">{success ? '🏆' : '😢'}</span>}
+            <p className="text-xs font-display font-bold mt-1" style={{ color: success ? 'hsl(40 70% 65%)' : 'hsl(0 40% 55%)' }}>
+              {playerPortrait?.name || 'Você'} — {Math.max(0, playerHP)} HP
+            </p>
+          </div>
+          <div className="text-center">
+            {enemyPortrait ? (
+              <img src={enemyPortrait.img} alt={enemyPortrait.name}
+                className="w-20 h-20 mx-auto rounded-full object-cover"
+                style={{
+                  border: `3px solid ${!success ? 'hsl(0 60% 50%)' : 'hsl(0 30% 30%)'}`,
+                  boxShadow: !success ? '0 0 20px hsl(0 60% 50% / 0.5)' : 'none',
+                  filter: success ? 'brightness(0.5) grayscale(0.5)' : 'brightness(1.1)',
+                }}
+              />
+            ) : <span className="text-4xl">{enemy.emoji}</span>}
+            <p className="text-xs font-display font-bold mt-1" style={{ color: !success ? 'hsl(0 60% 60%)' : 'hsl(0 20% 40%)' }}>
+              {enemyPortrait?.name || enemy.name} — {Math.max(0, enemyHP)} HP
+            </p>
+          </div>
+        </div>
+        <h3 className="game-title">{success ? `${enemyPortrait?.name || enemy.name} foi derrotado!` : `${enemyPortrait?.name || enemy.name} prevaleceu...`}</h3>
         <div className="game-progress-bar">
           <div className={success ? 'game-progress-fill-success' : 'game-progress-fill-fail'}
             style={{ width: `${finalScore}%` }} />
@@ -1109,55 +1140,83 @@ function DiceDuelGame({ config, onComplete, characterPortraits }: MiniGameProps)
   }
 
   return (
-    <div className="rounded-2xl p-5 space-y-5" style={{
+    <div className="rounded-2xl p-5 space-y-4" style={{
       background: 'linear-gradient(180deg, hsl(0 30% 12%) 0%, hsl(30 20% 10%) 100%)',
       border: '3px solid hsl(40 60% 45%)',
       boxShadow: '0 0 20px hsl(40 60% 40% / 0.2), inset 0 1px 0 hsl(40 60% 60% / 0.1)',
     }}>
-      {/* Character portraits + HP bars */}
-      <div className="space-y-2">
+      {/* Character portraits + HP bars — LARGE */}
+      <div className="space-y-3">
+        {/* Player row */}
         <div className="flex items-center gap-3">
-          {playerPortrait && (
-            <img src={playerPortrait.img} alt={playerPortrait.name} className="w-10 h-10 rounded-full object-cover border-2 flex-shrink-0" style={{ borderColor: 'hsl(120 40% 45%)' }} />
+          {playerPortrait ? (
+            <img src={playerPortrait.img} alt={playerPortrait.name}
+              className="w-14 h-14 rounded-full object-cover flex-shrink-0"
+              style={{
+                border: '2.5px solid hsl(120 50% 45%)',
+                boxShadow: '0 0 14px hsl(120 60% 45% / 0.4)',
+              }}
+            />
+          ) : (
+            <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl flex-shrink-0"
+              style={{ background: 'hsl(120 20% 15%)', border: '2.5px solid hsl(120 50% 45%)' }}>⚔️</div>
           )}
-          {!playerPortrait && <span className="text-lg font-bold" style={{ textShadow: '0 0 8px hsl(40 60% 50% / 0.5)' }}>⚔️</span>}
-          <div className="flex-1">
-            <p className="text-[10px] font-display font-bold mb-0.5" style={{ color: 'hsl(120 50% 60%)' }}>{playerPortrait?.name || 'Você'}</p>
-            <div className="h-4 rounded-full overflow-hidden" style={{
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-display font-bold mb-0.5 truncate" style={{ color: 'hsl(120 50% 60%)' }}>
+              {playerPortrait?.name || 'Você'}
+            </p>
+            <div className="h-5 rounded-full overflow-hidden" style={{
               background: 'hsl(0 0% 8%)',
               border: '2px solid hsl(120 40% 35%)',
             }}>
-              <div className="h-full rounded-full transition-all duration-500" style={{
+              <div className="h-full rounded-full transition-all duration-500 flex items-center justify-end pr-1" style={{
                 width: `${(playerHP / maxHP) * 100}%`,
                 background: 'linear-gradient(90deg, hsl(120 60% 35%), hsl(90 70% 45%))',
-              }} />
+              }}>
+                <span className="text-[10px] font-display font-bold text-white drop-shadow-md">{playerHP}/{maxHP}</span>
+              </div>
             </div>
           </div>
-          <span className="text-sm font-display font-bold min-w-[2rem] text-right" style={{ color: 'hsl(120 60% 55%)' }}>{playerHP}</span>
         </div>
+        {/* Enemy row */}
         <div className="flex items-center gap-3">
           {enemyPortrait ? (
-            <img src={enemyPortrait.img} alt={enemyPortrait.name} className="w-10 h-10 rounded-full object-cover border-2 flex-shrink-0" style={{ borderColor: 'hsl(0 50% 45%)' }} />
+            <img src={enemyPortrait.img} alt={enemyPortrait.name}
+              className="w-14 h-14 rounded-full object-cover flex-shrink-0"
+              style={{
+                border: '2.5px solid hsl(0 50% 45%)',
+                boxShadow: '0 0 14px hsl(0 60% 50% / 0.4)',
+              }}
+            />
           ) : (
-            <span className="text-lg">{enemy.emoji}</span>
+            <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl flex-shrink-0"
+              style={{ background: 'hsl(0 20% 15%)', border: '2.5px solid hsl(0 50% 45%)' }}>{enemy.emoji}</div>
           )}
-          <div className="flex-1">
-            <p className="text-[10px] font-display font-bold mb-0.5" style={{ color: 'hsl(0 50% 60%)' }}>{enemyPortrait?.name || enemy.name}</p>
-            <div className="h-4 rounded-full overflow-hidden" style={{
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-display font-bold mb-0.5 truncate" style={{ color: 'hsl(0 50% 60%)' }}>
+              {enemyPortrait?.name || enemy.name}
+            </p>
+            <div className="h-5 rounded-full overflow-hidden" style={{
               background: 'hsl(0 0% 8%)',
               border: '2px solid hsl(0 50% 40%)',
             }}>
-              <div className="h-full rounded-full transition-all duration-500" style={{
+              <div className="h-full rounded-full transition-all duration-500 flex items-center justify-end pr-1" style={{
                 width: `${(enemyHP / maxHP) * 100}%`,
                 background: 'linear-gradient(90deg, hsl(0 70% 40%), hsl(350 80% 50%))',
-              }} />
+              }}>
+                <span className="text-[10px] font-display font-bold text-white drop-shadow-md">{enemyHP}/{maxHP}</span>
+              </div>
             </div>
           </div>
-          <span className="text-sm font-display font-bold min-w-[2rem] text-right" style={{ color: 'hsl(0 60% 60%)' }}>{enemyHP}</span>
         </div>
       </div>
 
-      {/* 3D Dice display — names ABOVE, dice below, number shown */}
+      {/* Round indicator */}
+      <p className="text-[10px] text-center font-display" style={{ color: 'hsl(40 40% 50%)' }}>
+        Rodada {round + 1} de {totalRounds}
+      </p>
+
+      {/* 3D Dice display */}
       {(phase === 'rolling' || roundLog) && (
         <div className="flex items-center justify-center gap-6 py-2">
           <div className="text-center">
