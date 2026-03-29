@@ -362,6 +362,58 @@ export const eventPools: Record<string, PhaseEventPool> = {
         ],
         weight: 2,
       },
+      // ── Colina da Dificuldade ──
+      {
+        id: 'f2-colina-dificuldade',
+        type: 'variable',
+        narrative: [
+          'Na subida da Colina da Dificuldade, você vê marcas de unhas na pedra — de peregrinos que subiram antes.',
+          'Formalista e Hipocrisia tomaram o atalho. Nunca mais foram vistos.',
+        ],
+        choices: [
+          {
+            text: 'Subir pela trilha íngreme, seguindo as marcas',
+            effects: { perseveranca: 2, coragem: 1 },
+            consequence: 'Cada metro conquistado é uma vitória. A colina não tem atalhos.',
+            consequenceKey: 'perseverou_na_dor',
+          },
+          {
+            text: 'Procurar um caminho menos íngreme',
+            effects: { perseveranca: -1, discernimento: -1 },
+            consequence: 'O desvio te leva de volta ao início. A colina vence quem tenta contorná-la.',
+            consequenceKey: 'fugiu_do_conflito',
+            appearance: 0.5,
+          },
+        ],
+        weight: 2,
+        emotionalWeight: 1,
+      },
+      // ── Leões Acorrentados ──
+      {
+        id: 'f2-leoes-acorrentados',
+        type: 'variable',
+        narrative: [
+          'Dois leões enormes rugem no caminho estreito. Timidez e Desconfiança correm gritando na direção oposta.',
+          'O porteiro Vigilante grita: "Não tema! São acorrentados! Ande pelo centro!"',
+        ],
+        choices: [
+          {
+            text: 'Caminhar pelo centro, olhando os leões nos olhos',
+            effects: { coragem: 2, fe: 1 },
+            consequence: 'Os leões rugem, mas as correntes se esticam ao máximo sem alcançá-lo. O medo era a verdadeira armadilha.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Hesitar e quase fugir como Timidez',
+            effects: { coragem: -1 },
+            consequence: 'A voz de Vigilante te segura. Você passa, mas tremendo.',
+            consequenceKey: 'fugiu_do_conflito',
+            appearance: 0.6,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
+      },
     ],
   },
 
@@ -731,6 +783,32 @@ export const eventPools: Record<string, PhaseEventPool> = {
         ],
         weight: 2,
         excludesFlag: 'ignorou_inquietacao',
+      },
+      // ── Demas e a Mina de Prata ──
+      {
+        id: 'f4-demas-mina',
+        type: 'variable',
+        narrative: [
+          'Demas acena de uma colina: "Venham ver a mina de prata! É seguro! Muitos peregrinos já passaram por aqui!"',
+          'Esperança murmura: "Esse homem é parente de Judas. A prata dele tem o mesmo preço."',
+        ],
+        choices: [
+          {
+            text: '"Sua prata é uma armadilha. Não me desviarei."',
+            effects: { fe: 2, discernimento: 1 },
+            consequence: 'Demas grita atrás de vocês, mas sua voz enfraquece a cada passo.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Ir até a borda da mina — só para ver',
+            effects: { fe: -1, discernimento: -1 },
+            consequence: 'O chão cede sob seus pés. Você escapa por pouco, mas a lição fica.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.6,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
       },
     ],
   },
