@@ -109,6 +109,18 @@ const postureLabels: Record<PostureState, string> = {
   vitoria_final: 'Vitória',
 };
 
+const postureLabelsFemale: Record<PostureState, string> = {
+  abatido: 'Abatida',
+  confuso: 'Confusa',
+  determinado: 'Determinada',
+  em_dificuldade: 'Em Dificuldade',
+  esperancoso: 'Esperançosa',
+  livre: 'Livre',
+  em_conflito: 'Em Conflito',
+  recuperacao: 'Recuperação',
+  vitoria_final: 'Vitória',
+};
+
 const breatheDuration: Record<PostureState, string> = {
   abatido: '5s',
   confuso: '4.5s',
@@ -138,6 +150,7 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
   const avg = (fe + coragem + perseveranca + discernimento) / 4;
   const posture = resolvePosture(avg, tone, storyFlag);
   const assets = campaign === 'part2' ? postureAssetsFemale : postureAssets;
+  const labels = campaign === 'part2' ? postureLabelsFemale : postureLabels;
 
   // Track previous posture for crossfade
   const [displayedPosture, setDisplayedPosture] = useState(posture);
