@@ -49,7 +49,7 @@ export function useAtmosphere(attributes: PlayerAttributes, posture: PostureStat
     const mod = postureModifiers[posture];
 
     // Base values from attributes
-    const brightness = Math.max(0.72, Math.min(1.3, 0.75 + feN * 0.35 + mod.brightnessShift));
+    const brightness = Math.max(0.85, Math.min(1.3, 0.85 + feN * 0.30 + mod.brightnessShift));
     const saturation = Math.max(0.55, Math.min(1.3, 0.6 + coragemN * 0.55 + mod.saturationShift));
     const blur = Math.max(0, (1 - discN) * 0.8 + mod.extraBlur * 0.6);
     const hueShift = (feN > 0.7 ? (feN - 0.7) * 15 : 0) + mod.hueShift;
