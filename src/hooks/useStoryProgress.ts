@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { FIRST_CHAPTER_ID, ChoiceEffect } from '@/data/story';
+import { FIRST_CHAPTER_ID, ChoiceEffect, ConditionalEffect } from '@/data/story';
 
 const STORAGE_KEY = 'peregrino-progress';
 
@@ -72,12 +72,26 @@ export const useStoryProgress = () => {
     nextChapterId: string,
     choiceText: string,
     effects: ChoiceEffect,
-    flag?: string
+    flag?: string,
+    conditionalEffects?: ConditionalEffect[]
   ) => {
     setProgress(prev => {
       const newAttrs = { ...prev.attributes };
+      // Apply base effects
       for (const [key, val] of Object.entries(effects)) {
         if (val) newAttrs[key as keyof PlayerAttributes] += val;
+      }
+      // Apply conditional effects (delayed consequences)
+      if (conditionalEffects) {
+        for (const ce of conditionalEffects) {
+          const currentVal = prev.attributes[ce.attr] || 0;
+          const extraEffects = currentVal >= ce.threshold ? ce.bonus : ce.penalty;
+          if (extraEffects) {
+            for (const [key, val] of Object.entries(extraEffects)) {
+              if (val) newAttrs[key as keyof PlayerAttributes] += val;
+            }
+          }
+        }
       }
 
       const newFlags = { ...prev.flags };

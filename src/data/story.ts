@@ -5,18 +5,29 @@ export interface ChoiceEffect {
   coragem?: number;
 }
 
+/** Conditional bonus/penalty applied on top of base effects */
+export interface ConditionalEffect {
+  /** Attribute to check */
+  attr: keyof ChoiceEffect;
+  /** Minimum value to trigger (if met, apply bonus; if not met, apply penalty) */
+  threshold: number;
+  /** Extra effects when player meets the threshold */
+  bonus?: ChoiceEffect;
+  /** Extra effects when player is below the threshold */
+  penalty?: ChoiceEffect;
+}
+
 export interface StoryChoice {
   text: string;
   nextChapterId: string;
   consequence?: string;
   effects: ChoiceEffect;
   requires?: Partial<ChoiceEffect>;
-  /** Flag key to set when this choice is made (e.g. "entrou_casa", "caminho_facil") */
   flag?: string;
-  /** Only show this choice if the player HAS this flag */
   requiresFlag?: string;
-  /** Only show this choice if the player does NOT have this flag */
   excludesFlag?: string;
+  /** Delayed consequences: bonus/penalty based on current attributes */
+  conditionalEffects?: ConditionalEffect[];
 }
 
 export interface StoryChapter {
@@ -720,12 +731,18 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Enfrentar",
         nextChapterId: "fase3-cena4",
         effects: { coragem: 2 },
-        flag: "enfrentou_presenca"
+        flag: "enfrentou_presenca",
+        conditionalEffects: [
+          { attr: "fe", threshold: 8, bonus: { coragem: 1 }, penalty: { coragem: -1 } }
+        ]
       },
       {
         text: "Evitar confronto",
         nextChapterId: "fase3-cena5",
-        effects: { discernimento: -1 }
+        effects: { discernimento: -1 },
+        conditionalEffects: [
+          { attr: "coragem", threshold: 6, bonus: { fe: 1 }, penalty: { fe: -1 } }
+        ]
       }
     ]
   },
@@ -738,11 +755,21 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Você decide enfrentar. A resistência é forte, mas você não recua."
     ],
+    adaptiveNarrative: [
+      { minAttr: "perseveranca", minValue: 8, text: "Sua perseverança acumulada sustenta cada passo. A resistência parece menor." },
+      { minAttr: "coragem", minValue: 3, text: "" }
+    ],
+    noFlagNarrative: [
+      { flag: "escolheu_caminho_estreito", text: "Sem a experiência do caminho difícil, a resistência parece esmagadora." }
+    ],
     choices: [
       {
         text: "Persistir",
         nextChapterId: "fase3-cena6",
-        effects: { perseveranca: 2 }
+        effects: { perseveranca: 2 },
+        conditionalEffects: [
+          { attr: "perseveranca", threshold: 8, bonus: { perseveranca: 2, fe: 1 }, penalty: { perseveranca: -1 } }
+        ]
       },
       {
         text: "Recuar",
@@ -782,16 +809,25 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Mesmo sob pressão, você se mantém firme. A força vem de algo além de você."
     ],
+    adaptiveNarrative: [
+      { minAttr: "fe", minValue: 8, text: "Sua fé acumulada brilha neste momento. A força parece mais acessível." }
+    ],
     choices: [
       {
         text: "Confiar",
         nextChapterId: "fase3-cena8",
-        effects: { fe: 2 }
+        effects: { fe: 2 },
+        conditionalEffects: [
+          { attr: "fe", threshold: 10, bonus: { fe: 2, perseveranca: 1 }, penalty: { fe: -1 } }
+        ]
       },
       {
         text: "Duvidar",
         nextChapterId: "fase3-cena7",
-        effects: { fe: -1 }
+        effects: { fe: -1 },
+        conditionalEffects: [
+          { attr: "fe", threshold: 5, bonus: {}, penalty: { coragem: -1 } }
+        ]
       }
     ]
   },
@@ -853,12 +889,18 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Buscar força",
         nextChapterId: "fase3-cena6",
-        effects: { fe: 1 }
+        effects: { fe: 1 },
+        conditionalEffects: [
+          { attr: "perseveranca", threshold: 7, bonus: { coragem: 2 }, penalty: {} }
+        ]
       },
       {
         text: "Permanecer parado",
         nextChapterId: "fase3-cena9",
-        effects: { coragem: -1 }
+        effects: { coragem: -1 },
+        conditionalEffects: [
+          { attr: "fe", threshold: 4, bonus: {}, penalty: { fe: -1 } }
+        ]
       }
     ]
   },

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
-import { getChapter, storyChapters, ChoiceEffect } from '@/data/story';
+import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect } from '@/data/story';
 import { sceneImages } from '@/data/sceneImages';
 import { MapPin, Home, ScrollText, Lock } from 'lucide-react';
 
@@ -46,7 +46,7 @@ const ScenePage = () => {
     }
   }, [narrativeIndex, chapter, fullNarrative.length]);
 
-  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string) => {
+  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[]) => {
     if (consequence) {
       navigate('/resultado', {
         state: {
@@ -57,10 +57,11 @@ const ScenePage = () => {
           currentChapterId: chapter?.id,
           attributeChanges: effects,
           flag,
+          conditionalEffects,
         }
       });
     } else {
-      makeChoice(chapter!.id, nextChapterId, choiceText, effects, flag);
+      makeChoice(chapter!.id, nextChapterId, choiceText, effects, flag, conditionalEffects);
     }
   };
 
@@ -168,7 +169,7 @@ const ScenePage = () => {
                   {availableChoices.map((choice, i) => (
                     <button
                       key={i}
-                      onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag)}
+                      onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects)}
                       className="w-full text-left p-4 rounded-lg bg-card border border-border hover:border-primary/50 hover:glow-gold transition-all duration-300 group"
                     >
                       <p className="text-foreground font-body text-sm group-hover:text-gold transition-colors">{choice.text}</p>
