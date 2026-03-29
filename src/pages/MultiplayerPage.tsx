@@ -36,6 +36,26 @@ const MultiplayerPage = () => {
     }
   }, [searchParams, user]);
 
+  // Turn announcement with sound
+  useEffect(() => {
+    if (!room || room.status !== 'playing') return;
+    const turnId = room.current_turn_player_id;
+    if (turnId && turnId !== prevTurnRef.current) {
+      prevTurnRef.current = turnId;
+      const turnPlayer = players.find(p => p.user_id === turnId);
+      if (turnPlayer) {
+        playTurnStart();
+        if (turnId === user?.id) {
+          playGameSfx('suspense');
+          setTurnAnnounce('Sua vez!');
+        } else {
+          setTurnAnnounce(`Vez de ${turnPlayer.display_name}`);
+        }
+        setTimeout(() => setTurnAnnounce(null), 2500);
+      }
+    }
+  }, [room?.current_turn_player_id, players, user?.id]);
+
   const currentView = room
     ? room.status === 'playing' || room.status === 'finished' ? 'game' : 'lobby'
     : view === 'menu' ? 'menu' : 'menu';
