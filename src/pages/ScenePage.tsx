@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect, ToneNarrative } from '@/data/story';
 import { sceneImages } from '@/data/sceneImages';
+import { getEmotionalState, getEmotionalClasses } from '@/lib/emotionalIntensity';
 import { MapPin, Home, ScrollText, Lock } from 'lucide-react';
 
 const ScenePage = () => {
@@ -15,7 +16,14 @@ const ScenePage = () => {
   const chapter = getChapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
-  // Build full narrative with adaptive + flag-based + tone-based segments
+  // Emotional intensity system
+  const emotional = useMemo(() => 
+    chapter ? getEmotionalState(progress.attributes, chapter.id) : null
+  , [progress.attributes, chapter?.id]);
+
+  const emotionalClass = emotional ? getEmotionalClasses(emotional.tone) : '';
+
+  // Build full narrative with adaptive + flag-based + tone-based + emotional segments
   const fullNarrative = chapter ? [
     ...chapter.narrative,
     ...(chapter.adaptiveNarrative || [])
@@ -33,6 +41,8 @@ const ScenePage = () => {
       if (val <= tone.lowThreshold) return tone.lowText;
       return null;
     }).filter((t): t is string => t !== null),
+    // Auto-injected emotional atmosphere line
+    ...(emotional?.atmosphereLine ? [emotional.atmosphereLine] : []),
   ] : [];
 
   useEffect(() => {

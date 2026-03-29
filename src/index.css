@@ -116,3 +116,36 @@
   0%, 100% { box-shadow: 0 0 15px hsl(var(--primary) / 0.2); }
   50% { box-shadow: 0 0 30px hsl(var(--primary) / 0.4); }
 }
+
+/* Emotional intensity visual overlays */
+.emotional-hopeful {
+  --emotional-color: 40 70% 60%;
+}
+
+.emotional-hopeful .narrative-text {
+  color: hsl(var(--foreground) / 0.95);
+}
+
+.emotional-hopeful .scene-overlay {
+  background: linear-gradient(to top, hsl(var(--background)), hsl(var(--background) / 0.3), hsl(40 50% 50% / 0.05));
+}
+
+.emotional-heavy {
+  --emotional-color: 220 20% 30%;
+}
+
+.emotional-heavy .narrative-text {
+  color: hsl(var(--foreground) / 0.75);
+}
+
+.emotional-heavy .scene-overlay {
+  background: linear-gradient(to top, hsl(var(--background)), hsl(var(--background) / 0.6), hsl(220 30% 10% / 0.3));
+}
+
+.emotional-heavy .scene-image {
+  filter: brightness(0.7) saturate(0.6);
+}
+
+.emotional-hopeful .scene-image {
+  filter: brightness(1.1) saturate(1.15);
+}
