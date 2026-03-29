@@ -184,25 +184,25 @@ const Index = () => {
 
         {/* Nav grid */}
         <div className="grid grid-cols-5 gap-2">
-          <button onClick={handleBackToSplash} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 aspect-square">
-            <Home className="w-5 h-5 text-primary" />
-            <span className="text-[10px] text-primary font-display leading-tight">Início</span>
+          <button onClick={handleBackToSplash} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 h-16 overflow-hidden">
+            <Home className="w-5 h-5 text-primary flex-shrink-0" />
+            <span className="text-[10px] text-primary font-display leading-tight truncate w-full text-center">Início</span>
           </button>
-          <button onClick={() => navigate('/jornada')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 aspect-square">
-            <Map className="w-5 h-5 text-muted-foreground" />
-            <span className="text-[10px] text-muted-foreground font-display leading-tight">Mapa</span>
+          <button onClick={() => navigate('/jornada')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 h-16 overflow-hidden">
+            <Map className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+            <span className="text-[10px] text-muted-foreground font-display leading-tight truncate w-full text-center">Mapa</span>
           </button>
-          <button onClick={() => navigate('/multiplayer')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 aspect-square !border-primary/30">
-            <Swords className="w-5 h-5 text-primary" />
-            <span className="text-[10px] text-primary font-display leading-tight">Múltiplo</span>
+          <button onClick={() => navigate('/multiplayer')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 h-16 overflow-hidden !border-primary/30">
+            <Swords className="w-5 h-5 text-primary flex-shrink-0" />
+            <span className="text-[10px] text-primary font-display leading-tight truncate w-full text-center">Múltiplo</span>
           </button>
-          <button onClick={() => user ? navigate('/perfil') : navigate('/auth')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 aspect-square">
-            {user ? <User className="w-5 h-5 text-muted-foreground" /> : <LogIn className="w-5 h-5 text-muted-foreground" />}
-            <span className="text-[10px] text-muted-foreground font-display leading-tight">{user ? (profile?.display_name || 'Perfil') : 'Entrar'}</span>
+          <button onClick={() => user ? navigate('/perfil') : navigate('/auth')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 h-16 overflow-hidden">
+            {user ? <User className="w-5 h-5 text-muted-foreground flex-shrink-0" /> : <LogIn className="w-5 h-5 text-muted-foreground flex-shrink-0" />}
+            <span className="text-[10px] text-muted-foreground font-display leading-tight truncate w-full text-center">{user ? (profile?.display_name || 'Perfil') : 'Entrar'}</span>
           </button>
-          <button onClick={() => navigate('/comunidade')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 aspect-square">
-            <Users className="w-5 h-5 text-muted-foreground" />
-            <span className="text-[10px] text-muted-foreground font-display leading-tight">Social</span>
+          <button onClick={() => navigate('/comunidade')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 h-16 overflow-hidden">
+            <Users className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+            <span className="text-[10px] text-muted-foreground font-display leading-tight truncate w-full text-center">Social</span>
           </button>
         </div>
 
