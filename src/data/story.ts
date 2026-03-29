@@ -73,6 +73,8 @@ export const chapterOrder = [
   "fase2-cena1", "fase2-cena2", "fase2-cena3", "fase2-cena4", "fase2-cena5",
   "fase2-cena6", "fase2-cena7", "fase2-cena8", "fase2-cena9", "fase2-cena10",
   "fase2-cena11",
+  "fase3-cena1", "fase3-cena2", "fase3-cena3", "fase3-cena4", "fase3-cena5",
+  "fase3-cena6", "fase3-cena7", "fase3-cena8", "fase3-cena9", "fase3-cena10",
 ];
 
 export const storyChapters: Record<string, StoryChapter> = {
@@ -645,6 +647,232 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     narrative: [
       "Você sai da casa com uma nova compreensão. Sua jornada continua."
+    ],
+    choices: [
+      {
+        text: "Seguir em frente",
+        nextChapterId: "fase3-cena1",
+        effects: { fe: 1 }
+      }
+    ]
+  },
+
+  // === FASE 3: VALE DA HUMILHAÇÃO ===
+
+  "fase3-cena1": {
+    id: "fase3-cena1",
+    title: "O Vale Escuro",
+    location: "Vale da Humilhação",
+    characters: ["cristao"],
+    narrative: [
+      "O caminho desce para um vale escuro. O ambiente muda. Tudo parece mais pesado."
+    ],
+    flagNarrative: [
+      { flag: "entrou_casa_interprete", text: "As lições da casa ecoam na sua mente. Você sabe que precisará delas aqui." }
+    ],
+    choices: [
+      {
+        text: "Continuar mesmo assim",
+        nextChapterId: "fase3-cena2",
+        effects: { coragem: 1 },
+        flag: "enfrentou_vale"
+      },
+      {
+        text: "Hesitar",
+        nextChapterId: "fase3-cena2",
+        effects: { fe: -1 }
+      }
+    ]
+  },
+
+  "fase3-cena2": {
+    id: "fase3-cena2",
+    title: "O Silêncio Perturbador",
+    location: "Vale da Humilhação",
+    characters: ["cristao"],
+    narrative: [
+      "O silêncio do vale é perturbador. Você sente que está sendo observado."
+    ],
+    choices: [
+      {
+        text: "Permanecer firme",
+        nextChapterId: "fase3-cena3",
+        effects: { fe: 1 }
+      },
+      {
+        text: "Olhar para trás",
+        nextChapterId: "fase3-cena3",
+        effects: { coragem: -1 }
+      }
+    ]
+  },
+
+  "fase3-cena3": {
+    id: "fase3-cena3",
+    title: "A Presença",
+    location: "Vale da Humilhação",
+    characters: ["cristao"],
+    narrative: [
+      "Uma presença surge à sua frente. Algo tenta te impedir de continuar."
+    ],
+    choices: [
+      {
+        text: "Enfrentar",
+        nextChapterId: "fase3-cena4",
+        effects: { coragem: 2 },
+        flag: "enfrentou_presenca"
+      },
+      {
+        text: "Evitar confronto",
+        nextChapterId: "fase3-cena5",
+        effects: { discernimento: -1 }
+      }
+    ]
+  },
+
+  "fase3-cena4": {
+    id: "fase3-cena4",
+    title: "A Resistência",
+    location: "Vale da Humilhação",
+    characters: ["cristao"],
+    narrative: [
+      "Você decide enfrentar. A resistência é forte, mas você não recua."
+    ],
+    choices: [
+      {
+        text: "Persistir",
+        nextChapterId: "fase3-cena6",
+        effects: { perseveranca: 2 }
+      },
+      {
+        text: "Recuar",
+        nextChapterId: "fase3-cena5",
+        effects: { coragem: -2 }
+      }
+    ]
+  },
+
+  "fase3-cena5": {
+    id: "fase3-cena5",
+    title: "A Fraqueza",
+    location: "Vale da Humilhação",
+    characters: ["cristao"],
+    narrative: [
+      "Ao evitar o confronto, o medo aumenta. A sensação de fraqueza cresce."
+    ],
+    choices: [
+      {
+        text: "Tentar recuperar a coragem",
+        nextChapterId: "fase3-cena4",
+        effects: { fe: 1 }
+      },
+      {
+        text: "Continuar evitando",
+        nextChapterId: "fase3-cena7",
+        effects: { coragem: -1 }
+      }
+    ]
+  },
+
+  "fase3-cena6": {
+    id: "fase3-cena6",
+    title: "Força Além de Você",
+    location: "Vale da Humilhação",
+    characters: ["cristao"],
+    narrative: [
+      "Mesmo sob pressão, você se mantém firme. A força vem de algo além de você."
+    ],
+    choices: [
+      {
+        text: "Confiar",
+        nextChapterId: "fase3-cena8",
+        effects: { fe: 2 }
+      },
+      {
+        text: "Duvidar",
+        nextChapterId: "fase3-cena7",
+        effects: { fe: -1 }
+      }
+    ]
+  },
+
+  "fase3-cena7": {
+    id: "fase3-cena7",
+    title: "A Dúvida",
+    location: "Vale da Humilhação",
+    characters: ["cristao"],
+    narrative: [
+      "A dúvida começa a dominar. O caminho parece incerto."
+    ],
+    flagNarrative: [
+      { flag: "escolheu_caminho_estreito", text: "Você lembra que já escolheu o caminho difícil antes. Conseguiu. Pode conseguir de novo." }
+    ],
+    choices: [
+      {
+        text: "Reafirmar decisão",
+        nextChapterId: "fase3-cena6",
+        effects: { discernimento: 1 }
+      },
+      {
+        text: "Se entregar ao medo",
+        nextChapterId: "fase3-cena9",
+        effects: { fe: -2 }
+      }
+    ]
+  },
+
+  "fase3-cena8": {
+    id: "fase3-cena8",
+    title: "A Presença Recua",
+    location: "Vale da Humilhação",
+    characters: ["cristao"],
+    narrative: [
+      "A presença que te ameaçava recua. Você percebe que resistir fez diferença."
+    ],
+    choices: [
+      {
+        text: "Seguir adiante",
+        nextChapterId: "fase3-cena10",
+        effects: { perseveranca: 1 }
+      }
+    ]
+  },
+
+  "fase3-cena9": {
+    id: "fase3-cena9",
+    title: "Paralisado",
+    location: "Vale da Humilhação",
+    characters: ["cristao"],
+    narrative: [
+      "O medo paralisa você. Avançar parece impossível."
+    ],
+    flagNarrative: [
+      { flag: "pediu_ajuda_pantano", text: "Você se lembra: no pântano, pedir ajuda salvou você. Talvez seja hora de confiar novamente." }
+    ],
+    choices: [
+      {
+        text: "Buscar força",
+        nextChapterId: "fase3-cena6",
+        effects: { fe: 1 }
+      },
+      {
+        text: "Permanecer parado",
+        nextChapterId: "fase3-cena9",
+        effects: { coragem: -1 }
+      }
+    ]
+  },
+
+  "fase3-cena10": {
+    id: "fase3-cena10",
+    title: "Transformado",
+    location: "Saída do Vale",
+    characters: ["cristao"],
+    narrative: [
+      "Você sai do vale mais forte do que entrou. Algo mudou dentro de você."
+    ],
+    flagNarrative: [
+      { flag: "enfrentou_presenca", text: "Você enfrentou o que tentou te parar. Essa coragem agora faz parte de quem você é." }
     ],
     choices: [],
     isEnding: true,
