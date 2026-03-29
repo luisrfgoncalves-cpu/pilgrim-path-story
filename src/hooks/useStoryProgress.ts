@@ -173,7 +173,11 @@ export const useStoryProgress = () => {
   }, []);
 
   const startJourney = useCallback(() => {
-    setProgress(prev => ({ ...prev, started: true }));
+    setProgress(prev => {
+      const next = { ...prev, started: true };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
   }, []);
 
   const completePlaythrough = useCallback((result: 'complete' | 'difficult' | 'incomplete') => {
@@ -204,7 +208,7 @@ export const useStoryProgress = () => {
   const resetProgress = useCallback((campaign: CampaignId = 'part1') => {
     const hist = getPlayHistory();
     const firstChapter = campaign === 'part2' ? PART2_FIRST_CHAPTER_ID : FIRST_CHAPTER_ID;
-    setProgress({
+    const next: StoryProgress = {
       currentChapterId: firstChapter,
       visitedChapters: [firstChapter],
       choicesMade: 0,
@@ -215,7 +219,9 @@ export const useStoryProgress = () => {
       started: false,
       playthrough: hist.totalPlaythroughs + 1,
       campaign,
-    });
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    setProgress(next);
   }, []);
 
   /** Load progress from Supabase cloud save */
