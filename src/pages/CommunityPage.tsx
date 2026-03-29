@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
+import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { ArrowLeft, Send, Users, MapPin } from 'lucide-react';
+import { ArrowLeft, Heart, HandHeart, Sparkles, MapPin, Users, MessageCircle, Activity, ChevronRight } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
+
+// ─── Types ───
 
 interface PilgrimSummary {
   id: string;
@@ -14,6 +16,17 @@ interface PilgrimSummary {
   current_phase: number;
   total_choices: number;
   bio: string;
+  updated_at: string;
+}
+
+interface SupportRecord {
+  id: string;
+  from_user_id: string;
+  to_user_id: string;
+  support_type: string;
+  message: string | null;
+  created_at: string;
+  profiles?: { display_name: string } | null;
 }
 
 interface PilgrimMessage {
@@ -23,180 +36,503 @@ interface PilgrimMessage {
   profiles: { display_name: string; avatar_style: string } | null;
 }
 
+// ─── Constants ───
+
 const PHASE_NAMES = [
   'Início', 'Porta Estreita', 'Casa do Intérprete', 'Vale da Humilhação',
   'Feira da Vaidade', 'Castelo da Dúvida', 'Cidade Celestial'
 ];
 
+const PHASE_EMOJI = ['🏠', '🚪', '📖', '⚔️', '🎪', '🏰', '✨'];
+
+const EMOTIONAL_LABELS: Record<number, { label: string; color: string }> = {
+  0: { label: 'Iniciando', color: 'text-muted-foreground' },
+  1: { label: 'Caminhando', color: 'text-foreground' },
+  2: { label: 'Aprendendo', color: 'text-primary' },
+  3: { label: 'Em batalha', color: 'text-destructive' },
+  4: { label: 'Sendo testado', color: 'text-yellow-500' },
+  5: { label: 'Na escuridão', color: 'text-muted-foreground' },
+  6: { label: 'Vitorioso', color: 'text-primary' },
+};
+
+const SUPPORT_TYPES = [
+  { key: 'prayer', label: 'Oração', icon: '🙏', emoji: '🙏', effect: { fe: 1 } },
+  { key: 'encouragement', label: 'Encorajamento', icon: '💪', emoji: '💪', effect: { coragem: 1 } },
+  { key: 'blessing', label: 'Bênção', icon: '✨', emoji: '✨', effect: { perseveranca: 1 } },
+];
+
+const QUICK_MESSAGES = [
+  'Força, peregrino! O caminho vale a pena.',
+  'Não desista. A luz está mais perto do que parece.',
+  'Sua jornada inspira outros a continuar.',
+  'O vale da sombra tem fim. Continue.',
+  'Que sua fé seja maior que seus medos.',
+  'Cada passo conta, mesmo os mais difíceis.',
+];
+
+// ─── Helpers ───
+
+function timeAgo(dateStr: string): string {
+  const mins = Math.floor((Date.now() - new Date(dateStr).getTime()) / 60000);
+  if (mins < 1) return 'agora';
+  if (mins < 60) return `${mins}min`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h`;
+  return `${Math.floor(hrs / 24)}d`;
+}
+
+function isRecentlyActive(updatedAt: string): boolean {
+  return Date.now() - new Date(updatedAt).getTime() < 30 * 60 * 1000; // 30min
+}
+
+// ─── Component ───
+
 const CommunityPage: React.FC = () => {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
+  const { progress } = useStoryProgress();
   const [pilgrims, setPilgrims] = useState<PilgrimSummary[]>([]);
   const [messages, setMessages] = useState<PilgrimMessage[]>([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [tab, setTab] = useState<'pilgrims' | 'messages'>('pilgrims');
-  const [sending, setSending] = useState(false);
+  const [supports, setSupports] = useState<SupportRecord[]>([]);
+  const [myReceivedSupport, setMyReceivedSupport] = useState<SupportRecord[]>([]);
+  const [tab, setTab] = useState<'pilgrims' | 'feed' | 'messages'>('pilgrims');
+  const [sending, setSending] = useState<string | null>(null);
+  const [selectedPilgrim, setSelectedPilgrim] = useState<PilgrimSummary | null>(null);
+
+  const loadAll = useCallback(async () => {
+    const [pilgrimsRes, messagesRes, supportsRes] = await Promise.all([
+      supabase
+        .from('profiles')
+        .select('id, display_name, avatar_style, current_phase, total_choices, bio, updated_at')
+        .order('updated_at', { ascending: false })
+        .limit(30),
+      supabase
+        .from('pilgrim_messages')
+        .select('id, content, created_at, profiles(display_name, avatar_style)')
+        .order('created_at', { ascending: false })
+        .limit(30),
+      supabase
+        .from('pilgrim_support')
+        .select('id, from_user_id, to_user_id, support_type, message, created_at')
+        .order('created_at', { ascending: false })
+        .limit(30),
+    ]);
+
+    if (pilgrimsRes.data) setPilgrims(pilgrimsRes.data);
+    if (messagesRes.data) setMessages(messagesRes.data as unknown as PilgrimMessage[]);
+    if (supportsRes.data) setSupports(supportsRes.data);
+
+    // Load support received by current user
+    if (user) {
+      const { data } = await supabase
+        .from('pilgrim_support')
+        .select('id, from_user_id, to_user_id, support_type, message, created_at')
+        .eq('to_user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+      if (data) setMyReceivedSupport(data);
+    }
+  }, [user]);
 
   useEffect(() => {
-    loadPilgrims();
-    loadMessages();
+    loadAll();
 
+    // Realtime subscriptions
     const channel = supabase
-      .channel('pilgrim-messages')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pilgrim_messages' }, () => {
-        loadMessages();
-      })
+      .channel('community-live')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pilgrim_messages' }, () => loadAll())
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pilgrim_support' }, () => loadAll())
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles' }, () => loadAll())
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, []);
+  }, [loadAll]);
 
-  const loadPilgrims = async () => {
-    const { data } = await supabase
-      .from('profiles')
-      .select('id, display_name, avatar_style, current_phase, total_choices, bio')
-      .order('total_choices', { ascending: false })
-      .limit(20);
-    if (data) setPilgrims(data);
-  };
+  // ─── Send Support ───
 
-  const loadMessages = async () => {
-    const { data } = await supabase
-      .from('pilgrim_messages')
-      .select('id, content, created_at, profiles(display_name, avatar_style)')
-      .order('created_at', { ascending: false })
-      .limit(50);
-    if (data) setMessages(data as unknown as PilgrimMessage[]);
-  };
-
-  const sendMessage = async () => {
-    if (!user || !newMessage.trim()) return;
-    if (newMessage.length > 140) {
-      toast.error('Máximo 140 caracteres');
+  const sendSupport = async (toUserId: string, supportType: string) => {
+    if (!user) {
+      toast.error('Faça login para enviar apoio');
       return;
     }
-    setSending(true);
-    const { error } = await supabase.from('pilgrim_messages').insert({
-      user_id: user.id,
-      content: newMessage.trim(),
+    if (toUserId === user.id) return;
+
+    setSending(`${toUserId}-${supportType}`);
+    const { error } = await supabase.from('pilgrim_support').insert({
+      from_user_id: user.id,
+      to_user_id: toUserId,
+      support_type: supportType,
     });
     if (error) {
-      toast.error('Erro ao enviar mensagem');
+      toast.error('Erro ao enviar apoio');
     } else {
-      setNewMessage('');
+      const type = SUPPORT_TYPES.find(s => s.key === supportType);
+      toast.success(`${type?.emoji} ${type?.label} enviado!`);
     }
-    setSending(false);
+    setSending(null);
   };
 
-  const timeAgo = (dateStr: string) => {
-    const mins = Math.floor((Date.now() - new Date(dateStr).getTime()) / 60000);
-    if (mins < 1) return 'agora';
-    if (mins < 60) return `${mins}min`;
-    const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `${hrs}h`;
-    return `${Math.floor(hrs / 24)}d`;
+  // ─── Send Quick Message ───
+
+  const sendQuickMessage = async (content: string) => {
+    if (!user) {
+      toast.error('Faça login para enviar mensagens');
+      return;
+    }
+    const { error } = await supabase.from('pilgrim_messages').insert({
+      user_id: user.id,
+      content,
+    });
+    if (error) {
+      toast.error('Erro ao enviar');
+    } else {
+      toast.success('Mensagem compartilhada!');
+    }
   };
+
+  // ─── Derived data ───
+
+  const activePilgrims = pilgrims.filter(p => isRecentlyActive(p.updated_at));
+  const otherPilgrims = pilgrims.filter(p => !isRecentlyActive(p.updated_at));
+
+  // Build activity feed: merge messages + supports, sorted by time
+  const feedItems = [
+    ...messages.map(m => ({
+      type: 'message' as const,
+      id: m.id,
+      time: m.created_at,
+      name: m.profiles?.display_name || 'Peregrino',
+      content: m.content,
+    })),
+    ...supports.map(s => {
+      const fromPilgrim = pilgrims.find(p => p.id === s.from_user_id);
+      const toPilgrim = pilgrims.find(p => p.id === s.to_user_id);
+      const type = SUPPORT_TYPES.find(st => st.key === s.support_type);
+      return {
+        type: 'support' as const,
+        id: s.id,
+        time: s.created_at,
+        name: fromPilgrim?.display_name || 'Peregrino',
+        content: `enviou ${type?.emoji} ${type?.label} para ${toPilgrim?.display_name || 'um peregrino'}`,
+      };
+    }),
+  ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 40);
 
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="max-w-lg mx-auto">
-        <NavLink to="/" className="text-sm text-primary hover:underline flex items-center gap-1 mb-6">
-          <ArrowLeft className="w-4 h-4" /> Voltar
-        </NavLink>
-
-        <h1 className="text-2xl font-bold text-foreground mb-4">Comunidade de Peregrinos</h1>
-
-        <div className="flex gap-2 mb-6">
-          <button
-            onClick={() => setTab('pilgrims')}
-            className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
-              tab === 'pilgrims'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary text-secondary-foreground'
-            }`}
-          >
-            <Users className="w-4 h-4 inline mr-1" /> Peregrinos
-          </button>
-          <button
-            onClick={() => setTab('messages')}
-            className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
-              tab === 'messages'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary text-secondary-foreground'
-            }`}
-          >
-            <Send className="w-4 h-4 inline mr-1" /> Mensagens
-          </button>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-lg mx-auto px-4 pt-4 pb-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-5">
+          <NavLink to="/" className="text-sm text-primary hover:underline flex items-center gap-1">
+            <ArrowLeft className="w-4 h-4" /> Voltar
+          </NavLink>
+          {activePilgrims.length > 0 && (
+            <div className="flex items-center gap-1.5 text-[10px] text-primary">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              {activePilgrims.length} {activePilgrims.length === 1 ? 'ativo' : 'ativos'}
+            </div>
+          )}
         </div>
 
+        <h1 className="font-display text-xl text-foreground mb-1">Comunidade de Peregrinos</h1>
+        <p className="text-xs text-muted-foreground mb-5">Caminhe junto. Apoie outros. Seja apoiado.</p>
+
+        {/* Received support banner */}
+        {myReceivedSupport.length > 0 && (
+          <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 mb-5 animate-fade-in">
+            <p className="text-[10px] uppercase tracking-widest text-primary font-medium mb-1.5">Apoio recebido</p>
+            <div className="flex flex-wrap gap-1.5">
+              {myReceivedSupport.slice(0, 5).map(s => {
+                const type = SUPPORT_TYPES.find(st => st.key === s.support_type);
+                return (
+                  <span key={s.id} className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-card border border-primary/20 text-[10px] text-foreground/80">
+                    {type?.emoji} {timeAgo(s.created_at)}
+                  </span>
+                );
+              })}
+            </div>
+            <p className="text-[10px] text-muted-foreground mt-1.5 italic">
+              O apoio de outros peregrinos fortalece seus atributos.
+            </p>
+          </div>
+        )}
+
+        {/* Tabs */}
+        <div className="flex gap-1 mb-5 bg-card rounded-lg p-1 border border-border">
+          {([
+            { key: 'pilgrims', label: 'Peregrinos', icon: Users },
+            { key: 'feed', label: 'Atividade', icon: Activity },
+            { key: 'messages', label: 'Mensagens', icon: MessageCircle },
+          ] as const).map(t => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${
+                tab === t.key
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <t.icon className="w-3.5 h-3.5" />
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* ═══ TAB: Peregrinos ═══ */}
         {tab === 'pilgrims' && (
-          <div className="space-y-3">
-            {pilgrims.length === 0 && (
-              <p className="text-muted-foreground text-center py-8">Nenhum peregrino ainda. Seja o primeiro!</p>
-            )}
-            {pilgrims.map((p) => (
-              <div key={p.id} className="bg-card rounded-lg p-4 border border-border">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="font-semibold text-foreground">{p.display_name}</h3>
-                    <p className="text-xs text-muted-foreground capitalize">{p.avatar_style}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="flex items-center gap-1 text-xs text-primary">
-                      <MapPin className="w-3 h-3" />
-                      {PHASE_NAMES[p.current_phase] || 'Início'}
-                    </div>
-                    <p className="text-xs text-muted-foreground">{p.total_choices} escolhas</p>
-                  </div>
+          <div className="space-y-4">
+            {/* Active pilgrims */}
+            {activePilgrims.length > 0 && (
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium mb-2 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500" /> Em jornada agora
+                </p>
+                <div className="space-y-2">
+                  {activePilgrims.map(p => (
+                    <PilgrimCard
+                      key={p.id}
+                      pilgrim={p}
+                      isActive
+                      isMe={p.id === user?.id}
+                      onSelect={() => setSelectedPilgrim(p)}
+                    />
+                  ))}
                 </div>
-                {p.bio && <p className="text-sm text-muted-foreground mt-2">{p.bio}</p>}
+              </div>
+            )}
+
+            {/* Other pilgrims */}
+            {otherPilgrims.length > 0 && (
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium mb-2">
+                  Outros peregrinos
+                </p>
+                <div className="space-y-2">
+                  {otherPilgrims.map(p => (
+                    <PilgrimCard
+                      key={p.id}
+                      pilgrim={p}
+                      isActive={false}
+                      isMe={p.id === user?.id}
+                      onSelect={() => setSelectedPilgrim(p)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {pilgrims.length === 0 && (
+              <div className="text-center py-12">
+                <Users className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+                <p className="text-muted-foreground text-sm">Nenhum peregrino ainda.</p>
+                <p className="text-muted-foreground text-xs">Crie uma conta para aparecer aqui.</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ═══ TAB: Feed de Atividade ═══ */}
+        {tab === 'feed' && (
+          <div className="space-y-2">
+            {feedItems.length === 0 && (
+              <div className="text-center py-12">
+                <Activity className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+                <p className="text-muted-foreground text-sm">Nenhuma atividade ainda.</p>
+              </div>
+            )}
+            {feedItems.map(item => (
+              <div key={item.id} className="flex items-start gap-3 px-3 py-2.5 rounded-lg bg-card border border-border">
+                <span className="text-sm mt-0.5">
+                  {item.type === 'message' ? '💬' : '🤝'}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-foreground">
+                    <span className="font-medium">{item.name}</span>{' '}
+                    {item.type === 'message' ? `disse: "${item.content}"` : item.content}
+                  </p>
+                </div>
+                <span className="text-[10px] text-muted-foreground flex-shrink-0">{timeAgo(item.time)}</span>
               </div>
             ))}
           </div>
         )}
 
+        {/* ═══ TAB: Mensagens ═══ */}
         {tab === 'messages' && (
           <div>
+            {/* Quick messages */}
             {user && (
-              <div className="flex gap-2 mb-4">
-                <Input
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Compartilhe uma palavra com outros peregrinos..."
-                  maxLength={140}
-                  className="bg-card border-border"
-                  onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                />
-                <Button onClick={sendMessage} size="icon" disabled={sending || !newMessage.trim()}>
-                  <Send className="w-4 h-4" />
-                </Button>
+              <div className="mb-5">
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium mb-2">
+                  Compartilhe uma palavra
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {QUICK_MESSAGES.map((msg, i) => (
+                    <button
+                      key={i}
+                      onClick={() => sendQuickMessage(msg)}
+                      className="text-left px-3 py-2.5 rounded-lg bg-card border border-border hover:border-primary/40 transition-colors text-xs text-foreground/80"
+                    >
+                      "{msg}"
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
             {!user && (
-              <p className="text-sm text-muted-foreground text-center mb-4">
-                Faça login para enviar mensagens
+              <p className="text-sm text-muted-foreground text-center mb-4 py-4">
+                Faça login para compartilhar mensagens
               </p>
             )}
 
-            <div className="space-y-3">
+            {/* Messages feed */}
+            <div className="space-y-2">
               {messages.length === 0 && (
-                <p className="text-muted-foreground text-center py-8">Nenhuma mensagem ainda.</p>
+                <p className="text-muted-foreground text-center py-8 text-sm">Nenhuma mensagem ainda.</p>
               )}
-              {messages.map((m) => (
+              {messages.map(m => (
                 <div key={m.id} className="bg-card rounded-lg p-3 border border-border">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-foreground">
+                    <span className="text-xs font-medium text-foreground">
                       {m.profiles?.display_name || 'Peregrino'}
                     </span>
-                    <span className="text-xs text-muted-foreground">{timeAgo(m.created_at)}</span>
+                    <span className="text-[10px] text-muted-foreground">{timeAgo(m.created_at)}</span>
                   </div>
-                  <p className="text-sm text-foreground/90">{m.content}</p>
+                  <p className="text-sm text-foreground/90 italic">"{m.content}"</p>
                 </div>
               ))}
             </div>
           </div>
         )}
+
+        {/* ═══ Support Modal ═══ */}
+        {selectedPilgrim && selectedPilgrim.id !== user?.id && (
+          <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50" onClick={() => setSelectedPilgrim(null)}>
+            <div
+              className="w-full max-w-lg bg-card rounded-t-2xl border-t border-border p-5 pb-8 animate-fade-in"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="w-10 h-1 bg-border rounded-full mx-auto mb-4" />
+              <div className="text-center mb-4">
+                <h3 className="font-display text-lg text-foreground">{selectedPilgrim.display_name}</h3>
+                <p className="text-xs text-muted-foreground flex items-center justify-center gap-1 mt-1">
+                  {PHASE_EMOJI[selectedPilgrim.current_phase] || '🏠'}{' '}
+                  {PHASE_NAMES[selectedPilgrim.current_phase] || 'Início'}
+                  <span className="text-muted-foreground/50 mx-1">·</span>
+                  {selectedPilgrim.total_choices} decisões
+                </p>
+                {selectedPilgrim.bio && (
+                  <p className="text-xs text-foreground/70 mt-2 italic">"{selectedPilgrim.bio}"</p>
+                )}
+              </div>
+
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium mb-3 text-center">
+                Enviar apoio simbólico
+              </p>
+
+              <div className="grid grid-cols-3 gap-3">
+                {SUPPORT_TYPES.map(s => (
+                  <button
+                    key={s.key}
+                    onClick={() => {
+                      sendSupport(selectedPilgrim.id, s.key);
+                      setSelectedPilgrim(null);
+                    }}
+                    disabled={sending !== null}
+                    className="flex flex-col items-center gap-2 py-4 rounded-xl bg-background border border-border hover:border-primary/40 hover:bg-primary/5 transition-all"
+                  >
+                    <span className="text-2xl">{s.emoji}</span>
+                    <span className="text-xs font-medium text-foreground">{s.label}</span>
+                    <span className="text-[9px] text-muted-foreground">
+                      +1 {Object.keys(s.effect)[0]}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={() => setSelectedPilgrim(null)}
+                className="w-full mt-4 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
+  );
+};
+
+// ─── Pilgrim Card Component ───
+
+const PilgrimCard: React.FC<{
+  pilgrim: PilgrimSummary;
+  isActive: boolean;
+  isMe: boolean;
+  onSelect: () => void;
+}> = ({ pilgrim, isActive, isMe, onSelect }) => {
+  const emotional = EMOTIONAL_LABELS[pilgrim.current_phase] || EMOTIONAL_LABELS[0];
+
+  return (
+    <button
+      onClick={onSelect}
+      disabled={isMe}
+      className={`w-full text-left rounded-lg p-3 border transition-all ${
+        isMe
+          ? 'bg-primary/5 border-primary/20'
+          : 'bg-card border-border hover:border-primary/30 hover:shadow-sm'
+      }`}
+    >
+      <div className="flex items-center gap-3">
+        {/* Avatar indicator */}
+        <div className="relative flex-shrink-0">
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
+            isActive ? 'bg-primary/15' : 'bg-secondary'
+          }`}>
+            {PHASE_EMOJI[pilgrim.current_phase] || '🏠'}
+          </div>
+          {isActive && (
+            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-500 border-2 border-card" />
+          )}
+        </div>
+
+        {/* Info */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm font-medium text-foreground truncate">{pilgrim.display_name}</span>
+            {isMe && <span className="text-[9px] text-primary font-medium">(você)</span>}
+          </div>
+          <div className="flex items-center gap-2 mt-0.5">
+            <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
+              <MapPin className="w-2.5 h-2.5" />
+              {PHASE_NAMES[pilgrim.current_phase] || 'Início'}
+            </span>
+            <span className={`text-[10px] ${emotional.color}`}>
+              {emotional.label}
+            </span>
+          </div>
+        </div>
+
+        {/* Actions hint */}
+        {!isMe && (
+          <div className="flex-shrink-0">
+            <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
+          </div>
+        )}
+      </div>
+
+      {/* Progress bar */}
+      <div className="mt-2 flex items-center gap-2">
+        <div className="flex-1 h-1 bg-secondary rounded-full overflow-hidden">
+          <div
+            className="h-full bg-primary/60 rounded-full transition-all"
+            style={{ width: `${Math.min(100, (pilgrim.current_phase / 6) * 100)}%` }}
+          />
+        </div>
+        <span className="text-[9px] text-muted-foreground flex-shrink-0">{pilgrim.total_choices} decisões</span>
+      </div>
+    </button>
   );
 };
 

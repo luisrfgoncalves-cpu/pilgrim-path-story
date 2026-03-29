@@ -19,7 +19,8 @@ import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
 import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
-import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass } from 'lucide-react';
+import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart } from 'lucide-react';
+import { useSupportBonus } from '@/hooks/useSupportBonus';
 
 const ScenePage = () => {
   const navigate = useNavigate();
@@ -37,6 +38,8 @@ const ScenePage = () => {
   const [surprise, setSurprise] = useState<Surprise | null>(null);
   const [surpriseShown, setSurpriseShown] = useState(false);
   const { triggerChoiceEffect } = useVisualEffects();
+  const { bonus: supportBonus, newSupportCount } = useSupportBonus();
+  const [supportToastShown, setSupportToastShown] = useState(false);
   const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
   // Recent decision effects for trend analysis
   const recentEffects = useMemo(() => {
@@ -135,6 +138,15 @@ const ScenePage = () => {
     }
   }, [chapter?.id]);
 
+  // Show support bonus toast
+  useEffect(() => {
+    if (newSupportCount > 0 && !supportToastShown) {
+      setSupportToastShown(true);
+      const timer = setTimeout(() => setSupportToastShown(false), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [newSupportCount, supportToastShown]);
+
   // Audio: set ambience when scene or emotional state changes
   useEffect(() => {
     if (chapter && emotional) {
@@ -156,9 +168,14 @@ const ScenePage = () => {
   const executeChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
     // Apply adaptive intensity based on replay history
     const intensityAdjusted = applyIntensityToEffects(effects, dynamicEvents.intensity);
-    // Roll the invisible dice — modifies effects based on attributes + luck
+    // Apply community support bonus to positive effects
+    const withSupport: ChoiceEffect = { ...intensityAdjusted };
+    if (supportBonus.fe > 0 && (withSupport.fe || 0) > 0) withSupport.fe = (withSupport.fe || 0) + 1;
+    if (supportBonus.coragem > 0 && (withSupport.coragem || 0) > 0) withSupport.coragem = (withSupport.coragem || 0) + 1;
+    if (supportBonus.perseveranca > 0 && (withSupport.perseveranca || 0) > 0) withSupport.perseveranca = (withSupport.perseveranca || 0) + 1;
+    // Roll the invisible dice
     const diceOutcome = rollInvisibleDice(progress.attributes);
-    const modifiedEffects = applyDiceToEffects(intensityAdjusted, diceOutcome);
+    const modifiedEffects = applyDiceToEffects(withSupport, diceOutcome);
     const diceHint = getDiceNarrativeHint(diceOutcome);
 
     triggerChoiceEffect(modifiedEffects as Record<string, number>);
@@ -255,6 +272,20 @@ const ScenePage = () => {
             <div>
               <p className="text-xs font-display text-primary">{surprise.title}</p>
               <p className="text-[10px] text-foreground/80">{surprise.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Support bonus toast */}
+      {supportToastShown && newSupportCount > 0 && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
+          <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-card border border-primary/30 shadow-lg max-w-xs">
+            <Heart className="w-5 h-5 text-primary" />
+            <div>
+              <p className="text-xs font-display text-primary">Apoio recebido!</p>
+              <p className="text-[10px] text-foreground/80">
+                {newSupportCount} {newSupportCount === 1 ? 'peregrino orou' : 'peregrinos oraram'} por você.
+              </p>
             </div>
           </div>
         </div>
