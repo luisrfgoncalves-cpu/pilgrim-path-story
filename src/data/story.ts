@@ -11,6 +11,12 @@ export interface StoryChoice {
   consequence?: string;
   effects: ChoiceEffect;
   requires?: Partial<ChoiceEffect>;
+  /** Flag key to set when this choice is made (e.g. "entrou_casa", "caminho_facil") */
+  flag?: string;
+  /** Only show this choice if the player HAS this flag */
+  requiresFlag?: string;
+  /** Only show this choice if the player does NOT have this flag */
+  excludesFlag?: string;
 }
 
 export interface StoryChapter {
@@ -19,6 +25,10 @@ export interface StoryChapter {
   location: string;
   narrative: string[];
   adaptiveNarrative?: { minAttr: keyof ChoiceEffect; minValue: number; text: string }[];
+  /** Narrative segments shown only if the player has a specific flag */
+  flagNarrative?: { flag: string; text: string }[];
+  /** Narrative segments shown only if the player does NOT have a flag */
+  noFlagNarrative?: { flag: string; text: string }[];
   choices: StoryChoice[];
   isEnding?: boolean;
   endingType?: 'parte1';
