@@ -101,12 +101,12 @@ const CommunityPage: React.FC = () => {
   const [sending, setSending] = useState<string | null>(null);
   const [selectedPilgrim, setSelectedPilgrim] = useState<PilgrimSummary | null>(null);
 
+  // Shuffle pilgrims to avoid implicit ranking by activity/progress
   const loadAll = useCallback(async () => {
     const [pilgrimsRes, messagesRes, supportsRes] = await Promise.all([
       supabase
         .from('profiles')
         .select('id, display_name, avatar_style, current_phase, total_choices, bio, updated_at')
-        .order('updated_at', { ascending: false })
         .limit(30),
       supabase
         .from('pilgrim_messages')
@@ -120,7 +120,11 @@ const CommunityPage: React.FC = () => {
         .limit(30),
     ]);
 
-    if (pilgrimsRes.data) setPilgrims(pilgrimsRes.data);
+    if (pilgrimsRes.data) {
+      // Shuffle to avoid implicit ranking
+      const shuffled = [...pilgrimsRes.data].sort(() => Math.random() - 0.5);
+      setPilgrims(shuffled);
+    }
     if (messagesRes.data) setMessages(messagesRes.data as unknown as PilgrimMessage[]);
     if (supportsRes.data) setSupports(supportsRes.data);
 
@@ -423,7 +427,7 @@ const CommunityPage: React.FC = () => {
             {otherPilgrims.length > 0 && (
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium mb-2">
-                  Outros peregrinos
+                  Companheiros de caminhada
                 </p>
                 <div className="space-y-2">
                   {otherPilgrims.map(p => (
@@ -536,8 +540,6 @@ const CommunityPage: React.FC = () => {
                 <p className="text-xs text-muted-foreground flex items-center justify-center gap-1 mt-1">
                   {PHASE_EMOJI[selectedPilgrim.current_phase] || '🏠'}{' '}
                   {PHASE_NAMES[selectedPilgrim.current_phase] || 'Início'}
-                  <span className="text-muted-foreground/50 mx-1">·</span>
-                  {selectedPilgrim.total_choices} decisões
                 </p>
                 {selectedPilgrim.bio && (
                   <p className="text-xs text-foreground/70 mt-2 italic">"{selectedPilgrim.bio}"</p>
@@ -615,7 +617,7 @@ const PilgrimCard: React.FC<{
           )}
         </div>
 
-        {/* Info */}
+        {/* Info — no numeric stats, just phase and emotional state */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
             <span className="text-sm font-medium text-foreground truncate">{pilgrim.display_name}</span>
@@ -632,23 +634,12 @@ const PilgrimCard: React.FC<{
           </div>
         </div>
 
-        {/* Actions hint */}
+        {/* Support hint instead of competitive arrow */}
         {!isMe && (
-          <div className="flex-shrink-0">
-            <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
+          <div className="flex-shrink-0 text-[10px] text-muted-foreground/60">
+            Apoiar
           </div>
         )}
-      </div>
-
-      {/* Progress bar */}
-      <div className="mt-2 flex items-center gap-2">
-        <div className="flex-1 h-1 bg-secondary rounded-full overflow-hidden">
-          <div
-            className="h-full bg-primary/60 rounded-full transition-all"
-            style={{ width: `${Math.min(100, (pilgrim.current_phase / 6) * 100)}%` }}
-          />
-        </div>
-        <span className="text-[9px] text-muted-foreground flex-shrink-0">{pilgrim.total_choices} decisões</span>
       </div>
     </button>
   );
