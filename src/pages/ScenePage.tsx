@@ -184,6 +184,8 @@ const ScenePage = () => {
       {/* Atmosphere overlays — gradual transitions */}
       <div className="atmo-vignette transition-opacity duration-[2000ms] ease-in-out" style={{ '--vignette-opacity': atmosphere.vignetteOpacity, opacity: atmosphere.vignetteOpacity > 0.02 ? 1 : 0 } as React.CSSProperties} />
       <div className="atmo-glow transition-opacity duration-[2000ms] ease-in-out" style={{ '--glow-opacity': atmosphere.glowOpacity, opacity: atmosphere.glowOpacity > 0.02 ? 1 : 0 } as React.CSSProperties} />
+      {/* Emotional tint overlay — full screen color wash per state */}
+      <div className="fixed inset-0 pointer-events-none z-[38] transition-all duration-[2000ms] ease-in-out" style={{ background: 'var(--bg-overlay, transparent)' }} />
       {/* Header with avatar */}
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
