@@ -549,6 +549,12 @@ const LandingPage = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
+  const [showInstallInstructions, setShowInstallInstructions] = useState(false);
+
+  // Detect mobile + not already installed as standalone
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true;
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -557,17 +563,36 @@ const LandingPage = () => {
       setShowInstallBanner(true);
     };
     window.addEventListener('beforeinstallprompt', handler);
+
+    // If on mobile, not standalone, and no beforeinstallprompt after 3s → show manual banner
+    if (isMobile && !isStandalone) {
+      const timeout = setTimeout(() => {
+        setShowInstallBanner((prev) => {
+          if (!prev) return true; // show manual banner if native didn't fire
+          return prev;
+        });
+      }, 3000);
+      return () => {
+        clearTimeout(timeout);
+        window.removeEventListener('beforeinstallprompt', handler);
+      };
+    }
+
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
   const handleInstall = async () => {
-    if (!installPrompt) return;
-    installPrompt.prompt();
-    const result = await installPrompt.userChoice;
-    if (result.outcome === 'accepted') {
-      setShowInstallBanner(false);
+    if (installPrompt) {
+      installPrompt.prompt();
+      const result = await installPrompt.userChoice;
+      if (result.outcome === 'accepted') {
+        setShowInstallBanner(false);
+      }
+      setInstallPrompt(null);
+    } else {
+      // No native prompt available — show instructions
+      setShowInstallInstructions(true);
     }
-    setInstallPrompt(null);
   };
 
   const handleBuy = () => {
@@ -627,6 +652,61 @@ const LandingPage = () => {
               className="p-1 text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════ INSTALL INSTRUCTIONS MODAL ══════════ */}
+      {showInstallInstructions && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-6" onClick={() => setShowInstallInstructions(false)}>
+          <div
+            className="w-full max-w-sm rounded-2xl border border-primary/30 p-6 space-y-4"
+            style={{ background: 'linear-gradient(180deg, hsl(40 20% 10%), hsl(40 10% 6%))' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3">
+              <Smartphone className="w-6 h-6 text-primary" />
+              <h3 className="font-display text-lg text-foreground font-bold">Instalar o App</h3>
+            </div>
+            {isIOS ? (
+              <div className="space-y-3 text-sm text-foreground/80">
+                <p className="font-display text-primary text-xs uppercase tracking-wider">No iPhone / iPad:</p>
+                <div className="flex items-start gap-3">
+                  <span className="text-primary font-bold">1.</span>
+                  <p>Toque no ícone de <strong className="text-foreground">Compartilhar</strong> (quadrado com seta para cima) na barra do Safari</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-primary font-bold">2.</span>
+                  <p>Role para baixo e toque em <strong className="text-foreground">"Adicionar à Tela de Início"</strong></p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-primary font-bold">3.</span>
+                  <p>Toque em <strong className="text-foreground">"Adicionar"</strong> no canto superior direito</p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3 text-sm text-foreground/80">
+                <p className="font-display text-primary text-xs uppercase tracking-wider">No Android:</p>
+                <div className="flex items-start gap-3">
+                  <span className="text-primary font-bold">1.</span>
+                  <p>Toque no menu <strong className="text-foreground">⋮</strong> (três pontos) no canto superior do Chrome</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-primary font-bold">2.</span>
+                  <p>Toque em <strong className="text-foreground">"Instalar aplicativo"</strong> ou <strong className="text-foreground">"Adicionar à tela inicial"</strong></p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-primary font-bold">3.</span>
+                  <p>Confirme tocando em <strong className="text-foreground">"Instalar"</strong></p>
+                </div>
+              </div>
+            )}
+            <button
+              onClick={() => setShowInstallInstructions(false)}
+              className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-display font-bold text-sm hover:scale-[1.02] transition-transform"
+            >
+              Entendi!
             </button>
           </div>
         </div>
