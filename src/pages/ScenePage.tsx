@@ -50,6 +50,19 @@ const ScenePage = () => {
   const chapter = getChapter(progress.currentChapterId) || getPart2Chapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
+  // Preload next scene images for instant loading
+  useEffect(() => {
+    if (!chapter?.choices) return;
+    const nextImages = chapter.choices
+      .map(c => sceneImages[c.nextChapterId])
+      .filter((img): img is string => !!img);
+    const uniqueImages = [...new Set(nextImages)];
+    uniqueImages.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, [chapter?.id]);
+
   // Dynamic events system
   const dynamicEvents = useDynamicEvents(progress, progress.currentChapterId, history);
 
@@ -313,8 +326,8 @@ const ScenePage = () => {
             >
               {audioOn ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
             </button>
-            <button onClick={() => navigate('/')} className="text-muted-foreground hover:text-foreground transition-colors text-xs">
-              ← Início
+            <button onClick={() => navigate('/')} className="btn-medieval-icon !p-1.5 !rounded-lg flex items-center justify-center">
+              <Home className="w-3.5 h-3.5 text-muted-foreground" />
             </button>
           </div>
         </div>
@@ -329,7 +342,7 @@ const ScenePage = () => {
       </header>
 
       <main className={`flex-1 max-w-lg mx-auto w-full ${transitioning ? 'opacity-0' : 'scene-transition-enter'}`}>
-        {/* Scene image */}
+        {/* Scene image with preloading */}
         {bgImage && (
           <div className="relative w-full overflow-hidden" style={{ maxHeight: '260px' }}>
             <img
@@ -337,15 +350,25 @@ const ScenePage = () => {
               alt={chapter.title}
               width={1024}
               height={576}
+              loading="eager"
+              decoding="async"
               onLoad={() => setImageLoaded(true)}
               className={`w-full h-auto object-cover transition-all duration-500 scene-image ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               style={atmosphere.imageStyle}
             />
+            {!imageLoaded && (
+              <div className="absolute inset-0 bg-card animate-pulse" />
+            )}
             <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background via-background/10 to-transparent" />
             <div className="absolute bottom-3 left-4 flex items-center gap-2">
               <MapPin className="w-3 h-3 text-primary" />
               <span className="text-[11px] uppercase tracking-widest text-primary font-medium drop-shadow-lg">{chapter.location}</span>
             </div>
+          </div>
+        )}
+        {!bgImage && (
+          <div className="w-full h-32 bg-card flex items-center justify-center">
+            <MapPin className="w-6 h-6 text-muted-foreground" />
           </div>
         )}
 
@@ -464,11 +487,11 @@ const ScenePage = () => {
                     {/* Actions */}
                     <div className="space-y-3">
                       {!isIncomplete && (
-                        <button onClick={() => navigate('/progresso')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-display text-sm w-full">
+                        <button onClick={() => navigate('/progresso')} className="btn-medieval w-full flex items-center justify-center gap-2">
                           <ScrollText className="w-4 h-4" /> Ver Jornada Completa
                         </button>
                       )}
-                      <button onClick={() => { localStorage.removeItem('peregrino-progress'); window.location.href = '/'; }} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-secondary text-secondary-foreground font-display text-sm w-full">
+                      <button onClick={() => { localStorage.removeItem('peregrino-progress'); window.location.href = '/'; }} className="btn-medieval-secondary w-full flex items-center justify-center gap-2">
                         <Home className="w-4 h-4" /> Recomeçar Jornada
                       </button>
                     </div>
@@ -492,7 +515,7 @@ const ScenePage = () => {
                     </div>
                     <p className="text-xs text-muted-foreground pt-1">Decisões: {progress.choicesMade} · Capítulos: {progress.visitedChapters.length}</p>
                   </div>
-                  <button onClick={() => navigate('/')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-display text-sm">
+                  <button onClick={() => navigate('/')} className="btn-medieval flex items-center justify-center gap-2">
                     <Home className="w-4 h-4" /> Voltar ao Início
                   </button>
                 </div>
@@ -544,7 +567,7 @@ const ScenePage = () => {
                       {dynamicEvents.alternateRoute && (
                         <button
                           onClick={() => handleChoice(dynamicEvents.alternateRoute!.nextChapterId, dynamicEvents.alternateRoute!.hint, {}, dynamicEvents.alternateRoute!.hint)}
-                          className="choice-btn group border-primary/30 bg-card/80"
+                          className="choice-btn-medieval group"
                         >
                           <p className="text-foreground font-body text-sm group-hover:text-primary transition-colors flex items-center gap-2">
                             <Compass className="w-3.5 h-3.5 text-primary" />
@@ -558,7 +581,7 @@ const ScenePage = () => {
                         <button
                           key={i}
                           onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
-                          className="choice-btn group"
+                          className="choice-btn-medieval group"
                           style={{ animationDelay: `${i * 0.08}s` }}
                         >
                           <p className="text-foreground font-body text-sm group-hover:text-primary transition-colors">{choice.text}</p>
