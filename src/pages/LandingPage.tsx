@@ -99,28 +99,307 @@ const CountdownTimer = ({ compact = false }: { compact?: boolean }) => {
 };
 
 /* ═══════════════════════════════════════════════════════════
-   PHONE MOCKUP — REAL APP SCREENSHOTS TOUR
+   PHONE MOCKUP — REAL APP UI SCREENS TOUR
+   Shows recreated UI screens, not just background images
    ═══════════════════════════════════════════════════════════ */
+
+/* Simulated app screens as mini-components */
+const AppScreen_Dashboard = () => (
+  <div className="w-full h-full bg-[#0c0a14] flex flex-col text-white relative overflow-hidden">
+    <div className="absolute inset-0 opacity-20">
+      <img src={cidadeDestruicao} alt="" className="w-full h-full object-cover" />
+    </div>
+    <div className="relative z-10 flex flex-col items-center pt-10 px-4 flex-1">
+      <p className="text-[7px] uppercase tracking-[0.2em] text-amber-400/70 mb-1">Fase 1 · A Partida</p>
+      {/* Avatar circle */}
+      <div className="w-16 h-16 rounded-full border-2 border-amber-500/60 bg-gradient-to-b from-amber-900/40 to-amber-950/60 flex items-center justify-center mb-2" style={{ boxShadow: '0 0 15px rgba(217,160,60,0.3)' }}>
+        <span className="text-2xl">⚔️</span>
+      </div>
+      <p className="font-bold text-sm text-white">Cidade da Destruição</p>
+      <p className="text-[8px] text-white/50 mb-2">Uma terra condenada à ruína...</p>
+      {/* Progress bar */}
+      <div className="w-full h-1.5 bg-white/10 rounded-full mb-1">
+        <div className="h-full bg-amber-500 rounded-full" style={{ width: '12%' }} />
+      </div>
+      <div className="flex justify-between w-full text-[7px] text-white/40 mb-3">
+        <span>12%</span>
+        <span>🔥3 ⛰️3 👁️3 🛡️3</span>
+      </div>
+      {/* Buttons */}
+      <div className="w-full space-y-2 mt-auto pb-4">
+        <div className="w-full py-2.5 rounded-lg bg-gradient-to-b from-amber-600 to-amber-700 text-center text-[10px] font-bold border border-amber-500/50" style={{ boxShadow: '0 0 12px rgba(217,160,60,0.3)' }}>
+          ▶ Continuar Jornada
+        </div>
+        <div className="w-full py-2 rounded-lg bg-white/5 border border-white/10 text-center text-[10px] text-amber-400">
+          📖 Parte II — A Peregrina
+        </div>
+        <div className="grid grid-cols-5 gap-1.5">
+          {['🏠 Início', '🗺️ Mapa', '⚔️ Multi', '👤 Perfil', '👥 Social'].map((b, i) => (
+            <div key={i} className="py-1.5 rounded-md bg-white/5 border border-white/10 text-center text-[6px] text-white/60">{b}</div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const AppScreen_Scene = () => (
+  <div className="w-full h-full relative overflow-hidden">
+    <img src={valeHumilhacao} alt="" className="w-full h-full object-cover" />
+    <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/80" />
+    <div className="absolute top-8 left-3 right-3 z-10">
+      <div className="flex items-center gap-1.5 mb-1">
+        <span className="text-[7px] text-amber-400/80 uppercase tracking-wider">Fase 3 · Vale da Humilhação</span>
+      </div>
+    </div>
+    {/* Attribute bars */}
+    <div className="absolute top-16 left-3 right-3 z-10 flex gap-1">
+      {[
+        { emoji: '🔥', val: 4, color: '#f59e0b' },
+        { emoji: '⛰️', val: 3, color: '#6b7280' },
+        { emoji: '👁️', val: 5, color: '#8b5cf6' },
+        { emoji: '🛡️', val: 2, color: '#ef4444' },
+      ].map((a, i) => (
+        <div key={i} className="flex-1">
+          <div className="flex items-center gap-0.5 mb-0.5">
+            <span className="text-[7px]">{a.emoji}</span>
+            <span className="text-[6px] text-white/60">{a.val}</span>
+          </div>
+          <div className="h-1 bg-white/10 rounded-full">
+            <div className="h-full rounded-full" style={{ width: `${a.val * 20}%`, background: a.color }} />
+          </div>
+        </div>
+      ))}
+    </div>
+    {/* Narrative text */}
+    <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
+      <div className="bg-black/70 backdrop-blur-sm rounded-lg p-2.5 border border-amber-500/20">
+        <p className="text-[9px] text-white/90 leading-relaxed mb-2">
+          Uma criatura monstruosa surge do vale — é <strong className="text-amber-400">Apolião</strong>, o Destruidor!
+          Suas asas cobrem o céu e seus olhos ardem como brasas...
+        </p>
+        <div className="space-y-1.5">
+          <div className="py-1.5 px-2 rounded-md bg-amber-600/20 border border-amber-500/30 text-[8px] text-amber-300">
+            ⚔️ Enfrentar Apolião com a Espada do Espírito
+          </div>
+          <div className="py-1.5 px-2 rounded-md bg-white/5 border border-white/10 text-[8px] text-white/70">
+            🙏 Orar por proteção divina
+          </div>
+          <div className="py-1.5 px-2 rounded-md bg-white/5 border border-white/10 text-[8px] text-white/70">
+            🏃 Tentar fugir pelo vale
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const AppScreen_DiceDuel = () => (
+  <div className="w-full h-full bg-[#0c0a14] flex flex-col items-center justify-center relative overflow-hidden">
+    <div className="absolute inset-0 opacity-15">
+      <img src={valeHumilhacao} alt="" className="w-full h-full object-cover" />
+    </div>
+    <div className="relative z-10 flex flex-col items-center px-4 w-full">
+      <p className="text-[8px] text-amber-400 uppercase tracking-wider mb-2">⚔️ Duelo de Dados 3D</p>
+      <p className="text-[10px] text-white font-bold mb-3">Cristão vs Apolião</p>
+      {/* VS layout */}
+      <div className="flex items-center gap-3 mb-4">
+        <div className="text-center">
+          <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-lg mb-1">⚔️</div>
+          <p className="text-[7px] text-white/80">Cristão</p>
+          <p className="text-[6px] text-green-400">❤️ 3/3</p>
+        </div>
+        <span className="text-amber-400 font-bold text-xs">VS</span>
+        <div className="text-center">
+          <div className="w-10 h-10 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center text-lg mb-1">👹</div>
+          <p className="text-[7px] text-white/80">Apolião</p>
+          <p className="text-[6px] text-red-400">❤️ 3/3</p>
+        </div>
+      </div>
+      {/* Dice */}
+      <div className="w-12 h-12 rounded-xl bg-white border-2 border-amber-500/50 flex items-center justify-center text-2xl font-bold text-[#0c0a14] mb-3 rotate-12" style={{ boxShadow: '0 0 20px rgba(217,160,60,0.4)' }}>
+        5
+      </div>
+      {/* Action buttons */}
+      <div className="grid grid-cols-3 gap-2 w-full">
+        <div className="py-2 rounded-lg bg-red-500/20 border border-red-500/30 text-center text-[7px] text-red-300">⚔️ Espada</div>
+        <div className="py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-center text-[7px] text-blue-300">🛡️ Escudo</div>
+        <div className="py-2 rounded-lg bg-amber-500/20 border border-amber-500/30 text-center text-[7px] text-amber-300">🙏 Oração</div>
+      </div>
+    </div>
+  </div>
+);
+
+const AppScreen_Multiplayer = () => (
+  <div className="w-full h-full bg-[#0c0a14] flex flex-col relative overflow-hidden">
+    <div className="relative z-10 flex flex-col h-full px-3 pt-8 pb-3">
+      <p className="text-[8px] text-amber-400 uppercase tracking-wider text-center mb-1">⚔️ Modo Multiplayer</p>
+      <p className="text-[10px] text-white font-bold text-center mb-2">Tabuleiro Premium</p>
+      {/* Mini board representation */}
+      <div className="flex-1 bg-gradient-to-b from-amber-900/20 to-amber-950/10 rounded-lg border border-amber-500/20 p-2 mb-2">
+        <div className="grid grid-cols-8 gap-[2px]">
+          {Array.from({ length: 32 }).map((_, i) => (
+            <div
+              key={i}
+              className="aspect-square rounded-sm flex items-center justify-center text-[5px]"
+              style={{
+                background: i === 3 ? '#E8724A' : i === 5 ? '#4CAF50' : i === 0 ? 'rgba(217,160,60,0.3)' : i === 31 ? 'rgba(217,160,60,0.4)' : 'rgba(255,255,255,0.05)',
+                border: i === 0 || i === 31 ? '1px solid rgba(217,160,60,0.4)' : '1px solid rgba(255,255,255,0.05)',
+              }}
+            >
+              {i === 0 ? '🏁' : i === 31 ? '✨' : i === 8 ? '⚔️' : i === 15 ? '📖' : i === 22 ? '🎁' : ''}
+            </div>
+          ))}
+        </div>
+        {/* Player legend */}
+        <div className="flex items-center gap-2 mt-2">
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full bg-[#E8724A]" />
+            <span className="text-[6px] text-white/60">Cristão</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full bg-[#4CAF50]" />
+            <span className="text-[6px] text-white/60">Fiel</span>
+          </div>
+        </div>
+      </div>
+      {/* Dice area */}
+      <div className="flex items-center justify-between bg-white/5 rounded-lg p-2 border border-white/10">
+        <div className="text-center">
+          <p className="text-[7px] text-amber-400 mb-1">Vez de: Cristão</p>
+          <p className="text-[6px] text-white/50">Casa 4 / 65</p>
+        </div>
+        <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-lg font-bold text-[#0c0a14]" style={{ boxShadow: '0 0 10px rgba(217,160,60,0.3)' }}>
+          🎲
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const AppScreen_MiniGame = () => (
+  <div className="w-full h-full bg-[#0c0a14] flex flex-col items-center justify-center relative overflow-hidden">
+    <div className="absolute inset-0 opacity-10">
+      <img src={feiraVaidade} alt="" className="w-full h-full object-cover" />
+    </div>
+    <div className="relative z-10 flex flex-col items-center px-4 w-full">
+      <p className="text-[8px] text-amber-400 uppercase tracking-wider mb-1">🎮 Mini-Game</p>
+      <p className="text-[10px] text-white font-bold mb-1">Esquiva de Tentações</p>
+      <p className="text-[7px] text-white/50 mb-3">Deslize para desviar das tentações!</p>
+      {/* Game area simulation */}
+      <div className="w-full aspect-[3/4] bg-white/5 rounded-lg border border-amber-500/20 relative mb-3 overflow-hidden">
+        {/* Obstacles */}
+        <div className="absolute top-4 left-4 w-6 h-6 rounded-full bg-red-500/30 border border-red-500/40 flex items-center justify-center text-[8px]">💰</div>
+        <div className="absolute top-12 right-6 w-6 h-6 rounded-full bg-red-500/30 border border-red-500/40 flex items-center justify-center text-[8px]">🍷</div>
+        <div className="absolute top-24 left-8 w-6 h-6 rounded-full bg-red-500/30 border border-red-500/40 flex items-center justify-center text-[8px]">👑</div>
+        {/* Player */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-amber-500/30 border-2 border-amber-500 flex items-center justify-center text-[10px]" style={{ boxShadow: '0 0 10px rgba(217,160,60,0.4)' }}>
+          🏃
+        </div>
+        {/* Score */}
+        <div className="absolute top-2 right-2 text-[7px] text-amber-400 bg-black/50 px-1.5 py-0.5 rounded">
+          Score: 340
+        </div>
+      </div>
+      <div className="flex gap-2 w-full">
+        <div className="flex-1 py-1.5 rounded-lg bg-white/5 border border-white/10 text-center text-[7px] text-white/60">⏸️ Pausar</div>
+        <div className="flex-1 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500/30 text-center text-[7px] text-amber-300">❓ Regras</div>
+      </div>
+    </div>
+  </div>
+);
+
+const AppScreen_Journey = () => (
+  <div className="w-full h-full bg-[#0c0a14] flex flex-col relative overflow-hidden">
+    <div className="relative z-10 flex flex-col h-full px-3 pt-8 pb-3">
+      <p className="text-[8px] text-amber-400 uppercase tracking-wider text-center mb-1">🗺️ Mapa da Jornada</p>
+      <p className="text-[10px] text-white font-bold text-center mb-3">Sua Peregrinação</p>
+      {/* Journey phases */}
+      <div className="flex-1 space-y-1.5 overflow-hidden">
+        {[
+          { phase: 'Fase 1', name: 'A Partida', progress: 100, icon: '🏚️' },
+          { phase: 'Fase 2', name: 'O Caminho Estreito', progress: 100, icon: '🚪' },
+          { phase: 'Fase 3', name: 'O Vale da Sombra', progress: 60, icon: '⚔️' },
+          { phase: 'Fase 4', name: 'A Feira da Vaidade', progress: 0, icon: '🎪' },
+          { phase: 'Fase 5', name: 'O Castelo da Dúvida', progress: 0, icon: '🏰' },
+          { phase: 'Fase 6', name: 'A Cidade Celestial', progress: 0, icon: '✨' },
+        ].map((p, i) => (
+          <div key={i} className={`flex items-center gap-2 p-1.5 rounded-lg border ${p.progress > 0 ? 'border-amber-500/20 bg-amber-500/5' : 'border-white/5 bg-white/[0.02]'}`}>
+            <span className="text-sm">{p.icon}</span>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <span className="text-[7px] text-white/80 font-bold truncate">{p.name}</span>
+                <span className="text-[6px] text-amber-400/60">{p.progress}%</span>
+              </div>
+              <div className="h-0.5 bg-white/10 rounded-full mt-0.5">
+                <div className="h-full bg-amber-500 rounded-full" style={{ width: `${p.progress}%` }} />
+              </div>
+            </div>
+            {p.progress === 100 && <span className="text-[8px]">✅</span>}
+            {p.progress === 0 && <span className="text-[8px]">🔒</span>}
+          </div>
+        ))}
+      </div>
+      {/* Stats */}
+      <div className="bg-white/5 rounded-lg p-2 border border-white/10 mt-2">
+        <div className="grid grid-cols-4 gap-1 text-center">
+          <div><p className="text-[6px] text-white/40">Capítulos</p><p className="text-[9px] text-amber-400 font-bold">18/30</p></div>
+          <div><p className="text-[6px] text-white/40">Escolhas</p><p className="text-[9px] text-amber-400 font-bold">42</p></div>
+          <div><p className="text-[6px] text-white/40">Duelos</p><p className="text-[9px] text-amber-400 font-bold">5</p></div>
+          <div><p className="text-[6px] text-white/40">Streak</p><p className="text-[9px] text-amber-400 font-bold">🔥 7</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const AppScreen_Presential = () => (
+  <div className="w-full h-full bg-[#0c0a14] flex flex-col items-center justify-center relative overflow-hidden">
+    <div className="relative z-10 flex flex-col items-center px-4 w-full">
+      <p className="text-[8px] text-amber-400 uppercase tracking-wider mb-1">👥 Modo Reunidos</p>
+      <p className="text-[10px] text-white font-bold mb-3">Multiplayer Presencial</p>
+      {/* Players setup */}
+      <div className="w-full space-y-1.5 mb-3">
+        {[
+          { name: 'Cristão', color: '#E8724A', emoji: '⚔️' },
+          { name: 'Fiel', color: '#4CAF50', emoji: '🛡️' },
+          { name: 'Esperança', color: '#42A5F5', emoji: '🙏' },
+          { name: 'Misericórdia', color: '#FFD54F', emoji: '💛' },
+        ].map((p, i) => (
+          <div key={i} className="flex items-center gap-2 p-1.5 rounded-lg bg-white/5 border border-white/10">
+            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px]" style={{ background: `${p.color}30`, border: `1px solid ${p.color}60` }}>
+              {p.emoji}
+            </div>
+            <span className="text-[9px] text-white/80 flex-1">{p.name}</span>
+            <span className="text-[6px] text-white/40">Casa 0</span>
+          </div>
+        ))}
+      </div>
+      <div className="w-full py-2 rounded-lg bg-gradient-to-b from-amber-600 to-amber-700 text-center text-[9px] font-bold text-white border border-amber-500/50" style={{ boxShadow: '0 0 12px rgba(217,160,60,0.3)' }}>
+        🎲 Iniciar Partida (4 jogadores)
+      </div>
+      <p className="text-[6px] text-white/40 mt-2">2-8 jogadores · Use dados físicos ou digital</p>
+    </div>
+  </div>
+);
+
 const PhoneMockupTour = () => {
   const [currentScreen, setCurrentScreen] = useState(0);
 
   const screens = [
-    { img: cidadeDestruicao, label: 'Cidade da Destruição — Início da Jornada' },
-    { img: cruzFardo, label: 'A Cruz e o Fardo — Libertação' },
-    { img: casaInterprete, label: 'Casa do Intérprete — Revelações' },
-    { img: valeHumilhacao, label: 'Vale da Humilhação — Batalha contra Apolião' },
-    { img: valeSombra, label: 'Vale da Sombra da Morte' },
-    { img: feiraVaidade, label: 'Feira da Vaidade — Tentações' },
-    { img: casteloDuvida, label: 'Castelo da Dúvida — Gigante Desespero' },
-    { img: montanhasDeleitosas, label: 'Montanhas Deleitosas — Descanso' },
-    { img: rioFinal, label: 'Travessia do Rio — Desafio Final' },
-    { img: cidadeCelestial, label: 'Cidade Celestial — Glória!' },
+    { component: <AppScreen_Dashboard />, label: 'Tela Inicial — Dashboard com avatar, atributos e progresso' },
+    { component: <AppScreen_Scene />, label: 'Cena Narrativa — Escolhas que mudam a história' },
+    { component: <AppScreen_DiceDuel />, label: 'Duelo de Dados 3D — Combate épico contra Apolião' },
+    { component: <AppScreen_MiniGame />, label: 'Mini-Game — 9 tipos de desafios interativos' },
+    { component: <AppScreen_Multiplayer />, label: 'Multiplayer Online — Tabuleiro premium com até 6 jogadores' },
+    { component: <AppScreen_Presential />, label: 'Modo Reunidos — Presencial para grupos de jovens' },
+    { component: <AppScreen_Journey />, label: 'Mapa da Jornada — Acompanhe seu progresso' },
   ];
 
   useEffect(() => {
     const id = setInterval(() => {
       setCurrentScreen(prev => (prev + 1) % screens.length);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(id);
   }, [screens.length]);
 
@@ -134,7 +413,7 @@ const PhoneMockupTour = () => {
           transform: 'perspective(1200px) rotateY(-4deg) rotateX(2deg)',
         }}
       >
-        {/* Phone outer shell — realistic */}
+        {/* Phone outer shell */}
         <div
           className="relative rounded-[2.5rem] overflow-hidden"
           style={{
@@ -145,7 +424,7 @@ const PhoneMockupTour = () => {
               '0 0 0 1px rgba(255,255,255,0.08), 0 0 40px hsl(40 70% 50% / 0.2), 0 40px 100px rgba(0,0,0,0.8), -20px 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
           }}
         >
-          {/* Side buttons (volume, power) */}
+          {/* Side buttons */}
           <div className="absolute -left-[3px] top-[100px] w-[3px] h-8 rounded-l-sm" style={{ background: '#333' }} />
           <div className="absolute -left-[3px] top-[145px] w-[3px] h-12 rounded-l-sm" style={{ background: '#333' }} />
           <div className="absolute -left-[3px] top-[170px] w-[3px] h-12 rounded-l-sm" style={{ background: '#333' }} />
@@ -158,44 +437,14 @@ const PhoneMockupTour = () => {
               <div className="absolute right-[18px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full" style={{ background: 'radial-gradient(circle, #1a3a5c, #0a1a2c)' }} />
             </div>
 
-            {/* Screen content — real screenshots */}
+            {/* Screen content — actual app UI recreations */}
             {screens.map((screen, i) => (
               <div
                 key={i}
                 className="absolute inset-0 transition-opacity duration-700"
                 style={{ opacity: currentScreen === i ? 1 : 0 }}
               >
-                <img
-                  src={screen.img}
-                  alt={screen.label}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-                {/* App overlay UI simulation */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70" />
-                
-                {/* Top bar */}
-                <div className="absolute top-8 left-0 right-0 flex items-center justify-between px-4 z-20">
-                  <span className="text-[9px] text-white/70 font-mono">9:41</span>
-                  <span className="text-[8px] text-primary font-display tracking-[0.2em] uppercase">O Peregrino</span>
-                  <span className="text-[9px] text-white/70">⚡100%</span>
-                </div>
-
-                {/* Bottom label */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
-                  <div className="bg-black/60 backdrop-blur-sm rounded-xl p-3 border border-primary/20">
-                    <p className="text-[11px] text-white font-display leading-tight">{screen.label}</p>
-                    <div className="flex gap-1 mt-2">
-                      {screens.map((_, j) => (
-                        <div
-                          key={j}
-                          className="h-[2px] flex-1 rounded-full transition-all duration-300"
-                          style={{ background: j === currentScreen ? 'hsl(40 70% 50%)' : 'rgba(255,255,255,0.2)' }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                {screen.component}
               </div>
             ))}
 
@@ -211,10 +460,29 @@ const PhoneMockupTour = () => {
         />
       </div>
 
-      {/* Screen counter */}
-      <p className="text-xs text-muted-foreground font-display">
-        {currentScreen + 1} / {screens.length} — Tour automático
-      </p>
+      {/* Screen label */}
+      <div className="text-center max-w-xs">
+        <p className="text-xs text-foreground font-display font-bold mb-1">
+          {screens[currentScreen].label}
+        </p>
+        {/* Dots */}
+        <div className="flex justify-center gap-1.5 mt-2">
+          {screens.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentScreen(i)}
+              className="w-2 h-2 rounded-full transition-all duration-300"
+              style={{
+                background: i === currentScreen ? 'hsl(40 70% 50%)' : 'rgba(255,255,255,0.15)',
+                boxShadow: i === currentScreen ? '0 0 8px hsl(40 70% 50% / 0.5)' : 'none',
+              }}
+            />
+          ))}
+        </div>
+        <p className="text-[10px] text-muted-foreground mt-2">
+          {currentScreen + 1} / {screens.length} — Toque nos pontos ou aguarde o tour
+        </p>
+      </div>
     </div>
   );
 };
@@ -424,74 +692,140 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* ══════════ GALERIA DE CENAS DO APP ══════════ */}
-      <section className="px-5 py-12">
-        <div className="max-w-4xl mx-auto space-y-6">
-          <div className="text-center mb-8">
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Imagens Reais do App</p>
+      {/* ══════════ MODO SOLO — COMO FUNCIONA ══════════ */}
+      <section className="px-5 py-16">
+        <div className="max-w-4xl mx-auto space-y-8">
+          <div className="text-center mb-4">
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Modo Solo</p>
             <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
-              Cada cena é uma <span className="text-primary">obra de arte</span>
+              Uma aventura narrativa <span className="text-primary">onde cada escolha importa</span>
             </h2>
-            <p className="text-sm text-muted-foreground mt-2">Essas são as imagens reais que você verá durante o jogo</p>
+            <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">
+              Você lê, decide e vive a história. Não é um jogo passivo — suas decisões alteram atributos, desbloqueiam caminhos e determinam o final.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <CinematicImage
-              src={valeHumilhacao}
-              alt="Vale da Humilhação"
-              caption="⚔️ Vale da Humilhação"
-              subcaption="Enfrente Apolião em um duelo épico pela sua alma"
-              rotate={-2}
-            />
-            <CinematicImage
-              src={casteloDuvida}
-              alt="Castelo da Dúvida"
-              caption="🏰 Castelo da Dúvida"
-              subcaption="Preso pelo Gigante Desespero — você consegue escapar?"
-              rotate={2}
-            />
+            <MedievalCard glow className="overflow-hidden p-0">
+              <div className="relative h-36 overflow-hidden">
+                <img src={valeHumilhacao} alt="Narrativa com escolhas" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+              </div>
+              <div className="p-5">
+                <h3 className="font-display text-base font-bold text-foreground flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-primary" /> Narrativa Interativa
+                </h3>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  30+ capítulos com texto imersivo e arte cinematográfica. Cada cena apresenta 2-4 escolhas que impactam seus <strong className="text-primary">4 atributos</strong>: Fé 🔥, Perseverança ⛰️, Discernimento 👁️ e Coragem 🛡️.
+                </p>
+              </div>
+            </MedievalCard>
+
+            <MedievalCard glow className="overflow-hidden p-0">
+              <div className="relative h-36 overflow-hidden">
+                <img src={casteloDuvida} alt="Duelos de dados" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+              </div>
+              <div className="p-5">
+                <h3 className="font-display text-base font-bold text-foreground flex items-center gap-2">
+                  <Swords className="w-5 h-5 text-primary" /> Duelos com Dados 3D
+                </h3>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  Enfrente inimigos como <strong className="text-primary">Apolião</strong> e o <strong className="text-primary">Gigante Desespero</strong> com sistema de combate: Espada ⚔️ (ataque), Escudo 🛡️ (defesa) e Oração 🙏 (poder). Dados 3D animados!
+                </p>
+              </div>
+            </MedievalCard>
+
+            <MedievalCard glow className="overflow-hidden p-0">
+              <div className="relative h-36 overflow-hidden">
+                <img src={feiraVaidade} alt="Mini-games" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+              </div>
+              <div className="p-5">
+                <h3 className="font-display text-base font-bold text-foreground flex items-center gap-2">
+                  <Gamepad2 className="w-5 h-5 text-primary" /> 9 Tipos de Mini-Games
+                </h3>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  QTE de reflexo, esquiva de tentações, memória bíblica, stealth, caça ao tesouro, Simon Says, puzzle de versículos, caminho da fé e duelo de dados. Cada um com tela de instrução antes do início.
+                </p>
+              </div>
+            </MedievalCard>
+
+            <MedievalCard glow className="overflow-hidden p-0">
+              <div className="relative h-36 overflow-hidden">
+                <img src={cidadeCelestial} alt="Finais múltiplos" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+              </div>
+              <div className="p-5">
+                <h3 className="font-display text-base font-bold text-foreground flex items-center gap-2">
+                  <Trophy className="w-5 h-5 text-primary" /> Múltiplos Finais
+                </h3>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  Seus atributos determinam qual final você alcança. Cidade Celestial gloriosa, finais alternativos ou caminhos secretos. Cada jogada é diferente com <strong className="text-primary">eventos aleatórios</strong> e dados invisíveis.
+                </p>
+              </div>
+            </MedievalCard>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            <CinematicImage
-              src={feiraVaidade}
-              alt="Feira da Vaidade"
-              caption="🎪 Feira da Vaidade"
-              subcaption="Tentações a cada passo"
-              rotate={-1}
-            />
-            <CinematicImage
-              src={valeSombra}
-              alt="Vale da Sombra"
-              caption="💀 Vale da Sombra"
-              subcaption="A escuridão mais profunda"
-            />
-            <CinematicImage
-              src={rioFinal}
-              alt="Travessia do Rio"
-              caption="🌊 Rio da Morte"
-              subcaption="O desafio final"
-              rotate={1}
-            />
-          </div>
-          <CinematicImage
-            src={cidadeCelestial}
-            alt="Cidade Celestial"
-            caption="✨ Cidade Celestial — O Destino Final"
-            subcaption="Após uma jornada de batalhas, fé e perseverança — a recompensa aguarda os fiéis."
-          />
         </div>
       </section>
 
       <SectionDivider />
 
-      {/* ══════════ PERSONAGENS DO APP ══════════ */}
+      {/* ══════════ MODO MULTIPLAYER ══════════ */}
       <section className="px-5 py-16 bg-card/30">
-        <div className="max-w-3xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center">
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Personagens Reais do App</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Multiplayer</p>
             <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
-              Conheça quem faz parte <span className="text-primary">desta jornada</span>
+              Dois modos para jogar <span className="text-primary">em grupo</span>
             </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <MedievalCard glow className="text-center space-y-4">
+              <div className="w-14 h-14 mx-auto rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center" style={{ boxShadow: '0 0 15px hsl(40 70% 50% / 0.2)' }}>
+                <Users className="w-7 h-7 text-primary" />
+              </div>
+              <h3 className="font-display text-lg text-foreground font-bold">Online</h3>
+              <ul className="text-xs text-muted-foreground text-left space-y-2">
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Até 6 jogadores simultâneos via internet</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Tabuleiro premium digital com 65 casas</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Dados 3D animados (branco com pontos pretos)</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> 65 eventos narrativos no tabuleiro</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Ranking e medalhas por partida</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Compartilhe o link e jogue com amigos</li>
+              </ul>
+            </MedievalCard>
+
+            <MedievalCard glow className="text-center space-y-4">
+              <div className="w-14 h-14 mx-auto rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center" style={{ boxShadow: '0 0 15px hsl(40 70% 50% / 0.2)' }}>
+                <Swords className="w-7 h-7 text-primary" />
+              </div>
+              <h3 className="font-display text-lg text-foreground font-bold">Presencial (Reunidos)</h3>
+              <ul className="text-xs text-muted-foreground text-left space-y-2">
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> 2 a 8 jogadores no mesmo dispositivo</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Funciona 100% offline — ideal para retiros</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Use dados físicos reais ou o dado digital</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Cada jogador escolhe nome e personagem</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Eventos surpresa a cada casa</li>
+                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Perfeito para grupos de jovens e famílias</li>
+              </ul>
+            </MedievalCard>
+          </div>
+        </div>
+      </section>
+
+      <SectionDivider />
+
+      {/* ══════════ PERSONAGENS + CENAS ══════════ */}
+      <section className="px-5 py-16">
+        <div className="max-w-4xl mx-auto space-y-8">
+          <div className="text-center">
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Conteúdo do App</p>
+            <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
+              40+ personagens e cenários <span className="text-primary">cinematográficos</span>
+            </h2>
+            <p className="text-sm text-muted-foreground mt-2">Todas as imagens abaixo são reais — exatamente o que você verá no app</p>
           </div>
 
           <div className="grid grid-cols-4 md:grid-cols-8 gap-4 justify-items-center">
@@ -505,42 +839,21 @@ const LandingPage = () => {
             <CharacterPortrait src={valentePelaVerdade} name="Valente" role="Pela Verdade" />
           </div>
 
-          <p className="text-center text-sm text-muted-foreground font-body">
-            + mais de <strong className="text-primary">40 personagens</strong> com arte original em cada cena
-          </p>
-        </div>
-      </section>
-
-      <SectionDivider />
-
-      {/* ══════════ MAIS CENAS REAIS ══════════ */}
-      <section className="px-5 py-12">
-        <div className="max-w-4xl mx-auto space-y-6">
-          <div className="text-center mb-4">
-            <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
-              Mais cenários <span className="text-primary">cinematográficos</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
+              { img: cidadeDestruicao, label: 'Cidade da Destruição' },
               { img: portaoEstreito, label: 'Portão Estreito' },
-              { img: pantanoDesanimo, label: 'Pântano do Desânimo' },
-              { img: casaInterprete, label: 'Casa do Intérprete' },
-              { img: palacioBelo, label: 'Palácio Belo' },
               { img: cruzFardo, label: 'A Cruz e o Fardo' },
+              { img: casaInterprete, label: 'Casa do Intérprete' },
+              { img: valeSombra, label: 'Vale da Sombra' },
               { img: julgamentoFeira, label: 'Julgamento na Feira' },
               { img: giganteMataBons, label: 'Gigante Mata-Bons' },
               { img: montanhasDeleitosas, label: 'Montanhas Deleitosas' },
             ].map((scene, i) => (
-              <div
-                key={i}
-                className="relative rounded-xl overflow-hidden group aspect-square"
-                style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
-              >
+              <div key={i} className="relative rounded-xl overflow-hidden group aspect-[4/3]" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}>
                 <img src={scene.img} alt={scene.label} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                <p className="absolute bottom-2 left-2 right-2 font-display text-[11px] text-white font-bold leading-tight">{scene.label}</p>
+                <p className="absolute bottom-2 left-2 right-2 font-display text-[11px] text-white font-bold">{scene.label}</p>
               </div>
             ))}
           </div>
@@ -641,10 +954,10 @@ const LandingPage = () => {
         <div className="max-w-2xl mx-auto text-center space-y-8">
           <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Veja por Dentro</p>
           <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
-            Um tour <span className="text-primary">real</span> pelo app
+            O app <span className="text-primary">por dentro</span> — tour real
           </h2>
           <p className="text-sm text-muted-foreground font-body">
-            Cada tela mostra exatamente o que você verá — imagens reais do app
+            Dashboard, cenas narrativas, duelos de dados, mini-games, tabuleiro multiplayer e mapa da jornada — tudo que você terá acesso
           </p>
 
           <PhoneMockupTour />
