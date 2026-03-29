@@ -50,6 +50,19 @@ const ScenePage = () => {
   const chapter = getChapter(progress.currentChapterId) || getPart2Chapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
+  // Preload next scene images for instant loading
+  useEffect(() => {
+    if (!chapter?.choices) return;
+    const nextImages = chapter.choices
+      .map(c => sceneImages[c.nextChapterId])
+      .filter((img): img is string => !!img);
+    const uniqueImages = [...new Set(nextImages)];
+    uniqueImages.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, [chapter?.id]);
+
   // Dynamic events system
   const dynamicEvents = useDynamicEvents(progress, progress.currentChapterId, history);
 
