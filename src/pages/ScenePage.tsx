@@ -13,6 +13,7 @@ import { useAtmosphere } from '@/hooks/useAtmosphere';
 import { useDynamicEvents } from '@/hooks/useDynamicEvents';
 import { rollInvisibleDice, applyDiceToEffects, getDiceNarrativeHint } from '@/lib/invisibleDice';
 import { rollForSurprise, Surprise } from '@/lib/gameLoop';
+import { applyIntensityToEffects } from '@/lib/replayEngine';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
