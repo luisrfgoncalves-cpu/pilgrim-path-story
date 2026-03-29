@@ -639,25 +639,27 @@ const ScenePage = () => {
 
           {/* ═══ FULLSCREEN MINI-GAME (major games) ═══ */}
           {showChoices && !miniGameDone && miniGameReady && miniGameMappings[chapter.id] && FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
-            <div id="minigame-area" />
-            <FullscreenMiniGame
-              config={miniGameMappings[chapter.id]}
-              chapterId={chapter.id}
-              characterPortraits={scenePortraits}
-              onComplete={(result) => {
-                setMiniGameResult(result);
-                setMiniGameDone(true);
-                setShowMiniGameResult(true);
-                if (result.effects) {
-                  triggerChoiceEffect(result.effects as Record<string, number>);
-                  sfxForChoice(result.effects as Record<string, number>);
-                }
-                setTimeout(() => setShowMiniGameResult(false), 3000);
-              }}
-              onSkip={() => {
-                setMiniGameDone(true);
-              }}
-            />
+            <>
+              <div id="minigame-area" />
+              <FullscreenMiniGame
+                config={miniGameMappings[chapter.id]}
+                chapterId={chapter.id}
+                characterPortraits={scenePortraits}
+                onComplete={(result) => {
+                  setMiniGameResult(result);
+                  setMiniGameDone(true);
+                  setShowMiniGameResult(true);
+                  if (result.effects) {
+                    triggerChoiceEffect(result.effects as Record<string, number>);
+                    sfxForChoice(result.effects as Record<string, number>);
+                  }
+                  setTimeout(() => setShowMiniGameResult(false), 3000);
+                }}
+                onSkip={() => {
+                  setMiniGameDone(true);
+                }}
+              />
+            </>
           )}
 
           {/* Mini-game result toast */}
