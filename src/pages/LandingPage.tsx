@@ -1549,7 +1549,22 @@ const LandingPage = () => {
             Tudo isso junto custaria mais de <span className="line-through text-foreground/40">R$ 1.400</span>
           </p>
 
-          <MedievalCard glow className="max-w-sm mx-auto text-center">
+          {/* Medieval crest */}
+          <div className="flex justify-center mb-2">
+            <div
+              className="w-20 h-20 rounded-full flex items-center justify-center border-2 border-primary/50 bg-gradient-to-b from-primary/20 to-primary/5"
+              style={{ boxShadow: '0 0 30px hsl(40 70% 50% / 0.35), 0 0 60px hsl(40 70% 50% / 0.15), inset 0 2px 6px hsl(40 80% 75% / 0.2), inset 0 -3px 6px rgba(0,0,0,0.4)' }}
+            >
+              <span className="text-3xl">⚔️</span>
+            </div>
+          </div>
+
+          <MedievalCard glow className="max-w-sm mx-auto text-center relative overflow-hidden">
+            {/* Corner ornaments */}
+            <div className="absolute top-2 left-2 text-primary/15 text-lg">⚜</div>
+            <div className="absolute top-2 right-2 text-primary/15 text-lg">⚜</div>
+            <div className="absolute bottom-2 left-2 text-primary/15 text-lg">⚜</div>
+            <div className="absolute bottom-2 right-2 text-primary/15 text-lg">⚜</div>
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-display mb-1">Acesso completo por apenas</p>
             <div className="flex items-baseline justify-center gap-1 mb-1">
               <span className="text-sm text-muted-foreground">R$</span>
