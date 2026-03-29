@@ -140,37 +140,106 @@
   50% { box-shadow: 0 0 30px hsl(var(--primary) / 0.4); }
 }
 
-/* Emotional intensity visual overlays */
-.emotional-hopeful {
-  --emotional-color: 40 70% 60%;
+/* =========================
+   Emotional state atmosphere
+   ========================= */
+
+/* Abatido — dark, desaturated, oppressive */
+.emotional-abatido .scene-image {
+  filter: brightness(0.65) saturate(0.5);
+}
+.emotional-abatido .narrative-text {
+  color: hsl(var(--foreground) / 0.68);
+}
+.emotional-abatido .scene-overlay {
+  background: linear-gradient(to top, hsl(var(--background)), hsl(var(--background) / 0.7), hsl(220 30% 8% / 0.4));
 }
 
-.emotional-hopeful .narrative-text {
+/* Confuso — slightly blurred, muted contrast */
+.emotional-confuso .scene-image {
+  filter: brightness(0.85) saturate(0.8) blur(0.5px);
+}
+.emotional-confuso .narrative-text {
+  color: hsl(var(--foreground) / 0.78);
+}
+
+/* Determinado — clear, stable, neutral-warm */
+.emotional-determinado .scene-image {
+  filter: brightness(1) saturate(1);
+}
+
+/* Em Dificuldade — heavy, dark, strained */
+.emotional-dificuldade .scene-image {
+  filter: brightness(0.72) saturate(0.6) contrast(1.1);
+}
+.emotional-dificuldade .narrative-text {
+  color: hsl(var(--foreground) / 0.72);
+}
+.emotional-dificuldade .scene-overlay {
+  background: linear-gradient(to top, hsl(var(--background)), hsl(var(--background) / 0.65), hsl(0 15% 10% / 0.25));
+}
+
+/* Esperançoso — warm glow, brighter */
+.emotional-esperancoso .scene-image {
+  filter: brightness(1.1) saturate(1.15) hue-rotate(3deg);
+}
+.emotional-esperancoso .narrative-text {
   color: hsl(var(--foreground) / 0.95);
 }
-
-.emotional-hopeful .scene-overlay {
-  background: linear-gradient(to top, hsl(var(--background)), hsl(var(--background) / 0.3), hsl(40 50% 50% / 0.05));
+.emotional-esperancoso .scene-overlay {
+  background: linear-gradient(to top, hsl(var(--background)), hsl(var(--background) / 0.3), hsl(40 50% 50% / 0.06));
 }
 
-.emotional-heavy {
-  --emotional-color: 220 20% 30%;
+/* Livre — golden, luminous, light */
+.emotional-livre .scene-image {
+  filter: brightness(1.15) saturate(1.2) hue-rotate(5deg);
+}
+.emotional-livre .narrative-text {
+  color: hsl(var(--foreground));
+}
+.emotional-livre .scene-overlay {
+  background: linear-gradient(to top, hsl(var(--background) / 0.3), transparent, hsl(40 60% 55% / 0.08));
 }
 
-.emotional-heavy .narrative-text {
+/* Em Conflito — harsh shadows, split lighting feel */
+.emotional-conflito .scene-image {
+  filter: brightness(0.78) saturate(0.7) contrast(1.15);
+}
+.emotional-conflito .narrative-text {
   color: hsl(var(--foreground) / 0.75);
 }
-
-.emotional-heavy .scene-overlay {
-  background: linear-gradient(to top, hsl(var(--background)), hsl(var(--background) / 0.6), hsl(220 30% 10% / 0.3));
+.emotional-conflito .scene-overlay {
+  background: linear-gradient(135deg, hsl(0 20% 10% / 0.3), transparent 50%, hsl(220 20% 10% / 0.3));
 }
 
-.emotional-heavy .scene-image {
-  filter: brightness(0.7) saturate(0.6);
+/* Recuperação — dawn-like, growing warmth */
+.emotional-recuperacao .scene-image {
+  filter: brightness(0.95) saturate(1.05) hue-rotate(2deg);
+}
+.emotional-recuperacao .narrative-text {
+  color: hsl(var(--foreground) / 0.88);
+}
+.emotional-recuperacao .scene-overlay {
+  background: linear-gradient(to top, hsl(var(--background)), hsl(var(--background) / 0.4), hsl(30 40% 50% / 0.05));
 }
 
+/* Vitória Final — bright, clean, peaceful */
+.emotional-vitoria .scene-image {
+  filter: brightness(1.2) saturate(1.25);
+}
+.emotional-vitoria .narrative-text {
+  color: hsl(var(--foreground));
+}
+.emotional-vitoria .scene-overlay {
+  background: linear-gradient(to top, hsl(var(--background) / 0.2), transparent, hsl(40 70% 60% / 0.1));
+}
+
+/* Legacy compat */
 .emotional-hopeful .scene-image {
   filter: brightness(1.1) saturate(1.15);
+}
+.emotional-heavy .scene-image {
+  filter: brightness(0.7) saturate(0.6);
 }
 
 /* Visual effects */

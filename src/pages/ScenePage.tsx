@@ -5,7 +5,7 @@ import { useProgressSync } from '@/hooks/useProgressSync';
 import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect, ToneNarrative, StoryChoice } from '@/data/story';
 import { sceneImages } from '@/data/sceneImages';
 import { sceneVariations, VariationContext } from '@/data/sceneVariations';
-import { getEmotionalState, getEmotionalClasses } from '@/lib/emotionalIntensity';
+import { resolveEmotionalState, postureToLegacyTone } from '@/lib/emotionalState';
 import { analyzePerformance } from '@/lib/performanceAnalysis';
 import { useVisualEffects } from '@/hooks/useVisualEffects';
 import { useAudioEngine } from '@/hooks/useAudioEngine';
@@ -32,17 +32,22 @@ const ScenePage = () => {
   const [transitioning, setTransitioning] = useState(false);
   const { triggerChoiceEffect } = useVisualEffects();
   const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
-  const atmosphere = useAtmosphere(progress.attributes);
+  // Recent decision effects for trend analysis
+  const recentEffects = useMemo(() => {
+    return (progress as any).decisions?.slice(-5)?.map((d: any) => d.effects || {}) || [];
+  }, [progress]);
 
   const chapter = getChapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
-  // Emotional intensity system
+  // Emotional state system (9 postures)
   const emotional = useMemo(() => 
-    chapter ? getEmotionalState(progress.attributes, chapter.id) : null
-  , [progress.attributes, chapter?.id]);
+    chapter ? resolveEmotionalState(progress.attributes, chapter.id, Object.entries(progress.flags).filter(([, v]) => v).map(([k]) => k), recentEffects) : null
+  , [progress.attributes, chapter?.id, progress.flags, recentEffects]);
 
-  const emotionalClass = emotional ? getEmotionalClasses(emotional.tone) : '';
+  const emotionalClass = emotional?.sceneClass || '';
+  const legacyTone = emotional ? postureToLegacyTone(emotional.posture) : 'neutral' as const;
+  const atmosphere = useAtmosphere(progress.attributes, emotional?.posture);
 
   // Build variation context for history-aware scene text
   const variationCtx: VariationContext = useMemo(() => ({
@@ -105,9 +110,9 @@ const ScenePage = () => {
   // Audio: set ambience when scene or emotional state changes
   useEffect(() => {
     if (chapter && emotional) {
-      setAmbienceForScene(chapter.id, emotional.tone);
+      setAmbienceForScene(chapter.id, legacyTone);
     }
-  }, [chapter?.id, emotional?.tone, setAmbienceForScene]);
+  }, [chapter?.id, legacyTone, setAmbienceForScene]);
 
   useEffect(() => {
     if (!chapter) return;
@@ -183,7 +188,7 @@ const ScenePage = () => {
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => setShowStats(s => !s)} className="flex-shrink-0">
-            <PilgrimAvatar attributes={progress.attributes} tone={emotional?.tone} size="sm" />
+            <PilgrimAvatar attributes={progress.attributes} tone={legacyTone} size="sm" storyFlag={emotional?.flagOverride} />
           </button>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
