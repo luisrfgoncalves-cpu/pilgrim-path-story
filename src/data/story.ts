@@ -1254,6 +1254,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Após um caminho aparentemente mais fácil, você percebe que tomou uma decisão errada."
     ],
+    replayNarrative: [
+      "O castelo te prendeu antes. Desta vez, você sabe o que espera — mas será que isso é suficiente?"
+    ],
     toneNarrative: [
       { attr: "discernimento", highThreshold: 7, highText: "Seu discernimento grita: você sabia que algo estava errado, mas ignorou os sinais.", lowThreshold: 3, lowText: "Você nem consegue entender onde errou. Tudo parece confuso demais." }
     ],
@@ -1527,6 +1530,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     narrative: [
       "Após uma longa jornada, você avista o destino final. Mas ainda há um último desafio."
+    ],
+    replayNarrative: [
+      "Você já viu a cidade antes — ou talvez nunca tenha chegado tão longe. De qualquer forma, este momento é diferente. Você é diferente."
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "Seu coração se enche de expectativa. Tudo pelo que lutou está ali, do outro lado.", lowThreshold: 3, lowText: "Você olha para o destino sem conseguir acreditar. Será que merece chegar até lá?" },
