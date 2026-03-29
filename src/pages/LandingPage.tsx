@@ -850,13 +850,13 @@ const CinematicImage = ({ src, alt, caption, subcaption, rotate = 0 }: {
 const CharacterPortrait = ({ src, name, role }: { src: string; name: string; role: string }) => (
   <div className="flex flex-col items-center gap-2">
     <div
-      className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-primary/40"
-      style={{ boxShadow: '0 0 15px hsl(40 70% 50% / 0.25), 0 4px 15px rgba(0,0,0,0.5)' }}
+      className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-primary/50 relative"
+      style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.35), 0 0 40px hsl(40 70% 50% / 0.12), 0 4px 15px rgba(0,0,0,0.5), inset 0 2px 4px hsl(40 80% 75% / 0.1)' }}
     >
       <img src={src} alt={name} className="w-full h-full object-cover" loading="lazy" />
     </div>
     <div className="text-center">
-      <p className="font-display text-xs font-bold text-foreground">{name}</p>
+      <p className="font-display text-xs font-bold text-foreground" style={{ textShadow: '0 0 8px hsl(40 70% 50% / 0.3)' }}>{name}</p>
       <p className="text-[10px] text-muted-foreground">{role}</p>
     </div>
   </div>
