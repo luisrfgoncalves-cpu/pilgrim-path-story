@@ -41,19 +41,18 @@ const resolvePosture = (avg: number, tone: EmotionalTone, storyFlag?: string): P
   // Story-driven overrides (highest priority)
   if (storyFlag === 'livre') return 'livre';
   if (storyFlag === 'vitoria') return 'vitoria_final';
+  if (storyFlag === 'conflito') return 'em_conflito';
 
-  // Tone-driven nuances
-  if (tone === 'heavy' && avg < 4) return 'abatido';
-  if (tone === 'heavy') return 'em_dificuldade';
-  if (tone === 'tension' && avg < 5) return 'em_conflito';
-  if (tone === 'tension') return 'em_dificuldade';
-  if (tone === 'doubt') return 'confuso';
-  if (tone === 'hope' && avg >= 7) return 'esperancoso';
-  if (tone === 'hope') return 'recuperacao';
-  if (tone === 'peace' && avg >= 8) return 'vitoria_final';
-  if (tone === 'peace') return 'esperancoso';
+  // Tone + attribute combos
+  if (tone === 'heavy' && avg < 3.5) return 'abatido';
+  if (tone === 'heavy' && avg < 5) return 'em_dificuldade';
+  if (tone === 'heavy') return 'em_conflito';
 
-  // Attribute-average fallback
+  if (tone === 'hopeful' && avg >= 8) return 'vitoria_final';
+  if (tone === 'hopeful' && avg >= 6) return 'esperancoso';
+  if (tone === 'hopeful') return 'recuperacao';
+
+  // Neutral — pure attribute-based
   if (avg >= 8.5) return 'vitoria_final';
   if (avg >= 7) return 'esperancoso';
   if (avg >= 5.5) return 'determinado';
