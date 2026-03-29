@@ -43,10 +43,23 @@ const ScenePage = () => {
 
   const emotionalClass = emotional ? getEmotionalClasses(emotional.tone) : '';
 
-  // Build full narrative with adaptive + flag-based + tone-based + emotional + replay segments
+  // Build variation context for history-aware scene text
+  const variationCtx: VariationContext = useMemo(() => ({
+    playthrough: progress.playthrough,
+    history,
+    flags: progress.flags,
+    visitedChapters: progress.visitedChapters,
+    attributes: progress.attributes,
+  }), [progress, history]);
+
+  // Build full narrative with adaptive + flag-based + tone-based + emotional + replay + variation segments
   const fullNarrative = chapter ? [
     ...chapter.narrative,
     ...(isReplay && chapter.replayNarrative ? chapter.replayNarrative : []),
+    // History-aware scene variations
+    ...(sceneVariations[chapter.id] || [])
+      .filter(v => v.condition(variationCtx))
+      .map(v => v.text),
     ...(chapter.adaptiveNarrative || [])
       .filter(seg => progress.attributes[seg.minAttr as keyof typeof progress.attributes] >= seg.minValue)
       .map(seg => seg.text),
