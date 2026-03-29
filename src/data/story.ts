@@ -1952,6 +1952,36 @@ export const storyChapters: Record<string, StoryChapter> = {
     ]
   },
 
+  "fase6-cena3": {
+    id: "fase6-cena3",
+    title: "Recordações à Beira do Rio",
+    location: "Margem do Rio",
+    characters: ["cristao", "esperanca"],
+    narrative: [
+      "Antes de entrar nas águas, Esperança e você sentam-se na margem. O País de Beulá perfuma o ar atrás de vocês. O rio corre à frente, escuro e profundo.",
+      "\"Lembra-se de Fiel?\", pergunta Esperança. \"Ele não precisou atravessar o rio. A carruagem celestial o levou direto. Mas nós... nós temos que passar por aqui.\"",
+      "Vocês relembram toda a jornada: o fardo, o pântano, o vale, a feira, o castelo. Cada memória é uma pedra no alicerce da fé que os sustentará nas águas."
+    ],
+    flagNarrative: [
+      { flag: "permaneceu_diferente", text: "\"Você defendeu Fiel na feira\", diz Esperança. \"Essa coragem veio de algum lugar. Ela te carregará pelo rio também.\"" },
+      { flag: "entrou_casa_interprete", text: "As visões do Intérprete — poeira e graça, fogo eterno, gaiola de ferro — cada uma foi um degrau que te trouxe até esta margem." },
+      { flag: "venceu_terra_encantada", text: "Você venceu o sono da Terra Encantada. O rio é a última prova. Depois dele, não há mais sono — apenas vida." }
+    ],
+    choices: [
+      {
+        text: "Orar juntos e entrar no rio com fé",
+        nextChapterId: "fase6-cena2",
+        effects: { fe: 1, perseveranca: 1 },
+        flag: "orou_antes_rio"
+      },
+      {
+        text: "Entrar no rio sem mais delongas",
+        nextChapterId: "fase6-cena2",
+        effects: { coragem: 1 }
+      }
+    ]
+  },
+
   "fase6-cena4": {
     id: "fase6-cena4",
     title: "Afundando nas Águas",
