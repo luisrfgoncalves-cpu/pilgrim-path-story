@@ -6,10 +6,11 @@ import { sceneImages } from '@/data/sceneImages';
 import { getEmotionalState, getEmotionalClasses } from '@/lib/emotionalIntensity';
 import { analyzePerformance } from '@/lib/performanceAnalysis';
 import { useVisualEffects } from '@/hooks/useVisualEffects';
+import { useAudioEngine } from '@/hooks/useAudioEngine';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
-import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle } from 'lucide-react';
+import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX } from 'lucide-react';
 
 const ScenePage = () => {
   const navigate = useNavigate();
@@ -18,7 +19,9 @@ const ScenePage = () => {
   const [showChoices, setShowChoices] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [audioOn, setAudioOn] = useState(true);
   const { triggerChoiceEffect } = useVisualEffects();
+  const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
 
   const chapter = getChapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
@@ -69,6 +72,13 @@ const ScenePage = () => {
     setPlaythroughRecorded(false);
   }, [progress.currentChapterId]);
 
+  // Audio: set ambience when scene or emotional state changes
+  useEffect(() => {
+    if (chapter && emotional) {
+      setAmbienceForScene(chapter.id, emotional.tone);
+    }
+  }, [chapter?.id, emotional?.tone, setAmbienceForScene]);
+
   useEffect(() => {
     if (!chapter) return;
     if (narrativeIndex < fullNarrative.length - 1) {
@@ -82,6 +92,7 @@ const ScenePage = () => {
 
   const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
     triggerChoiceEffect(effects as Record<string, number>);
+    sfxForChoice(effects as Record<string, number>);
 
     if (item) {
       addItem(item);
@@ -137,9 +148,18 @@ const ScenePage = () => {
               <span className="text-[10px] text-muted-foreground flex-shrink-0">{progressPercent}%</span>
             </div>
           </div>
-          <button onClick={() => navigate('/')} className="text-muted-foreground hover:text-foreground transition-colors text-xs flex-shrink-0">
-            ← Início
-          </button>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={() => { const next = !audioOn; setAudioOn(next); toggleAudio(next); }}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={audioOn ? 'Desativar som' : 'Ativar som'}
+            >
+              {audioOn ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+            </button>
+            <button onClick={() => navigate('/')} className="text-muted-foreground hover:text-foreground transition-colors text-xs">
+              ← Início
+            </button>
+          </div>
         </div>
 
         {/* Expandable attribute bars */}
