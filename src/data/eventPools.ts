@@ -370,8 +370,57 @@ export const eventPools: Record<string, PhaseEventPool> = {
   // ═══════════════════════════════════════
   fase3: {
     phaseId: 'fase3',
-    variableCount: 2,
+    variableCount: 3,
     events: [
+      // ── Personagem: Apolião provocação ──
+      {
+        id: 'f3-apoliao-provocacao',
+        type: 'variable',
+        narrative: [
+          'Uma risada gutural ecoa pelo vale. "Eu conheço cada pecado que você cometeu, Cristão."',
+          '"Cada dúvida. Cada momento que quase voltou para mim. Você é meu — sempre foi."',
+        ],
+        choices: [
+          {
+            text: '"Fui seu. Mas fui comprado por sangue mais precioso que o seu."',
+            effects: { fe: 2, coragem: 2 },
+            consequence: 'A declaração ressoa pelo vale. Por um instante, o silêncio de Apolião é sua vitória.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Tremer em silêncio, incapaz de responder',
+            effects: { coragem: -1, fe: -1 },
+            consequence: 'O silêncio alimenta a arrogância de Apolião. Mas até o silêncio pode ser resistência.',
+            consequenceKey: 'fugiu_do_conflito',
+            appearance: 0.6,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 3,
+      },
+      // ── Personagem: Fiel no vale ──
+      {
+        id: 'f3-fiel-relato',
+        type: 'variable',
+        narrative: [
+          'Fiel, que você encontrará adiante, passou por aqui antes de você. Marcas na pedra contam sua história.',
+          'Gravado na rocha: "Adão Primeiro me tentou com prazeres. Moisés me bateu. Mas a graça me curou."',
+        ],
+        choices: [
+          {
+            text: 'Ler todas as inscrições de Fiel com atenção',
+            effects: { discernimento: 2, fe: 1 },
+            consequence: 'Cada marca na pedra é um lembrete: outros passaram por aqui e sobreviveram.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Seguir em frente — suas próprias marcas o esperam',
+            effects: { coragem: 1 },
+            consequence: 'Há sabedoria em aprender com outros. Mas também em forjar seu próprio caminho.',
+          },
+        ],
+        weight: 2,
+      },
       {
         id: 'f3-emboscada',
         type: 'variable',
@@ -481,8 +530,60 @@ export const eventPools: Record<string, PhaseEventPool> = {
   // ═══════════════════════════════════════
   fase4: {
     phaseId: 'fase4',
-    variableCount: 3,
+    variableCount: 4,
     events: [
+      // ── Personagem: Falador ──
+      {
+        id: 'f4-falador-encontro',
+        type: 'variable',
+        narrative: [
+          'Um homem eloquente se junta a vocês: "Que bela jornada! Conheço toda a doutrina — justificação, santificação, regeneração..."',
+          'Fiel sussurra: "Cuidado. Ele fala como um anjo, mas vive como um demônio. Na cidade dele, dizem que é pior em casa."',
+        ],
+        choices: [
+          {
+            text: 'Perguntar a Falador: "A graça transformou sua vida prática?"',
+            effects: { discernimento: 2, fe: 1 },
+            consequence: 'Falador gagueja e muda de assunto. As perguntas certas desarmam mais que espadas.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Ouvir seus discursos impressionantes',
+            effects: { discernimento: -1 },
+            consequence: 'As palavras são bonitas. Mas sem frutos, são apenas barulho.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.5,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
+      },
+      // ── Personagem: Amor ao Dinheiro ──
+      {
+        id: 'f4-amor-dinheiro',
+        type: 'variable',
+        narrative: [
+          'Um cavalheiro bem-vestido se aproxima: "Sou Amor ao Dinheiro, de Vanity Fair. Posso mostrar-lhes como servir a Deus E enriquecer."',
+          '"Os maiores homens de fé tinham riquezas — Abraão, Salomão. Por que não vocês?"',
+        ],
+        choices: [
+          {
+            text: '"Ninguém pode servir a dois senhores"',
+            effects: { fe: 2, discernimento: 1 },
+            consequence: 'Amor ao Dinheiro se afasta irritado. A verdade sempre incomoda quem vive na mentira.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Considerar o argumento — faz algum sentido',
+            effects: { fe: -1, discernimento: -1 },
+            consequence: 'O argumento é sedutor. Mas no fundo, você sabe que está trocando ouro eterno por cobre temporal.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.6,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
+      },
       {
         id: 'f4-mercador-honras',
         type: 'variable',
