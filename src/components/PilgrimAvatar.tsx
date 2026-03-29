@@ -232,7 +232,7 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
         {/* Current image (fading in during crossfade, or fully visible) */}
         <img
           src={assets[crossfading ? posture : displayedPosture]}
-          alt={postureLabels[activePosture]}
+          alt={labels[activePosture]}
           className={`w-full h-full object-cover transition-all duration-[1200ms] ease-in-out ${visual.overlayClass} ${size === 'lg' ? 'scale-110' : ''}`}
           style={{
             ...imgStyle(activePosture),
@@ -297,7 +297,7 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
         <span className={`uppercase tracking-widest font-medium transition-all duration-[1200ms] ${
           size === 'lg' ? 'text-xs text-foreground/80' : 'text-[9px] text-muted-foreground'
         }`}>
-          {postureLabels[activePosture]}
+          {labels[activePosture]}
         </span>
       )}
     </div>
