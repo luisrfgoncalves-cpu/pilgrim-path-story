@@ -35,6 +35,7 @@ const App = () => (
             <Route path="/personagens" element={<CharactersPage />} />
             <Route path="/reflexoes" element={<ReflectionsPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/perfil" element={<ProfilePage />} />
             <Route path="/comunidade" element={<CommunityPage />} />
             <Route path="/multiplayer" element={<MultiplayerPage />} />
