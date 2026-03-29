@@ -314,20 +314,38 @@ const JourneysPage = () => {
                         </span>
                       </div>
 
-                      {/* Expand chapters button */}
-                      <button
-                        onClick={() => setExpandedPhase(expanded ? null : phase.id)}
-                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all active:scale-[0.98]"
-                        style={{
-                          background: expanded ? `${phase.color}20` : 'hsl(30 18% 15%)',
-                          border: `1.5px solid ${expanded ? `${phase.color}50` : 'hsl(30 15% 22%)'}`,
-                          color: expanded ? phase.color : 'hsl(35 30% 55%)',
-                        }}
-                      >
-                        <span className="text-sm font-display">
-                          {expanded ? 'Fechar capítulos' : 'Ver capítulos'}
-                        </span>
-                        {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      {/* Action buttons */}
+                      <div className="flex gap-2">
+                        {/* Replay phase button */}
+                        <button
+                          onClick={() => handlePhaseReplay(phase.id)}
+                          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all active:scale-[0.98]"
+                          style={{
+                            background: `${phase.color}20`,
+                            border: `1.5px solid ${phase.color}50`,
+                            color: phase.color,
+                          }}
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          <span className="text-sm font-display">Revisitar</span>
+                        </button>
+
+                        {/* Expand chapters button */}
+                        <button
+                          onClick={() => setExpandedPhase(expanded ? null : phase.id)}
+                          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all active:scale-[0.98]"
+                          style={{
+                            background: expanded ? `${phase.color}20` : 'hsl(30 18% 15%)',
+                            border: `1.5px solid ${expanded ? `${phase.color}50` : 'hsl(30 15% 22%)'}`,
+                            color: expanded ? phase.color : 'hsl(35 30% 55%)',
+                          }}
+                        >
+                          <span className="text-sm font-display">
+                            {expanded ? 'Fechar' : 'Capítulos'}
+                          </span>
+                          {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </button>
+                      </div>
                       </button>
 
                       {/* Expanded chapter list */}
