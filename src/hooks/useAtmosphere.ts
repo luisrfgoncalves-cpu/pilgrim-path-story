@@ -25,14 +25,14 @@ const postureModifiers: Record<PostureState, {
   glowBoost: number;
   hueShift: number;
 }> = {
-  abatido:        { brightnessShift: -0.12, saturationShift: -0.20, extraBlur: 0.4, vignetteBoost: 0.20, glowBoost: 0,    hueShift: 0 },
-  confuso:        { brightnessShift: -0.05, saturationShift: -0.08, extraBlur: 0.8, vignetteBoost: 0.08, glowBoost: 0,    hueShift: 0 },
+  abatido:        { brightnessShift: -0.06, saturationShift: -0.12, extraBlur: 0.3, vignetteBoost: 0.10, glowBoost: 0,    hueShift: 0 },
+  confuso:        { brightnessShift: -0.03, saturationShift: -0.05, extraBlur: 0.5, vignetteBoost: 0.05, glowBoost: 0,    hueShift: 0 },
   determinado:    { brightnessShift:  0.02, saturationShift:  0.05, extraBlur: 0,   vignetteBoost: 0,    glowBoost: 0.02, hueShift: 0 },
-  em_dificuldade: { brightnessShift: -0.08, saturationShift: -0.15, extraBlur: 0.2, vignetteBoost: 0.15, glowBoost: 0,    hueShift: 0 },
+  em_dificuldade: { brightnessShift: -0.04, saturationShift: -0.08, extraBlur: 0.1, vignetteBoost: 0.08, glowBoost: 0,    hueShift: 0 },
   esperancoso:    { brightnessShift:  0.10, saturationShift:  0.15, extraBlur: 0,   vignetteBoost: 0,    glowBoost: 0.20, hueShift: 5 },
   livre:          { brightnessShift:  0.15, saturationShift:  0.20, extraBlur: 0,   vignetteBoost: 0,    glowBoost: 0.30, hueShift: 7 },
-  em_conflito:    { brightnessShift: -0.06, saturationShift: -0.10, extraBlur: 0,   vignetteBoost: 0.12, glowBoost: 0,    hueShift: -3 },
-  recuperacao:    { brightnessShift:  0.04, saturationShift:  0.03, extraBlur: 0,   vignetteBoost: 0.05, glowBoost: 0.10, hueShift: 3 },
+  em_conflito:    { brightnessShift: -0.03, saturationShift: -0.06, extraBlur: 0,   vignetteBoost: 0.06, glowBoost: 0,    hueShift: -3 },
+  recuperacao:    { brightnessShift:  0.04, saturationShift:  0.03, extraBlur: 0,   vignetteBoost: 0.03, glowBoost: 0.10, hueShift: 3 },
   vitoria_final:  { brightnessShift:  0.20, saturationShift:  0.25, extraBlur: 0,   vignetteBoost: 0,    glowBoost: 0.35, hueShift: 10 },
 };
 
@@ -49,7 +49,7 @@ export function useAtmosphere(attributes: PlayerAttributes, posture: PostureStat
     const mod = postureModifiers[posture];
 
     // Base values from attributes
-    const brightness = Math.max(0.72, Math.min(1.3, 0.75 + feN * 0.35 + mod.brightnessShift));
+    const brightness = Math.max(0.85, Math.min(1.3, 0.85 + feN * 0.30 + mod.brightnessShift));
     const saturation = Math.max(0.55, Math.min(1.3, 0.6 + coragemN * 0.55 + mod.saturationShift));
     const blur = Math.max(0, (1 - discN) * 0.8 + mod.extraBlur * 0.6);
     const hueShift = (feN > 0.7 ? (feN - 0.7) * 15 : 0) + mod.hueShift;

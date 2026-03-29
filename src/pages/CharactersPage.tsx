@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { characters } from '@/data/story';
-import { ArrowLeft, Lock, User } from 'lucide-react';
+import { characterImages } from '@/data/characterImages';
+import { ArrowLeft, Lock } from 'lucide-react';
 
 const CharactersPage = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const CharactersPage = () => {
       <main className="max-w-lg mx-auto px-5 py-6 space-y-3">
         {characters.map(char => {
           const unlocked = progress.visitedChapters.includes(char.unlockedAtChapter);
+          const portrait = characterImages[char.id];
           return (
             <div
               key={char.id}
@@ -29,13 +31,22 @@ const CharactersPage = () => {
               }`}
             >
               <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  unlocked ? 'bg-primary/10 border border-primary/30' : 'bg-muted'
+                <div className={`w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border-2 ${
+                  unlocked ? 'border-primary/40' : 'border-muted'
                 }`}>
-                  {unlocked ? (
-                    <User className="w-5 h-5 text-gold" />
+                  {unlocked && portrait ? (
+                    <img
+                      src={portrait}
+                      alt={char.name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      width={48}
+                      height={48}
+                    />
                   ) : (
-                    <Lock className="w-4 h-4 text-muted-foreground" />
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <Lock className="w-4 h-4 text-muted-foreground" />
+                    </div>
                   )}
                 </div>
                 <div className="flex-1">
