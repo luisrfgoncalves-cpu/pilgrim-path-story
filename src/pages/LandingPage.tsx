@@ -99,312 +99,85 @@ const CountdownTimer = ({ compact = false }: { compact?: boolean }) => {
 };
 
 /* ═══════════════════════════════════════════════════════════
-   PHONE MOCKUP — REAL APP UI SCREENS TOUR
-   Shows recreated UI screens, not just background images
+   PHONE MOCKUP — CONTINUOUS SCROLLING TOUR OF REAL APP UI
+   Auto-scrolls through a single long "page" that recreates
+   every real screen of the app. User can pause and scroll manually.
    ═══════════════════════════════════════════════════════════ */
 
-/* Simulated app screens as mini-components */
-const AppScreen_Dashboard = () => (
-  <div className="w-full h-full bg-[#0c0a14] flex flex-col text-white relative overflow-hidden">
-    <div className="absolute inset-0 opacity-20">
-      <img src={cidadeDestruicao} alt="" className="w-full h-full object-cover" />
-    </div>
-    <div className="relative z-10 flex flex-col items-center pt-10 px-4 flex-1">
-      <p className="text-[7px] uppercase tracking-[0.2em] text-amber-400/70 mb-1">Fase 1 · A Partida</p>
-      {/* Avatar circle */}
-      <div className="w-16 h-16 rounded-full border-2 border-amber-500/60 bg-gradient-to-b from-amber-900/40 to-amber-950/60 flex items-center justify-center mb-2" style={{ boxShadow: '0 0 15px rgba(217,160,60,0.3)' }}>
-        <span className="text-2xl">⚔️</span>
-      </div>
-      <p className="font-bold text-sm text-white">Cidade da Destruição</p>
-      <p className="text-[8px] text-white/50 mb-2">Uma terra condenada à ruína...</p>
-      {/* Progress bar */}
-      <div className="w-full h-1.5 bg-white/10 rounded-full mb-1">
-        <div className="h-full bg-amber-500 rounded-full" style={{ width: '12%' }} />
-      </div>
-      <div className="flex justify-between w-full text-[7px] text-white/40 mb-3">
-        <span>12%</span>
-        <span>🔥3 ⛰️3 👁️3 🛡️3</span>
-      </div>
-      {/* Buttons */}
-      <div className="w-full space-y-2 mt-auto pb-4">
-        <div className="w-full py-2.5 rounded-lg bg-gradient-to-b from-amber-600 to-amber-700 text-center text-[10px] font-bold border border-amber-500/50" style={{ boxShadow: '0 0 12px rgba(217,160,60,0.3)' }}>
-          ▶ Continuar Jornada
-        </div>
-        <div className="w-full py-2 rounded-lg bg-white/5 border border-white/10 text-center text-[10px] text-amber-400">
-          📖 Parte II — A Peregrina
-        </div>
-        <div className="grid grid-cols-5 gap-1.5">
-          {['🏠 Início', '🗺️ Mapa', '⚔️ Multi', '👤 Perfil', '👥 Social'].map((b, i) => (
-            <div key={i} className="py-1.5 rounded-md bg-white/5 border border-white/10 text-center text-[6px] text-white/60">{b}</div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-const AppScreen_Scene = () => (
-  <div className="w-full h-full relative overflow-hidden">
-    <img src={valeHumilhacao} alt="" className="w-full h-full object-cover" />
-    <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/80" />
-    <div className="absolute top-8 left-3 right-3 z-10">
-      <div className="flex items-center gap-1.5 mb-1">
-        <span className="text-[7px] text-amber-400/80 uppercase tracking-wider">Fase 3 · Vale da Humilhação</span>
-      </div>
-    </div>
-    {/* Attribute bars */}
-    <div className="absolute top-16 left-3 right-3 z-10 flex gap-1">
-      {[
-        { emoji: '🔥', val: 4, color: '#f59e0b' },
-        { emoji: '⛰️', val: 3, color: '#6b7280' },
-        { emoji: '👁️', val: 5, color: '#8b5cf6' },
-        { emoji: '🛡️', val: 2, color: '#ef4444' },
-      ].map((a, i) => (
-        <div key={i} className="flex-1">
-          <div className="flex items-center gap-0.5 mb-0.5">
-            <span className="text-[7px]">{a.emoji}</span>
-            <span className="text-[6px] text-white/60">{a.val}</span>
-          </div>
-          <div className="h-1 bg-white/10 rounded-full">
-            <div className="h-full rounded-full" style={{ width: `${a.val * 20}%`, background: a.color }} />
-          </div>
-        </div>
-      ))}
-    </div>
-    {/* Narrative text */}
-    <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
-      <div className="bg-black/70 backdrop-blur-sm rounded-lg p-2.5 border border-amber-500/20">
-        <p className="text-[9px] text-white/90 leading-relaxed mb-2">
-          Uma criatura monstruosa surge do vale — é <strong className="text-amber-400">Apolião</strong>, o Destruidor!
-          Suas asas cobrem o céu e seus olhos ardem como brasas...
-        </p>
-        <div className="space-y-1.5">
-          <div className="py-1.5 px-2 rounded-md bg-amber-600/20 border border-amber-500/30 text-[8px] text-amber-300">
-            ⚔️ Enfrentar Apolião com a Espada do Espírito
-          </div>
-          <div className="py-1.5 px-2 rounded-md bg-white/5 border border-white/10 text-[8px] text-white/70">
-            🙏 Orar por proteção divina
-          </div>
-          <div className="py-1.5 px-2 rounded-md bg-white/5 border border-white/10 text-[8px] text-white/70">
-            🏃 Tentar fugir pelo vale
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-const AppScreen_DiceDuel = () => (
-  <div className="w-full h-full bg-[#0c0a14] flex flex-col items-center justify-center relative overflow-hidden">
-    <div className="absolute inset-0 opacity-15">
-      <img src={valeHumilhacao} alt="" className="w-full h-full object-cover" />
-    </div>
-    <div className="relative z-10 flex flex-col items-center px-4 w-full">
-      <p className="text-[8px] text-amber-400 uppercase tracking-wider mb-2">⚔️ Duelo de Dados 3D</p>
-      <p className="text-[10px] text-white font-bold mb-3">Cristão vs Apolião</p>
-      {/* VS layout */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="text-center">
-          <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-lg mb-1">⚔️</div>
-          <p className="text-[7px] text-white/80">Cristão</p>
-          <p className="text-[6px] text-green-400">❤️ 3/3</p>
-        </div>
-        <span className="text-amber-400 font-bold text-xs">VS</span>
-        <div className="text-center">
-          <div className="w-10 h-10 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center text-lg mb-1">👹</div>
-          <p className="text-[7px] text-white/80">Apolião</p>
-          <p className="text-[6px] text-red-400">❤️ 3/3</p>
-        </div>
-      </div>
-      {/* Dice */}
-      <div className="w-12 h-12 rounded-xl bg-white border-2 border-amber-500/50 flex items-center justify-center text-2xl font-bold text-[#0c0a14] mb-3 rotate-12" style={{ boxShadow: '0 0 20px rgba(217,160,60,0.4)' }}>
-        5
-      </div>
-      {/* Action buttons */}
-      <div className="grid grid-cols-3 gap-2 w-full">
-        <div className="py-2 rounded-lg bg-red-500/20 border border-red-500/30 text-center text-[7px] text-red-300">⚔️ Espada</div>
-        <div className="py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-center text-[7px] text-blue-300">🛡️ Escudo</div>
-        <div className="py-2 rounded-lg bg-amber-500/20 border border-amber-500/30 text-center text-[7px] text-amber-300">🙏 Oração</div>
-      </div>
-    </div>
-  </div>
-);
-
-const AppScreen_Multiplayer = () => (
-  <div className="w-full h-full bg-[#0c0a14] flex flex-col relative overflow-hidden">
-    <div className="relative z-10 flex flex-col h-full px-3 pt-8 pb-3">
-      <p className="text-[8px] text-amber-400 uppercase tracking-wider text-center mb-1">⚔️ Modo Multiplayer</p>
-      <p className="text-[10px] text-white font-bold text-center mb-2">Tabuleiro Premium</p>
-      {/* Mini board representation */}
-      <div className="flex-1 bg-gradient-to-b from-amber-900/20 to-amber-950/10 rounded-lg border border-amber-500/20 p-2 mb-2">
-        <div className="grid grid-cols-8 gap-[2px]">
-          {Array.from({ length: 32 }).map((_, i) => (
-            <div
-              key={i}
-              className="aspect-square rounded-sm flex items-center justify-center text-[5px]"
-              style={{
-                background: i === 3 ? '#E8724A' : i === 5 ? '#4CAF50' : i === 0 ? 'rgba(217,160,60,0.3)' : i === 31 ? 'rgba(217,160,60,0.4)' : 'rgba(255,255,255,0.05)',
-                border: i === 0 || i === 31 ? '1px solid rgba(217,160,60,0.4)' : '1px solid rgba(255,255,255,0.05)',
-              }}
-            >
-              {i === 0 ? '🏁' : i === 31 ? '✨' : i === 8 ? '⚔️' : i === 15 ? '📖' : i === 22 ? '🎁' : ''}
-            </div>
-          ))}
-        </div>
-        {/* Player legend */}
-        <div className="flex items-center gap-2 mt-2">
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-full bg-[#E8724A]" />
-            <span className="text-[6px] text-white/60">Cristão</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-full bg-[#4CAF50]" />
-            <span className="text-[6px] text-white/60">Fiel</span>
-          </div>
-        </div>
-      </div>
-      {/* Dice area */}
-      <div className="flex items-center justify-between bg-white/5 rounded-lg p-2 border border-white/10">
-        <div className="text-center">
-          <p className="text-[7px] text-amber-400 mb-1">Vez de: Cristão</p>
-          <p className="text-[6px] text-white/50">Casa 4 / 65</p>
-        </div>
-        <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-lg font-bold text-[#0c0a14]" style={{ boxShadow: '0 0 10px rgba(217,160,60,0.3)' }}>
-          🎲
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-const AppScreen_MiniGame = () => (
-  <div className="w-full h-full bg-[#0c0a14] flex flex-col items-center justify-center relative overflow-hidden">
-    <div className="absolute inset-0 opacity-10">
-      <img src={feiraVaidade} alt="" className="w-full h-full object-cover" />
-    </div>
-    <div className="relative z-10 flex flex-col items-center px-4 w-full">
-      <p className="text-[8px] text-amber-400 uppercase tracking-wider mb-1">🎮 Mini-Game</p>
-      <p className="text-[10px] text-white font-bold mb-1">Esquiva de Tentações</p>
-      <p className="text-[7px] text-white/50 mb-3">Deslize para desviar das tentações!</p>
-      {/* Game area simulation */}
-      <div className="w-full aspect-[3/4] bg-white/5 rounded-lg border border-amber-500/20 relative mb-3 overflow-hidden">
-        {/* Obstacles */}
-        <div className="absolute top-4 left-4 w-6 h-6 rounded-full bg-red-500/30 border border-red-500/40 flex items-center justify-center text-[8px]">💰</div>
-        <div className="absolute top-12 right-6 w-6 h-6 rounded-full bg-red-500/30 border border-red-500/40 flex items-center justify-center text-[8px]">🍷</div>
-        <div className="absolute top-24 left-8 w-6 h-6 rounded-full bg-red-500/30 border border-red-500/40 flex items-center justify-center text-[8px]">👑</div>
-        {/* Player */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-amber-500/30 border-2 border-amber-500 flex items-center justify-center text-[10px]" style={{ boxShadow: '0 0 10px rgba(217,160,60,0.4)' }}>
-          🏃
-        </div>
-        {/* Score */}
-        <div className="absolute top-2 right-2 text-[7px] text-amber-400 bg-black/50 px-1.5 py-0.5 rounded">
-          Score: 340
-        </div>
-      </div>
-      <div className="flex gap-2 w-full">
-        <div className="flex-1 py-1.5 rounded-lg bg-white/5 border border-white/10 text-center text-[7px] text-white/60">⏸️ Pausar</div>
-        <div className="flex-1 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500/30 text-center text-[7px] text-amber-300">❓ Regras</div>
-      </div>
-    </div>
-  </div>
-);
-
-const AppScreen_Journey = () => (
-  <div className="w-full h-full bg-[#0c0a14] flex flex-col relative overflow-hidden">
-    <div className="relative z-10 flex flex-col h-full px-3 pt-8 pb-3">
-      <p className="text-[8px] text-amber-400 uppercase tracking-wider text-center mb-1">🗺️ Mapa da Jornada</p>
-      <p className="text-[10px] text-white font-bold text-center mb-3">Sua Peregrinação</p>
-      {/* Journey phases */}
-      <div className="flex-1 space-y-1.5 overflow-hidden">
-        {[
-          { phase: 'Fase 1', name: 'A Partida', progress: 100, icon: '🏚️' },
-          { phase: 'Fase 2', name: 'O Caminho Estreito', progress: 100, icon: '🚪' },
-          { phase: 'Fase 3', name: 'O Vale da Sombra', progress: 60, icon: '⚔️' },
-          { phase: 'Fase 4', name: 'A Feira da Vaidade', progress: 0, icon: '🎪' },
-          { phase: 'Fase 5', name: 'O Castelo da Dúvida', progress: 0, icon: '🏰' },
-          { phase: 'Fase 6', name: 'A Cidade Celestial', progress: 0, icon: '✨' },
-        ].map((p, i) => (
-          <div key={i} className={`flex items-center gap-2 p-1.5 rounded-lg border ${p.progress > 0 ? 'border-amber-500/20 bg-amber-500/5' : 'border-white/5 bg-white/[0.02]'}`}>
-            <span className="text-sm">{p.icon}</span>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <span className="text-[7px] text-white/80 font-bold truncate">{p.name}</span>
-                <span className="text-[6px] text-amber-400/60">{p.progress}%</span>
-              </div>
-              <div className="h-0.5 bg-white/10 rounded-full mt-0.5">
-                <div className="h-full bg-amber-500 rounded-full" style={{ width: `${p.progress}%` }} />
-              </div>
-            </div>
-            {p.progress === 100 && <span className="text-[8px]">✅</span>}
-            {p.progress === 0 && <span className="text-[8px]">🔒</span>}
-          </div>
-        ))}
-      </div>
-      {/* Stats */}
-      <div className="bg-white/5 rounded-lg p-2 border border-white/10 mt-2">
-        <div className="grid grid-cols-4 gap-1 text-center">
-          <div><p className="text-[6px] text-white/40">Capítulos</p><p className="text-[9px] text-amber-400 font-bold">18/30</p></div>
-          <div><p className="text-[6px] text-white/40">Escolhas</p><p className="text-[9px] text-amber-400 font-bold">42</p></div>
-          <div><p className="text-[6px] text-white/40">Duelos</p><p className="text-[9px] text-amber-400 font-bold">5</p></div>
-          <div><p className="text-[6px] text-white/40">Streak</p><p className="text-[9px] text-amber-400 font-bold">🔥 7</p></div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-const AppScreen_Presential = () => (
-  <div className="w-full h-full bg-[#0c0a14] flex flex-col items-center justify-center relative overflow-hidden">
-    <div className="relative z-10 flex flex-col items-center px-4 w-full">
-      <p className="text-[8px] text-amber-400 uppercase tracking-wider mb-1">👥 Modo Reunidos</p>
-      <p className="text-[10px] text-white font-bold mb-3">Multiplayer Presencial</p>
-      {/* Players setup */}
-      <div className="w-full space-y-1.5 mb-3">
-        {[
-          { name: 'Cristão', color: '#E8724A', emoji: '⚔️' },
-          { name: 'Fiel', color: '#4CAF50', emoji: '🛡️' },
-          { name: 'Esperança', color: '#42A5F5', emoji: '🙏' },
-          { name: 'Misericórdia', color: '#FFD54F', emoji: '💛' },
-        ].map((p, i) => (
-          <div key={i} className="flex items-center gap-2 p-1.5 rounded-lg bg-white/5 border border-white/10">
-            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px]" style={{ background: `${p.color}30`, border: `1px solid ${p.color}60` }}>
-              {p.emoji}
-            </div>
-            <span className="text-[9px] text-white/80 flex-1">{p.name}</span>
-            <span className="text-[6px] text-white/40">Casa 0</span>
-          </div>
-        ))}
-      </div>
-      <div className="w-full py-2 rounded-lg bg-gradient-to-b from-amber-600 to-amber-700 text-center text-[9px] font-bold text-white border border-amber-500/50" style={{ boxShadow: '0 0 12px rgba(217,160,60,0.3)' }}>
-        🎲 Iniciar Partida (4 jogadores)
-      </div>
-      <p className="text-[6px] text-white/40 mt-2">2-8 jogadores · Use dados físicos ou digital</p>
-    </div>
-  </div>
-);
-
 const PhoneMockupTour = () => {
-  const [currentScreen, setCurrentScreen] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [activeSection, setActiveSection] = useState(0);
+  const autoRef = useRef<ReturnType<typeof setInterval>>();
+  const touchStartY = useRef(0);
 
-  const screens = [
-    { component: <AppScreen_Dashboard />, label: 'Tela Inicial — Dashboard com avatar, atributos e progresso' },
-    { component: <AppScreen_Scene />, label: 'Cena Narrativa — Escolhas que mudam a história' },
-    { component: <AppScreen_DiceDuel />, label: 'Duelo de Dados 3D — Combate épico contra Apolião' },
-    { component: <AppScreen_MiniGame />, label: 'Mini-Game — 9 tipos de desafios interativos' },
-    { component: <AppScreen_Multiplayer />, label: 'Multiplayer Online — Tabuleiro premium com até 6 jogadores' },
-    { component: <AppScreen_Presential />, label: 'Modo Reunidos — Presencial para grupos de jovens' },
-    { component: <AppScreen_Journey />, label: 'Mapa da Jornada — Acompanhe seu progresso' },
+  const sections = [
+    'Splash Screen',
+    'Dashboard',
+    'Cena Narrativa',
+    'Consequência',
+    'Duelo de Dados 3D',
+    'Mini-Game QTE',
+    'Esquiva de Tentações',
+    'Mapa da Jornada',
+    'Multiplayer Online',
+    'Modo Reunidos',
+    'Tela de Resultado',
   ];
 
+  // Auto-scroll
   useEffect(() => {
-    const id = setInterval(() => {
-      setCurrentScreen(prev => (prev + 1) % screens.length);
-    }, 4000);
-    return () => clearInterval(id);
-  }, [screens.length]);
+    if (isPaused) return;
+    autoRef.current = setInterval(() => {
+      if (!scrollRef.current) return;
+      const el = scrollRef.current;
+      const maxScroll = el.scrollHeight - el.clientHeight;
+      if (el.scrollTop >= maxScroll - 2) {
+        el.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ top: 60, behavior: 'smooth' });
+      }
+    }, 120);
+    return () => clearInterval(autoRef.current);
+  }, [isPaused]);
+
+  // Track active section
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const sectionEls = el.querySelectorAll('[data-section]');
+      let closest = 0;
+      let minDist = Infinity;
+      sectionEls.forEach((s, i) => {
+        const rect = s.getBoundingClientRect();
+        const elRect = el.getBoundingClientRect();
+        const dist = Math.abs(rect.top - elRect.top);
+        if (dist < minDist) { minDist = dist; closest = i; }
+      });
+      setActiveSection(closest);
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const scrollToSection = (idx: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const sectionEls = el.querySelectorAll('[data-section]');
+    if (sectionEls[idx]) {
+      setIsPaused(true);
+      sectionEls[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+    setIsPaused(true);
+  };
 
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div className="flex flex-col items-center gap-4">
       {/* Phone frame */}
       <div
         className="relative"
@@ -413,15 +186,13 @@ const PhoneMockupTour = () => {
           transform: 'perspective(1200px) rotateY(-4deg) rotateX(2deg)',
         }}
       >
-        {/* Phone outer shell */}
         <div
           className="relative rounded-[2.5rem] overflow-hidden"
           style={{
             aspectRatio: '9/19.5',
             background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 30%, #111 100%)',
             padding: '8px',
-            boxShadow:
-              '0 0 0 1px rgba(255,255,255,0.08), 0 0 40px hsl(40 70% 50% / 0.2), 0 40px 100px rgba(0,0,0,0.8), -20px 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
+            boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 0 40px hsl(40 70% 50% / 0.2), 0 40px 100px rgba(0,0,0,0.8), -20px 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
           }}
         >
           {/* Side buttons */}
@@ -430,23 +201,458 @@ const PhoneMockupTour = () => {
           <div className="absolute -left-[3px] top-[170px] w-[3px] h-12 rounded-l-sm" style={{ background: '#333' }} />
           <div className="absolute -right-[3px] top-[130px] w-[3px] h-16 rounded-r-sm" style={{ background: '#333' }} />
 
-          {/* Screen area */}
-          <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-black">
+          {/* Screen */}
+          <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-[#0c0a14]">
             {/* Dynamic Island */}
             <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-[22px] bg-black rounded-full z-30" style={{ boxShadow: 'inset 0 0 4px rgba(0,0,0,0.8)' }}>
               <div className="absolute right-[18px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full" style={{ background: 'radial-gradient(circle, #1a3a5c, #0a1a2c)' }} />
             </div>
 
-            {/* Screen content — actual app UI recreations */}
-            {screens.map((screen, i) => (
-              <div
-                key={i}
-                className="absolute inset-0 transition-opacity duration-700"
-                style={{ opacity: currentScreen === i ? 1 : 0 }}
-              >
-                {screen.component}
+            {/* Scrollable app content */}
+            <div
+              ref={scrollRef}
+              className="absolute inset-0 overflow-y-auto overflow-x-hidden scrollbar-hide"
+              style={{ scrollbarWidth: 'none' }}
+              onTouchStart={handleTouchStart}
+              onMouseDown={() => setIsPaused(true)}
+            >
+              <div className="text-white text-[9px]">
+
+                {/* ─── SPLASH SCREEN ─── */}
+                <div data-section className="min-h-[520px] flex flex-col items-center justify-center px-5 relative">
+                  <div className="absolute inset-0 bg-gradient-to-b from-[#1a1510] via-[#0c0a14] to-[#0c0a14]" />
+                  <div className="relative z-10 flex flex-col items-center text-center">
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-b from-amber-900/40 to-amber-950/60 border border-amber-500/30 flex items-center justify-center mb-3" style={{ boxShadow: '0 0 30px rgba(217,160,60,0.25)' }}>
+                      <span className="text-3xl">⚔️</span>
+                    </div>
+                    <p className="text-[13px] font-bold text-amber-400 tracking-wider mb-1">O PEREGRINO</p>
+                    <p className="text-[8px] text-white/40 tracking-[0.3em] uppercase mb-4">A Jornada Interativa</p>
+                    <p className="text-[8px] text-white/50 italic leading-relaxed px-2 mb-6">
+                      "Estreita é a porta e apertado o caminho que leva à vida."
+                    </p>
+                    <div className="w-full py-2.5 rounded-xl bg-gradient-to-b from-amber-600 to-amber-700 text-center text-[10px] font-bold border border-amber-500/50" style={{ boxShadow: '0 0 15px rgba(217,160,60,0.3)' }}>
+                      ⚔️ Iniciar Jornada
+                    </div>
+                  </div>
+                </div>
+
+                {/* ─── DASHBOARD ─── */}
+                <div data-section className="min-h-[520px] flex flex-col px-4 pt-8 pb-4 relative">
+                  <div className="absolute inset-0 opacity-15">
+                    <img src={cidadeDestruicao} alt="" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="relative z-10 flex flex-col flex-1">
+                    <p className="text-[7px] uppercase tracking-[0.2em] text-amber-400/70 text-center mb-1">Fase 1 · A Partida</p>
+                    <div className="flex flex-col items-center mb-3">
+                      <div className="w-[72px] h-[96px] rounded-2xl border border-amber-500/40 bg-gradient-to-b from-amber-900/30 to-[#0c0a14] overflow-hidden mb-1.5 relative" style={{ boxShadow: '0 0 20px rgba(217,160,60,0.2)' }}>
+                        <img src={pilgrimStanding} alt="Avatar" className="w-full h-full object-cover object-top scale-110" />
+                        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 70% 60% at center 35%, transparent 40%, rgba(12,10,20,0.7) 100%)' }} />
+                      </div>
+                      <p className="text-[7px] text-amber-400/60 uppercase tracking-wider">Determinado</p>
+                    </div>
+                    <p className="font-bold text-[11px] text-center mb-0.5">Cidade da Destruição</p>
+                    <p className="text-[7px] text-white/40 text-center mb-2">Uma terra condenada à ruína...</p>
+                    <p className="text-[7px] text-white/30 italic text-center mb-3 px-2">Algo queima dentro do seu peito. Uma urgência que não se explica...</p>
+                    {/* Progress */}
+                    <div className="w-full h-1.5 bg-white/10 rounded-full mb-1">
+                      <div className="h-full bg-amber-500 rounded-full" style={{ width: '12%' }} />
+                    </div>
+                    <div className="flex justify-between text-[6px] text-white/40 mb-3">
+                      <span>12%</span>
+                      <span className="flex items-center gap-1">
+                        <span>🔥 3</span><span>⛰️ 3</span><span>👁️ 3</span><span>🛡️ 3</span>
+                      </span>
+                    </div>
+                    {/* Buttons */}
+                    <div className="mt-auto space-y-1.5">
+                      <div className="w-full py-2 rounded-lg bg-gradient-to-b from-amber-600 to-amber-700 text-center text-[9px] font-bold border border-amber-500/50" style={{ boxShadow: '0 0 12px rgba(217,160,60,0.3)' }}>
+                        ▶ Continuar Jornada
+                      </div>
+                      <div className="w-full py-1.5 rounded-lg bg-white/5 border border-white/10 text-center text-[8px] text-amber-400">
+                        📖 Parte II — A Peregrina
+                      </div>
+                      <div className="grid grid-cols-5 gap-1">
+                        {['🏠', '🗺️', '⚔️', '👤', '👥'].map((e, i) => (
+                          <div key={i} className="py-1.5 rounded-md bg-white/5 border border-white/10 text-center text-[8px]">{e}</div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ─── SCENE (Narrative + Choices) ─── */}
+                <div data-section className="min-h-[520px] relative">
+                  {/* Scene image */}
+                  <div className="relative h-[180px] overflow-hidden">
+                    <img src={valeHumilhacao} alt="" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0c0a14] via-transparent to-black/30" />
+                    <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-black/50 backdrop-blur-sm px-1.5 py-0.5 rounded">
+                      <span className="text-[6px]">📍</span>
+                      <span className="text-[6px] text-amber-400/90 uppercase tracking-wider font-bold">Vale da Humilhação</span>
+                    </div>
+                  </div>
+                  {/* Character portraits */}
+                  <div className="flex items-center gap-2 px-3 py-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-10 h-10 rounded-xl overflow-hidden border border-green-600/40" style={{ boxShadow: '0 0 10px rgba(74,222,128,0.2)' }}>
+                        <img src={cristao} alt="" className="w-full h-full object-cover object-top" />
+                      </div>
+                      <div>
+                        <p className="text-[8px] text-amber-400 font-bold">Cristão</p>
+                        <p className="text-[6px] text-white/40">Determinado</p>
+                      </div>
+                    </div>
+                    <div className="ml-auto flex items-center gap-2">
+                      <div className="text-right">
+                        <p className="text-[8px] text-amber-600 font-bold">Apolião</p>
+                        <p className="text-[6px] text-white/40">O Destruidor</p>
+                      </div>
+                      <div className="w-10 h-10 rounded-xl overflow-hidden border border-amber-700/40" style={{ boxShadow: '0 0 10px rgba(217,160,60,0.2)' }}>
+                        <img src={apolion} alt="" className="w-full h-full object-cover object-top" />
+                      </div>
+                    </div>
+                  </div>
+                  {/* Attribute bars */}
+                  <div className="px-3 space-y-1 mb-2">
+                    {[
+                      { emoji: '🔥', label: 'Fé', val: 4, max: 15, color: '#f97316' },
+                      { emoji: '⛰️', label: 'Persev.', val: 3, max: 15, color: '#22c55e' },
+                      { emoji: '👁️', label: 'Discern.', val: 5, max: 15, color: '#3b82f6' },
+                      { emoji: '🛡️', label: 'Coragem', val: 2, max: 15, color: '#f59e0b' },
+                    ].map((a, i) => (
+                      <div key={i} className="flex items-center gap-1">
+                        <span className="text-[7px] w-3">{a.emoji}</span>
+                        <span className="text-[5px] text-white/40 w-8">{a.label}</span>
+                        <div className="flex-1 h-[4px] bg-white/10 rounded-full">
+                          <div className="h-full rounded-full" style={{ width: `${(a.val / a.max) * 100}%`, background: a.color }} />
+                        </div>
+                        <span className="text-[6px] text-white/60 w-3 text-right">{a.val}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {/* Narrative */}
+                  <div className="px-3 pb-3">
+                    <p className="text-[11px] font-bold text-white mb-2 leading-tight">O Vale da Humilhação</p>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="h-px flex-1 bg-amber-500/20" />
+                      <span className="text-amber-400 text-[8px]">✦</span>
+                      <div className="h-px flex-1 bg-amber-500/20" />
+                    </div>
+                    <p className="text-[8px] text-white/80 leading-relaxed mb-3">
+                      Uma criatura monstruosa surge do vale — é <strong className="text-amber-400">Apolião</strong>, o Destruidor!
+                      Suas asas cobrem o céu e seus olhos ardem como brasas. Ele bloqueia o caminho.
+                    </p>
+                    <p className="text-[8px] text-white/60 leading-relaxed mb-3">
+                      "Eu sou inimigo deste Rei a quem tu serves", ruge a criatura. "Volta, ou enfrentarás minha ira!"
+                    </p>
+                    {/* Choices */}
+                    <div className="space-y-1.5">
+                      <div className="py-2 px-2.5 rounded-lg bg-gradient-to-b from-amber-700/30 to-amber-800/20 border border-amber-500/30 text-[8px] text-amber-300 font-bold" style={{ boxShadow: '0 0 10px rgba(217,160,60,0.15)' }}>
+                        ⚔️ Enfrentar Apolião com a Espada do Espírito
+                      </div>
+                      <div className="py-2 px-2.5 rounded-lg bg-white/[0.03] border border-white/10 text-[8px] text-white/70">
+                        🙏 Orar por proteção divina
+                      </div>
+                      <div className="py-2 px-2.5 rounded-lg bg-white/[0.03] border border-white/10 text-[8px] text-white/70">
+                        🏃 Tentar fugir pelo vale
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ─── CONSEQUENCE SCREEN ─── */}
+                <div data-section className="min-h-[400px] px-3 py-6 flex flex-col">
+                  <div className="flex items-center gap-2 bg-white/5 rounded-lg px-2 py-1.5 mb-4 border border-white/10">
+                    <span className="text-[7px]">←</span>
+                    <span className="text-[7px] text-white/40 uppercase tracking-wider">Consequência</span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center justify-center text-center">
+                    <p className="text-[9px] text-white/80 italic leading-relaxed mb-4 px-2">
+                      Você empunha a Espada do Espírito e avança contra Apolião! A batalha é feroz — 
+                      golpes são trocados enquanto versículos ecoam como trovões. Após horas de combate, 
+                      a criatura recua ferida.
+                    </p>
+                    <div className="w-full space-y-2 bg-white/5 rounded-lg p-3 border border-amber-500/20">
+                      <p className="text-[7px] text-white/40 uppercase tracking-wider">Impacto nos Atributos</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[8px]">🔥 Fé</span>
+                        <span className="text-[9px] text-green-400 font-bold">+2</span>
+                        <span className="text-[8px]">🛡️ Coragem</span>
+                        <span className="text-[9px] text-green-400 font-bold">+1</span>
+                      </div>
+                    </div>
+                    <div className="w-full mt-4 py-2 rounded-lg bg-gradient-to-b from-amber-600 to-amber-700 text-center text-[9px] font-bold border border-amber-500/50" style={{ boxShadow: '0 0 12px rgba(217,160,60,0.3)' }}>
+                      Continuar ▶
+                    </div>
+                  </div>
+                </div>
+
+                {/* ─── DICE DUEL (Full-screen mini-game) ─── */}
+                <div data-section className="min-h-[520px] flex flex-col items-center justify-center px-4 relative">
+                  <div className="absolute inset-0 opacity-10">
+                    <img src={valeHumilhacao} alt="" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="relative z-10 w-full">
+                    <p className="text-[7px] text-amber-400 uppercase tracking-wider text-center mb-1">⚔️ Duelo de Dados 3D</p>
+                    <p className="text-[10px] font-bold text-center mb-3">Cristão vs Apolião</p>
+                    {/* VS */}
+                    <div className="flex items-center justify-center gap-4 mb-4">
+                      <div className="text-center">
+                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-green-500/40 mb-1" style={{ boxShadow: '0 0 12px rgba(74,222,128,0.25)' }}>
+                          <img src={cristao} alt="" className="w-full h-full object-cover object-top" />
+                        </div>
+                        <p className="text-[7px]">Cristão</p>
+                        <p className="text-[6px] text-green-400">❤️ 3/3</p>
+                      </div>
+                      <span className="text-amber-400 font-bold text-[11px]">VS</span>
+                      <div className="text-center">
+                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-red-500/40 mb-1" style={{ boxShadow: '0 0 12px rgba(239,68,68,0.25)' }}>
+                          <img src={apolion} alt="" className="w-full h-full object-cover object-top" />
+                        </div>
+                        <p className="text-[7px]">Apolião</p>
+                        <p className="text-[6px] text-red-400">❤️ 3/3</p>
+                      </div>
+                    </div>
+                    {/* Dice */}
+                    <div className="flex justify-center mb-4">
+                      <div className="w-14 h-14 rounded-xl bg-white flex items-center justify-center text-2xl font-bold text-[#0c0a14] rotate-12" style={{ boxShadow: '0 0 25px rgba(217,160,60,0.4), 0 8px 20px rgba(0,0,0,0.5)' }}>
+                        5
+                      </div>
+                    </div>
+                    {/* Combat actions */}
+                    <div className="grid grid-cols-3 gap-2 mb-3">
+                      <div className="py-2 rounded-lg bg-red-500/15 border border-red-500/30 text-center">
+                        <span className="text-[10px]">⚔️</span>
+                        <p className="text-[6px] text-red-300 mt-0.5">Espada</p>
+                      </div>
+                      <div className="py-2 rounded-lg bg-blue-500/15 border border-blue-500/30 text-center">
+                        <span className="text-[10px]">🛡️</span>
+                        <p className="text-[6px] text-blue-300 mt-0.5">Escudo</p>
+                      </div>
+                      <div className="py-2 rounded-lg bg-amber-500/15 border border-amber-500/30 text-center">
+                        <span className="text-[10px]">🙏</span>
+                        <p className="text-[6px] text-amber-300 mt-0.5">Oração</p>
+                      </div>
+                    </div>
+                    <p className="text-[7px] text-center text-white/40">Escolha sua ação e role o dado!</p>
+                  </div>
+                </div>
+
+                {/* ─── MINI-GAME QTE ─── */}
+                <div data-section className="min-h-[500px] px-4 py-6 relative">
+                  <p className="text-[8px] text-amber-400 uppercase tracking-wider text-center mb-1">🎮 Mini-Game · QTE</p>
+                  <p className="text-[10px] font-bold text-center mb-1">Reflexos Rápidos</p>
+                  <p className="text-[7px] text-white/50 text-center mb-2">Toque nos alvos antes que desapareçam!</p>
+                  <div className="bg-black/30 rounded-xl p-3 border border-amber-500/15 mb-3">
+                    <p className="text-[7px] text-amber-400 mb-1">❓ Como Jogar:</p>
+                    <p className="text-[6px] text-white/50 leading-relaxed">Alvos aparecerão na tela. Toque neles antes que desapareçam. Cada acerto vale pontos. Se errar ou demorar, perde pontos.</p>
+                  </div>
+                  {/* Game area */}
+                  <div className="w-full aspect-square bg-white/[0.03] rounded-xl border border-white/10 relative overflow-hidden mb-3">
+                    {/* QTE targets */}
+                    <div className="absolute top-6 left-6 w-10 h-10 rounded-full bg-amber-500/20 border-2 border-amber-500 flex items-center justify-center animate-pulse" style={{ boxShadow: '0 0 15px rgba(217,160,60,0.4)' }}>
+                      <span className="text-sm">⚔️</span>
+                    </div>
+                    <div className="absolute top-16 right-5 w-10 h-10 rounded-full bg-amber-500/15 border-2 border-amber-400/50 flex items-center justify-center" style={{ opacity: 0.6 }}>
+                      <span className="text-sm">🛡️</span>
+                    </div>
+                    <div className="absolute bottom-12 left-10 w-10 h-10 rounded-full bg-amber-500/20 border-2 border-amber-500 flex items-center justify-center animate-pulse" style={{ animationDelay: '0.5s', boxShadow: '0 0 12px rgba(217,160,60,0.3)' }}>
+                      <span className="text-sm">🔥</span>
+                    </div>
+                    {/* Score HUD */}
+                    <div className="absolute top-2 right-2 bg-black/60 px-2 py-1 rounded-lg">
+                      <p className="text-[7px] text-amber-400">Acertos: 7/10</p>
+                    </div>
+                    <div className="absolute bottom-2 left-2 bg-black/60 px-2 py-1 rounded-lg">
+                      <p className="text-[7px] text-white/50">Tempo: 12s</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="flex-1 py-1.5 rounded-lg bg-white/5 border border-white/10 text-center text-[7px] text-white/50">⏸️ Pausar</div>
+                    <div className="flex-1 py-1.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-center text-[7px] text-amber-300">❓ Regras</div>
+                  </div>
+                </div>
+
+                {/* ─── SWIPE DODGE ─── */}
+                <div data-section className="min-h-[500px] px-4 py-6 relative">
+                  <p className="text-[8px] text-amber-400 uppercase tracking-wider text-center mb-1">🎮 Mini-Game · Esquiva</p>
+                  <p className="text-[10px] font-bold text-center mb-1">Esquiva de Tentações</p>
+                  <p className="text-[7px] text-white/50 text-center mb-3">Deslize ← para rejeitar tentações, → para aceitar bênçãos!</p>
+                  <div className="space-y-2 mb-3">
+                    {[
+                      { emoji: '💰', text: 'Riqueza fácil', bad: true },
+                      { emoji: '📖', text: 'Palavra de Deus', bad: false },
+                      { emoji: '🍷', text: 'Prazer mundano', bad: true },
+                      { emoji: '🙏', text: 'Oração sincera', bad: false },
+                    ].map((item, i) => (
+                      <div key={i} className={`flex items-center gap-2 p-2 rounded-lg border ${item.bad ? 'border-red-500/20 bg-red-500/5' : 'border-green-500/20 bg-green-500/5'}`}>
+                        <span className="text-sm">{item.emoji}</span>
+                        <span className="text-[8px] flex-1">{item.text}</span>
+                        <span className="text-[6px] text-white/30">{item.bad ? '← REJEITAR' : 'ACEITAR →'}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-black/30 rounded-lg p-2 border border-white/10 text-center">
+                    <p className="text-[7px] text-amber-400">Score: 280 · Combo: x3 🔥</p>
+                  </div>
+                </div>
+
+                {/* ─── JOURNEY MAP ─── */}
+                <div data-section className="min-h-[520px] px-3 pt-8 pb-3 relative">
+                  <p className="text-[8px] text-amber-400 uppercase tracking-wider text-center mb-1">🗺️ Mapa da Jornada</p>
+                  <p className="text-[10px] font-bold text-center mb-3">Sua Peregrinação</p>
+                  <div className="space-y-1.5 mb-3">
+                    {[
+                      { name: 'A Partida', sub: 'Cidade da Destruição → Porta Estreita', progress: 100, icon: '🏚️', color: '#E8724A' },
+                      { name: 'O Caminho', sub: 'Casa do Intérprete → Palácio Belo', progress: 100, icon: '🚪', color: '#4CAF50' },
+                      { name: 'A Provação', sub: 'Vale da Humilhação → Sombra da Morte', progress: 60, icon: '⚔️', color: '#D32F2F' },
+                      { name: 'A Perseverança', sub: 'Feira da Vaidade → Colina de Lucro', progress: 0, icon: '🎪', color: '#FF9800' },
+                      { name: 'A Libertação', sub: 'Castelo da Dúvida → Montanhas', progress: 0, icon: '🏰', color: '#00BCD4' },
+                      { name: 'A Glória', sub: 'País de Beulá → Cidade Celestial', progress: 0, icon: '✨', color: '#FFD700' },
+                    ].map((p, i) => (
+                      <div key={i} className={`p-2 rounded-lg border ${p.progress > 0 ? 'border-amber-500/20 bg-amber-500/5' : 'border-white/5 bg-white/[0.02]'}`}>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[10px]">{p.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[8px] font-bold truncate">{p.name}</span>
+                              <span className="text-[6px] text-amber-400/60 ml-1">{p.progress}%</span>
+                            </div>
+                            <p className="text-[5px] text-white/30 truncate">{p.sub}</p>
+                          </div>
+                          {p.progress === 100 ? <span className="text-[8px]">✅</span> : p.progress > 0 ? <span className="text-[8px]">▶</span> : <span className="text-[8px]">🔒</span>}
+                        </div>
+                        <div className="h-[3px] bg-white/10 rounded-full">
+                          <div className="h-full rounded-full" style={{ width: `${p.progress}%`, background: p.color }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-white/5 rounded-lg p-2 border border-white/10">
+                    <div className="grid grid-cols-4 gap-1 text-center">
+                      <div><p className="text-[5px] text-white/30">Capítulos</p><p className="text-[8px] text-amber-400 font-bold">18/30</p></div>
+                      <div><p className="text-[5px] text-white/30">Escolhas</p><p className="text-[8px] text-amber-400 font-bold">42</p></div>
+                      <div><p className="text-[5px] text-white/30">Duelos</p><p className="text-[8px] text-amber-400 font-bold">5</p></div>
+                      <div><p className="text-[5px] text-white/30">Streak</p><p className="text-[8px] text-amber-400 font-bold">🔥 7</p></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ─── MULTIPLAYER ONLINE ─── */}
+                <div data-section className="min-h-[520px] px-3 pt-8 pb-3 relative">
+                  <p className="text-[8px] text-amber-400 uppercase tracking-wider text-center mb-1">⚔️ Multiplayer Online</p>
+                  <p className="text-[10px] font-bold text-center mb-3">Tabuleiro Premium</p>
+                  <div className="bg-gradient-to-b from-amber-900/15 to-transparent rounded-xl border border-amber-500/15 p-2 mb-3">
+                    <div className="grid grid-cols-10 gap-[1px]">
+                      {Array.from({ length: 40 }).map((_, i) => (
+                        <div key={i} className="aspect-square rounded-[2px] flex items-center justify-center text-[4px]" style={{
+                          background: i === 4 ? '#E8724A' : i === 7 ? '#4CAF50' : i === 12 ? '#42A5F5' : i === 0 ? 'rgba(217,160,60,0.25)' : i === 39 ? 'rgba(217,160,60,0.35)' : 'rgba(255,255,255,0.03)',
+                          border: i === 0 || i === 39 ? '1px solid rgba(217,160,60,0.3)' : '1px solid rgba(255,255,255,0.04)',
+                        }}>
+                          {i === 0 ? '🏁' : i === 39 ? '✨' : i === 10 ? '⚔️' : i === 20 ? '📖' : i === 30 ? '🎁' : i === 15 ? '⚡' : ''}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-3 mt-2">
+                      {[
+                        { name: 'Cristão', color: '#E8724A' },
+                        { name: 'Fiel', color: '#4CAF50' },
+                        { name: 'Esperança', color: '#42A5F5' },
+                      ].map((p, i) => (
+                        <div key={i} className="flex items-center gap-1">
+                          <div className="w-2 h-2 rounded-full" style={{ background: p.color }} />
+                          <span className="text-[5px] text-white/50">{p.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Event reveal */}
+                  <div className="bg-amber-500/10 rounded-lg p-3 border border-amber-500/20 mb-3">
+                    <p className="text-[7px] text-amber-400 uppercase tracking-wider mb-1">📜 Evento!</p>
+                    <p className="text-[8px] text-white/80 mb-1 font-bold">Encontro com Evangelista</p>
+                    <p className="text-[7px] text-white/50 leading-relaxed">Evangelista aponta o caminho. Avance 3 casas e ganhe +1 Discernimento.</p>
+                  </div>
+                  <div className="flex items-center justify-between bg-white/5 rounded-lg p-2 border border-white/10">
+                    <div>
+                      <p className="text-[7px] text-amber-400">Vez de: Cristão</p>
+                      <p className="text-[5px] text-white/30">Casa 15 / 65</p>
+                    </div>
+                    <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-xl font-bold text-[#0c0a14]" style={{ boxShadow: '0 0 12px rgba(217,160,60,0.3)' }}>
+                      🎲
+                    </div>
+                  </div>
+                </div>
+
+                {/* ─── PRESENTIAL MODE ─── */}
+                <div data-section className="min-h-[480px] px-4 py-6 relative flex flex-col items-center justify-center">
+                  <p className="text-[8px] text-amber-400 uppercase tracking-wider mb-1">👥 Modo Reunidos</p>
+                  <p className="text-[10px] font-bold mb-1">Multiplayer Presencial</p>
+                  <p className="text-[6px] text-white/40 mb-3">2-8 jogadores · Mesmo dispositivo · Offline</p>
+                  <div className="w-full space-y-1.5 mb-4">
+                    {[
+                      { name: 'Cristão', color: '#E8724A', pos: 12 },
+                      { name: 'Fiel', color: '#4CAF50', pos: 8 },
+                      { name: 'Esperança', color: '#42A5F5', pos: 15 },
+                      { name: 'Misericórdia', color: '#FFD54F', pos: 5 },
+                    ].map((p, i) => (
+                      <div key={i} className="flex items-center gap-2 p-1.5 rounded-lg bg-white/[0.03] border border-white/10">
+                        <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px]" style={{ background: `${p.color}25`, border: `1.5px solid ${p.color}60` }}>
+                          {['⚔️', '🛡️', '🙏', '💛'][i]}
+                        </div>
+                        <span className="text-[8px] flex-1">{p.name}</span>
+                        <span className="text-[6px] text-white/30">Casa {p.pos}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="w-full py-2 rounded-lg bg-gradient-to-b from-amber-600 to-amber-700 text-center text-[9px] font-bold border border-amber-500/50" style={{ boxShadow: '0 0 12px rgba(217,160,60,0.3)' }}>
+                    🎲 Rolar Dado (Vez de Cristão)
+                  </div>
+                  <p className="text-[6px] text-white/30 mt-2">Use dados físicos reais ou o dado digital do app</p>
+                </div>
+
+                {/* ─── RESULT / ENDING ─── */}
+                <div data-section className="min-h-[520px] px-4 py-6 flex flex-col items-center justify-center relative">
+                  <div className="absolute inset-0 opacity-15">
+                    <img src={cidadeCelestial} alt="" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="relative z-10 text-center w-full">
+                    <div className="w-12 h-12 mx-auto rounded-full bg-amber-500/15 flex items-center justify-center mb-3">
+                      <span className="text-xl">🏆</span>
+                    </div>
+                    <div className="flex items-center gap-2 justify-center mb-3">
+                      <div className="h-px w-8 bg-amber-500/30" />
+                      <span className="text-[7px] text-amber-400 uppercase tracking-wider">✦ Jornada Completa ✦</span>
+                      <div className="h-px w-8 bg-amber-500/30" />
+                    </div>
+                    <p className="text-[8px] text-white/70 italic leading-relaxed mb-4 px-1">
+                      Cristão atravessou o Rio e alcançou os portões da Cidade Celestial. 
+                      Anjos o receberam com trombetas e cânticos de glória!
+                    </p>
+                    <div className="bg-white/5 rounded-lg p-3 border border-amber-500/15 mb-3 text-left">
+                      <p className="text-[6px] text-white/30 uppercase tracking-wider mb-1.5">Atributos Finais</p>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <span className="text-[7px]">🔥 Fé: <strong className="text-amber-400">8</strong></span>
+                        <span className="text-[7px]">⛰️ Perseverança: <strong className="text-amber-400">7</strong></span>
+                        <span className="text-[7px]">👁️ Discernimento: <strong className="text-amber-400">9</strong></span>
+                        <span className="text-[7px]">🛡️ Coragem: <strong className="text-amber-400">6</strong></span>
+                      </div>
+                      <p className="text-[6px] text-white/30 mt-2">Decisões: 87 · Capítulos: 30 · Duelos: 8</p>
+                    </div>
+                    <div className="space-y-1.5">
+                      <div className="py-2 rounded-lg bg-gradient-to-b from-amber-600 to-amber-700 text-center text-[8px] font-bold border border-amber-500/50">
+                        📜 Ver Jornada Completa
+                      </div>
+                      <div className="py-1.5 rounded-lg bg-white/5 border border-white/10 text-center text-[8px] text-white/60">
+                        🏠 Recomeçar Jornada
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom spacer */}
+                <div className="h-8" />
               </div>
-            ))}
+            </div>
 
             {/* Home indicator */}
             <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-28 h-[4px] bg-white/30 rounded-full z-30" />
@@ -454,33 +660,53 @@ const PhoneMockupTour = () => {
         </div>
 
         {/* Phone reflection */}
-        <div
-          className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-10 rounded-full"
-          style={{ background: 'radial-gradient(ellipse, hsl(40 70% 50% / 0.12), transparent)' }}
-        />
+        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-10 rounded-full" style={{ background: 'radial-gradient(ellipse, hsl(40 70% 50% / 0.12), transparent)' }} />
       </div>
 
-      {/* Screen label */}
-      <div className="text-center max-w-xs">
-        <p className="text-xs text-foreground font-display font-bold mb-1">
-          {screens[currentScreen].label}
-        </p>
-        {/* Dots */}
-        <div className="flex justify-center gap-1.5 mt-2">
-          {screens.map((_, i) => (
+      {/* Controls */}
+      <div className="flex flex-col items-center gap-3 w-full max-w-xs">
+        {/* Play/Pause */}
+        <button
+          onClick={() => setIsPaused(p => !p)}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-primary/30 bg-card/80 hover:border-primary/60 transition-all text-sm"
+          style={{ boxShadow: '0 0 10px hsl(40 70% 50% / 0.1)' }}
+        >
+          {isPaused ? (
+            <><Play className="w-4 h-4 text-primary" /> <span className="text-foreground text-xs font-display">Retomar Tour</span></>
+          ) : (
+            <><Clock className="w-4 h-4 text-primary" /> <span className="text-foreground text-xs font-display">Pausar Tour</span></>
+          )}
+        </button>
+
+        {/* Section dots */}
+        <div className="flex flex-wrap justify-center gap-1.5">
+          {sections.map((label, i) => (
             <button
               key={i}
-              onClick={() => setCurrentScreen(i)}
-              className="w-2 h-2 rounded-full transition-all duration-300"
-              style={{
-                background: i === currentScreen ? 'hsl(40 70% 50%)' : 'rgba(255,255,255,0.15)',
-                boxShadow: i === currentScreen ? '0 0 8px hsl(40 70% 50% / 0.5)' : 'none',
-              }}
-            />
+              onClick={() => scrollToSection(i)}
+              className="group relative"
+            >
+              <div
+                className="w-2.5 h-2.5 rounded-full transition-all duration-300"
+                style={{
+                  background: i === activeSection ? 'hsl(40 70% 50%)' : 'rgba(255,255,255,0.12)',
+                  boxShadow: i === activeSection ? '0 0 8px hsl(40 70% 50% / 0.5)' : 'none',
+                  transform: i === activeSection ? 'scale(1.3)' : 'scale(1)',
+                }}
+              />
+              <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] text-foreground bg-card/90 border border-border px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                {label}
+              </span>
+            </button>
           ))}
         </div>
-        <p className="text-[10px] text-muted-foreground mt-2">
-          {currentScreen + 1} / {screens.length} — Toque nos pontos ou aguarde o tour
+
+        {/* Current section label */}
+        <p className="text-xs text-foreground font-display font-bold text-center">
+          {sections[activeSection]}
+        </p>
+        <p className="text-[10px] text-muted-foreground">
+          {isPaused ? '👆 Deslize para navegar manualmente' : '⏩ Tour automático — toque para pausar'}
         </p>
       </div>
     </div>
