@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import PremiumDice from '@/components/multiplayer/PremiumDice';
 import PremiumBoard from '@/components/multiplayer/PremiumBoard';
 import EventReveal from '@/components/multiplayer/EventReveal';
+import GameNotification from '@/components/GameNotification';
 import { BOARD_SIZE, boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
 import { playMove, playVictory, playTurnStart } from '@/components/multiplayer/BoardSounds';
 import { playGameSfx } from '@/lib/gameSfx';
