@@ -557,28 +557,24 @@ const ScenePage = () => {
         {/* Character portraits — protagonist with user name + persistent NPC */}
         <div className="px-4 py-3">
           <div className="flex items-center gap-4">
-            {/* Protagonist — always visible */}
+            {/* Protagonist — always visible with emotional state */}
             {(() => {
               const isPart2 = progress.campaign === 'part2';
               const protagonistId = isPart2 ? 'crista' : 'cristao';
-              const protImg = characterImages[protagonistId];
               const protChar = [...characters, ...part2Characters].find(c => c.id === protagonistId);
               const userName = profile?.display_name || protChar?.name || 'Peregrino';
-              if (!protImg) return null;
               return (
-                <button onClick={() => navigate('/personagens')} className="flex items-center gap-3 flex-shrink-0 active:scale-95 transition-transform">
-                  <img
-                    src={protImg}
-                    alt={userName}
-                    className="w-14 h-14 rounded-2xl object-cover"
-                    style={{
-                      border: '2px solid hsl(40 60% 50%)',
-                      boxShadow: '0 4px 16px hsl(0 0% 0% / 0.4), 0 0 12px hsl(40 50% 45% / 0.3)',
-                    }}
+                <button onClick={() => setShowStats(s => !s)} className="flex items-center gap-3 flex-shrink-0 active:scale-95 transition-transform">
+                  <PilgrimAvatar
+                    attributes={progress.attributes}
+                    tone={legacyTone}
+                    size="md"
+                    storyFlag={emotional?.flagOverride}
+                    showLabel={false}
                   />
                   <div className="text-left">
                     <p className="font-display text-sm font-bold text-primary leading-tight">{userName}</p>
-                    <p className="text-[10px] text-muted-foreground">Protagonista</p>
+                    <p className="text-[10px] text-muted-foreground capitalize">{emotional?.posture?.replace(/_/g, ' ') || 'Peregrino'}</p>
                   </div>
                 </button>
               );
