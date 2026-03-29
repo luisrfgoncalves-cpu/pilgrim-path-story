@@ -201,3 +201,34 @@
   70% { opacity: 0.2; }
   100% { opacity: 1; }
 }
+
+/* Atmosphere: vignette overlay */
+.atmo-vignette {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: radial-gradient(ellipse at center, transparent 50%, hsl(0 0% 0% / var(--vignette-opacity, 0)) 100%);
+  transition: opacity 2s ease;
+}
+
+/* Atmosphere: warm glow overlay */
+.atmo-glow {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  background: radial-gradient(ellipse at 50% 30%, hsl(40 70% 55% / var(--glow-opacity, 0)) 0%, transparent 70%);
+  transition: opacity 2s ease;
+}
+
+/* Atmosphere: wobble for low perseverança */
+@keyframes atmoWobble {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  25% { transform: translateX(-0.5px) rotate(-0.15deg); }
+  75% { transform: translateX(0.5px) rotate(0.15deg); }
+}
+
+.atmo-wobble {
+  animation: atmoWobble 4s ease-in-out infinite;
+}

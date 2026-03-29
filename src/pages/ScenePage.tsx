@@ -7,6 +7,7 @@ import { getEmotionalState, getEmotionalClasses } from '@/lib/emotionalIntensity
 import { analyzePerformance } from '@/lib/performanceAnalysis';
 import { useVisualEffects } from '@/hooks/useVisualEffects';
 import { useAudioEngine } from '@/hooks/useAudioEngine';
+import { useAtmosphere } from '@/hooks/useAtmosphere';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
@@ -23,6 +24,7 @@ const ScenePage = () => {
   const [audioOn, setAudioOn] = useState(true);
   const { triggerChoiceEffect } = useVisualEffects();
   const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
+  const atmosphere = useAtmosphere(progress.attributes);
 
   const chapter = getChapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
@@ -134,7 +136,10 @@ const ScenePage = () => {
   const lockedChoices = chapter.choices.filter(c => !meetsRequirements(c.requires) && !c.requiresFlag && !c.excludesFlag);
 
   return (
-    <div id="scene-container" className={`min-h-screen bg-background flex flex-col transition-all duration-1000 ${emotionalClass}`}>
+    <div id="scene-container" className={`min-h-screen bg-background flex flex-col transition-all duration-1000 ${emotionalClass} ${atmosphere.wobbleClass}`} style={atmosphere.containerStyle}>
+      {/* Atmosphere overlays */}
+      <div className="atmo-vignette" style={{ '--vignette-opacity': atmosphere.vignetteOpacity, opacity: atmosphere.vignetteOpacity > 0.02 ? 1 : 0 } as React.CSSProperties} />
+      <div className="atmo-glow" style={{ '--glow-opacity': atmosphere.glowOpacity, opacity: atmosphere.glowOpacity > 0.02 ? 1 : 0 } as React.CSSProperties} />
       {/* Header with avatar */}
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
@@ -183,6 +188,7 @@ const ScenePage = () => {
               height={576}
               onLoad={() => setImageLoaded(true)}
               className={`w-full h-auto object-cover transition-all duration-700 scene-image ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              style={atmosphere.imageStyle}
             />
             {/* Gradient overlay for text readability */}
             <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background via-background/40 to-transparent" />
@@ -206,7 +212,7 @@ const ScenePage = () => {
           </div>
 
           {/* Narrative */}
-          <div className="space-y-4 mb-7">
+          <div className="space-y-4 mb-7" style={atmosphere.textStyle}>
             {fullNarrative.slice(0, narrativeIndex + 1).map((paragraph, i) => (
               <p key={i} className="narrative-text text-foreground/90 text-base fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
                 {paragraph}
