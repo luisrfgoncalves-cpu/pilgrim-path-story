@@ -264,3 +264,24 @@
   60% { transform: translate(calc(-0.5 * var(--shake-amount, 1px)), var(--shake-amount, 1px)); }
   80% { transform: translate(calc(0.5 * var(--shake-amount, 1px)), calc(-1 * var(--shake-amount, 1px))); }
 }
+
+/* Pilgrim avatar: subtle breathing */
+@keyframes pilgrimBreathe {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.012) translateY(-0.5px); }
+}
+
+/* Pilgrim avatar: gentle body sway */
+@keyframes pilgrimSway {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(0.3deg); }
+  75% { transform: rotate(-0.3deg); }
+}
+
+/* Pilgrim avatar: ambient dust particles */
+@keyframes pilgrimDust {
+  0% { opacity: 0; transform: translateY(0) translateX(0); }
+  20% { opacity: 0.6; }
+  80% { opacity: 0.3; }
+  100% { opacity: 0; transform: translateY(-30px) translateX(8px); }
+}
