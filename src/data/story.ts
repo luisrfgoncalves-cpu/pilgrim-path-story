@@ -1082,6 +1082,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "A pressão aumenta. Pessoas começam a notar que você não pertence àquele lugar."
     ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 7, highText: "Você sustenta o olhar deles. Não vai se esconder.", lowThreshold: 3, lowText: "Você abaixa a cabeça. A vontade de desaparecer é quase insuportável." }
+    ],
     noFlagNarrative: [
       { flag: "observou_feira", text: "Sem ter observado com cuidado antes, é difícil entender o que está acontecendo ao redor." }
     ],
