@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { ArrowLeft, Save, LogOut } from 'lucide-react';
-import NavLink from '@/components/NavLink';
+import { NavLink } from '@/components/NavLink';
 
 const AVATAR_STYLES = ['peregrino', 'monge', 'cavaleiro', 'eremita', 'profeta'];
 const JOURNEY_PREFS = ['contemplativa', 'aventureira', 'devocional', 'exploratória'];

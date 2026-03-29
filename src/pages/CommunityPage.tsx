@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { ArrowLeft, Send, Users, MapPin } from 'lucide-react';
-import NavLink from '@/components/NavLink';
+import { NavLink } from '@/components/NavLink';
 
 interface PilgrimSummary {
   id: string;
