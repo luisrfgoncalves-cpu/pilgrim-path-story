@@ -73,6 +73,8 @@ const ScenePage = () => {
   const [miniGameResult, setMiniGameResult] = useState<MiniGameResult | null>(null);
   const [showMiniGameResult, setShowMiniGameResult] = useState(false);
   const [miniGameReady, setMiniGameReady] = useState(false);
+  // Character entrance reveal
+  const [charReveal, setCharReveal] = useState<{ name: string; img: string; role?: string } | null>(null);
   const { triggerChoiceEffect, triggerSceneEntryVFX } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
