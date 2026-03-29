@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
+import { isEmailAllowed } from '@/data/allowedEmails';
 import { User, LogIn, UserPlus, KeyRound } from 'lucide-react';
 
 const AuthPage: React.FC = () => {
@@ -49,6 +50,12 @@ const AuthPage: React.FC = () => {
     } else {
       if (!displayName.trim()) {
         toast.error('Escolha um nome para o seu peregrino');
+        setSubmitting(false);
+        return;
+      }
+      // Verificar se o email está na lista de acessos autorizados
+      if (!isEmailAllowed(email)) {
+        toast.error('Este email não possui acesso autorizado. Adquira seu acesso em nossa página de vendas.');
         setSubmitting(false);
         return;
       }
@@ -105,7 +112,7 @@ const AuthPage: React.FC = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com"
+              placeholder="peregrino0001@centrobiblico.online"
               required
               className="bg-card border-border"
             />
