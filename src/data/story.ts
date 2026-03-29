@@ -10,7 +10,6 @@ export interface StoryChoice {
   nextChapterId: string;
   consequence?: string;
   effects: ChoiceEffect;
-  /** If set, this choice only appears when the player meets these minimum attributes */
   requires?: Partial<ChoiceEffect>;
 }
 
@@ -19,11 +18,10 @@ export interface StoryChapter {
   title: string;
   location: string;
   narrative: string[];
-  /** Dynamic narrative segments that appear based on attributes */
   adaptiveNarrative?: { minAttr: keyof ChoiceEffect; minValue: number; text: string }[];
   choices: StoryChoice[];
   isEnding?: boolean;
-  endingType?: 'glorioso' | 'humilde' | 'sofrido' | 'desvio' | 'default';
+  endingType?: 'parte1';
   reflection?: string;
   characters?: string[];
 }
@@ -45,43 +43,40 @@ export interface Reflection {
 }
 
 export const characters: Character[] = [
-  { id: "cristao", name: "Cristão", description: "O protagonista. Um homem comum que descobre a verdade sobre a destruição iminente de sua cidade e parte numa jornada rumo à Cidade Celestial, carregando o fardo de seus pecados.", role: "Protagonista", unlockedAtChapter: "inicio" },
-  { id: "evangelista", name: "Evangelista", description: "Um homem sábio que aponta Cristão na direção certa, mostrando-lhe a luz do Portão Estreito. Representa aqueles que pregam o evangelho.", role: "Guia", unlockedAtChapter: "inicio" },
-  { id: "obstinado", name: "Obstinado", description: "Vizinho de Cristão que zomba de sua decisão de deixar a Cidade da Destruição. Representa aqueles que rejeitam a verdade por apego ao conforto.", role: "Antagonista", unlockedAtChapter: "familia-recusa" },
-  { id: "flexivel", name: "Flexível", description: "Vizinho curioso que acompanha Cristão no início, mas desiste ao primeiro obstáculo. Representa a fé superficial que não resiste às provações.", role: "Companheiro temporário", unlockedAtChapter: "familia-recusa" },
-  { id: "socorro", name: "Socorro", description: "Enviado para ajudar peregrinos que caem no Pântano do Desânimo. Representa a graça divina que nos resgata em momentos de fraqueza.", role: "Aliado", unlockedAtChapter: "pantano-desanimo" },
-  { id: "boa-vontade", name: "Boa Vontade", description: "O guardião do Portão Estreito que recebe os peregrinos com urgência e proteção. Representa Cristo abrindo a porta da salvação.", role: "Guardião", unlockedAtChapter: "portao-estreito" },
-  { id: "interprete", name: "Intérprete", description: "Mestre que revela verdades espirituais através de visões e parábolas em sua casa. Representa o Espírito Santo iluminando o entendimento.", role: "Mestre", unlockedAtChapter: "casa-interprete" },
-  { id: "fiel", name: "Fiel", description: "Companheiro leal de Cristão que é martirizado na Feira da Vaidade. Sua coragem diante da morte inspira outros a seguir o caminho.", role: "Companheiro e Mártir", unlockedAtChapter: "fiel-encontro" },
-  { id: "esperanca", name: "Esperança", description: "Jovem convertido após testemunhar o martírio de Fiel. Torna-se o companheiro fiel de Cristão até o fim da jornada.", role: "Companheiro", unlockedAtChapter: "esperanca-encontro" },
-  { id: "gigante-desespero", name: "Gigante Desespero", description: "O terrível dono do Castelo da Dúvida. Aprisiona e tormenta os peregrinos que se desviam do caminho, tentando levá-los à destruição.", role: "Antagonista", unlockedAtChapter: "castelo-duvida" },
+  { id: "cristao", name: "Cristão", description: "Um homem comum que descobre a verdade e parte rumo à Cidade Celestial, carregando o fardo de seus pecados.", role: "Protagonista", unlockedAtChapter: "inicio" },
+  { id: "evangelista", name: "Evangelista", description: "Homem sábio que aponta Cristão na direção certa, mostrando a luz do Portão Estreito.", role: "Guia", unlockedAtChapter: "inicio" },
+  { id: "obstinado", name: "Obstinado", description: "Vizinho que zomba da decisão de Cristão. Representa quem rejeita a verdade por apego ao conforto.", role: "Antagonista", unlockedAtChapter: "familia-recusa" },
+  { id: "flexivel", name: "Flexível", description: "Vizinho curioso que acompanha Cristão, mas desiste no primeiro obstáculo.", role: "Companheiro temporário", unlockedAtChapter: "familia-recusa" },
+  { id: "sabedoria-mundana", name: "Sr. Sabedoria Mundana", description: "Homem influente que tenta desviar Cristão do caminho com conselhos aparentemente sensatos.", role: "Antagonista", unlockedAtChapter: "sabedoria-mundana" },
+  { id: "socorro", name: "Socorro", description: "Enviado para ajudar peregrinos que caem no Pântano do Desânimo.", role: "Aliado", unlockedAtChapter: "pantano-desanimo" },
+  { id: "boa-vontade", name: "Boa Vontade", description: "Guardião do Portão Estreito que recebe os peregrinos com urgência.", role: "Guardião", unlockedAtChapter: "portao-estreito" },
+  { id: "interprete", name: "Intérprete", description: "Mestre que revela verdades espirituais através de visões em sua casa.", role: "Mestre", unlockedAtChapter: "casa-interprete" },
+  { id: "prudencia", name: "Prudência", description: "Uma das guardiãs do Palácio Belo que examina e encoraja os peregrinos.", role: "Guardiã", unlockedAtChapter: "palacio-belo" },
 ];
 
 export const reflections: Reflection[] = [
-  { id: "r1", title: "O Peso do Pecado", text: "Todos nós carregamos fardos. A jornada começa quando reconhecemos que não podemos nos libertar sozinhos e buscamos o caminho da redenção.", verse: "Mateus 11:28 — \"Vinde a mim, todos os que estais cansados e oprimidos, e eu vos aliviarei.\"", unlockedAtChapter: "inicio" },
-  { id: "r2", title: "Nem Todos Ouvirão", text: "Nem todos ao nosso redor compreenderão ou aceitarão a verdade. O chamado é pessoal, e às vezes devemos seguir mesmo quando os que amamos não nos acompanham.", verse: "Lucas 14:26 — Sobre o custo de seguir o chamado.", unlockedAtChapter: "familia-recusa" },
-  { id: "r3", title: "O Desânimo no Caminho", text: "O caminho da fé não é isento de momentos de desespero. O Pântano do Desânimo representa as dúvidas e culpas que nos assaltam. Mas há sempre uma mão estendida para nos erguer.", verse: "Salmos 40:2 — \"Tirou-me de um lago horrível, de um atoleiro de lama; pôs os meus pés sobre uma rocha.\"", unlockedAtChapter: "pantano-desanimo" },
-  { id: "r4", title: "A Humildade Necessária", text: "O orgulho nos afunda mais do que qualquer lama. Aceitar ajuda não é fraqueza — é sabedoria. Deus resiste ao soberbo, mas dá graça ao humilde.", verse: "Tiago 4:6 — \"Deus resiste aos soberbos, mas dá graça aos humildes.\"", unlockedAtChapter: "pantano-orgulho" },
-  { id: "r5", title: "A Porta Estreita", text: "A entrada para a vida verdadeira é estreita e muitos a ignoram. Mas aqueles que batem com sinceridade encontrarão a porta aberta e um guardião pronto a recebê-los.", verse: "Mateus 7:13-14 — Sobre o caminho estreito e a porta estreita.", unlockedAtChapter: "portao-estreito" },
-  { id: "r6", title: "Visões da Verdade", text: "O Espírito revela verdades que os olhos naturais não veem. A graça mantém o fogo aceso mesmo quando o mundo tenta apagá-lo.", verse: "1 Coríntios 2:10 — \"O Espírito sonda todas as coisas, até mesmo as coisas mais profundas de Deus.\"", unlockedAtChapter: "casa-interprete" },
-  { id: "r7", title: "A Libertação na Cruz", text: "O momento mais transformador da jornada é quando o fardo cai ao pé da Cruz. Não por nosso mérito, mas pela graça. A liberdade é um presente, não uma conquista.", verse: "Gálatas 5:1 — \"Foi para a liberdade que Cristo nos libertou.\"", unlockedAtChapter: "cruz-fardo" },
-  { id: "r8", title: "Nas Trevas, a Fé", text: "O Vale da Sombra da Morte é inevitável. Mas mesmo nas trevas mais densas, a oração é uma espada e a fé é um escudo.", verse: "Salmos 23:4 — \"Ainda que eu ande pelo vale da sombra da morte, não temerei mal algum, porque tu estás comigo.\"", unlockedAtChapter: "vale-sombra" },
-  { id: "r9", title: "Companheiros de Jornada", text: "Deus coloca pessoas em nosso caminho nos momentos certos. A comunhão entre peregrinos fortalece e encoraja.", verse: "Eclesiastes 4:9-10 — \"Melhor é serem dois do que um, pois se caírem, um levanta o outro.\"", unlockedAtChapter: "fiel-encontro" },
-  { id: "r10", title: "O Preço da Verdade", text: "A Feira da Vaidade oferece tudo, menos o que realmente importa. O mundo pode nos perseguir por escolhermos a Verdade, mas o sacrifício nunca é em vão.", verse: "Filipenses 3:8 — \"Considero tudo como perda por causa da excelência do conhecimento de Cristo Jesus.\"", unlockedAtChapter: "feira-vaidade" },
-  { id: "r11", title: "O Perigo dos Atalhos", text: "Os desvios do caminho nos levam ao Castelo da Dúvida. Mas até nos piores calabouços, a chave da Promessa pode nos libertar.", verse: "2 Timóteo 2:13 — \"Se somos infiéis, ele permanece fiel, pois não pode negar-se a si mesmo.\"", unlockedAtChapter: "castelo-duvida" },
-  { id: "r12", title: "A Chegada Gloriosa", text: "A jornada tem um destino certo para aqueles que perseveram. As lágrimas serão enxugadas, os fardos desaparecerão, e a presença do Rei será eterna.", verse: "Apocalipse 21:4 — \"Ele enxugará toda lágrima dos seus olhos. Não haverá mais morte, nem tristeza, nem choro, nem dor.\"", unlockedAtChapter: "cidade-celestial" },
+  { id: "r1", title: "O Peso do Pecado", text: "Todos carregamos fardos. A jornada começa quando reconhecemos que não podemos nos libertar sozinhos.", verse: "Mateus 11:28 — \"Vinde a mim, todos os que estais cansados e oprimidos, e eu vos aliviarei.\"", unlockedAtChapter: "inicio" },
+  { id: "r2", title: "Nem Todos Ouvirão", text: "O chamado é pessoal. Às vezes devemos seguir mesmo quando os que amamos não nos acompanham.", verse: "Lucas 14:26 — Sobre o custo de seguir o chamado.", unlockedAtChapter: "familia-recusa" },
+  { id: "r3", title: "Falsos Conselhos", text: "Nem todo conselho é bom. O mundo oferece soluções fáceis que nos afastam do caminho verdadeiro.", verse: "Provérbios 14:12 — \"Há caminho que ao homem parece direito, mas o seu fim são os caminhos da morte.\"", unlockedAtChapter: "sabedoria-mundana" },
+  { id: "r4", title: "O Desânimo no Caminho", text: "O caminho da fé não é isento de desespero. Mas há sempre uma mão estendida para nos erguer.", verse: "Salmos 40:2 — \"Tirou-me de um lago horrível, pôs os meus pés sobre uma rocha.\"", unlockedAtChapter: "pantano-desanimo" },
+  { id: "r5", title: "A Humildade Necessária", text: "Aceitar ajuda não é fraqueza — é sabedoria. Deus resiste ao soberbo, mas dá graça ao humilde.", verse: "Tiago 4:6 — \"Deus resiste aos soberbos, mas dá graça aos humildes.\"", unlockedAtChapter: "pantano-orgulho" },
+  { id: "r6", title: "A Porta Estreita", text: "A entrada para a vida verdadeira é estreita. Mas quem bate com sinceridade encontrará a porta aberta.", verse: "Mateus 7:13-14 — Sobre o caminho estreito.", unlockedAtChapter: "portao-estreito" },
+  { id: "r7", title: "Visões da Verdade", text: "O Espírito revela verdades que os olhos naturais não veem.", verse: "1 Coríntios 2:10 — \"O Espírito sonda todas as coisas.\"", unlockedAtChapter: "casa-interprete" },
+  { id: "r8", title: "O Caminho Difícil", text: "O caminho certo raramente é o mais fácil. Atalhos seduzem, mas a subida fortalece.", verse: "Mateus 7:14 — \"Estreita é a porta, e apertado o caminho que leva à vida.\"", unlockedAtChapter: "colina-dificuldade" },
+  { id: "r9", title: "Descanso e Preparo", text: "Deus nos dá lugares de descanso antes das grandes batalhas. Aproveite cada pausa para se fortalecer.", verse: "Salmos 23:2-3 — \"Deitar-me faz em verdes pastos, guia-me mansamente a águas tranquilas.\"", unlockedAtChapter: "palacio-belo" },
+  { id: "r10", title: "A Libertação na Cruz", text: "O momento mais transformador é quando o fardo cai ao pé da Cruz. A liberdade é um presente, não uma conquista.", verse: "Gálatas 5:1 — \"Foi para a liberdade que Cristo nos libertou.\"", unlockedAtChapter: "cruz-fardo" },
 ];
 
 export const chapterOrder = [
-  "inicio", "familia-recusa", "pantano-desanimo", "pantano-desanimo-sozinho",
-  "pantano-orgulho", "portao-estreito", "casa-interprete", "cruz-fardo",
-  "vale-sombra", "fiel-encontro", "feira-inevitavel", "feira-vaidade",
-  "esperanca-encontro", "castelo-duvida",
-  "cidade-celestial-glorioso", "cidade-celestial-humilde", "cidade-celestial-sofrido",
-  "cidade-celestial-desvio", "cidade-celestial",
+  "inicio", "familia-recusa", "sabedoria-mundana", "monte-sinai", "evangelista-retorno",
+  "pantano-desanimo", "pantano-desanimo-sozinho", "pantano-orgulho",
+  "portao-estreito", "casa-interprete",
+  "colina-dificuldade", "desvio-colina", "palacio-belo",
+  "cruz-fardo", "final-parte1",
 ];
 
 export const storyChapters: Record<string, StoryChapter> = {
+  // === CENA 1 ===
   "inicio": {
     id: "inicio",
     title: "A Cidade da Destruição",
@@ -92,7 +87,7 @@ export const storyChapters: Record<string, StoryChapter> = {
       "Cristão carregava um fardo pesado nas costas. Um peso que ninguém via, mas que o esmagava por dentro.",
       "Lendo um livro antigo, descobriu: sua cidade seria destruída.",
       "Desesperado, vagava chorando: \"O que devo fazer?\"",
-      "Evangelista apareceu e apontou para uma luz distante. \"Siga aquela luz. Ela levará você ao caminho certo.\""
+      "Evangelista apareceu e apontou para uma luz distante. \"Siga aquela luz.\""
     ],
     choices: [
       {
@@ -110,6 +105,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     ]
   },
 
+  // === CENA 2 ===
   "familia-recusa": {
     id: "familia-recusa",
     title: "A Recusa dos Amados",
@@ -120,11 +116,10 @@ export const storyChapters: Record<string, StoryChapter> = {
       "Cristão implorou à família que fugisse com ele. Ninguém acreditou.",
       "\"Você enlouqueceu!\", disseram.",
       "Obstinado zombou dele. Flexível ficou curioso, mas indeciso.",
-      "Com o coração partido, Cristão entendeu: precisava seguir sozinho ou com quem quisesse ir."
+      "Com o coração partido, Cristão entendeu: precisava seguir."
     ],
     adaptiveNarrative: [
-      { minAttr: "fe", minValue: 15, text: "Algo na convicção de Cristão tocou Flexível. Havia verdade naquele olhar." },
-      { minAttr: "discernimento", minValue: 8, text: "Cristão percebeu que insistir só geraria mais raiva. Era hora de partir." }
+      { minAttr: "fe", minValue: 15, text: "Algo na convicção de Cristão tocou Flexível. Havia verdade naquele olhar." }
     ],
     choices: [
       {
@@ -138,20 +133,100 @@ export const storyChapters: Record<string, StoryChapter> = {
         nextChapterId: "pantano-desanimo-sozinho",
         consequence: "A solidão pode fortalecer ou quebrar.",
         effects: { coragem: 5, fe: 3 }
+      },
+      {
+        text: "Ouvir o conselho de um homem sábio da cidade",
+        nextChapterId: "sabedoria-mundana",
+        consequence: "Nem todo conselho é bom conselho.",
+        effects: { discernimento: 1 }
       }
     ]
   },
 
+  // === CENA 3 ===
+  "sabedoria-mundana": {
+    id: "sabedoria-mundana",
+    title: "O Conselho do Mundo",
+    location: "Estrada da Cidade",
+    characters: ["cristao", "sabedoria-mundana"],
+    reflection: "r3",
+    narrative: [
+      "No caminho, Cristão encontrou o Sr. Sabedoria Mundana — um homem respeitado e eloquente.",
+      "\"Por que carregar esse fardo?\", perguntou. \"Vá à vila da Moralidade. Lá há um homem chamado Legalidade que pode tirá-lo.\"",
+      "O conselho parecia sensato. Um caminho mais fácil, sem dor.",
+      "Mas algo no fundo de Cristão hesitava."
+    ],
+    choices: [
+      {
+        text: "Seguir o conselho e ir à vila da Moralidade",
+        nextChapterId: "monte-sinai",
+        consequence: "O caminho fácil esconde perigos.",
+        effects: { discernimento: -2 }
+      },
+      {
+        text: "Recusar e buscar a luz do Portão Estreito",
+        nextChapterId: "portao-estreito",
+        consequence: "Nem sempre o conselho dos homens é o conselho de Deus.",
+        effects: { fe: 5, discernimento: 4 }
+      }
+    ]
+  },
+
+  // === CENA 4 ===
+  "monte-sinai": {
+    id: "monte-sinai",
+    title: "O Monte da Lei",
+    location: "Monte Sinai",
+    characters: ["cristao"],
+    narrative: [
+      "Cristão seguiu o conselho e se aproximou do Monte Sinai.",
+      "O monte começou a tremer. Fogo e raios irromperam do topo.",
+      "O fardo ficou ainda mais pesado. Cristão caiu de joelhos, aterrorizado.",
+      "A Lei não podia salvá-lo — apenas condená-lo."
+    ],
+    choices: [
+      {
+        text: "Fugir de volta ao caminho",
+        nextChapterId: "evangelista-retorno",
+        consequence: "O medo pode nos corrigir.",
+        effects: { perseveranca: 2, coragem: 2 }
+      }
+    ]
+  },
+
+  // === CENA 5 ===
+  "evangelista-retorno": {
+    id: "evangelista-retorno",
+    title: "O Retorno de Evangelista",
+    location: "Encruzilhada",
+    characters: ["cristao", "evangelista"],
+    narrative: [
+      "Evangelista o encontrou novamente. Seu olhar era sério, mas compassivo.",
+      "\"Por que você se desviou? O Portão Estreito é o único caminho.\"",
+      "Cristão chorou de vergonha. \"Fui enganado pelo Sr. Sabedoria Mundana.\"",
+      "\"Levante-se\", disse Evangelista. \"A misericórdia ainda está disponível.\""
+    ],
+    choices: [
+      {
+        text: "Voltar ao caminho do Portão Estreito",
+        nextChapterId: "portao-estreito",
+        consequence: "Cair faz parte. Levantar é o que importa.",
+        effects: { fe: 4, perseveranca: 4, discernimento: 3 }
+      }
+    ]
+  },
+
+  // === CENA 6 ===
   "pantano-desanimo": {
     id: "pantano-desanimo",
     title: "O Pântano do Desânimo",
     location: "Pântano do Desânimo",
     characters: ["cristao", "flexivel", "socorro"],
-    reflection: "r3",
+    reflection: "r4",
     narrative: [
-      "O chão cedeu. Cristão e Flexível afundaram numa lama escura e pesada.",
+      "O chão cedeu. Cristão e Flexível afundaram numa lama escura.",
       "Flexível entrou em pânico. \"Isso é loucura!\" Virou as costas e fugiu.",
-      "Cristão lutava, mas o fardo o puxava para baixo. Culpa, vergonha, dúvida — tudo pesava.",
+      "Cristão lutava, mas o fardo o puxava para baixo. Culpa, vergonha, dúvida.",
       "Uma mão firme apareceu. Era Socorro."
     ],
     adaptiveNarrative: [
@@ -174,12 +249,13 @@ export const storyChapters: Record<string, StoryChapter> = {
     ]
   },
 
+  // === CENA 7 ===
   "pantano-desanimo-sozinho": {
     id: "pantano-desanimo-sozinho",
     title: "O Pântano do Desânimo",
     location: "Pântano do Desânimo",
     characters: ["cristao", "socorro"],
-    reflection: "r3",
+    reflection: "r4",
     narrative: [
       "Sozinho no caminho, o chão cedeu. O pântano o engoliu.",
       "Sem ninguém por perto, pensamentos sombrios vieram: \"Volte. Desista.\"",
@@ -198,16 +274,17 @@ export const storyChapters: Record<string, StoryChapter> = {
     ]
   },
 
+  // === CENA 8 ===
   "pantano-orgulho": {
     id: "pantano-orgulho",
     title: "O Peso do Orgulho",
     location: "Pântano do Desânimo",
     characters: ["cristao", "socorro"],
-    reflection: "r4",
+    reflection: "r5",
     narrative: [
       "\"Eu consigo sozinho!\" Cristão recusou a mão estendida.",
       "Cada movimento o afundava mais. Suas forças se esgotaram.",
-      "Exausto, aceitou a ajuda. Socorro disse com gentileza: \"O orgulho é um fardo que você carrega por escolha.\""
+      "Exausto, aceitou a ajuda. Socorro disse: \"O orgulho é um fardo que você carrega por escolha.\""
     ],
     choices: [
       {
@@ -219,12 +296,13 @@ export const storyChapters: Record<string, StoryChapter> = {
     ]
   },
 
+  // === CENA 9 ===
   "portao-estreito": {
     id: "portao-estreito",
     title: "O Portão Estreito",
     location: "Portão Estreito",
     characters: ["cristao", "boa-vontade"],
-    reflection: "r5",
+    reflection: "r6",
     narrative: [
       "Cristão avistou o Portão Estreito — pequeno e quase escondido.",
       "Boa Vontade o chamou: \"Bata, e se abrirá.\"",
@@ -244,19 +322,20 @@ export const storyChapters: Record<string, StoryChapter> = {
       },
       {
         text: "Seguir imediatamente pelo Caminho Estreito",
-        nextChapterId: "cruz-fardo",
+        nextChapterId: "colina-dificuldade",
         consequence: "A urgência queima no coração.",
         effects: { coragem: 4, perseveranca: 3 }
       }
     ]
   },
 
+  // === CENA 10 ===
   "casa-interprete": {
     id: "casa-interprete",
     title: "A Casa do Intérprete",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
-    reflection: "r6",
+    reflection: "r7",
     narrative: [
       "O Intérprete guiou Cristão por salas cheias de visões.",
       "Na primeira: um retrato de um homem com os olhos no céu. \"Ele é o único guia verdadeiro.\"",
@@ -269,19 +348,102 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Seguir fortalecido pelas visões",
-        nextChapterId: "cruz-fardo",
+        nextChapterId: "colina-dificuldade",
         consequence: "As lições iluminarão os dias difíceis.",
         effects: { discernimento: 8, fe: 4, perseveranca: 2 }
       }
     ]
   },
 
+  // === CENA 11 ===
+  "colina-dificuldade": {
+    id: "colina-dificuldade",
+    title: "A Colina da Dificuldade",
+    location: "Colina da Dificuldade",
+    characters: ["cristao"],
+    reflection: "r8",
+    narrative: [
+      "O caminho chegou a uma colina íngreme. O caminho reto subia direto pelo topo.",
+      "Dois caminhos mais fáceis contornavam a colina — um pela esquerda, outro pela direita.",
+      "Cristão olhou para cima. A subida seria cansativa, mas o caminho era claro."
+    ],
+    choices: [
+      {
+        text: "Subir direto pela colina, mesmo sendo difícil",
+        nextChapterId: "palacio-belo",
+        consequence: "O caminho difícil fortalece.",
+        effects: { perseveranca: 6, coragem: 4, fe: 2 }
+      },
+      {
+        text: "Tomar o caminho mais fácil ao redor",
+        nextChapterId: "desvio-colina",
+        consequence: "Atalhos nem sempre economizam tempo.",
+        effects: { perseveranca: 1 }
+      }
+    ]
+  },
+
+  // === CENA 12 ===
+  "desvio-colina": {
+    id: "desvio-colina",
+    title: "Perdido nos Desvios",
+    location: "Caminhos Tortuosos",
+    characters: ["cristao"],
+    narrative: [
+      "O caminho fácil logo se tornou confuso. As trilhas se cruzavam sem direção.",
+      "Cristão andou em círculos. O medo cresceu. Estava perdido.",
+      "Depois de muito vagar, avistou a colina ao longe. Teria que subir de qualquer forma."
+    ],
+    choices: [
+      {
+        text: "Voltar e subir a colina pelo caminho certo",
+        nextChapterId: "palacio-belo",
+        consequence: "O desvio custou tempo, mas a lição ficou.",
+        effects: { discernimento: 4, perseveranca: 3 }
+      }
+    ]
+  },
+
+  // === CENA 13 ===
+  "palacio-belo": {
+    id: "palacio-belo",
+    title: "O Palácio Belo",
+    location: "Palácio Belo",
+    characters: ["cristao", "prudencia"],
+    reflection: "r9",
+    narrative: [
+      "No topo da colina, Cristão encontrou o Palácio Belo — um lugar de descanso para peregrinos.",
+      "Prudência e as outras guardiãs o receberam. Fizeram perguntas sobre sua jornada.",
+      "Deram-lhe comida, descanso, e mostraram a armadura de Deus: escudo, capacete, espada e couraça.",
+      "\"Vista-se antes de continuar. O caminho à frente exigirá tudo isso.\""
+    ],
+    adaptiveNarrative: [
+      { minAttr: "fe", minValue: 15, text: "Prudência notou a fé de Cristão. \"Você já está mais preparado do que imagina.\"" },
+      { minAttr: "discernimento", minValue: 15, text: "Cristão reconheceu cada peça da armadura e seu significado. As guardiãs ficaram impressionadas." }
+    ],
+    choices: [
+      {
+        text: "Vestir a armadura e seguir em frente",
+        nextChapterId: "cruz-fardo",
+        consequence: "Bem preparado para o que vem.",
+        effects: { coragem: 5, fe: 3, perseveranca: 3 }
+      },
+      {
+        text: "Descansar mais um pouco antes de partir",
+        nextChapterId: "cruz-fardo",
+        consequence: "O descanso renova as forças.",
+        effects: { perseveranca: 5, fe: 3, discernimento: 2 }
+      }
+    ]
+  },
+
+  // === CENA 14 — CLÍMAX DA PARTE 1 ===
   "cruz-fardo": {
     id: "cruz-fardo",
     title: "A Cruz e a Libertação",
     location: "Colina da Cruz",
     characters: ["cristao"],
-    reflection: "r7",
+    reflection: "r10",
     narrative: [
       "Cristão subiu a colina. O fardo nunca pesou tanto.",
       "No topo, viu a Cruz. Simples. Poderosa.",
@@ -291,303 +453,31 @@ export const storyChapters: Record<string, StoryChapter> = {
     ],
     choices: [
       {
-        text: "Seguir renovado, livre do fardo",
-        nextChapterId: "vale-sombra",
-        consequence: "A jornada continua, mas agora você caminha livre.",
+        text: "Seguir em frente, livre e renovado",
+        nextChapterId: "final-parte1",
+        consequence: "Uma nova vida começa aqui.",
         effects: { fe: 10, perseveranca: 5, coragem: 3, discernimento: 2 }
       }
     ]
   },
 
-  "vale-sombra": {
-    id: "vale-sombra",
-    title: "O Vale da Sombra da Morte",
-    location: "Vale da Sombra da Morte",
+  // === FINAL DA PARTE 1 ===
+  "final-parte1": {
+    id: "final-parte1",
+    title: "Fim da Primeira Parte",
+    location: "Além da Cruz",
     characters: ["cristao"],
-    reflection: "r8",
     narrative: [
-      "O caminho desceu para um vale de trevas. Fosso à direita. Pântano à esquerda.",
-      "Sussurros, chamas, vozes acusadoras. A escuridão era completa.",
-      "Cristão sentiu medo como nunca.",
-      "No fundo do vale, ouviu outro peregrino recitando: \"Não temerei mal algum, porque Tu estás comigo.\""
-    ],
-    adaptiveNarrative: [
-      { minAttr: "fe", minValue: 25, text: "A fé de Cristão era como uma armadura. Os demônios recuavam diante dele." },
-      { minAttr: "coragem", minValue: 18, text: "A coragem forjada nas provações fez Cristão caminhar firme onde outros paralisariam." },
-      { minAttr: "perseveranca", minValue: 15, text: "Cada passo era uma escolha de não desistir." }
-    ],
-    choices: [
-      {
-        text: "Orar em voz alta e avançar",
-        nextChapterId: "fiel-encontro",
-        consequence: "A oração é uma arma nas trevas.",
-        effects: { fe: 8, coragem: 5, perseveranca: 3 }
-      },
-      {
-        text: "Buscar o peregrino à frente",
-        nextChapterId: "fiel-encontro",
-        consequence: "A companhia fortalece a caminhada.",
-        effects: { discernimento: 5, perseveranca: 5, fe: 3 }
-      }
-    ]
-  },
-
-  "fiel-encontro": {
-    id: "fiel-encontro",
-    title: "O Encontro com Fiel",
-    location: "Saída do Vale",
-    characters: ["cristao", "fiel"],
-    reflection: "r9",
-    narrative: [
-      "A aurora rompeu as trevas. Cristão encontrou Fiel — um conhecido que também saíra da Cidade da Destruição.",
-      "Os dois se abraçaram. Compartilharam suas histórias.",
-      "\"O caminho é difícil\", disse Fiel, \"mas a graça é suficiente.\"",
-      "No horizonte, avistaram a Feira da Vaidade."
-    ],
-    choices: [
-      {
-        text: "Entrar na Feira com cautela",
-        nextChapterId: "feira-vaidade",
-        consequence: "Prudência será necessária entre tantas tentações.",
-        effects: { discernimento: 5, fe: 2 }
-      },
-      {
-        text: "Tentar contornar a feira",
-        nextChapterId: "feira-inevitavel",
-        consequence: "Alguns caminhos não podem ser evitados.",
-        effects: { perseveranca: 3, discernimento: 2 }
-      }
-    ]
-  },
-
-  "feira-inevitavel": {
-    id: "feira-inevitavel",
-    title: "Sem Desvios",
-    location: "Arredores da Feira da Vaidade",
-    characters: ["cristao", "fiel"],
-    narrative: [
-      "Não havia outro caminho. O Caminho Estreito passava pelo centro da Feira.",
-      "Fiel disse: \"O Senhor nos dá força para enfrentar, não para fugir.\"",
-      "Os dois se prepararam para entrar."
-    ],
-    choices: [
-      {
-        text: "Entrar juntos, com coragem",
-        nextChapterId: "feira-vaidade",
-        consequence: "Enfrentar o inevitável é sinal de maturidade.",
-        effects: { coragem: 5, perseveranca: 3, fe: 2 }
-      }
-    ]
-  },
-
-  "feira-vaidade": {
-    id: "feira-vaidade",
-    title: "A Feira da Vaidade",
-    location: "Feira da Vaidade",
-    characters: ["cristao", "fiel"],
-    reflection: "r10",
-    narrative: [
-      "A Feira oferecia tudo: honras, prazeres, riquezas, títulos.",
-      "\"O que desejam comprar?\", perguntaram. \"A Verdade\", responderam.",
-      "A resposta causou fúria. Foram espancados e presos.",
-      "Fiel foi condenado e morto. Sua coragem inspirou outros.",
-      "Com o coração pesado, Cristão escapou. A jornada precisava continuar."
-    ],
-    adaptiveNarrative: [
-      { minAttr: "coragem", minValue: 20, text: "A coragem de Cristão no julgamento fez até os guardas sentirem vergonha." },
-      { minAttr: "fe", minValue: 30, text: "Mesmo acorrentado, Cristão cantava hinos. As paredes pareciam tremer." }
-    ],
-    choices: [
-      {
-        text: "Honrar Fiel e seguir em frente",
-        nextChapterId: "esperanca-encontro",
-        consequence: "O sacrifício de Fiel não será em vão.",
-        effects: { fe: 5, perseveranca: 5, coragem: 5 }
-      }
-    ]
-  },
-
-  "esperanca-encontro": {
-    id: "esperanca-encontro",
-    title: "Um Novo Companheiro",
-    location: "Além da Feira da Vaidade",
-    characters: ["cristao", "esperanca"],
-    narrative: [
-      "Esperança alcançou Cristão — um jovem tocado pela coragem de Fiel.",
-      "\"Se ele preferiu morrer a negar a Verdade, essa Verdade vale tudo.\"",
-      "Juntos, seguiram. Mas ao longe, os contornos sombrios do Castelo da Dúvida apareceram."
-    ],
-    choices: [
-      {
-        text: "Manter-se no Caminho Estreito",
-        nextChapterId: "cidade-celestial",
-        consequence: "Perseverança é a marca dos verdadeiros peregrinos.",
-        effects: { perseveranca: 8, fe: 5, discernimento: 3 }
-      },
-      {
-        text: "Tomar um atalho que parece mais fácil",
-        nextChapterId: "castelo-duvida",
-        consequence: "Atalhos raramente levam aonde prometem.",
-        effects: { coragem: 2 }
-      },
-      {
-        text: "Consultar o pergaminho antes de decidir",
-        nextChapterId: "cidade-celestial",
-        consequence: "O pergaminho brilhou, confirmando a direção certa.",
-        effects: { discernimento: 8, fe: 5, perseveranca: 3 },
-        requires: { discernimento: 20 }
-      }
-    ]
-  },
-
-  "castelo-duvida": {
-    id: "castelo-duvida",
-    title: "O Castelo da Dúvida",
-    location: "Castelo da Dúvida",
-    characters: ["cristao", "esperanca", "gigante-desespero"],
-    reflection: "r11",
-    narrative: [
-      "O atalho os levou às terras do Gigante Desespero. Foram presos nas masmorras.",
-      "O Gigante os torturava: \"Vocês nunca chegarão lá. Desistam.\"",
-      "Esperança o encorajou: \"Deus não nos trouxe até aqui para nos abandonar.\"",
-      "Na calada da noite, Cristão lembrou da chave chamada Promessa."
-    ],
-    adaptiveNarrative: [
-      { minAttr: "fe", minValue: 35, text: "A fé de Cristão era tão forte que o Gigante não conseguia quebrar seu espírito." },
-      { minAttr: "perseveranca", minValue: 20, text: "A perseverança acumulada sustentou Cristão nos dias mais escuros." }
-    ],
-    choices: [
-      {
-        text: "Usar a chave da Promessa e fugir",
-        nextChapterId: "cidade-celestial",
-        consequence: "A experiência ensinou o preço dos desvios.",
-        effects: { fe: 5, discernimento: 5, perseveranca: 3 }
-      },
-      {
-        text: "Enfrentar o Gigante com palavras de fé",
-        nextChapterId: "cidade-celestial",
-        consequence: "O Gigante tremeu. As correntes se partiram.",
-        effects: { coragem: 10, fe: 8, perseveranca: 5 },
-        requires: { coragem: 25, fe: 30 }
-      }
-    ]
-  },
-
-  // === FINAIS ===
-  "cidade-celestial": {
-    id: "cidade-celestial",
-    title: "A Cidade Celestial",
-    location: "Cidade Celestial",
-    characters: ["cristao", "esperanca"],
-    reflection: "r12",
-    narrative: [
-      "Cristão e Esperança chegaram às Montanhas Deleitosas. Ao longe, os portões brilhavam como ouro.",
-      "O último obstáculo: o Rio da Morte. Profundo, sem ponte.",
-      "\"Não tema\", disse Esperança. \"As águas são rasas ou profundas conforme a sua fé.\"",
-      "Cristão atravessou. Anjos o esperavam com cânticos.",
-      "Apresentou o pergaminho. Os portões se abriram.",
-      "Cristão entrou na presença do Rei. Todo peso ficou para trás — para sempre."
+      "O fardo caiu. As vestes brilham. O pergaminho está guardado.",
+      "Cristão olha para o horizonte. O Caminho Estreito continua — há vales, feiras, castelos e gigantes à frente.",
+      "Mas agora ele caminha diferente. Livre.",
+      "A jornada está apenas começando."
     ],
     choices: [],
     isEnding: true,
-    endingType: "default"
-  },
-
-  "cidade-celestial-glorioso": {
-    id: "cidade-celestial-glorioso",
-    title: "Final Glorioso",
-    location: "Cidade Celestial",
-    characters: ["cristao", "esperanca"],
-    reflection: "r12",
-    narrative: [
-      "Uma luz dourada envolveu Cristão e Esperança nas Montanhas Deleitosas.",
-      "O Rio da Morte se acalmou. Cristão caminhou sobre águas quase rasas.",
-      "Anjos desceram em fileiras, cantando seu nome. Os portões se abriram com um trovão de glória.",
-      "O Rei veio ao encontro: \"Bem-vindo, servo bom e fiel. Entre na alegria do seu Senhor.\"",
-      "Uma coroa de ouro foi colocada sobre sua cabeça. Cada provação, cada lágrima — tudo valeu a pena."
-    ],
-    choices: [],
-    isEnding: true,
-    endingType: "glorioso"
-  },
-
-  "cidade-celestial-humilde": {
-    id: "cidade-celestial-humilde",
-    title: "Final do Peregrino Sábio",
-    location: "Cidade Celestial",
-    characters: ["cristao", "esperanca"],
-    reflection: "r12",
-    narrative: [
-      "Cristão chegou ao Rio da Morte com o coração tranquilo.",
-      "As águas eram profundas, mas ele não temeu. O discernimento lhe mostrava: cada prova foi preparação.",
-      "Atravessou com serenidade. Um anjo o guiou pelos portões.",
-      "O Rei sorriu: \"Você buscou sabedoria acima de tudo. E a sabedoria o trouxe até aqui.\"",
-      "Cristão recebeu um manto tecido com as lições de cada escolha sábia."
-    ],
-    choices: [],
-    isEnding: true,
-    endingType: "humilde"
-  },
-
-  "cidade-celestial-sofrido": {
-    id: "cidade-celestial-sofrido",
-    title: "Final do Peregrino Perseverante",
-    location: "Cidade Celestial",
-    characters: ["cristao", "esperanca"],
-    reflection: "r12",
-    narrative: [
-      "Cristão chegou ao Rio coberto de cicatrizes. Marcas de cada batalha, cada queda.",
-      "As águas eram turbulentas. Quase afundou. Esperança o segurou: \"Não agora. Não depois de tudo.\"",
-      "Com as últimas forças, alcançou a outra margem.",
-      "O Rei o abraçou: \"Você caiu muitas vezes, mas nunca ficou no chão. Bem-vindo, meu filho.\"",
-      "Suas vestes estavam rasgadas, mas brilhavam."
-    ],
-    choices: [],
-    isEnding: true,
-    endingType: "sofrido"
-  },
-
-  "cidade-celestial-desvio": {
-    id: "cidade-celestial-desvio",
-    title: "Final do Peregrino Desviado",
-    location: "Às Margens do Rio",
-    characters: ["cristao"],
-    reflection: "r12",
-    narrative: [
-      "Cristão chegou ao Rio da Morte, mas seus passos eram incertos. Tantos atalhos, tantas hesitações.",
-      "As águas pareciam profundas demais. O pergaminho em suas mãos estava manchado de dúvidas.",
-      "Ele entrou no rio com dificuldade. As ondas o puxavam, e por um momento pensou em desistir.",
-      "Mas algo dentro dele — talvez uma última fagulha de fé — o empurrou adiante.",
-      "Chegou ao outro lado exausto, quase destruído. Os portões se abriram, mas estreitamente.",
-      "O Rei o recebeu em silêncio: \"Você chegou. Quase não chegou. Mas chegou.\""
-    ],
-    choices: [],
-    isEnding: true,
-    endingType: "desvio"
+    endingType: "parte1"
   }
 };
 
 export const getChapter = (id: string): StoryChapter | undefined => storyChapters[id];
 export const FIRST_CHAPTER_ID = "inicio";
-
-/**
- * Determines the ending chapter based on player attributes
- */
-export const getEndingChapterId = (attrs: ChoiceEffect): string => {
-  const fe = attrs.fe || 0;
-  const coragem = attrs.coragem || 0;
-  const discernimento = attrs.discernimento || 0;
-  const perseveranca = attrs.perseveranca || 0;
-  const total = fe + coragem + discernimento + perseveranca;
-
-  // Glorioso: all attributes high
-  if (total >= 120 && fe >= 30 && coragem >= 20) return "cidade-celestial-glorioso";
-  // Humilde/Wise: discernimento dominant
-  if (discernimento >= 25 && discernimento >= coragem) return "cidade-celestial-humilde";
-  // Sofrido: perseverança dominant but lower overall
-  if (perseveranca >= 20 && total < 100) return "cidade-celestial-sofrido";
-  // Desvio: very low total — player took shortcuts, avoided growth
-  if (total < 50) return "cidade-celestial-desvio";
-  
-  return "cidade-celestial";
-};
