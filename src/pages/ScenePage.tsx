@@ -218,16 +218,28 @@ const ScenePage = () => {
       .map(id => {
         const char = allChars.find(c => c.id === id);
         const img = characterImages[id];
-        return char && img ? { name: char.name, img, role: char.role } : null;
+        if (!char || !img) return null;
+        // Determine character type for sound
+        const isVillain = ['apolion', 'gigante_desespero', 'juiz_odio_ao_bem', 'amor_dinheiro', 'hipocrisia', 'formalista', 'ateismo', 'lisonjeiro'].includes(id);
+        return { name: char.name, img, role: char.role, isVillain };
       })
       .find(Boolean);
     
     if (revealChar) {
       const delay = setTimeout(() => {
+        // Play entrance sound
+        playGameSfx('suspense');
+        setTimeout(() => {
+          playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
+        }, 400);
         setCharReveal(revealChar);
-        // Auto-dismiss after 3 seconds
-        setTimeout(() => setCharReveal(null), 3000);
-      }, 800); // Show after scene image loads
+        // After 6 seconds, dismiss reveal and set persistent portrait
+        setTimeout(() => {
+          setCharReveal(null);
+          setCharRevealDone(true);
+          setPersistentChar(revealChar);
+        }, 6000);
+      }, 1000);
       return () => clearTimeout(delay);
     }
   }, [chapter?.id, transitioning]);
