@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
-import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect, ToneNarrative } from '@/data/story';
+import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect, ToneNarrative, StoryChoice } from '@/data/story';
 import { sceneImages } from '@/data/sceneImages';
 import { getEmotionalState, getEmotionalClasses } from '@/lib/emotionalIntensity';
 import { analyzePerformance } from '@/lib/performanceAnalysis';
@@ -10,6 +10,7 @@ import { useAudioEngine } from '@/hooks/useAudioEngine';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
+import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
 import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX } from 'lucide-react';
 
 const ScenePage = () => {
@@ -307,21 +308,79 @@ const ScenePage = () => {
               ) : (
                 <>
                   <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3 font-medium">O que Cristão deve fazer?</p>
-                  {availableChoices.map((choice, i) => (
-                    <button
-                      key={i}
-                      onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
-                      className="w-full text-left p-4 rounded-lg bg-card border border-border hover:border-primary/50 hover:glow-gold transition-all duration-300 group"
+
+                  {/* DRAG interaction */}
+                  {chapter.interactionType === 'drag' && availableChoices.length >= 2 ? (
+                    <DragToChoose
+                      leftChoice={{ label: availableChoices[0].text, description: availableChoices[0].item ? '✦ Concede um item' : undefined }}
+                      rightChoice={{ label: availableChoices[1].text, description: availableChoices[1].item ? '✦ Concede um item' : undefined }}
+                      onChoose={(side) => {
+                        const choice = side === 'left' ? availableChoices[0] : availableChoices[1];
+                        handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item);
+                      }}
+                    />
+
+                  /* TIMED interaction */
+                  ) : chapter.interactionType === 'timed' ? (
+                    <TimedChoice
+                      timeLimit={chapter.timeLimit || 15}
+                      onTimeout={() => {
+                        const idx = chapter.timeoutChoiceIndex ?? 0;
+                        const fallback = availableChoices[idx] || availableChoices[0];
+                        if (fallback) {
+                          handleChoice(fallback.nextChapterId, fallback.text, fallback.effects, fallback.consequence, fallback.flag, fallback.conditionalEffects, fallback.item);
+                        }
+                      }}
                     >
-                      <p className="text-foreground font-body text-sm group-hover:text-gold transition-colors">{choice.text}</p>
-                      {choice.requires && (
-                        <p className="text-[10px] text-primary mt-1.5 uppercase tracking-wider">★ Escolha desbloqueada por seus atributos</p>
-                      )}
-                      {choice.item && (
-                        <p className="text-[10px] text-amber-400 mt-1 uppercase tracking-wider">✦ Concede um item</p>
-                      )}
-                    </button>
-                  ))}
+                      {availableChoices.map((choice, i) => (
+                        <HoldButton
+                          key={i}
+                          holdDuration={1.2}
+                          onConfirm={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
+                        >
+                          <p className="text-foreground font-body text-sm">{choice.text}</p>
+                          {choice.item && <p className="text-[10px] text-amber-400 mt-1 uppercase tracking-wider">✦ Concede um item</p>}
+                        </HoldButton>
+                      ))}
+                    </TimedChoice>
+
+                  /* HOLD interaction */
+                  ) : chapter.interactionType === 'hold' ? (
+                    <div className="space-y-3">
+                      {availableChoices.map((choice, i) => (
+                        <HoldButton
+                          key={i}
+                          holdDuration={2}
+                          onConfirm={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
+                        >
+                          <p className="text-foreground font-body text-sm">{choice.text}</p>
+                          {choice.requires && <p className="text-[10px] text-primary mt-1.5 uppercase tracking-wider">★ Desbloqueada por atributos</p>}
+                          {choice.item && <p className="text-[10px] text-amber-400 mt-1 uppercase tracking-wider">✦ Concede um item</p>}
+                        </HoldButton>
+                      ))}
+                    </div>
+
+                  /* DEFAULT — standard click choices */
+                  ) : (
+                    <>
+                      {availableChoices.map((choice, i) => (
+                        <button
+                          key={i}
+                          onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
+                          className="w-full text-left p-4 rounded-lg bg-card border border-border hover:border-primary/50 hover:glow-gold transition-all duration-300 group"
+                        >
+                          <p className="text-foreground font-body text-sm group-hover:text-gold transition-colors">{choice.text}</p>
+                          {choice.requires && (
+                            <p className="text-[10px] text-primary mt-1.5 uppercase tracking-wider">★ Escolha desbloqueada por seus atributos</p>
+                          )}
+                          {choice.item && (
+                            <p className="text-[10px] text-amber-400 mt-1 uppercase tracking-wider">✦ Concede um item</p>
+                          )}
+                        </button>
+                      ))}
+                    </>
+                  )}
+
                   {lockedChoices.map((choice, i) => (
                     <div
                       key={`locked-${i}`}
