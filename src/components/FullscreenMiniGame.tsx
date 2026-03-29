@@ -186,6 +186,40 @@ export function FullscreenMiniGame({ config, chapterId, onComplete, onSkip, char
         {/* Cinematic intro */}
         {phase === 'cinematic' && (
           <div className="flex-1 flex flex-col items-center justify-center px-6 space-y-6 animate-fade-in">
+            {/* Character portraits */}
+            {(leadPortrait || supportPortrait) && (
+              <div className="flex items-center justify-center gap-4">
+                {leadPortrait && (
+                  <div className="text-center">
+                    <img
+                      src={leadPortrait.img}
+                      alt={leadPortrait.name}
+                      className="w-24 h-24 rounded-full object-cover border-2"
+                      style={{
+                        borderColor: 'hsl(120 40% 45%)',
+                        boxShadow: '0 0 22px hsl(120 55% 45% / 0.45)',
+                      }}
+                    />
+                    <p className="text-xs font-display font-bold mt-2" style={{ color: 'hsl(120 55% 70%)' }}>{leadPortrait.name}</p>
+                  </div>
+                )}
+                {supportPortrait && (
+                  <div className="text-center">
+                    <img
+                      src={supportPortrait.img}
+                      alt={supportPortrait.name}
+                      className="w-24 h-24 rounded-full object-cover border-2"
+                      style={{
+                        borderColor: 'hsl(40 60% 50%)',
+                        boxShadow: '0 0 22px hsl(40 65% 50% / 0.4)',
+                      }}
+                    />
+                    <p className="text-xs font-display font-bold mt-2" style={{ color: 'hsl(40 70% 72%)' }}>{supportPortrait.name}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Floating icon */}
             <div
               className="text-7xl"
@@ -254,8 +288,34 @@ export function FullscreenMiniGame({ config, chapterId, onComplete, onSkip, char
 
         {/* Game area */}
         {phase === 'playing' && (
-          <div className="flex-1 flex flex-col px-3 pb-4 pt-2 animate-fade-in overflow-y-auto">
-            <MiniGame config={config} onComplete={handleComplete} />
+          <div className="flex-1 flex flex-col px-3 pb-4 pt-2 animate-fade-in overflow-y-auto space-y-3">
+            {(leadPortrait || supportPortrait) && (
+              <div className="flex items-center justify-center gap-3">
+                {leadPortrait && (
+                  <div className="text-center">
+                    <img
+                      src={leadPortrait.img}
+                      alt={leadPortrait.name}
+                      className="w-16 h-16 rounded-full object-cover border-2"
+                      style={{ borderColor: 'hsl(120 40% 45%)', boxShadow: '0 0 14px hsl(120 55% 45% / 0.35)' }}
+                    />
+                    <p className="text-[10px] font-display font-bold mt-1" style={{ color: 'hsl(120 55% 70%)' }}>{leadPortrait.name}</p>
+                  </div>
+                )}
+                {supportPortrait && (
+                  <div className="text-center">
+                    <img
+                      src={supportPortrait.img}
+                      alt={supportPortrait.name}
+                      className="w-16 h-16 rounded-full object-cover border-2"
+                      style={{ borderColor: 'hsl(40 60% 50%)', boxShadow: '0 0 14px hsl(40 65% 50% / 0.35)' }}
+                    />
+                    <p className="text-[10px] font-display font-bold mt-1" style={{ color: 'hsl(40 70% 72%)' }}>{supportPortrait.name}</p>
+                  </div>
+                )}
+              </div>
+            )}
+            <MiniGame config={config} characterPortraits={characterPortraits} onComplete={handleComplete} />
           </div>
         )}
 
