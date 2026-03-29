@@ -22,7 +22,7 @@ export default function PremiumDice({ onRoll, disabled, isMyTurn }: PremiumDiceP
   const [finalValue, setFinalValue] = useState<number | null>(null);
   const [showManual, setShowManual] = useState(false);
   const [manualValue, setManualValue] = useState('');
-  const diceRef = useRef<HTMLDivElement>(null);
+  const diceRef = useRef<HTMLButtonElement>(null);
   const hasPlayedTurnSound = useRef(false);
 
   useEffect(() => {
