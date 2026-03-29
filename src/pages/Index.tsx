@@ -19,11 +19,16 @@ const Index = () => {
   const navigate = useNavigate();
   const { hasProgress, startJourney, resetProgress, progress, history, isReplay, loadFromCloud } = useStoryProgress();
   const { user, profile } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   useCloudSync(loadFromCloud);
 
   const [showSplash, setShowSplash] = useState(() => {
     const seen = sessionStorage.getItem('splash_seen');
     return !seen;
+  });
+
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    return !localStorage.getItem('peregrino-onboarding-done');
   });
 
   const handleSplashDone = useCallback(() => {
