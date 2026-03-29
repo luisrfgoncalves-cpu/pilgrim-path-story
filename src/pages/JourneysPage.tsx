@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { storyChapters, chapterOrder } from '@/data/story';
-import { ArrowLeft, Lock, CheckCircle2, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, Lock, CheckCircle2, MapPin, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import mapFase1 from '@/assets/map-fase1.jpg';
@@ -52,7 +52,7 @@ const PHASES = [
 
 const JourneysPage = () => {
   const navigate = useNavigate();
-  const { progress, goToChapter, startJourney } = useStoryProgress();
+  const { progress, goToChapter, startJourney, resetProgress } = useStoryProgress();
   const [expandedPhase, setExpandedPhase] = useState<string | null>(null);
 
   const handleChapterClick = (chapterId: string) => {
@@ -63,11 +63,18 @@ const JourneysPage = () => {
     }
   };
 
+  const getPhaseChapterIds = (phaseId: string) => {
+    if (phaseId === 'fase1') {
+      // Fase 1 chapters use "cena1"-"cena15" (no prefix)
+      return chapterOrder.filter(id => /^cena\d+$/.test(id));
+    }
+    return chapterOrder.filter(id => id.startsWith(phaseId + '-'));
+  };
+
   const groupedChapters = useMemo(() => {
     return PHASES.map(phase => ({
       ...phase,
-      chapters: chapterOrder
-        .filter(id => id.startsWith(phase.id))
+      chapters: getPhaseChapterIds(phase.id)
         .map(id => ({ id, chapter: storyChapters[id] }))
         .filter(c => c.chapter),
     }));
@@ -77,15 +84,18 @@ const JourneysPage = () => {
   const total = chapterOrder.length;
 
   const isPhaseVisited = (phaseId: string) =>
-    chapterOrder.some(id => id.startsWith(phaseId) && progress.visitedChapters.includes(id));
+    getPhaseChapterIds(phaseId).some(id => progress.visitedChapters.includes(id));
 
   const isPhaseComplete = (phaseId: string) => {
-    const phaseChapters = chapterOrder.filter(id => id.startsWith(phaseId));
+    const phaseChapters = getPhaseChapterIds(phaseId);
     return phaseChapters.length > 0 && phaseChapters.every(id => progress.visitedChapters.includes(id));
   };
 
-  const isCurrentPhase = (phaseId: string) =>
-    progress.currentChapterId?.startsWith(phaseId);
+  const isCurrentPhase = (phaseId: string) => {
+    const currentId = progress.currentChapterId;
+    if (phaseId === 'fase1') return /^cena\d+$/.test(currentId);
+    return currentId?.startsWith(phaseId + '-');
+  };
 
   return (
     <div className="min-h-screen relative"
@@ -250,19 +260,21 @@ const JourneysPage = () => {
 
                   {/* Title over image */}
                   <div className="absolute bottom-3 left-3 right-3">
-                    <h3 className="font-display text-xl leading-tight"
-                      style={{
-                        color: visited ? '#fff' : 'hsl(30 15% 45%)',
-                        textShadow: '0 2px 8px rgba(0,0,0,0.8)',
-                      }}
-                    >
-                      {visited ? phase.label : '???'}
-                    </h3>
-                    {visited && (
-                      <p className="text-sm italic mt-0.5" style={{ color: 'hsl(40 40% 75%)', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
-                        {phase.subtitle}
-                      </p>
-                    )}
+                    <div className="inline-block px-3 py-1.5 rounded-lg" style={{ background: 'hsl(0 0% 0% / 0.65)', backdropFilter: 'blur(4px)' }}>
+                      <h3 className="font-display text-xl leading-tight"
+                        style={{
+                          color: visited ? '#fff' : 'hsl(30 15% 60%)',
+                          textShadow: '0 1px 4px rgba(0,0,0,0.9)',
+                        }}
+                      >
+                        {visited ? phase.label : '???'}
+                      </h3>
+                      {visited && (
+                        <p className="text-sm italic mt-0.5" style={{ color: 'hsl(40 50% 80%)', textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}>
+                          {phase.subtitle}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -400,6 +412,27 @@ const JourneysPage = () => {
           <p className="text-xs italic mt-1" style={{ color: 'hsl(35 30% 50%)' }}>
             "E Deus lhes enxugará dos olhos toda lágrima" — Apocalipse 21:4
           </p>
+        </div>
+
+        {/* Reset button */}
+        <div className="flex justify-center pb-4">
+          <button
+            onClick={() => {
+              if (window.confirm('Tem certeza que deseja recomeçar toda a jornada do início?')) {
+                resetProgress('part1');
+                navigate('/');
+              }
+            }}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all active:scale-95"
+            style={{
+              background: 'hsl(0 30% 18% / 0.6)',
+              border: '1.5px solid hsl(0 30% 30% / 0.5)',
+              color: 'hsl(0 40% 65%)',
+            }}
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span className="text-sm font-display">Recomeçar do Início</span>
+          </button>
         </div>
 
         {/* Legend */}
