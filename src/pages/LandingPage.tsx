@@ -960,6 +960,19 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* ══════════ TRUST SEAL BADGES ══════════ */}
+      <section className="px-5 py-8 bg-card/20">
+        <div className="max-w-lg mx-auto">
+          <div className="flex items-center justify-center gap-6 flex-wrap">
+            <SealBadge icon="🛡️" text="Garantia" subtext="7 Dias" />
+            <SealBadge icon="⚔️" text="30+ Capítulos" />
+            <SealBadge icon="🏆" text="100% Offline" />
+            <SealBadge icon="👥" text="Multiplayer" subtext="Até 6 jogadores" />
+          </div>
+          <MedievalOrnament size="lg" />
+        </div>
+      </section>
+
       {/* ══════════ MODO SOLO — COMO FUNCIONA ══════════ */}
       <section className="px-5 py-16">
         <div className="max-w-4xl mx-auto space-y-8">
