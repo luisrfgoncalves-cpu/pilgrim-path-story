@@ -982,71 +982,130 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
   }
 
   return (
-    <div className="bg-card/50 border-2 border-primary/20 rounded-2xl p-4 space-y-4">
+    <div className="rounded-2xl p-5 space-y-5" style={{
+      background: 'linear-gradient(180deg, hsl(0 30% 12%) 0%, hsl(30 20% 10%) 100%)',
+      border: '3px solid hsl(40 60% 45%)',
+      boxShadow: '0 0 20px hsl(40 60% 40% / 0.2), inset 0 1px 0 hsl(40 60% 60% / 0.1)',
+    }}>
       {/* HP bars */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <span className="text-sm">🙂</span>
-          <div className="flex-1 h-3 bg-secondary rounded-full overflow-hidden">
-            <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${playerHP * 10}%` }} />
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <span className="text-lg font-bold" style={{ textShadow: '0 0 8px hsl(40 60% 50% / 0.5)' }}>⚔️</span>
+          <div className="flex-1 h-5 rounded-full overflow-hidden" style={{
+            background: 'hsl(0 0% 8%)',
+            border: '2px solid hsl(120 40% 35%)',
+            boxShadow: '0 0 8px hsl(120 50% 40% / 0.3)',
+          }}>
+            <div className="h-full rounded-full transition-all duration-500" style={{
+              width: `${(playerHP / maxHP) * 100}%`,
+              background: 'linear-gradient(90deg, hsl(120 60% 35%), hsl(90 70% 45%))',
+              boxShadow: 'inset 0 1px 2px hsl(0 0% 100% / 0.3), 0 0 6px hsl(120 60% 45% / 0.4)',
+            }} />
           </div>
-          <span className="text-xs font-display text-foreground w-8 text-right">{playerHP}</span>
+          <span className="text-sm font-display font-bold min-w-[2rem] text-right" style={{ color: 'hsl(120 60% 55%)' }}>{playerHP}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm">{enemy.emoji}</span>
-          <div className="flex-1 h-3 bg-secondary rounded-full overflow-hidden">
-            <div className="h-full bg-destructive rounded-full transition-all duration-500" style={{ width: `${enemyHP * 10}%` }} />
+        <div className="flex items-center gap-3">
+          <span className="text-lg">{enemy.emoji}</span>
+          <div className="flex-1 h-5 rounded-full overflow-hidden" style={{
+            background: 'hsl(0 0% 8%)',
+            border: '2px solid hsl(0 50% 40%)',
+            boxShadow: '0 0 8px hsl(0 60% 45% / 0.3)',
+          }}>
+            <div className="h-full rounded-full transition-all duration-500" style={{
+              width: `${(enemyHP / maxHP) * 100}%`,
+              background: 'linear-gradient(90deg, hsl(0 70% 40%), hsl(350 80% 50%))',
+              boxShadow: 'inset 0 1px 2px hsl(0 0% 100% / 0.3), 0 0 6px hsl(0 70% 50% / 0.4)',
+            }} />
           </div>
-          <span className="text-xs font-display text-foreground w-8 text-right">{enemyHP}</span>
+          <span className="text-sm font-display font-bold min-w-[2rem] text-right" style={{ color: 'hsl(0 60% 60%)' }}>{enemyHP}</span>
         </div>
       </div>
 
-      {/* Dice display */}
+      {/* 3D Dice display */}
       {(phase === 'rolling' || roundLog) && (
-        <div className="flex items-center justify-center gap-6 py-3">
+        <div className="flex items-center justify-center gap-8 py-4">
           <div className="text-center">
-            <span className={`text-4xl ${dice.rolling ? 'animate-pulse' : ''}`}>{diceEmoji(dice.player)}</span>
-            <p className="text-[10px] text-muted-foreground mt-1">Você</p>
+            <Dice3D value={dice.player} rolling={dice.rolling} size={72} color="gold" />
+            <p className="text-xs font-display font-bold mt-2" style={{ color: 'hsl(40 70% 65%)' }}>Você</p>
           </div>
-          <span className="text-lg text-muted-foreground font-display">VS</span>
+          <span className="text-2xl font-display font-bold" style={{
+            color: 'hsl(0 60% 55%)',
+            textShadow: '0 0 12px hsl(0 60% 50% / 0.5)',
+          }}>VS</span>
           <div className="text-center">
-            <span className={`text-4xl ${dice.rolling ? 'animate-pulse' : ''}`}>{diceEmoji(dice.enemy)}</span>
-            <p className="text-[10px] text-muted-foreground mt-1">{enemy.name}</p>
+            <Dice3D value={dice.enemy} rolling={dice.rolling} size={72} color="red" />
+            <p className="text-xs font-display font-bold mt-2" style={{ color: 'hsl(0 60% 60%)' }}>{enemy.name}</p>
           </div>
+        </div>
+      )}
+
+      {/* Critical hit flash */}
+      {criticalHit && (
+        <div className="text-center animate-pulse">
+          <span className="text-2xl font-display font-bold" style={{
+            color: 'hsl(40 80% 60%)',
+            textShadow: '0 0 20px hsl(40 80% 50% / 0.8)',
+          }}>🌟 GOLPE CRÍTICO! 🌟</span>
         </div>
       )}
 
       {/* Round log */}
       {roundLog && phase === 'choose' && (
-        <p className="text-sm text-center text-foreground/80 bg-card/60 rounded-xl px-3 py-2 animate-fade-in">{roundLog}</p>
+        <p className="text-sm text-center font-display rounded-xl px-4 py-3 animate-fade-in" style={{
+          background: 'hsl(30 20% 15%)',
+          border: '2px solid hsl(40 50% 35%)',
+          color: 'hsl(40 50% 80%)',
+          boxShadow: '0 0 10px hsl(40 50% 30% / 0.2)',
+        }}>{roundLog}</p>
       )}
 
       {/* Action buttons */}
       {phase === 'choose' && (
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-3">
           <button onClick={() => rollDice('attack')}
-            className="py-4 rounded-xl border-2 border-border bg-card hover:border-primary/50 active:scale-90 transition-all text-center">
-            <span className="text-2xl block">⚔️</span>
-            <span className="text-xs font-display text-foreground mt-1 block">Atacar</span>
+            className="py-5 rounded-xl transition-all active:scale-90 text-center" style={{
+              background: 'linear-gradient(180deg, hsl(0 40% 25%) 0%, hsl(0 35% 18%) 100%)',
+              border: '3px solid hsl(0 50% 45%)',
+              boxShadow: '0 4px 0 0 hsl(0 40% 15%), 0 0 12px hsl(0 50% 40% / 0.3)',
+            }}>
+            <span className="text-3xl block">⚔️</span>
+            <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(0 60% 70%)' }}>Atacar</span>
           </button>
           <button onClick={() => rollDice('defend')}
-            className="py-4 rounded-xl border-2 border-border bg-card hover:border-primary/50 active:scale-90 transition-all text-center">
-            <span className="text-2xl block">🛡️</span>
-            <span className="text-xs font-display text-foreground mt-1 block">Defender</span>
+            className="py-5 rounded-xl transition-all active:scale-90 text-center" style={{
+              background: 'linear-gradient(180deg, hsl(220 40% 25%) 0%, hsl(220 35% 18%) 100%)',
+              border: '3px solid hsl(220 50% 50%)',
+              boxShadow: '0 4px 0 0 hsl(220 40% 15%), 0 0 12px hsl(220 50% 45% / 0.3)',
+            }}>
+            <span className="text-3xl block">🛡️</span>
+            <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(220 60% 70%)' }}>Defender</span>
           </button>
           <button onClick={() => rollDice('pray')}
-            className="py-4 rounded-xl border-2 border-border bg-card hover:border-primary/50 active:scale-90 transition-all text-center">
-            <span className="text-2xl block">🙏</span>
-            <span className="text-xs font-display text-foreground mt-1 block">Orar</span>
+            className="py-5 rounded-xl transition-all active:scale-90 text-center" style={{
+              background: 'linear-gradient(180deg, hsl(40 40% 25%) 0%, hsl(40 35% 18%) 100%)',
+              border: '3px solid hsl(40 60% 50%)',
+              boxShadow: '0 4px 0 0 hsl(40 40% 15%), 0 0 12px hsl(40 60% 45% / 0.3)',
+            }}>
+            <span className="text-3xl block">🙏</span>
+            <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(40 70% 70%)' }}>Orar</span>
           </button>
         </div>
       )}
 
       {phase === 'rolling' && (
-        <p className="text-center text-sm text-primary font-display animate-pulse">Rolando dados...</p>
+        <p className="text-center text-lg font-display font-bold animate-pulse" style={{
+          color: 'hsl(40 70% 60%)',
+          textShadow: '0 0 10px hsl(40 70% 50% / 0.5)',
+        }}>⚡ Rolando dados... ⚡</p>
       )}
 
-      <p className="text-xs text-center text-muted-foreground">Rodada {Math.min(round + 1, totalRounds)}/{totalRounds}</p>
+      <p className="text-xs text-center font-display font-bold" style={{
+        color: 'hsl(40 50% 55%)',
+        background: 'hsl(30 15% 12%)',
+        border: '1px solid hsl(40 40% 30%)',
+        borderRadius: '8px',
+        padding: '4px 8px',
+      }}>Rodada {Math.min(round + 1, totalRounds)}/{totalRounds}</p>
     </div>
   );
 }
