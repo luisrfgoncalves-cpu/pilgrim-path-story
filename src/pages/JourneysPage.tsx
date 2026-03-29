@@ -52,7 +52,7 @@ const PHASES = [
 
 const JourneysPage = () => {
   const navigate = useNavigate();
-  const { progress, goToChapter, startJourney } = useStoryProgress();
+  const { progress, goToChapter, startJourney, resetProgress } = useStoryProgress();
   const [expandedPhase, setExpandedPhase] = useState<string | null>(null);
 
   const handleChapterClick = (chapterId: string) => {
