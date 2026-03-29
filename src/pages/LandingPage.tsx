@@ -678,8 +678,11 @@ const LandingPage = () => {
         <CountdownTimer compact />
         <button
           onClick={handleBuy}
-          className="ml-2 px-3 py-1 text-xs font-display font-bold rounded-lg bg-primary text-primary-foreground border border-primary/60 flex-shrink-0 hover:scale-105 transition-transform"
-          style={{ boxShadow: '0 0 10px hsl(40 70% 50% / 0.3)' }}
+          className="ml-2 px-3.5 py-1.5 text-xs font-display font-bold rounded-lg text-primary-foreground border border-primary/70 flex-shrink-0 hover:scale-110 transition-transform cta-neon-pulse"
+          style={{
+            background: 'linear-gradient(180deg, hsl(40 85% 55%), hsl(40 65% 30%))',
+            textShadow: '0 0 8px hsl(40 90% 60% / 0.6)',
+          }}
         >
           GARANTIR
         </button>
