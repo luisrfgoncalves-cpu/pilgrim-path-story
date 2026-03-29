@@ -133,13 +133,13 @@ const ScenePage = () => {
                   <div className="flex items-center gap-3 justify-center">
                     <div className="h-px w-12 bg-primary/30" />
                     <span className="text-primary font-display text-sm">
-                      ✦ {chapter.endingType === 'glorioso' ? 'GLÓRIA ETERNA' : chapter.endingType === 'humilde' ? 'SABEDORIA ALCANÇADA' : chapter.endingType === 'sofrido' ? 'PERSEVERANÇA RECOMPENSADA' : 'FIM'} ✦
+                      ✦ {chapter.endingType === 'glorioso' ? 'GLÓRIA ETERNA' : chapter.endingType === 'humilde' ? 'SABEDORIA ALCANÇADA' : chapter.endingType === 'sofrido' ? 'PERSEVERANÇA RECOMPENSADA' : chapter.endingType === 'desvio' ? 'CHEGADA INCERTA' : 'FIM'} ✦
                     </span>
                     <div className="h-px w-12 bg-primary/30" />
                   </div>
                   {chapter.endingType && chapter.endingType !== 'default' && (
                     <p className="text-xs text-primary uppercase tracking-widest">
-                      Final: {chapter.endingType === 'glorioso' ? 'O Triunfo do Fiel' : chapter.endingType === 'humilde' ? 'O Caminho da Sabedoria' : 'A Resistência do Peregrino'}
+                      Final: {chapter.endingType === 'glorioso' ? 'O Triunfo do Fiel' : chapter.endingType === 'humilde' ? 'O Caminho da Sabedoria' : chapter.endingType === 'desvio' ? 'O Peregrino Desviado' : 'A Resistência do Peregrino'}
                     </p>
                   )}
                   <p className="narrative-text text-muted-foreground italic">A jornada de Cristão chegou ao fim. Mas a sua continua.</p>
