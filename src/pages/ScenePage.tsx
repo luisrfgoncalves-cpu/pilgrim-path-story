@@ -71,7 +71,7 @@ const ScenePage = () => {
   const [miniGameDone, setMiniGameDone] = useState(false);
   const [miniGameResult, setMiniGameResult] = useState<MiniGameResult | null>(null);
   const [showMiniGameResult, setShowMiniGameResult] = useState(false);
-  const { triggerChoiceEffect } = useVisualEffects();
+  const { triggerChoiceEffect, triggerSceneEntryVFX } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
   const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
@@ -169,7 +169,11 @@ const ScenePage = () => {
     setMiniGameDone(false);
     setMiniGameResult(null);
     setShowMiniGameResult(false);
-    const t = setTimeout(() => setTransitioning(false), 100);
+    const t = setTimeout(() => {
+      setTransitioning(false);
+      // Auto-trigger dramatic VFX on scene entry
+      triggerSceneEntryVFX(progress.currentChapterId);
+    }, 100);
     return () => clearTimeout(t);
   }, [progress.currentChapterId]);
 
