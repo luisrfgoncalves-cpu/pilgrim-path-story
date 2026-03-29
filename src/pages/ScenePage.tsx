@@ -72,6 +72,7 @@ const ScenePage = () => {
   const [miniGameDone, setMiniGameDone] = useState(false);
   const [miniGameResult, setMiniGameResult] = useState<MiniGameResult | null>(null);
   const [showMiniGameResult, setShowMiniGameResult] = useState(false);
+  const [miniGameReady, setMiniGameReady] = useState(false);
   const { triggerChoiceEffect, triggerSceneEntryVFX } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
@@ -430,9 +431,9 @@ const ScenePage = () => {
               return pType ? <ParticleEffects type={pType} intensity={0.6} /> : null;
             })()}
             <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background via-background/10 to-transparent" />
-            <div className="absolute bottom-3 left-4 flex items-center gap-2 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-primary/30">
-              <MapPin className="w-4 h-4 text-primary drop-shadow-[0_0_6px_hsl(var(--primary))]" />
-              <span className="text-sm uppercase tracking-widest text-primary font-display font-bold" style={{ textShadow: '0 0 8px hsl(var(--primary) / 0.6), 0 1px 3px rgba(0,0,0,0.9)' }}>{chapter.location}</span>
+            <div className="absolute bottom-2 left-3 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-md border border-primary/20">
+              <MapPin className="w-3 h-3 text-primary/80" />
+              <span className="text-[10px] uppercase tracking-widest text-primary/90 font-display font-bold" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>{chapter.location}</span>
             </div>
           </div>
         )}
