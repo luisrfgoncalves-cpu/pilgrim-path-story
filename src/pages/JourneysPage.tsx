@@ -656,14 +656,14 @@ const JourneysPage = () => {
                 navigate('/');
               }
             }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all active:scale-95"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all active:scale-95 whitespace-nowrap"
             style={{
               background: 'hsl(0 30% 18% / 0.6)',
               border: '1.5px solid hsl(0 30% 30% / 0.5)',
               color: 'hsl(0 40% 65%)',
             }}
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-4 h-4 flex-shrink-0" />
             <span className="text-sm font-display">Recomeçar do Início</span>
           </button>
         </div>
