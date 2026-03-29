@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect, ToneNarrative } from '@/data/story';
 import { sceneImages } from '@/data/sceneImages';
+import { getEmotionalState, getEmotionalClasses } from '@/lib/emotionalIntensity';
 import { MapPin, Home, ScrollText, Lock } from 'lucide-react';
 
 const ScenePage = () => {
@@ -15,7 +16,14 @@ const ScenePage = () => {
   const chapter = getChapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
-  // Build full narrative with adaptive + flag-based + tone-based segments
+  // Emotional intensity system
+  const emotional = useMemo(() => 
+    chapter ? getEmotionalState(progress.attributes, chapter.id) : null
+  , [progress.attributes, chapter?.id]);
+
+  const emotionalClass = emotional ? getEmotionalClasses(emotional.tone) : '';
+
+  // Build full narrative with adaptive + flag-based + tone-based + emotional segments
   const fullNarrative = chapter ? [
     ...chapter.narrative,
     ...(chapter.adaptiveNarrative || [])
@@ -33,6 +41,8 @@ const ScenePage = () => {
       if (val <= tone.lowThreshold) return tone.lowText;
       return null;
     }).filter((t): t is string => t !== null),
+    // Auto-injected emotional atmosphere line
+    ...(emotional?.atmosphereLine ? [emotional.atmosphereLine] : []),
   ] : [];
 
   useEffect(() => {
@@ -87,7 +97,7 @@ const ScenePage = () => {
   const lockedChoices = chapter.choices.filter(c => !meetsRequirements(c.requires) && !c.requiresFlag && !c.excludesFlag);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className={`min-h-screen bg-background flex flex-col transition-all duration-1000 ${emotionalClass}`}>
       {/* Header */}
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center justify-between max-w-lg mx-auto">
@@ -111,10 +121,10 @@ const ScenePage = () => {
               width={1024}
               height={576}
               onLoad={() => setImageLoaded(true)}
-              className={`w-full h-auto object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`w-full h-auto object-cover transition-all duration-700 scene-image ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             />
             {/* Gradient overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+            <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background via-background/40 to-transparent" />
             {/* Location badge on image */}
             <div className="absolute bottom-4 left-5 flex items-center gap-2">
               <MapPin className="w-3.5 h-3.5 text-primary" />
