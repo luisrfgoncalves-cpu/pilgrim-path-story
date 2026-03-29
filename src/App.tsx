@@ -16,6 +16,7 @@ import AuthPage from "./pages/AuthPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
 import CommunityPage from "./pages/CommunityPage.tsx";
 import MultiplayerPage from "./pages/MultiplayerPage.tsx";
+import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
 const queryClient = new QueryClient();
 
 const App = () => (

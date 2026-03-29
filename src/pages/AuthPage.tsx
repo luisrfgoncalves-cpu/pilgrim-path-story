@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
-import { User, LogIn, UserPlus, Mail } from 'lucide-react';
+import { User, LogIn, UserPlus, KeyRound } from 'lucide-react';
 
 const AuthPage: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -20,14 +20,28 @@ const AuthPage: React.FC = () => {
     e.preventDefault();
     setSubmitting(true);
 
-    if (isLogin) {
+    if (mode === 'forgot') {
+      if (!email) {
+        toast.error('Digite seu email de cadastro');
+        setSubmitting(false);
+        return;
+      }
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success('Email de recuperação enviado! Verifique sua caixa de entrada.');
+      }
+      setSubmitting(false);
+      return;
+    }
+
+    if (mode === 'login') {
       const { error } = await signIn(email, password);
       if (error) {
-        if (error.message === 'Email not confirmed') {
-          toast.error('Email ainda não confirmado. Verifique sua caixa de entrada (e spam) pelo link de confirmação.');
-        } else {
-          toast.error(error.message);
-        }
+        toast.error(error.message);
       } else {
         toast.success('Bem-vindo de volta, peregrino!');
         navigate('/');
@@ -42,7 +56,8 @@ const AuthPage: React.FC = () => {
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success('Conta criada! Verifique seu email para confirmar.');
+        toast.success('Conta criada! Bem-vindo, peregrino!');
+        navigate('/');
       }
     }
     setSubmitting(false);
@@ -53,20 +68,26 @@ const AuthPage: React.FC = () => {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
-            <User className="w-8 h-8 text-primary" />
+            {mode === 'forgot' ? (
+              <KeyRound className="w-8 h-8 text-primary" />
+            ) : (
+              <User className="w-8 h-8 text-primary" />
+            )}
           </div>
           <h1 className="text-2xl font-bold text-foreground">
-            {isLogin ? 'Entrar na Jornada' : 'Iniciar sua Peregrinação'}
+            {mode === 'login' ? 'Entrar na Jornada' : mode === 'signup' ? 'Iniciar sua Peregrinação' : 'Recuperar Senha'}
           </h1>
           <p className="text-muted-foreground mt-2 text-sm">
-            {isLogin
+            {mode === 'login'
               ? 'Continue sua caminhada rumo à Cidade Celestial'
-              : 'Junte-se a outros peregrinos nesta jornada'}
+              : mode === 'signup'
+              ? 'Junte-se a outros peregrinos nesta jornada'
+              : 'Digite seu email para receber o link de recuperação'}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
+          {mode === 'signup' && (
             <div>
               <label className="text-sm text-muted-foreground mb-1 block">Nome do Peregrino</label>
               <Input
@@ -90,50 +111,60 @@ const AuthPage: React.FC = () => {
             />
           </div>
 
-          <div>
-            <label className="text-sm text-muted-foreground mb-1 block">Senha</label>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-              minLength={6}
-              className="bg-card border-border"
-            />
-          </div>
+          {mode !== 'forgot' && (
+            <div>
+              <label className="text-sm text-muted-foreground mb-1 block">Senha</label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                minLength={6}
+                className="bg-card border-border"
+              />
+            </div>
+          )}
 
           <Button type="submit" className="w-full" disabled={submitting}>
             {submitting ? (
               'Aguarde...'
-            ) : isLogin ? (
+            ) : mode === 'login' ? (
               <><LogIn className="w-4 h-4 mr-2" /> Entrar</>
-            ) : (
+            ) : mode === 'signup' ? (
               <><UserPlus className="w-4 h-4 mr-2" /> Criar Conta</>
+            ) : (
+              <><KeyRound className="w-4 h-4 mr-2" /> Enviar Link de Recuperação</>
             )}
           </Button>
         </form>
 
         <div className="mt-6 text-center space-y-2">
-          <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-sm text-primary hover:underline"
-          >
-            {isLogin ? 'Não tem conta? Crie uma agora' : 'Já tem conta? Entre aqui'}
-          </button>
-          {isLogin && (
+          {mode === 'forgot' ? (
             <button
-              onClick={async () => {
-                if (!email) { toast.error('Digite seu email primeiro'); return; }
-                const { error } = await supabase.auth.resend({ type: 'signup', email });
-                if (error) toast.error(error.message);
-                else toast.success('Email de confirmação reenviado! Verifique sua caixa.');
-              }}
-              className="block mx-auto text-xs text-muted-foreground hover:text-primary hover:underline"
+              onClick={() => setMode('login')}
+              className="text-sm text-primary hover:underline"
             >
-              <Mail className="w-3 h-3 inline mr-1" />
-              Reenviar email de confirmação
+              Voltar ao login
             </button>
+          ) : (
+            <>
+              <button
+                onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+                className="text-sm text-primary hover:underline"
+              >
+                {mode === 'login' ? 'Não tem conta? Crie uma agora' : 'Já tem conta? Entre aqui'}
+              </button>
+              {mode === 'login' && (
+                <button
+                  onClick={() => setMode('forgot')}
+                  className="block mx-auto text-xs text-muted-foreground hover:text-primary hover:underline"
+                >
+                  <KeyRound className="w-3 h-3 inline mr-1" />
+                  Esqueceu a senha?
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>
