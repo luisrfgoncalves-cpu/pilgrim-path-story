@@ -56,7 +56,7 @@ const ScenePage = () => {
   useProgressSync(progress);
   const [narrativeIndex, setNarrativeIndex] = useState(0);
   const [showChoices, setShowChoices] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(true); // default true to avoid brown flash
   const [showStats, setShowStats] = useState(false);
   const [audioOn, setAudioOn] = useState(true);
   const [sceneEventDone, setSceneEventDone] = useState(false);
@@ -188,7 +188,7 @@ const ScenePage = () => {
     setTransitioning(true);
     setNarrativeIndex(0);
     setShowChoices(false);
-    setImageLoaded(false);
+    setImageLoaded(true); // keep true — show image area immediately, avoid brown flash
     setPlaythroughRecorded(false);
     setSceneEventDone(false);
     setSuspenseActive(false);
@@ -488,7 +488,7 @@ const ScenePage = () => {
       <main className={`flex-1 max-w-lg mx-auto w-full ${transitioning ? 'opacity-0' : 'scene-transition-enter'}`}>
         {/* Scene image with preloading */}
         {bgImage && (
-          <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px', minHeight: '180px', background: 'hsl(25 20% 12%)' }}>
+          <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px', minHeight: '180px', background: 'hsl(var(--card))' }}>
             <img
               src={bgImage}
               alt={chapter.title}
@@ -498,14 +498,9 @@ const ScenePage = () => {
               decoding="async"
               fetchPriority="high"
               onLoad={() => setImageLoaded(true)}
-              className={`w-full h-auto object-cover transition-opacity duration-500 scene-image scene-image-alive ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className="w-full h-auto object-cover scene-image scene-image-alive"
               style={atmosphere.imageStyle}
             />
-            {!imageLoaded && (
-              <div className="absolute inset-0 bg-card flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-primary/40 border-t-primary rounded-full animate-spin" />
-              </div>
-            )}
             {/* Particle effects overlay */}
             {imageLoaded && (() => {
               const pType = getParticleTypeForScene(chapter.id, legacyTone);
