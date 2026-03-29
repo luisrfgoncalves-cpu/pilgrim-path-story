@@ -207,6 +207,7 @@ const Index = () => {
             size="lg"
             showLabel
             className="mx-auto"
+            campaign={progress.campaign}
           />
 
           {/* Title + location */}

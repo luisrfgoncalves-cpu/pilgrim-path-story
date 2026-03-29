@@ -489,7 +489,7 @@ const ScenePage = () => {
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => setShowStats(s => !s)} className="flex-shrink-0 p-1 rounded-lg active:scale-95 transition-transform">
-            <PilgrimAvatar attributes={progress.attributes} tone={legacyTone} size="sm" storyFlag={emotional?.flagOverride} />
+            <PilgrimAvatar attributes={progress.attributes} tone={legacyTone} size="sm" storyFlag={emotional?.flagOverride} campaign={progress.campaign} />
           </button>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
@@ -644,6 +644,7 @@ const ScenePage = () => {
                     size="md"
                     storyFlag={emotional?.flagOverride}
                     showLabel={false}
+                    campaign={progress.campaign}
                   />
                   <div className="text-left">
                     <p className="font-display text-sm font-bold text-primary leading-tight">{userName}</p>
