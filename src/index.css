@@ -101,6 +101,11 @@
     font-size: 1.05rem;
     line-height: 1.9;
     letter-spacing: 0.015em;
+    word-spacing: 0.08em;
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    -webkit-hyphens: auto;
   }
 
   .fade-in {

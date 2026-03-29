@@ -580,7 +580,7 @@ const ScenePage = () => {
         </div>
 
         <div className="px-5 py-5">
-          <h1 className="font-display text-2xl md:text-3xl text-foreground mb-4 fade-in leading-tight">{chapter.title}</h1>
+          <h1 className="font-display text-2xl md:text-3xl text-foreground mb-4 fade-in leading-tight" style={{ wordSpacing: '0.1em' }}>{chapter.title}</h1>
 
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px flex-1 bg-primary/20" />
