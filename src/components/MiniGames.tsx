@@ -978,11 +978,40 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
         <div className="text-6xl" style={{ filter: 'drop-shadow(0 0 15px hsl(0 60% 50% / 0.5))' }}>{enemy.emoji}</div>
         <h3 className="game-title">Duelo Espiritual</h3>
         <p className="game-subtitle">{config.intro}</p>
-        <div className="game-text-muted space-y-1">
-          <p>⚔️ <strong>Atacar</strong> — dano alto, risco de contra-ataque</p>
-          <p>🛡️ <strong>Defender</strong> — bloqueia dano inimigo</p>
-          <p>🙏 <strong>Orar</strong> — cura + chance de dano espiritual</p>
+
+        <div className="space-y-3 text-left" style={{
+          background: 'hsl(0 0% 8% / 0.5)',
+          border: '2px solid hsl(40 50% 30%)',
+          borderRadius: '12px',
+          padding: '12px 16px',
+        }}>
+          <p className="game-text-muted text-center font-bold" style={{ color: 'hsl(40 70% 65%)', fontSize: '13px' }}>📜 Como jogar</p>
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="text-lg">⚔️</span>
+              <div>
+                <span className="font-display font-bold text-sm" style={{ color: 'hsl(0 60% 70%)' }}>Atacar</span>
+                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Se seu dado ≥ inimigo: causa dano. Senão: leva contra-ataque. Dado 6 = crítico (1.5x dano)!</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">🛡️</span>
+              <div>
+                <span className="font-display font-bold text-sm" style={{ color: 'hsl(220 60% 70%)' }}>Defender</span>
+                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Bloqueia o dano do inimigo com seu dado. Dado 6 = riposte (devolve 2 de dano)!</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">🙏</span>
+              <div>
+                <span className="font-display font-bold text-sm" style={{ color: 'hsl(40 70% 70%)' }}>Orar</span>
+                <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Cura metade do dado. Dado ≥ 5 também causa dano espiritual ao inimigo!</p>
+              </div>
+            </div>
+          </div>
+          <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>💡 Repetir a mesma ação gera combo (+15% por vez)</p>
         </div>
+
         <button onClick={() => setPhase('choose')} className="btn-medieval w-full">
           Enfrentar {enemy.name}!
         </button>
@@ -1086,31 +1115,34 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
       {phase === 'choose' && (
         <div className="grid grid-cols-3 gap-3">
           <button onClick={() => rollDice('attack')}
-            className="py-5 rounded-xl transition-all active:scale-90 text-center" style={{
+            className="py-4 rounded-xl transition-all active:scale-90 text-center" style={{
               background: 'linear-gradient(180deg, hsl(0 40% 25%) 0%, hsl(0 35% 18%) 100%)',
               border: '3px solid hsl(0 50% 45%)',
               boxShadow: '0 4px 0 0 hsl(0 40% 15%), 0 0 12px hsl(0 50% 40% / 0.3)',
             }}>
             <span className="text-3xl block">⚔️</span>
             <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(0 60% 70%)' }}>Atacar</span>
+            <span className="text-[9px] block mt-0.5" style={{ color: 'hsl(0 30% 55%)' }}>Dano alto</span>
           </button>
           <button onClick={() => rollDice('defend')}
-            className="py-5 rounded-xl transition-all active:scale-90 text-center" style={{
+            className="py-4 rounded-xl transition-all active:scale-90 text-center" style={{
               background: 'linear-gradient(180deg, hsl(220 40% 25%) 0%, hsl(220 35% 18%) 100%)',
               border: '3px solid hsl(220 50% 50%)',
               boxShadow: '0 4px 0 0 hsl(220 40% 15%), 0 0 12px hsl(220 50% 45% / 0.3)',
             }}>
             <span className="text-3xl block">🛡️</span>
             <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(220 60% 70%)' }}>Defender</span>
+            <span className="text-[9px] block mt-0.5" style={{ color: 'hsl(220 30% 55%)' }}>Bloqueia</span>
           </button>
           <button onClick={() => rollDice('pray')}
-            className="py-5 rounded-xl transition-all active:scale-90 text-center" style={{
+            className="py-4 rounded-xl transition-all active:scale-90 text-center" style={{
               background: 'linear-gradient(180deg, hsl(40 40% 25%) 0%, hsl(40 35% 18%) 100%)',
               border: '3px solid hsl(40 60% 50%)',
               boxShadow: '0 4px 0 0 hsl(40 40% 15%), 0 0 12px hsl(40 60% 45% / 0.3)',
             }}>
             <span className="text-3xl block">🙏</span>
             <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(40 70% 70%)' }}>Orar</span>
+            <span className="text-[9px] block mt-0.5" style={{ color: 'hsl(40 30% 55%)' }}>Cura + dano</span>
           </button>
         </div>
       )}
