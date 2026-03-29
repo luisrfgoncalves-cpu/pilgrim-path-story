@@ -7,7 +7,7 @@ import { getReplayIncentive, getUnlockableHints } from '@/data/sceneVariations';
 import { useAuth } from '@/contexts/AuthContext';
 import { getStreak, getDashboardMessage, getMilestones } from '@/lib/gameLoop';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, KeyRound, Flame, Star } from 'lucide-react';
+import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, KeyRound, Flame, Star, Swords } from 'lucide-react';
 
 const getPlayerState = (attrs: { fe: number; coragem: number; perseveranca: number; discernimento: number }) => {
   const avg = (attrs.fe + attrs.coragem + attrs.perseveranca + attrs.discernimento) / 4;
@@ -249,24 +249,31 @@ const Index = () => {
         )}
 
         {/* Secondary buttons row */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-4 gap-2">
           <button
             onClick={() => navigate('/jornada')}
-            className="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors"
+            className="flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors"
           >
             <Map className="w-4 h-4 text-muted-foreground" />
             <span className="text-[10px] text-muted-foreground font-medium">Mapa</span>
           </button>
           <button
+            onClick={() => navigate('/multiplayer')}
+            className="flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl bg-card border border-primary/30 hover:border-primary/60 transition-colors"
+          >
+            <Swords className="w-4 h-4 text-primary" />
+            <span className="text-[10px] text-primary font-medium">Multiplayer</span>
+          </button>
+          <button
             onClick={() => user ? navigate('/perfil') : navigate('/auth')}
-            className="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors"
+            className="flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors"
           >
             {user ? <User className="w-4 h-4 text-muted-foreground" /> : <LogIn className="w-4 h-4 text-muted-foreground" />}
             <span className="text-[10px] text-muted-foreground font-medium">{user ? (profile?.display_name || 'Perfil') : 'Entrar'}</span>
           </button>
           <button
             onClick={() => navigate('/comunidade')}
-            className="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors"
+            className="flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors"
           >
             <Users className="w-4 h-4 text-muted-foreground" />
             <span className="text-[10px] text-muted-foreground font-medium">Comunidade</span>
