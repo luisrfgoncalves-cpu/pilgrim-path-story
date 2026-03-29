@@ -554,7 +554,7 @@ const ScenePage = () => {
           {showChoices && !miniGameDone && miniGameMappings[chapter.id] && !miniGameReady && (
             <div className="mb-5 animate-scale-in">
               <button
-                onClick={() => setMiniGameReady(true)}
+                onClick={() => { setMiniGameReady(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                 className="btn-medieval w-full flex items-center justify-center gap-3"
               >
                 <Zap className="w-5 h-5" />

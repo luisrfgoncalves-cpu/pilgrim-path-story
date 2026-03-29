@@ -33,32 +33,32 @@ const FACE_ROTATIONS: Record<number, string> = {
 
 const COLOR_THEMES = {
   gold: {
-    face: 'linear-gradient(135deg, hsl(40 55% 45%) 0%, hsl(35 50% 32%) 100%)',
-    border: 'hsl(40 60% 55%)',
-    dot: 'hsl(40 90% 90%)',
-    glow: 'hsl(40 70% 55% / 0.5)',
-    shadow: 'hsl(40 60% 30% / 0.6)',
+    face: 'linear-gradient(135deg, hsl(0 0% 98%) 0%, hsl(0 0% 90%) 100%)',
+    border: 'hsl(0 0% 75%)',
+    dot: 'hsl(0 0% 10%)',
+    glow: 'hsl(0 0% 60% / 0.4)',
+    shadow: 'hsl(0 0% 0% / 0.5)',
   },
   red: {
-    face: 'linear-gradient(135deg, hsl(0 60% 42%) 0%, hsl(350 55% 30%) 100%)',
-    border: 'hsl(0 60% 52%)',
-    dot: 'hsl(0 100% 92%)',
-    glow: 'hsl(0 70% 55% / 0.5)',
-    shadow: 'hsl(0 50% 25% / 0.6)',
+    face: 'linear-gradient(135deg, hsl(0 0% 98%) 0%, hsl(0 0% 90%) 100%)',
+    border: 'hsl(0 0% 75%)',
+    dot: 'hsl(0 0% 10%)',
+    glow: 'hsl(0 0% 60% / 0.4)',
+    shadow: 'hsl(0 0% 0% / 0.5)',
   },
   blue: {
-    face: 'linear-gradient(135deg, hsl(220 60% 42%) 0%, hsl(210 55% 30%) 100%)',
-    border: 'hsl(220 60% 55%)',
-    dot: 'hsl(200 100% 90%)',
-    glow: 'hsl(220 70% 55% / 0.5)',
-    shadow: 'hsl(220 50% 25% / 0.6)',
+    face: 'linear-gradient(135deg, hsl(0 0% 98%) 0%, hsl(0 0% 90%) 100%)',
+    border: 'hsl(0 0% 75%)',
+    dot: 'hsl(0 0% 10%)',
+    glow: 'hsl(0 0% 60% / 0.4)',
+    shadow: 'hsl(0 0% 0% / 0.5)',
   },
   dark: {
-    face: 'linear-gradient(135deg, hsl(0 0% 30%) 0%, hsl(0 0% 20%) 100%)',
-    border: 'hsl(0 0% 45%)',
-    dot: 'hsl(0 0% 90%)',
-    glow: 'hsl(0 0% 50% / 0.4)',
-    shadow: 'hsl(0 0% 0% / 0.6)',
+    face: 'linear-gradient(135deg, hsl(0 0% 98%) 0%, hsl(0 0% 90%) 100%)',
+    border: 'hsl(0 0% 75%)',
+    dot: 'hsl(0 0% 10%)',
+    glow: 'hsl(0 0% 60% / 0.4)',
+    shadow: 'hsl(0 0% 0% / 0.5)',
   },
 };
 
@@ -117,18 +117,17 @@ export function Dice3D({ value, rolling, size = 80, color = 'gold', onRollEnd }:
         if (tick >= 20) {
           if (rollRef.current) clearInterval(rollRef.current);
           setDisplayValue(value);
-          // Set final rotation to show correct face
-          const faceRot = FACE_ROTATIONS[value];
-          const match = faceRot.match(/rotate[XYZ]\((-?\d+)deg\)/g);
-          let rx = 0, ry = 0;
-          if (match) {
-            match.forEach(m => {
-              const [, axis, deg] = m.match(/rotate([XYZ])\((-?\d+)deg\)/) || [];
-              if (axis === 'X') rx = parseInt(deg);
-              if (axis === 'Y') ry = parseInt(deg);
-            });
-          }
-          setRotation({ x: rx + 360 * 2, y: ry + 360 * 2, z: 0 });
+          // Set final rotation to land flat on the correct face
+          const FINAL_ROTATIONS: Record<number, { x: number; y: number; z: number }> = {
+            1: { x: 0, y: 0, z: 0 },
+            2: { x: 0, y: -90, z: 0 },
+            3: { x: 90, y: 0, z: 0 },
+            4: { x: -90, y: 0, z: 0 },
+            5: { x: 0, y: 90, z: 0 },
+            6: { x: 180, y: 0, z: 0 },
+          };
+          const final = FINAL_ROTATIONS[value] || FINAL_ROTATIONS[1];
+          setRotation({ x: final.x + 720, y: final.y + 720, z: 0 });
           onRollEnd?.();
         }
       }, 80);
