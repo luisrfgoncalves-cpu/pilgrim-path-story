@@ -954,10 +954,10 @@ const LandingPage = () => {
         <div className="max-w-2xl mx-auto text-center space-y-8">
           <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Veja por Dentro</p>
           <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
-            Um tour <span className="text-primary">real</span> pelo app
+            O app <span className="text-primary">por dentro</span> — tour real
           </h2>
           <p className="text-sm text-muted-foreground font-body">
-            Cada tela mostra exatamente o que você verá — imagens reais do app
+            Dashboard, cenas narrativas, duelos de dados, mini-games, tabuleiro multiplayer e mapa da jornada — tudo que você terá acesso
           </p>
 
           <PhoneMockupTour />
