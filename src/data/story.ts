@@ -355,7 +355,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Pedir ajuda",
         nextChapterId: "cena14",
-        effects: { fe: 2 }
+        effects: { fe: 2 },
+        flag: "pediu_ajuda_pantano"
       },
       {
         text: "Tentar sair sozinho",
@@ -414,7 +415,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Entrar",
         nextChapterId: "fase2-cena2",
-        effects: { fe: 1 }
+        effects: { fe: 1 },
+        flag: "entrou_casa_interprete"
       },
       {
         text: "Ignorar e seguir",
