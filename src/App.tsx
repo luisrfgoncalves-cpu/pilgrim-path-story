@@ -19,6 +19,8 @@ import CommunityPage from "./pages/CommunityPage.tsx";
 import MultiplayerPage from "./pages/MultiplayerPage.tsx";
 import PresentialMultiplayer from "./pages/PresentialMultiplayer.tsx";
 import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
+import TermsPage from "./pages/TermsPage.tsx";
+import LandingPage from "./pages/LandingPage.tsx";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -31,6 +33,7 @@ const App = () => (
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/landing" element={<LandingPage />} />
             <Route path="/jornada" element={<JourneysPage />} />
             <Route path="/cena" element={<ScenePage />} />
             <Route path="/resultado" element={<ResultPage />} />
@@ -43,6 +46,7 @@ const App = () => (
             <Route path="/comunidade" element={<CommunityPage />} />
             <Route path="/multiplayer" element={<MultiplayerPage />} />
             <Route path="/multiplayer/presencial" element={<PresentialMultiplayer />} />
+            <Route path="/termos" element={<TermsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
