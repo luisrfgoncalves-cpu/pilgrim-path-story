@@ -230,7 +230,7 @@ const Index = () => {
             onClick={handleContinue}
             className="btn-medieval w-full flex items-center justify-center gap-3"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-6 h-6" />
             Continuar Jornada
           </button>
         ) : (
@@ -240,12 +240,12 @@ const Index = () => {
           >
             {history.totalPlaythroughs > 0 ? (
               <>
-                <RotateCcw className="w-5 h-5" />
+                <RotateCcw className="w-6 h-6" />
                 Nova Jornada
               </>
             ) : (
               <>
-                <Sparkles className="w-5 h-5" />
+                <Sparkles className="w-6 h-6" />
                 Iniciar Jornada
               </>
             )}
@@ -258,40 +258,40 @@ const Index = () => {
             onClick={() => handleNewJourney('part2')}
             className="btn-medieval-secondary w-full flex items-center justify-center gap-3"
           >
-            <BookOpen className="w-5 h-5 text-primary" />
+            <BookOpen className="w-6 h-6 text-primary" />
             Parte II — A Peregrina
           </button>
         )}
 
         {/* Secondary buttons row */}
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4 gap-3">
           <button
             onClick={() => navigate('/jornada')}
-            className="btn-medieval-icon flex flex-col items-center gap-1.5"
+            className="btn-medieval-icon flex flex-col items-center gap-2 !py-4"
           >
-            <Map className="w-4 h-4 text-muted-foreground" />
-            <span className="text-[10px] text-muted-foreground font-medium">Mapa</span>
+            <Map className="w-6 h-6 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground font-display">Mapa</span>
           </button>
           <button
             onClick={() => navigate('/multiplayer')}
-            className="btn-medieval-icon flex flex-col items-center gap-1.5 !border-primary/30"
+            className="btn-medieval-icon flex flex-col items-center gap-2 !py-4 !border-primary/30"
           >
-            <Swords className="w-4 h-4 text-primary" />
-            <span className="text-[10px] text-primary font-medium">Multiplayer</span>
+            <Swords className="w-6 h-6 text-primary" />
+            <span className="text-xs text-primary font-display">Multiplayer</span>
           </button>
           <button
             onClick={() => user ? navigate('/perfil') : navigate('/auth')}
-            className="btn-medieval-icon flex flex-col items-center gap-1.5"
+            className="btn-medieval-icon flex flex-col items-center gap-2 !py-4"
           >
-            {user ? <User className="w-4 h-4 text-muted-foreground" /> : <LogIn className="w-4 h-4 text-muted-foreground" />}
-            <span className="text-[10px] text-muted-foreground font-medium">{user ? (profile?.display_name || 'Perfil') : 'Entrar'}</span>
+            {user ? <User className="w-6 h-6 text-muted-foreground" /> : <LogIn className="w-6 h-6 text-muted-foreground" />}
+            <span className="text-xs text-muted-foreground font-display">{user ? (profile?.display_name || 'Perfil') : 'Entrar'}</span>
           </button>
           <button
             onClick={() => navigate('/comunidade')}
-            className="btn-medieval-icon flex flex-col items-center gap-1.5"
+            className="btn-medieval-icon flex flex-col items-center gap-2 !py-4"
           >
-            <Users className="w-4 h-4 text-muted-foreground" />
-            <span className="text-[10px] text-muted-foreground font-medium">Comunidade</span>
+            <Users className="w-6 h-6 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground font-display">Comunidade</span>
           </button>
         </div>
 

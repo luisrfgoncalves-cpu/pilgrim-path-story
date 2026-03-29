@@ -310,27 +310,27 @@ const ScenePage = () => {
       {/* Header with avatar */}
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
-          <button onClick={() => setShowStats(s => !s)} className="flex-shrink-0">
+          <button onClick={() => setShowStats(s => !s)} className="flex-shrink-0 p-1 rounded-lg active:scale-95 transition-transform">
             <PilgrimAvatar attributes={progress.attributes} tone={legacyTone} size="sm" storyFlag={emotional?.flagOverride} />
           </button>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <div className="h-0.5 flex-1 bg-secondary rounded-full overflow-hidden">
+              <div className="h-1 flex-1 bg-secondary rounded-full overflow-hidden">
                 <div className="h-full bg-primary transition-all duration-700 rounded-full" style={{ width: `${progressPercent}%` }} />
               </div>
-              <span className="text-[10px] text-muted-foreground flex-shrink-0">{progressPercent}%</span>
+              <span className="text-xs text-muted-foreground flex-shrink-0 font-display">{progressPercent}%</span>
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-3 flex-shrink-0">
             <button
               onClick={() => { const next = !audioOn; setAudioOn(next); toggleAudio(next); }}
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95"
               aria-label={audioOn ? 'Desativar som' : 'Ativar som'}
             >
-              {audioOn ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+              {audioOn ? <Volume2 className="w-5 h-5 text-muted-foreground" /> : <VolumeX className="w-5 h-5 text-muted-foreground" />}
             </button>
-            <button onClick={() => navigate('/')} className="btn-medieval-icon !p-1.5 !rounded-lg flex items-center justify-center">
-              <Home className="w-3.5 h-3.5 text-muted-foreground" />
+            <button onClick={() => navigate('/')} className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95">
+              <Home className="w-5 h-5 text-muted-foreground" />
             </button>
           </div>
         </div>
@@ -375,28 +375,63 @@ const ScenePage = () => {
           </div>
         )}
 
-        {/* Character portraits */}
-        {chapter.characters && chapter.characters.length > 0 && (() => {
+        {/* Character portraits — always show protagonist + scene characters */}
+        {(() => {
           const allChars = [...characters, ...part2Characters];
-          const sceneChars = chapter.characters
+          const isPart2 = progress.campaign === 'part2';
+          const protagonistId = isPart2 ? 'crista' : 'cristao';
+          
+          // Build character list: always include protagonist + scene characters
+          const sceneCharIds = chapter.characters || [];
+          const charIds = sceneCharIds.includes(protagonistId) 
+            ? sceneCharIds 
+            : [protagonistId, ...sceneCharIds];
+          
+          const sceneChars = charIds
             .map(id => ({ id, char: allChars.find(c => c.id === id), img: characterImages[id] }))
             .filter(c => c.img);
+          
           if (sceneChars.length === 0) return null;
+          
           return (
-            <div className="px-4 py-3 flex items-center gap-3 overflow-x-auto">
-              {sceneChars.map(({ id, char, img }) => (
-                <div key={id} className="flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg bg-card border border-border">
-                  <img
-                    src={img}
-                    alt={char?.name || id}
-                    className="w-10 h-10 rounded-full object-cover border-2 border-primary/30"
-                  />
-                  <div>
-                    <p className="text-xs font-display text-foreground leading-tight">{char?.name || id}</p>
-                    {char?.role && <p className="text-[9px] text-muted-foreground">{char.role}</p>}
-                  </div>
-                </div>
-              ))}
+            <div className="px-4 py-4">
+              <div className="flex items-start gap-3 overflow-x-auto pb-1">
+                {sceneChars.map(({ id, char, img }, i) => {
+                  const isProtagonist = id === protagonistId;
+                  return (
+                    <button
+                      key={id}
+                      onClick={() => navigate('/personagens')}
+                      className={`flex-shrink-0 flex flex-col items-center gap-2 rounded-xl transition-all active:scale-95 ${
+                        isProtagonist 
+                          ? 'bg-card border-2 border-primary/40 px-4 py-3 shadow-lg shadow-primary/10' 
+                          : 'bg-card border-2 border-border px-3 py-2.5'
+                      }`}
+                      style={{ animationDelay: `${i * 0.1}s` }}
+                    >
+                      <img
+                        src={img}
+                        alt={char?.name || id}
+                        className={`rounded-full object-cover border-2 ${
+                          isProtagonist 
+                            ? 'w-16 h-16 border-primary/50 shadow-md' 
+                            : 'w-14 h-14 border-primary/30'
+                        }`}
+                      />
+                      <div className="text-center">
+                        <p className={`font-display leading-tight ${
+                          isProtagonist ? 'text-sm text-primary' : 'text-xs text-foreground'
+                        }`}>{char?.name || id}</p>
+                        {char?.role && (
+                          <p className={`text-muted-foreground mt-0.5 ${
+                            isProtagonist ? 'text-[10px]' : 'text-[9px]'
+                          }`}>{char.role}</p>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           );
         })()}
@@ -550,7 +585,7 @@ const ScenePage = () => {
                 </div>
               ) : (
                 <>
-                  <p className="text-[11px] uppercase tracking-widest text-muted-foreground mb-2 font-medium">Escolha seu caminho</p>
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3 font-display">Escolha seu caminho</p>
 
                   {chapter.interactionType === 'drag' && availableChoices.length >= 2 ? (
                     <DragToChoose
@@ -598,11 +633,11 @@ const ScenePage = () => {
                           onClick={() => handleChoice(dynamicEvents.alternateRoute!.nextChapterId, dynamicEvents.alternateRoute!.hint, {}, dynamicEvents.alternateRoute!.hint)}
                           className="choice-btn-medieval group"
                         >
-                          <p className="text-foreground font-body text-sm group-hover:text-primary transition-colors flex items-center gap-2">
-                            <Compass className="w-3.5 h-3.5 text-primary" />
+                          <p className="text-foreground font-body text-base group-hover:text-primary transition-colors flex items-center gap-2">
+                            <Compass className="w-5 h-5 text-primary" />
                             {dynamicEvents.alternateRoute.hint}
                           </p>
-                          <p className="text-[10px] text-primary/60 mt-1 uppercase tracking-wider">✦ Caminho alternativo</p>
+                          <p className="text-xs text-primary/60 mt-1.5 uppercase tracking-wider">✦ Caminho alternativo</p>
                         </button>
                       )}
 
@@ -613,12 +648,12 @@ const ScenePage = () => {
                           className="choice-btn-medieval group"
                           style={{ animationDelay: `${i * 0.08}s` }}
                         >
-                          <p className="text-foreground font-body text-sm group-hover:text-primary transition-colors">{choice.text}</p>
+                          <p className="text-foreground font-body text-base group-hover:text-primary transition-colors">{choice.text}</p>
                           {choice.requires && (
-                            <p className="text-[10px] text-primary mt-1.5 uppercase tracking-wider">★ Desbloqueada por atributos</p>
+                            <p className="text-xs text-primary mt-2 uppercase tracking-wider">★ Desbloqueada por atributos</p>
                           )}
                           {choice.item && (
-                            <p className="text-[10px] text-primary/70 mt-1">✦ Concede um item</p>
+                            <p className="text-xs text-primary/70 mt-1.5">✦ Concede um item</p>
                           )}
                         </button>
                       ))}
