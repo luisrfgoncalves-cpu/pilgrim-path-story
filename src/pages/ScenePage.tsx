@@ -24,6 +24,7 @@ const ScenePage = () => {
   const [audioOn, setAudioOn] = useState(true);
   const { triggerChoiceEffect } = useVisualEffects();
   const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
+  const atmosphere = useAtmosphere(progress.attributes);
 
   const chapter = getChapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
