@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMultiplayer } from '@/hooks/useMultiplayer';
 import { useAuth } from '@/contexts/AuthContext';
+import { Loader2 as PageLoader } from 'lucide-react';
 import PremiumDice from '@/components/multiplayer/PremiumDice';
 import PremiumBoard from '@/components/multiplayer/PremiumBoard';
 import EventReveal from '@/components/multiplayer/EventReveal';
@@ -15,7 +16,7 @@ import { toast } from 'sonner';
 const MultiplayerPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const {
     room, players, myPlayer, loading, error,
     createRoom, joinRoom, startGame, rollDice, leaveRoom,
@@ -100,6 +101,14 @@ const MultiplayerPage = () => {
     setSelectedTile({ pos, event });
     setTimeout(() => setSelectedTile(null), 3000);
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <PageLoader className="w-8 h-8 text-primary animate-spin" />
+      </div>
+    );
+  }
 
   if (!user) {
     return (
