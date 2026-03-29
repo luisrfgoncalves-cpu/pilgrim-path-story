@@ -410,31 +410,27 @@ const ScenePage = () => {
       {/* Emotional tint overlay — full screen color wash per state */}
       <div className="fixed inset-0 pointer-events-none z-[38] transition-all duration-[2000ms] ease-in-out" style={{ background: 'var(--bg-overlay, transparent)' }} />
       {/* Surprise micro-reward toast */}
-      {surpriseShown && surprise && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
-          <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-card border border-primary/30 shadow-lg max-w-xs">
-            <span className="text-xl">{surprise.icon}</span>
-            <div>
-              <p className="text-xs font-display text-primary">{surprise.title}</p>
-              <p className="text-[10px] text-foreground/80">{surprise.message}</p>
-            </div>
+      <GameNotification visible={surpriseShown && !!surprise} onDismiss={() => setSurpriseShown(false)} duration={12000}>
+        <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-card border border-primary/30 shadow-lg">
+          <span className="text-xl">{surprise?.icon}</span>
+          <div>
+            <p className="text-xs font-display text-primary">{surprise?.title}</p>
+            <p className="text-[10px] text-foreground/80">{surprise?.message}</p>
           </div>
         </div>
-      )}
+      </GameNotification>
       {/* Support bonus toast */}
-      {supportToastShown && newSupportCount > 0 && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
-          <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-card border border-primary/30 shadow-lg max-w-xs">
-            <Heart className="w-5 h-5 text-primary" />
-            <div>
-              <p className="text-xs font-display text-primary">Apoio recebido!</p>
-              <p className="text-[10px] text-foreground/80">
-                {newSupportCount} {newSupportCount === 1 ? 'peregrino orou' : 'peregrinos oraram'} por você.
-              </p>
-            </div>
+      <GameNotification visible={supportToastShown && newSupportCount > 0} onDismiss={() => setSupportToastShown(false)} duration={12000} position="top-offset">
+        <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-card border border-primary/30 shadow-lg">
+          <Heart className="w-5 h-5 text-primary" />
+          <div>
+            <p className="text-xs font-display text-primary">Apoio recebido!</p>
+            <p className="text-[10px] text-foreground/80">
+              {newSupportCount} {newSupportCount === 1 ? 'peregrino orou' : 'peregrinos oraram'} por você.
+            </p>
           </div>
         </div>
-      )}
+      </GameNotification>
       {/* Header with avatar */}
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
