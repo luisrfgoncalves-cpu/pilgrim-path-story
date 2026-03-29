@@ -464,7 +464,21 @@ const ScenePage = () => {
 
                   ) : (
                     <>
-                      {availableChoices.map((choice, i) => (
+                      {/* Alternate route option */}
+                      {dynamicEvents.alternateRoute && (
+                        <button
+                          onClick={() => handleChoice(dynamicEvents.alternateRoute!.nextChapterId, dynamicEvents.alternateRoute!.hint, {}, dynamicEvents.alternateRoute!.hint)}
+                          className="choice-btn group border-primary/30 bg-card/80"
+                        >
+                          <p className="text-foreground font-body text-sm group-hover:text-primary transition-colors flex items-center gap-2">
+                            <Compass className="w-3.5 h-3.5 text-primary" />
+                            {dynamicEvents.alternateRoute.hint}
+                          </p>
+                          <p className="text-[10px] text-primary/60 mt-1 uppercase tracking-wider">✦ Caminho alternativo</p>
+                        </button>
+                      )}
+
+                      {allChoices.map((choice, i) => (
                         <button
                           key={i}
                           onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
