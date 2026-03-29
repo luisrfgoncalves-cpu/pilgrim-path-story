@@ -46,10 +46,21 @@ const ScenePage = () => {
     ...(emotional?.atmosphereLine ? [emotional.atmosphereLine] : []),
   ] : [];
 
+  // Record playthrough completion when reaching a final ending
+  const [playthroughRecorded, setPlaythroughRecorded] = useState(false);
+  useEffect(() => {
+    if (chapter?.isEnding && (chapter.endingType === 'final_good' || chapter.endingType === 'final_bad') && !playthroughRecorded) {
+      const analysis = analyzePerformance(progress.attributes, progress.choicesMade, progress.visitedChapters, progress.flags, chapter.endingType);
+      completePlaythrough(analysis.result);
+      setPlaythroughRecorded(true);
+    }
+  }, [chapter, playthroughRecorded]);
+
   useEffect(() => {
     setNarrativeIndex(0);
     setShowChoices(false);
     setImageLoaded(false);
+    setPlaythroughRecorded(false);
   }, [progress.currentChapterId]);
 
   useEffect(() => {
