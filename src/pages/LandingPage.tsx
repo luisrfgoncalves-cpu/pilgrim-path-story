@@ -765,10 +765,6 @@ const LandingPage = () => {
               <Crown className="w-5 h-5" />
               Adquirir — R$147/ano
             </CtaButton>
-            <CtaButton onClick={() => navigate('/')} variant="secondary">
-              <Play className="w-5 h-5" />
-              Experimentar Grátis
-            </CtaButton>
           </div>
 
           <div className="flex items-center justify-center gap-4 pt-2 text-xs text-foreground/70 flex-wrap" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
@@ -1554,10 +1550,6 @@ const LandingPage = () => {
             <CtaButton onClick={handleBuy} variant="primary" className="w-full text-base">
               <Crown className="w-5 h-5" />
               Adquirir Agora — R$147/ano
-            </CtaButton>
-            <CtaButton onClick={() => navigate('/')} variant="secondary" className="w-full">
-              <Play className="w-5 h-5" />
-              Experimentar Versão Gratuita
             </CtaButton>
           </div>
 
