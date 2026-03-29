@@ -1,24 +1,25 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Sparkles, ChevronRight, ChevronDown, BookOpen, Users, Star, Shield, Flame, Zap,
-  Share2, Smartphone, MessageCircle, Clock, Check, X, CreditCard, QrCode,
+  Share2, Smartphone, Clock, Check, X, CreditCard, QrCode,
   Swords, Gamepad2, Brain, Eye, Heart, Crown, Map, Trophy, Lock,
-  ChevronLeft, Play, Volume2, Award, Gift, Timer, Target, Compass
+  Play, Award, Timer, Target, Compass
 } from 'lucide-react';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 import heroImg from '@/assets/landing-hero.jpg';
 import battleImg from '@/assets/landing-battle.jpg';
 import bunyanImg from '@/assets/bunyan-portrait.jpg';
 import sealImg from '@/assets/medieval-seal.png';
+import giantImg from '@/assets/landing-giant.jpg';
+import journeyImg from '@/assets/landing-journey.jpg';
 
 const SALE_URL = 'https://ocapelao-app.centrobiblico.online/venda';
 
 /* ═══════════════════════════════════════════════════════════
    COUNTDOWN TIMER
    ═══════════════════════════════════════════════════════════ */
-const CountdownTimer = () => {
+const CountdownTimer = ({ compact = false }: { compact?: boolean }) => {
   const getTarget = () => {
     const now = new Date();
     const target = new Date(now);
@@ -45,8 +46,16 @@ const CountdownTimer = () => {
 
   const pad = (n: number) => String(n).padStart(2, '0');
 
+  if (compact) {
+    return (
+      <span className="font-display font-bold text-primary" style={{ textShadow: '0 0 12px hsl(40 70% 50% / 0.5)' }}>
+        {pad(timeLeft.h)}:{pad(timeLeft.m)}:{pad(timeLeft.s)}
+      </span>
+    );
+  }
+
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-3">
       {[
         { v: timeLeft.h, l: 'HRS' },
         { v: timeLeft.m, l: 'MIN' },
@@ -54,17 +63,12 @@ const CountdownTimer = () => {
       ].map((t, i) => (
         <div key={i} className="flex flex-col items-center">
           <span
-            className="font-display text-2xl md:text-3xl font-bold text-primary"
-            style={{
-              textShadow: '0 0 20px hsl(40 70% 50% / 0.6), 0 0 40px hsl(40 70% 50% / 0.3)',
-            }}
+            className="font-display text-2xl md:text-3xl font-bold text-primary w-10 text-center"
+            style={{ textShadow: '0 0 20px hsl(40 70% 50% / 0.6), 0 0 40px hsl(40 70% 50% / 0.3)' }}
           >
             {pad(t.v)}
           </span>
           <span className="text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{t.l}</span>
-          {i < 2 && (
-            <span className="absolute text-primary text-xl ml-[4.5rem] mt-1 animate-pulse">:</span>
-          )}
         </div>
       ))}
     </div>
@@ -72,93 +76,168 @@ const CountdownTimer = () => {
 };
 
 /* ═══════════════════════════════════════════════════════════
-   PHONE MOCKUP
+   PHONE MOCKUP WITH AUTO-SCROLL TOUR
    ═══════════════════════════════════════════════════════════ */
-const appTourSlides = [
-  {
-    title: '🏰 Tela Inicial',
-    desc: 'Escolha seu capítulo e mergulhe na jornada. Interface elegante com progresso visual.',
-    colors: 'from-amber-900/80 to-stone-900/90',
-    icon: <Compass className="w-8 h-8 text-primary" />,
-  },
-  {
-    title: '📖 Narrativa Imersiva',
-    desc: 'Leia a história com arte conceitual cinematográfica e tome decisões que mudam tudo.',
-    colors: 'from-emerald-900/80 to-stone-900/90',
-    icon: <BookOpen className="w-8 h-8 text-primary" />,
-  },
-  {
-    title: '⚔️ Duelos Épicos',
-    desc: 'Enfrente Apolião e outros inimigos em batalhas estratégicas com dados e Armadura de Deus.',
-    colors: 'from-red-900/80 to-stone-900/90',
-    icon: <Swords className="w-8 h-8 text-primary" />,
-  },
-  {
-    title: '🧩 Mini-Games',
-    desc: 'Puzzles bíblicos, desafios de reflexo, caça ao tesouro e muito mais em cada capítulo.',
-    colors: 'from-violet-900/80 to-stone-900/90',
-    icon: <Gamepad2 className="w-8 h-8 text-primary" />,
-  },
-  {
-    title: '📊 Atributos Dinâmicos',
-    desc: 'Fé, Perseverança, Discernimento e Coragem evoluem com suas escolhas.',
-    colors: 'from-blue-900/80 to-stone-900/90',
-    icon: <Target className="w-8 h-8 text-primary" />,
-  },
-  {
-    title: '🎲 Multiplayer',
-    desc: 'Jogue online ou reunidos como RPG de tabuleiro. Até 6 jogadores simultâneos.',
-    colors: 'from-cyan-900/80 to-stone-900/90',
-    icon: <Users className="w-8 h-8 text-primary" />,
-  },
-  {
-    title: '🏆 Múltiplos Finais',
-    desc: 'Cada jogada é única. Eventos aleatórios e finais diferentes baseados nos seus atributos.',
-    colors: 'from-yellow-900/80 to-stone-900/90',
-    icon: <Trophy className="w-8 h-8 text-primary" />,
-  },
-];
+const PhoneMockupTour = () => {
+  const tourScreens = [
+    {
+      title: '🏰 Tela Inicial',
+      subtitle: 'Escolha seu capítulo',
+      items: ['Fase 1 — Cidade da Destruição', 'Fase 2 — Casa do Intérprete', 'Fase 3 — Vale da Humilhação'],
+      accent: 'from-amber-900/60 to-stone-900/80',
+    },
+    {
+      title: '📖 Narrativa Imersiva',
+      subtitle: 'Leia e decida',
+      items: ['Arte cinematográfica em cada cena', 'Escolhas que mudam a história', 'Consequências em tempo real'],
+      accent: 'from-emerald-900/60 to-stone-900/80',
+    },
+    {
+      title: '⚔️ Duelo contra Apolião',
+      subtitle: 'Combate estratégico',
+      items: ['Espada > Oração > Escudo', 'Dados 3D animados', 'Armadura de Deus'],
+      accent: 'from-red-900/60 to-stone-900/80',
+    },
+    {
+      title: '🧩 Mini-Games',
+      subtitle: '9 tipos diferentes',
+      items: ['Puzzles bíblicos', 'Reflexo e esquiva', 'Caça ao tesouro espiritual'],
+      accent: 'from-violet-900/60 to-stone-900/80',
+    },
+    {
+      title: '📊 Seus Atributos',
+      subtitle: 'Evolua com cada escolha',
+      items: ['Fé ██████░░ 75%', 'Perseverança █████░░░ 62%', 'Coragem ████████░ 88%'],
+      accent: 'from-blue-900/60 to-stone-900/80',
+    },
+    {
+      title: '🎲 Multiplayer',
+      subtitle: 'Até 6 jogadores',
+      items: ['Tabuleiro premium', 'Online ou presencial', 'Eventos coletivos'],
+      accent: 'from-cyan-900/60 to-stone-900/80',
+    },
+    {
+      title: '🏆 Finais Múltiplos',
+      subtitle: 'Rejogue e descubra',
+      items: ['Final da Cidade Celestial', 'Final do Rio da Morte', 'Finais alternativos secretos'],
+      accent: 'from-yellow-900/60 to-stone-900/80',
+    },
+  ];
+
+  return (
+    <div className="flex justify-center">
+      {/* Phone frame - realistic iPhone style */}
+      <div
+        className="relative"
+        style={{
+          width: 300,
+          transform: 'perspective(1200px) rotateY(-5deg) rotateX(2deg)',
+        }}
+      >
+        {/* Phone body */}
+        <div
+          className="relative rounded-[3rem] overflow-hidden border-[6px] border-foreground/30 bg-background"
+          style={{
+            boxShadow:
+              '0 0 40px hsl(40 70% 50% / 0.25), 0 30px 80px rgba(0,0,0,0.7), -15px 15px 40px rgba(0,0,0,0.4), inset 0 0 0 2px hsl(40 70% 50% / 0.1)',
+            aspectRatio: '9/19.5',
+          }}
+        >
+          {/* Dynamic Island / Notch */}
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 w-28 h-6 bg-foreground/90 rounded-full z-20" />
+
+          {/* Screen content - auto scrolling */}
+          <div className="absolute inset-0 overflow-hidden rounded-[2.4rem]">
+            <div
+              className="animate-phone-scroll"
+              style={{
+                animation: 'phoneScroll 28s ease-in-out infinite',
+              }}
+            >
+              {tourScreens.map((screen, i) => (
+                <div
+                  key={i}
+                  className={`min-h-[580px] flex flex-col p-6 pt-12 bg-gradient-to-b ${screen.accent}`}
+                  style={{ background: `linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--background)) 100%)` }}
+                >
+                  {/* Status bar mockup */}
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-6 pt-4">
+                    <span>9:41</span>
+                    <span className="font-display text-primary text-[9px] tracking-wider">O PEREGRINO</span>
+                    <span>100%</span>
+                  </div>
+
+                  {/* Screen title */}
+                  <div className="mb-6">
+                    <h4 className="font-display text-xl text-foreground font-bold">{screen.title}</h4>
+                    <p className="text-sm text-muted-foreground mt-1">{screen.subtitle}</p>
+                  </div>
+
+                  {/* Content items as cards */}
+                  <div className="space-y-3 flex-1">
+                    {screen.items.map((item, j) => (
+                      <div
+                        key={j}
+                        className="p-4 rounded-xl bg-card/60 border border-border/50 text-sm text-foreground/80 font-body"
+                        style={{
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 hsl(40 80% 75% / 0.05)',
+                        }}
+                      >
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Fake bottom nav */}
+                  <div className="flex items-center justify-around pt-6 pb-2 border-t border-border/30 mt-4">
+                    <div className="flex flex-col items-center gap-1">
+                      <Compass className="w-4 h-4 text-primary" />
+                      <span className="text-[9px] text-primary">Jornada</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <Users className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-[9px] text-muted-foreground">Multi</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <Trophy className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-[9px] text-muted-foreground">Perfil</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Home indicator */}
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-foreground/40 rounded-full z-20" />
+        </div>
+
+        {/* Reflection effect */}
+        <div
+          className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[80%] h-8 rounded-full"
+          style={{ background: 'radial-gradient(ellipse, hsl(40 70% 50% / 0.15), transparent)' }}
+        />
+      </div>
+    </div>
+  );
+};
 
 /* ═══════════════════════════════════════════════════════════
    FAQ DATA
    ═══════════════════════════════════════════════════════════ */
 const faqData = [
-  {
-    q: 'O app funciona sem internet?',
-    a: 'Sim! Todo o conteúdo narrativo, mini-games e desafios funcionam 100% offline. Você pode jogar em qualquer lugar, a qualquer hora. O modo online é necessário apenas para multiplayer e sincronização na nuvem.',
-  },
-  {
-    q: 'Posso instalar no celular como um aplicativo?',
-    a: 'Sim! O Peregrino é um PWA (Progressive Web App). Basta acessar pelo navegador e clicar em "Instalar" ou "Adicionar à tela inicial". Funciona em Android e iPhone sem precisar da Play Store ou App Store.',
-  },
-  {
-    q: 'É seguro comprar? Como funciona a garantia?',
-    a: 'Totalmente seguro. Você tem 7 dias de garantia incondicional. Se por qualquer motivo não gostar, devolvemos 100% do seu dinheiro. Sem perguntas, sem burocracia.',
-  },
-  {
-    q: 'Qual a diferença entre a versão gratuita e a completa?',
-    a: 'A versão gratuita inclui os primeiros capítulos para você experimentar. A versão completa desbloqueia toda a jornada: 30+ capítulos, todos os mini-games, modo multiplayer, finais alternativos e atualizações futuras.',
-  },
-  {
-    q: 'Quantas vezes posso jogar?',
-    a: 'Infinitas! O jogo foi projetado para rejogabilidade. Com eventos aleatórios, escolhas ramificadas e múltiplos finais, cada jogada é uma experiência diferente.',
-  },
-  {
-    q: 'É adequado para crianças e adolescentes?',
-    a: 'Sim! O conteúdo é 100% baseado na obra clássica de John Bunyan. É ideal para jovens, grupos de jovens, escolas dominicais e famílias. Classificação livre.',
-  },
-  {
-    q: 'Posso jogar com meu grupo de jovens da igreja?',
-    a: 'Absolutamente! O modo presencial foi feito exatamente para isso. Reúna até 6 pessoas, cada um com seu personagem, e vivam a jornada juntos como um RPG de tabuleiro digital.',
-  },
-  {
-    q: 'Quais formas de pagamento são aceitas?',
-    a: 'Aceitamos PIX, cartão de crédito (até 12x), cartão de débito, e pagamento híbrido (PIX + cartão). Processamento 100% seguro.',
-  },
+  { q: 'O app funciona sem internet?', a: 'Sim! Todo o conteúdo narrativo, mini-games e desafios funcionam 100% offline. Você pode jogar em qualquer lugar, a qualquer hora. O modo online é necessário apenas para multiplayer e sincronização na nuvem.' },
+  { q: 'Posso instalar no celular como um aplicativo?', a: 'Sim! O Peregrino é um PWA (Progressive Web App). Basta acessar pelo navegador e clicar em "Instalar" ou "Adicionar à tela inicial". Funciona em Android e iPhone sem precisar da Play Store ou App Store.' },
+  { q: 'É seguro comprar? Como funciona a garantia?', a: 'Totalmente seguro. Você tem 7 dias de garantia incondicional. Se por qualquer motivo não gostar, devolvemos 100% do seu dinheiro. Sem perguntas, sem burocracia.' },
+  { q: 'Qual a diferença entre a versão gratuita e a completa?', a: 'A versão gratuita inclui os primeiros capítulos para você experimentar. A versão completa desbloqueia toda a jornada: 30+ capítulos, todos os mini-games, modo multiplayer, finais alternativos e atualizações futuras.' },
+  { q: 'Quantas vezes posso jogar?', a: 'Infinitas! O jogo foi projetado para rejogabilidade. Com eventos aleatórios, escolhas ramificadas e múltiplos finais, cada jogada é uma experiência diferente.' },
+  { q: 'É adequado para crianças e adolescentes?', a: 'Sim! O conteúdo é 100% baseado na obra clássica de John Bunyan. É ideal para jovens, grupos de jovens, escolas dominicais e famílias. Classificação livre.' },
+  { q: 'Posso jogar com meu grupo de jovens da igreja?', a: 'Absolutamente! O modo presencial foi feito exatamente para isso. Reúna até 6 pessoas, cada um com seu personagem, e vivam a jornada juntos como um RPG de tabuleiro digital.' },
+  { q: 'Quais formas de pagamento são aceitas?', a: 'Aceitamos PIX, cartão de crédito (até 12x), cartão de débito, e pagamento híbrido (PIX + cartão). Processamento 100% seguro.' },
 ];
 
 /* ═══════════════════════════════════════════════════════════
-   CTA BUTTON COMPONENT
+   CTA BUTTON
    ═══════════════════════════════════════════════════════════ */
 const CtaButton = ({ children, onClick, variant = 'primary', className = '' }: {
   children: React.ReactNode;
@@ -207,14 +286,33 @@ const MedievalCard = ({ children, className = '', glow = false }: {
   </div>
 );
 
-/* ═══════════════════════════════════════════════════════════
-   SECTION DIVIDER
-   ═══════════════════════════════════════════════════════════ */
 const SectionDivider = () => (
   <div className="flex items-center justify-center py-4">
     <div className="h-px w-16 bg-gradient-to-r from-transparent to-primary/30" />
     <Sparkles className="w-4 h-4 text-primary/40 mx-3" />
     <div className="h-px w-16 bg-gradient-to-l from-transparent to-primary/30" />
+  </div>
+);
+
+/* ═══════════════════════════════════════════════════════════
+   CINEMATIC IMAGE SECTION
+   ═══════════════════════════════════════════════════════════ */
+const CinematicImage = ({ src, alt, caption, subcaption, rotate = 0 }: {
+  src: string; alt: string; caption: string; subcaption?: string; rotate?: number;
+}) => (
+  <div
+    className="relative rounded-2xl overflow-hidden"
+    style={{
+      transform: `perspective(1000px) rotateY(${rotate}deg) rotateX(1deg)`,
+      boxShadow: '0 0 30px hsl(40 70% 50% / 0.2), 0 20px 60px rgba(0,0,0,0.5)',
+    }}
+  >
+    <img src={src} alt={alt} className="w-full" loading="lazy" width={1280} height={720} />
+    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
+    <div className="absolute bottom-0 left-0 right-0 p-5 text-left">
+      <p className="font-display text-lg text-foreground font-bold">{caption}</p>
+      {subcaption && <p className="text-sm text-foreground/70 mt-1">{subcaption}</p>}
+    </div>
   </div>
 );
 
@@ -232,16 +330,39 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
 
+      {/* ══════════ STICKY TOP BAR — URGENCY ══════════ */}
+      <div
+        className="sticky top-0 z-50 flex items-center justify-center gap-3 px-4 py-2.5 border-b border-destructive/20"
+        style={{
+          background: 'linear-gradient(90deg, hsl(0 60% 12%), hsl(0 50% 8%), hsl(0 60% 12%))',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.5), 0 0 15px hsl(0 60% 50% / 0.1)',
+        }}
+      >
+        <Timer className="w-4 h-4 text-destructive animate-pulse flex-shrink-0" />
+        <span className="text-xs text-destructive/90 font-display font-bold uppercase tracking-wider">
+          Oferta expira em
+        </span>
+        <CountdownTimer compact />
+        <button
+          onClick={handleBuy}
+          className="ml-2 px-3 py-1 text-xs font-display font-bold rounded-lg bg-primary text-primary-foreground border border-primary/60 flex-shrink-0"
+          style={{ boxShadow: '0 0 10px hsl(40 70% 50% / 0.3)' }}
+        >
+          GARANTIR
+        </button>
+      </div>
+
       {/* ══════════ HERO ══════════ */}
-      <section className="relative min-h-[100vh] flex flex-col items-center justify-center px-5 py-16 text-center overflow-hidden">
+      <section className="relative min-h-[95vh] flex flex-col items-center justify-center px-5 py-16 text-center overflow-hidden">
+        {/* Background — more visible */}
         <div className="absolute inset-0">
-          <img src={heroImg} alt="Jornada do Peregrino" className="w-full h-full object-cover opacity-40" width={1920} height={1080} />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/50 to-background" />
+          <img src={heroImg} alt="Jornada do Peregrino" className="w-full h-full object-cover opacity-60" width={1920} height={1080} />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" />
         </div>
 
         <div className="relative z-10 max-w-2xl mx-auto space-y-5">
           <div
-            className="inline-block px-4 py-1.5 rounded-full border border-primary/40 bg-primary/10 mb-2"
+            className="inline-block px-4 py-1.5 rounded-full border border-primary/40 bg-primary/10"
             style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.2)' }}
           >
             <span className="text-xs uppercase tracking-[0.3em] text-primary font-display font-bold flex items-center gap-2">
@@ -251,39 +372,28 @@ const LandingPage = () => {
 
           <h1
             className="font-display text-4xl md:text-6xl text-foreground leading-[1.1] font-bold"
-            style={{ textShadow: '0 0 40px hsl(40 70% 50% / 0.3)' }}
+            style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 0 40px hsl(40 70% 50% / 0.3)' }}
           >
             Viva a Maior Batalha<br />
             <span className="text-primary">Espiritual</span> de Todos os Tempos
           </h1>
 
-          <p className="text-lg md:text-xl text-foreground/80 leading-relaxed max-w-lg mx-auto font-body">
+          <p
+            className="text-lg md:text-xl text-foreground/90 leading-relaxed max-w-lg mx-auto font-body"
+            style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}
+          >
             A obra-prima de <strong>John Bunyan</strong> transformada em uma experiência interativa
             que vai <em>desafiar sua fé, provocar suas emoções</em> e mudar sua perspectiva para sempre.
           </p>
 
-          <p className="text-sm text-primary/80 font-display tracking-wide">
+          <p className="text-sm text-primary font-display tracking-wide" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
             ⚔️ Mais de 30 capítulos · 9 tipos de desafios · Múltiplos finais
           </p>
 
-          {/* Urgency */}
-          <div className="pt-3">
-            <div
-              className="inline-block px-6 py-3 rounded-xl border border-destructive/30 bg-destructive/10"
-              style={{ boxShadow: '0 0 15px hsl(0 60% 50% / 0.15)' }}
-            >
-              <p className="text-xs text-destructive font-bold uppercase tracking-wider mb-2 flex items-center justify-center gap-1.5">
-                <Timer className="w-3.5 h-3.5 animate-pulse" /> Oferta expira em:
-              </p>
-              <CountdownTimer />
-            </div>
-          </div>
-
-          {/* CTA */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
             <CtaButton onClick={handleBuy} variant="primary">
               <Crown className="w-5 h-5" />
-              Adquirir Versão Completa — R$147/ano
+              Adquirir — R$147/ano
             </CtaButton>
             <CtaButton onClick={() => navigate('/')} variant="secondary">
               <Play className="w-5 h-5" />
@@ -291,7 +401,7 @@ const LandingPage = () => {
             </CtaButton>
           </div>
 
-          <div className="flex items-center justify-center gap-4 pt-2 text-xs text-muted-foreground">
+          <div className="flex items-center justify-center gap-4 pt-2 text-xs text-foreground/70" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
             <span className="flex items-center gap-1"><Shield className="w-3.5 h-3.5" /> Garantia 7 dias</span>
             <span>•</span>
             <span className="flex items-center gap-1"><Smartphone className="w-3.5 h-3.5" /> Instale no celular</span>
@@ -300,11 +410,40 @@ const LandingPage = () => {
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce">
           <ChevronDown className="w-6 h-6 text-primary/50" />
         </div>
       </section>
+
+      {/* ══════════ CINEMATIC IMAGES ══════════ */}
+      <section className="px-5 py-12">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <CinematicImage
+              src={battleImg}
+              alt="Batalha contra Apolião"
+              caption="⚔️ Enfrente Apolião"
+              subcaption="O terrível demônio que bloqueia o Vale da Humilhação"
+              rotate={-2}
+            />
+            <CinematicImage
+              src={giantImg}
+              alt="Gigante Desespero"
+              caption="👹 Gigante Desespero"
+              subcaption="Prisioneiro no Castelo da Dúvida — você consegue escapar?"
+              rotate={2}
+            />
+          </div>
+          <CinematicImage
+            src={journeyImg}
+            alt="A Jornada"
+            caption="🌉 A Travessia do Rio da Morte"
+            subcaption="O último e mais difícil desafio. Seus atributos determinam o desfecho."
+          />
+        </div>
+      </section>
+
+      <SectionDivider />
 
       {/* ══════════ PAIN POINTS ══════════ */}
       <section className="px-5 py-16 bg-card/30">
@@ -347,19 +486,10 @@ const LandingPage = () => {
             — A Jornada Interativa
           </h2>
 
-          <div className="relative rounded-2xl overflow-hidden max-w-xl mx-auto"
-            style={{
-              transform: 'perspective(1000px) rotateY(-2deg) rotateX(1deg)',
-              boxShadow: '0 0 30px hsl(40 70% 50% / 0.25), 0 20px 60px rgba(0,0,0,0.5)',
-            }}
-          >
-            <img src={battleImg} alt="Batalha contra Apolião" className="w-full" loading="lazy" width={1280} height={720} />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-5 text-left">
-              <p className="font-display text-lg text-foreground font-bold">Enfrente Apolião</p>
-              <p className="text-sm text-foreground/70">Cada batalha é diferente. Cada escolha importa.</p>
-            </div>
-          </div>
+          <p className="text-base text-foreground/70 font-body max-w-lg mx-auto">
+            Não é apenas um jogo. É uma <strong className="text-primary">experiência narrativa completa</strong> que transforma
+            a maior alegoria cristã de todos os tempos em algo que você <em>vive, sente e nunca esquece</em>.
+          </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
@@ -379,65 +509,20 @@ const LandingPage = () => {
 
       <SectionDivider />
 
-      {/* ══════════ APP TOUR / PHONE MOCKUP ══════════ */}
+      {/* ══════════ PHONE MOCKUP TOUR ══════════ */}
       <section className="px-5 py-16 bg-card/30">
         <div className="max-w-2xl mx-auto text-center space-y-8">
-          <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Tour pelo App</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Veja por Dentro</p>
           <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
-            Veja por dentro como é<br />
-            <span className="text-primary">a experiência completa</span>
+            Um tour <span className="text-primary">real</span> pelo app
           </h2>
-
-          {/* Phone Mockup */}
-          <div className="flex justify-center">
-            <div
-              className="relative w-[280px] rounded-[2.5rem] border-4 border-foreground/20 bg-background overflow-hidden"
-              style={{
-                boxShadow: '0 0 30px hsl(40 70% 50% / 0.2), 0 25px 60px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.3)',
-                transform: 'perspective(800px) rotateY(-3deg)',
-              }}
-            >
-              {/* Notch */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-5 bg-foreground/20 rounded-b-xl z-10" />
-
-              {/* Screen content */}
-              <div className="pt-8 pb-4">
-                <Carousel opts={{ loop: true }} className="w-full">
-                  <CarouselContent>
-                    {appTourSlides.map((slide, i) => (
-                      <CarouselItem key={i}>
-                        <div className={`min-h-[400px] flex flex-col items-center justify-center p-6 bg-gradient-to-b ${slide.colors}`}>
-                          <div
-                            className="w-16 h-16 rounded-2xl bg-card/50 border border-primary/30 flex items-center justify-center mb-4"
-                            style={{ boxShadow: '0 0 15px hsl(40 70% 50% / 0.3)' }}
-                          >
-                            {slide.icon}
-                          </div>
-                          <h3 className="font-display text-lg text-foreground font-bold mb-3">{slide.title}</h3>
-                          <p className="text-sm text-foreground/70 leading-relaxed font-body">{slide.desc}</p>
-                          <div className="mt-6 flex gap-1.5">
-                            {appTourSlides.map((_, j) => (
-                              <div
-                                key={j}
-                                className={`w-2 h-2 rounded-full transition-all ${j === i ? 'bg-primary w-6' : 'bg-foreground/20'}`}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                </Carousel>
-              </div>
-
-              {/* Home bar */}
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-28 h-1 bg-foreground/30 rounded-full" />
-            </div>
-          </div>
-
           <p className="text-sm text-muted-foreground font-body">
-            ← Deslize para ver todas as telas →
+            Assista o app funcionando — cada tela mostra uma parte da experiência completa
           </p>
+
+          <PhoneMockupTour />
+
+          <p className="text-xs text-muted-foreground italic">Tour automático — aguarde para ver todas as telas</p>
         </div>
       </section>
 
@@ -455,46 +540,14 @@ const LandingPage = () => {
 
           <div className="space-y-4">
             {[
-              {
-                icon: <BookOpen className="w-6 h-6" />,
-                title: 'Narrativa Interativa',
-                desc: 'A história de O Peregrino ganha vida através de escolhas que você faz. Cada decisão altera seus 4 atributos — Fé, Perseverança, Discernimento e Coragem — e determina qual caminho você seguirá.',
-              },
-              {
-                icon: <Swords className="w-6 h-6" />,
-                title: 'Duelos Espirituais',
-                desc: 'Enfrente Apolião, o Gigante Desespero e outros inimigos usando a Armadura de Deus: Espada (ataque), Escudo (defesa) e Oração (poder espiritual) em combates estratégicos.',
-              },
-              {
-                icon: <Gamepad2 className="w-6 h-6" />,
-                title: '9 Tipos de Mini-Games',
-                desc: 'Reflexos rápidos (QTE), esquiva de tentações, memória bíblica, furtividade, caça ao tesouro, duelo de dados, puzzles de escrituras e muito mais.',
-              },
-              {
-                icon: <Users className="w-6 h-6" />,
-                title: 'Modo Multiplayer',
-                desc: 'Jogue online com amigos ou reúna o grupo presencialmente. Um tabuleiro digital premium com dados 3D, eventos coletivos e chat.',
-              },
-              {
-                icon: <Zap className="w-6 h-6" />,
-                title: 'Sistema de Combo',
-                desc: 'Sequências de boas escolhas ativam combos (streaks) que amplificam suas recompensas. Mantenha a série e veja seus atributos dispararem.',
-              },
-              {
-                icon: <Eye className="w-6 h-6" />,
-                title: 'Efeitos Visuais e Atmosféricos',
-                desc: 'Partículas de fogo, chuva, luz sagrada. Efeitos de câmera como terremoto e brilho divino em momentos críticos da história.',
-              },
-              {
-                icon: <Map className="w-6 h-6" />,
-                title: 'Funciona 100% Offline',
-                desc: 'Instale no celular como app (PWA). Todo conteúdo funciona sem internet. Ideal para viagens, retiros e qualquer lugar.',
-              },
-              {
-                icon: <Star className="w-6 h-6" />,
-                title: 'Rejogabilidade Infinita',
-                desc: 'Eventos aleatórios, variações narrativas e múltiplos finais garantem que cada jogada seja uma experiência nova e surpreendente.',
-              },
+              { icon: <BookOpen className="w-6 h-6" />, title: 'Narrativa Interativa', desc: 'A história de O Peregrino ganha vida através de escolhas que você faz. Cada decisão altera seus 4 atributos — Fé, Perseverança, Discernimento e Coragem — e determina qual caminho você seguirá.' },
+              { icon: <Swords className="w-6 h-6" />, title: 'Duelos Espirituais', desc: 'Enfrente Apolião, o Gigante Desespero e outros inimigos usando a Armadura de Deus: Espada (ataque), Escudo (defesa) e Oração (poder espiritual) em combates estratégicos.' },
+              { icon: <Gamepad2 className="w-6 h-6" />, title: '9 Tipos de Mini-Games', desc: 'Reflexos rápidos (QTE), esquiva de tentações, memória bíblica, furtividade, caça ao tesouro, duelo de dados, puzzles de escrituras e muito mais.' },
+              { icon: <Users className="w-6 h-6" />, title: 'Modo Multiplayer', desc: 'Jogue online com amigos ou reúna o grupo presencialmente. Um tabuleiro digital premium com dados 3D, eventos coletivos e chat.' },
+              { icon: <Zap className="w-6 h-6" />, title: 'Sistema de Combo', desc: 'Sequências de boas escolhas ativam combos que amplificam suas recompensas. Mantenha a série e veja seus atributos dispararem.' },
+              { icon: <Eye className="w-6 h-6" />, title: 'Efeitos Visuais e Atmosféricos', desc: 'Partículas de fogo, chuva, luz sagrada. Efeitos de câmera como terremoto e brilho divino em momentos críticos da história.' },
+              { icon: <Map className="w-6 h-6" />, title: 'Funciona 100% Offline', desc: 'Instale no celular como app (PWA). Todo conteúdo funciona sem internet. Ideal para viagens, retiros e qualquer lugar.' },
+              { icon: <Star className="w-6 h-6" />, title: 'Rejogabilidade Infinita', desc: 'Eventos aleatórios, variações narrativas e múltiplos finais garantem que cada jogada seja uma experiência nova e surpreendente.' },
             ].map((f, i) => (
               <MedievalCard key={i} glow={i < 3} className="flex gap-4">
                 <div
@@ -670,7 +723,6 @@ const LandingPage = () => {
             Quanto vale uma <span className="text-primary">transformação</span> assim?
           </h2>
 
-          {/* Anchoring */}
           <div className="space-y-3 text-left max-w-md mx-auto font-body">
             {[
               { item: 'Um jogo de tabuleiro cristão', price: 'R$ 180+' },
@@ -689,7 +741,6 @@ const LandingPage = () => {
             Tudo isso junto custaria mais de <span className="line-through text-foreground/40">R$ 1.200</span>
           </p>
 
-          {/* Price Card */}
           <MedievalCard glow className="max-w-sm mx-auto text-center">
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-display mb-1">Acesso completo por apenas</p>
             <div className="flex items-baseline justify-center gap-1 mb-1">
@@ -728,17 +779,6 @@ const LandingPage = () => {
               Quero Começar Minha Jornada
             </CtaButton>
           </MedievalCard>
-
-          {/* Urgency */}
-          <div
-            className="inline-block px-5 py-3 rounded-xl border border-destructive/30 bg-destructive/10"
-            style={{ boxShadow: '0 0 15px hsl(0 60% 50% / 0.15)' }}
-          >
-            <p className="text-xs text-destructive font-bold uppercase tracking-wider mb-2 flex items-center justify-center gap-1.5">
-              <Timer className="w-3.5 h-3.5 animate-pulse" /> Preço promocional expira em:
-            </p>
-            <CountdownTimer />
-          </div>
         </div>
       </section>
 
@@ -754,7 +794,6 @@ const LandingPage = () => {
             </h2>
           </div>
 
-          {/* Guarantee */}
           <MedievalCard glow className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
             <img src={sealImg} alt="Selo de Garantia 7 Dias" className="w-28 h-28 object-contain" loading="lazy" width={512} height={512} />
             <div>
@@ -769,7 +808,6 @@ const LandingPage = () => {
             </div>
           </MedievalCard>
 
-          {/* Payment Methods */}
           <div className="text-center">
             <h3 className="font-display text-base text-foreground mb-4">Formas de Pagamento</h3>
             <div className="flex flex-wrap justify-center gap-3">
@@ -788,7 +826,6 @@ const LandingPage = () => {
             </div>
           </div>
 
-          {/* Trust badges */}
           <div className="flex flex-wrap justify-center gap-4 pt-4">
             {[
               { icon: <Shield className="w-4 h-4" />, text: 'Compra Segura' },
@@ -829,9 +866,7 @@ const LandingPage = () => {
                     className={`w-4 h-4 text-primary flex-shrink-0 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`}
                   />
                 </button>
-                <div
-                  className={`overflow-hidden transition-all duration-300 ${openFaq === i ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'}`}
-                >
+                <div className={`overflow-hidden transition-all duration-300 ${openFaq === i ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'}`}>
                   <p className="px-4 pb-4 text-sm text-foreground/70 font-body leading-relaxed">{faq.a}</p>
                 </div>
               </MedievalCard>
@@ -876,29 +911,11 @@ const LandingPage = () => {
             </div>
           </div>
 
-          {/* Urgency final */}
-          <div className="pt-4">
-            <div
-              className="inline-block px-5 py-3 rounded-xl border border-destructive/30 bg-destructive/10"
-              style={{ boxShadow: '0 0 15px hsl(0 60% 50% / 0.15)' }}
-            >
-              <p className="text-xs text-destructive font-bold uppercase tracking-wider mb-2 flex items-center justify-center gap-1.5">
-                <Timer className="w-3.5 h-3.5 animate-pulse" /> Oferta por tempo limitado:
-              </p>
-              <CountdownTimer />
-            </div>
-          </div>
-
-          {/* Footer links */}
           <div className="flex items-center justify-center gap-6 pt-6">
             <button
               onClick={() => {
                 if (navigator.share) {
-                  navigator.share({
-                    title: 'O Peregrino — Jornada Interativa',
-                    text: 'Viva a maior batalha espiritual de todos os tempos! Jogo narrativo interativo baseado na obra de John Bunyan.',
-                    url: window.location.href,
-                  });
+                  navigator.share({ title: 'O Peregrino — Jornada Interativa', text: 'Viva a maior batalha espiritual de todos os tempos!', url: window.location.href });
                 }
               }}
               className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
