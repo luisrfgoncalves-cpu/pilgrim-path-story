@@ -1,10 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import {
-  Check, Copy, Download, Smartphone, Apple, ChevronDown, ChevronUp,
-  Mail, Lock, Shield, AlertTriangle, RefreshCw, HelpCircle, ExternalLink
+  Copy, Check, Download, Smartphone, Monitor,
+  AlertTriangle, RefreshCw, HelpCircle, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { toast } from 'sonner';
 import logoImg from '@/assets/logo-peregrino.png';
@@ -17,10 +16,9 @@ const ThankYouPage = () => {
   const [searchParams] = useSearchParams();
   const buyerEmail = searchParams.get('email') || '';
   const [copied, setCopied] = useState(false);
-  const [openSection, setOpenSection] = useState<string | null>('android');
-  const contentRef = useRef<HTMLDivElement>(null);
+  const [helpOpen, setHelpOpen] = useState(false);
 
-  const accessLink = buyerEmail ? `${APP_URL}/auth` : `${APP_URL}/auth`;
+  const accessLink = `${APP_URL}/auth`;
 
   const handleCopy = async () => {
     try {
@@ -29,346 +27,237 @@ const ThankYouPage = () => {
       toast.success('Link copiado!');
       setTimeout(() => setCopied(false), 3000);
     } catch {
-      toast.error('Erro ao copiar. Selecione e copie manualmente.');
+      toast.error('Erro ao copiar.');
     }
   };
 
-  const handleDownloadPDF = () => {
-    const content = `
-═══════════════════════════════════════════════
-   O PEREGRINO — Suas Informações de Acesso
-═══════════════════════════════════════════════
+  const handleDownload = () => {
+    const txt = `
+═══════════════════════════════════════
+  O PEREGRINO — Dados de Acesso
+═══════════════════════════════════════
 
-Parabéns pela sua aquisição! 🎉
+📧 Email: ${buyerEmail || '(use o email da compra)'}
+🔗 Link: ${accessLink}
 
-📧 Seu email de acesso: ${buyerEmail || '(use o email da compra)'}
-
-🔗 Link de acesso ao app:
-${accessLink}
-
-═══════════════════════════════════════════════
-   COMO INSTALAR O APP NO SEU CELULAR
-═══════════════════════════════════════════════
-
-📱 ANDROID (Chrome):
-1. Abra o link acima no navegador Chrome
-2. Toque nos 3 pontinhos (⋮) no canto superior direito
-3. Selecione "Instalar aplicativo" ou "Adicionar à tela inicial"
-4. Confirme a instalação
-5. O app aparecerá na sua tela inicial como um app normal
-
-🍎 IPHONE (Safari):
-1. Abra o link acima no Safari (NÃO use Chrome no iPhone)
-2. Toque no botão de compartilhar (□↑) na barra inferior
-3. Role para baixo e toque em "Adicionar à Tela de Início"
-4. Dê um nome e toque em "Adicionar"
-5. O app aparecerá na sua tela inicial
-
-═══════════════════════════════════════════════
-   PRIMEIRO ACESSO
-═══════════════════════════════════════════════
-
-1. Abra o app instalado
+COMO ACESSAR:
+1. Abra o link acima no celular
 2. Toque em "Criar Conta"
-3. Digite o MESMO email usado na compra: ${buyerEmail || '(email da compra)'}
-4. Crie uma senha de sua preferência (mínimo 6 caracteres)
-5. Pronto! Você está dentro da jornada!
+3. Use o MESMO email da compra
+4. Crie uma senha (mín. 6 caracteres)
+5. Pronto!
 
-⚠️  IMPORTANTE:
-• Use EXATAMENTE o mesmo email da compra
-• A senha é de sua escolha — guarde-a bem
-• Após o primeiro login, você não precisará fazer login novamente
-• Se desinstalar e reinstalar, use o mesmo email e senha
-• Se esquecer a senha, use "Esqueceu a senha?" na tela de login
+INSTALAR NO ANDROID (Chrome):
+- 3 pontinhos (⋮) > "Instalar aplicativo"
 
-═══════════════════════════════════════════════
-   PROBLEMAS COMUNS
-═══════════════════════════════════════════════
+INSTALAR NO IPHONE (Safari):
+- Compartilhar (□↑) > "Adicionar à Tela de Início"
 
-❌ "Email não autorizado"
-→ Verifique se digitou o MESMO email usado na compra da Kiwify
+⚠️ iPhone: use SOMENTE o Safari!
+⚠️ Use o MESMO email da compra!
 
-❌ "Acesso já utilizado"  
-→ Você já criou uma conta. Use "Entrar" ao invés de "Criar Conta"
-
-❌ App não aparece para instalar
-→ Android: Use o Chrome. iPhone: Use o Safari
-→ Limpe o cache do navegador e tente novamente
-
-❌ Esqueci minha senha
-→ Na tela de login, toque em "Esqueceu a senha?"
-→ Um email de recuperação será enviado
-
-📞 Suporte: centrobiblicoonline@gmail.com
-═══════════════════════════════════════════════
+Suporte: centrobiblicoonline@gmail.com
+═══════════════════════════════════════
 `;
-
-    const blob = new Blob([content], { type: 'text/plain' });
+    const blob = new Blob([txt], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = 'O-Peregrino-Acesso.txt';
     a.click();
     URL.revokeObjectURL(url);
-    toast.success('Arquivo baixado com sucesso!');
-  };
-
-  const toggleSection = (section: string) => {
-    setOpenSection(openSection === section ? null : section);
+    toast.success('Arquivo baixado!');
   };
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background image */}
+    <div
+      className="min-h-screen relative flex flex-col items-center"
+      style={{
+        background: 'linear-gradient(135deg, hsl(30 20% 8%) 0%, hsl(30 25% 14%) 50%, hsl(35 30% 12%) 100%)',
+      }}
+    >
+      {/* BG image overlay */}
       <div
-        className="absolute inset-0 opacity-15"
+        className="absolute inset-0 opacity-10"
         style={{
           backgroundImage: `url(${cidadeCelestial})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/90 to-background" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/60" />
 
-      <div ref={contentRef} className="relative z-10 max-w-lg mx-auto px-4 py-8 space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <img src={logoImg} alt="O Peregrino" className="w-20 h-20 mx-auto rounded-2xl shadow-lg" />
-          <div>
-            <h1 className="text-2xl font-bold text-primary">🎉 Parabéns, Peregrino!</h1>
-            <p className="text-foreground/80 mt-2 text-base">
-              Sua jornada rumo à Cidade Celestial começa agora!
-            </p>
-          </div>
-          <img
-            src={pilgrimStanding}
-            alt="O Peregrino"
-            className="w-32 h-32 mx-auto object-contain drop-shadow-2xl"
-          />
-        </div>
+      <div className="relative z-10 w-full max-w-md mx-auto px-5 py-10 space-y-8">
 
-        {/* Access Info Card */}
-        <Card className="border-primary/30 bg-card/80 backdrop-blur">
-          <CardContent className="p-5 space-y-4">
-            <h2 className="text-lg font-bold text-primary flex items-center gap-2">
-              <Shield className="w-5 h-5" /> Seus Dados de Acesso
-            </h2>
-
-            {buyerEmail && (
-              <div className="bg-secondary/50 rounded-lg p-3 space-y-1">
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Mail className="w-3 h-3" /> Seu email de acesso
-                </p>
-                <p className="text-foreground font-semibold text-sm break-all">{buyerEmail}</p>
-              </div>
-            )}
-
-            <div className="bg-secondary/50 rounded-lg p-3 space-y-2">
-              <p className="text-xs text-muted-foreground flex items-center gap-1">
-                <ExternalLink className="w-3 h-3" /> Link de acesso ao app
-              </p>
-              <p className="text-primary font-mono text-xs break-all">{accessLink}</p>
-              <div className="flex gap-2">
-                <Button size="sm" onClick={handleCopy} className="flex-1 text-xs">
-                  {copied ? <Check className="w-3 h-3 mr-1" /> : <Copy className="w-3 h-3 mr-1" />}
-                  {copied ? 'Copiado!' : 'Copiar Link'}
-                </Button>
-                <Button size="sm" variant="outline" onClick={handleDownloadPDF} className="flex-1 text-xs">
-                  <Download className="w-3 h-3 mr-1" /> Baixar Instruções
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* First Access Steps */}
-        <Card className="border-border bg-card/80 backdrop-blur">
-          <CardContent className="p-5 space-y-3">
-            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-              <Lock className="w-5 h-5 text-primary" /> Primeiro Acesso
-            </h2>
-            <div className="space-y-3">
-              {[
-                { step: '1', text: 'Abra o link acima no navegador do seu celular' },
-                { step: '2', text: 'Instale o app (veja instruções abaixo)' },
-                { step: '3', text: 'Abra o app e toque em "Criar Conta"' },
-                { step: '4', text: `Use o email: ${buyerEmail || 'o mesmo da compra'}` },
-                { step: '5', text: 'Crie uma senha de sua preferência (mín. 6 caracteres)' },
-                { step: '6', text: 'Pronto! Sua jornada começou! 🙏' },
-              ].map(({ step, text }) => (
-                <div key={step} className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center">
-                    {step}
-                  </span>
-                  <p className="text-foreground/90 text-sm pt-0.5">{text}</p>
-                </div>
-              ))}
-            </div>
-            <div className="bg-primary/10 rounded-lg p-3 mt-2">
-              <p className="text-xs text-primary font-medium">
-                ✨ Após o primeiro login, você NÃO precisará fazer login novamente!
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Installation Instructions - Android */}
-        <Card className="border-border bg-card/80 backdrop-blur">
-          <CardContent className="p-0">
-            <button
-              onClick={() => toggleSection('android')}
-              className="w-full p-5 flex items-center justify-between text-left"
-            >
-              <div className="flex items-center gap-2">
-                <Smartphone className="w-5 h-5 text-green-400" />
-                <h2 className="text-base font-bold text-foreground">📱 Android (Chrome)</h2>
-              </div>
-              {openSection === 'android' ? (
-                <ChevronUp className="w-4 h-4 text-muted-foreground" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              )}
-            </button>
-            {openSection === 'android' && (
-              <div className="px-5 pb-5 space-y-3">
-                {[
-                  'Abra o link no navegador Chrome',
-                  'Toque nos 3 pontinhos (⋮) no canto superior direito',
-                  'Selecione "Instalar aplicativo" ou "Adicionar à tela inicial"',
-                  'Confirme a instalação',
-                  'O app aparecerá na sua tela inicial como um app normal!',
-                ].map((text, i) => (
-                  <div key={i} className="flex items-start gap-2">
-                    <span className="text-green-400 font-bold text-sm mt-0.5">{i + 1}.</span>
-                    <p className="text-foreground/80 text-sm">{text}</p>
-                  </div>
-                ))}
-                <div className="bg-green-400/10 rounded-lg p-3">
-                  <p className="text-xs text-green-300">
-                    💡 Se aparecer um banner "Instalar O Peregrino" na parte inferior da tela, basta tocar nele!
-                  </p>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Installation Instructions - iPhone */}
-        <Card className="border-border bg-card/80 backdrop-blur">
-          <CardContent className="p-0">
-            <button
-              onClick={() => toggleSection('iphone')}
-              className="w-full p-5 flex items-center justify-between text-left"
-            >
-              <div className="flex items-center gap-2">
-                <Apple className="w-5 h-5 text-foreground/80" />
-                <h2 className="text-base font-bold text-foreground">🍎 iPhone (Safari)</h2>
-              </div>
-              {openSection === 'iphone' ? (
-                <ChevronUp className="w-4 h-4 text-muted-foreground" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              )}
-            </button>
-            {openSection === 'iphone' && (
-              <div className="px-5 pb-5 space-y-3">
-                <div className="bg-destructive/10 rounded-lg p-3 mb-2">
-                  <p className="text-xs text-destructive font-medium">
-                    ⚠️ IMPORTANTE: No iPhone, use SOMENTE o Safari! Chrome/Firefox não permitem instalar apps no iOS.
-                  </p>
-                </div>
-                {[
-                  'Abra o link no Safari',
-                  'Toque no botão de compartilhar (□↑) na barra inferior',
-                  'Role para baixo e toque em "Adicionar à Tela de Início"',
-                  'Dê um nome e toque em "Adicionar"',
-                  'O app aparecerá na sua tela inicial!',
-                ].map((text, i) => (
-                  <div key={i} className="flex items-start gap-2">
-                    <span className="text-foreground/60 font-bold text-sm mt-0.5">{i + 1}.</span>
-                    <p className="text-foreground/80 text-sm">{text}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Troubleshooting */}
-        <Card className="border-border bg-card/80 backdrop-blur">
-          <CardContent className="p-0">
-            <button
-              onClick={() => toggleSection('problems')}
-              className="w-full p-5 flex items-center justify-between text-left"
-            >
-              <div className="flex items-center gap-2">
-                <HelpCircle className="w-5 h-5 text-primary" />
-                <h2 className="text-base font-bold text-foreground">❓ Problemas Comuns</h2>
-              </div>
-              {openSection === 'problems' ? (
-                <ChevronUp className="w-4 h-4 text-muted-foreground" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              )}
-            </button>
-            {openSection === 'problems' && (
-              <div className="px-5 pb-5 space-y-4">
-                {[
-                  {
-                    icon: <AlertTriangle className="w-4 h-4 text-destructive" />,
-                    title: '"Email não autorizado"',
-                    solution: 'Verifique se digitou EXATAMENTE o mesmo email usado na compra da Kiwify. Letras maiúsculas/minúsculas importam!',
-                  },
-                  {
-                    icon: <AlertTriangle className="w-4 h-4 text-yellow-400" />,
-                    title: '"Acesso já utilizado"',
-                    solution: 'Você já criou uma conta com esse email. Vá para "Entrar" ao invés de "Criar Conta" e use o email e senha que cadastrou.',
-                  },
-                  {
-                    icon: <Smartphone className="w-4 h-4 text-blue-400" />,
-                    title: 'App não aparece para instalar',
-                    solution: 'Android: use o Chrome. iPhone: use o Safari. Limpe o cache do navegador e tente novamente.',
-                  },
-                  {
-                    icon: <RefreshCw className="w-4 h-4 text-primary" />,
-                    title: 'Esqueci minha senha',
-                    solution: 'Na tela de login, toque em "Esqueceu a senha?". Um email de recuperação será enviado para o seu email de cadastro.',
-                  },
-                  {
-                    icon: <Smartphone className="w-4 h-4 text-green-400" />,
-                    title: 'Desinstalei o app, como reinstalar?',
-                    solution: 'Basta abrir o link novamente e instalar. Use o mesmo email e senha que cadastrou no primeiro acesso.',
-                  },
-                ].map(({ icon, title, solution }, i) => (
-                  <div key={i} className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      {icon}
-                      <p className="text-sm font-semibold text-foreground">{title}</p>
-                    </div>
-                    <p className="text-xs text-muted-foreground pl-6">→ {solution}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* CTA to open app */}
-        <div className="space-y-3 pt-2">
-          <a href={accessLink} target="_blank" rel="noopener noreferrer" className="block">
-            <Button className="w-full h-14 text-base font-bold shadow-lg">
-              🚀 Acessar O Peregrino Agora
-            </Button>
-          </a>
-          <p className="text-center text-xs text-muted-foreground">
-            Dúvidas? Entre em contato: centrobiblicoonline@gmail.com
+        {/* ── HEADER ── */}
+        <div className="text-center space-y-3">
+          <img src={logoImg} alt="O Peregrino" className="w-20 h-20 mx-auto rounded-2xl shadow-xl" />
+          <h1 className="text-3xl font-bold" style={{ color: 'hsl(40 70% 60%)' }}>
+            Seu Acesso está Liberado!
+          </h1>
+          <img src={pilgrimStanding} alt="Peregrino" className="w-24 h-24 mx-auto object-contain drop-shadow-2xl" />
+          <p className="text-base italic" style={{ color: 'hsl(38 40% 75%)' }}>
+            Sua jornada rumo à Cidade Celestial começa agora.
           </p>
         </div>
 
-        {/* Footer */}
-        <div className="text-center pt-4 pb-8">
-          <img src={logoImg} alt="O Peregrino" className="w-10 h-10 mx-auto rounded-lg opacity-60" />
-          <p className="text-xs text-muted-foreground mt-2">
+        {/* ── COMO ACESSAR ── */}
+        <div
+          className="rounded-2xl p-6 space-y-5"
+          style={{ background: 'hsl(30 15% 16% / 0.85)', backdropFilter: 'blur(10px)', border: '1px solid hsl(40 30% 25%)' }}
+        >
+          <h2 className="text-center text-lg font-bold" style={{ color: 'hsl(40 70% 60%)' }}>
+            ✨ Como acessar seu App
+          </h2>
+          <p className="text-center text-sm" style={{ color: 'hsl(38 30% 65%)' }}>
+            O seu acesso foi vinculado ao e-mail usado na compra da Kiwify. Não é necessário nenhum código de ativação.
+          </p>
+
+          {[
+            { n: '1', title: 'Abra o App', desc: 'Clique no botão abaixo ou use o link enviado ao seu e-mail.' },
+            { n: '2', title: 'Entre com seu E-mail', desc: `Use o e-mail da compra${buyerEmail ? ` (${buyerEmail})` : ''}. Se for seu primeiro acesso, clique em 'Criar Conta'.` },
+            { n: '3', title: 'Defina sua Senha', desc: 'Escolha uma senha segura (mín. 6 caracteres) e guarde-a com carinho.' },
+          ].map(({ n, title, desc }) => (
+            <div key={n} className="flex items-start gap-4">
+              <span
+                className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
+                style={{ background: 'hsl(40 60% 50% / 0.2)', color: 'hsl(40 70% 60%)' }}
+              >
+                {n}
+              </span>
+              <div>
+                <p className="font-semibold text-sm" style={{ color: 'hsl(38 40% 85%)' }}>{title}</p>
+                <p className="text-xs mt-0.5" style={{ color: 'hsl(30 15% 55%)' }}>{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── CTA BUTTON ── */}
+        <a href={accessLink} target="_blank" rel="noopener noreferrer" className="block">
+          <div
+            className="rounded-2xl p-5 text-center cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]"
+            style={{
+              background: 'linear-gradient(135deg, hsl(40 60% 45%) 0%, hsl(35 70% 35%) 100%)',
+              boxShadow: '0 8px 30px hsl(40 60% 30% / 0.4)',
+            }}
+          >
+            <p className="text-lg font-bold" style={{ color: 'hsl(30 20% 10%)' }}>
+              🚀 ACESSAR O PEREGRINO AGORA
+            </p>
+            <p className="text-xs mt-1" style={{ color: 'hsl(30 20% 20%)' }}>
+              Ir para tela inicial →
+            </p>
+          </div>
+        </a>
+
+        {/* ── COPIAR / BAIXAR ── */}
+        <div className="flex gap-3">
+          <button
+            onClick={handleCopy}
+            className="flex-1 flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium transition-colors"
+            style={{ background: 'hsl(30 15% 18%)', color: 'hsl(40 70% 60%)', border: '1px solid hsl(40 30% 25%)' }}
+          >
+            {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            {copied ? 'Copiado!' : 'Copiar Link'}
+          </button>
+          <button
+            onClick={handleDownload}
+            className="flex-1 flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium transition-colors"
+            style={{ background: 'hsl(30 15% 18%)', color: 'hsl(38 40% 75%)', border: '1px solid hsl(40 30% 25%)' }}
+          >
+            <Download className="w-4 h-4" /> Baixar Instruções
+          </button>
+        </div>
+
+        {/* ── INSTALAR NO CELULAR ── */}
+        <div
+          className="rounded-2xl p-6 space-y-5"
+          style={{ background: 'hsl(30 15% 16% / 0.85)', backdropFilter: 'blur(10px)', border: '1px solid hsl(40 30% 25%)' }}
+        >
+          <h2 className="text-center text-lg font-bold" style={{ color: 'hsl(40 70% 60%)' }}>
+            📲 Dica: Salve na Tela de Início
+          </h2>
+          <p className="text-center text-sm italic" style={{ color: 'hsl(38 30% 65%)' }}>
+            Para uma experiência de aplicativo real, siga estes passos:
+          </p>
+
+          {/* iOS */}
+          <div className="rounded-xl p-4 space-y-2" style={{ background: 'hsl(30 12% 20% / 0.6)' }}>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: 'hsl(0 0% 40% / 0.3)', color: 'hsl(0 0% 80%)' }}>iOS</span>
+              <p className="text-sm font-semibold" style={{ color: 'hsl(38 40% 85%)' }}>iPhone / Safari</p>
+            </div>
+            <p className="text-xs" style={{ color: 'hsl(30 15% 55%)' }}>
+              Toque no ícone de <strong style={{ color: 'hsl(38 40% 75%)' }}>Compartilhar</strong> (quadrado com seta) e escolha <strong style={{ color: 'hsl(38 40% 75%)' }}>"Adicionar à Tela de Início"</strong>.
+            </p>
+            <p className="text-xs" style={{ color: 'hsl(0 60% 60%)' }}>
+              ⚠️ Use SOMENTE o Safari no iPhone!
+            </p>
+          </div>
+
+          {/* Android */}
+          <div className="rounded-xl p-4 space-y-2" style={{ background: 'hsl(30 12% 20% / 0.6)' }}>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: 'hsl(120 30% 30% / 0.3)', color: 'hsl(120 40% 70%)' }}>AND</span>
+              <p className="text-sm font-semibold" style={{ color: 'hsl(38 40% 85%)' }}>Android / Chrome</p>
+            </div>
+            <p className="text-xs" style={{ color: 'hsl(30 15% 55%)' }}>
+              Toque nos <strong style={{ color: 'hsl(38 40% 75%)' }}>três pontinhos</strong> no canto superior e selecione <strong style={{ color: 'hsl(38 40% 75%)' }}>"Adicionar à tela inicial"</strong>.
+            </p>
+          </div>
+        </div>
+
+        {/* ── PRECISA DE AJUDA ── */}
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{ background: 'hsl(30 15% 16% / 0.85)', border: '1px solid hsl(40 30% 25%)' }}
+        >
+          <button
+            onClick={() => setHelpOpen(!helpOpen)}
+            className="w-full p-5 flex items-center justify-between"
+          >
+            <h2 className="text-base font-bold flex items-center gap-2" style={{ color: 'hsl(40 70% 60%)' }}>
+              <HelpCircle className="w-5 h-5" /> 💡 Precisa de ajuda?
+            </h2>
+            {helpOpen ? <ChevronUp className="w-4 h-4" style={{ color: 'hsl(30 15% 50%)' }} /> : <ChevronDown className="w-4 h-4" style={{ color: 'hsl(30 15% 50%)' }} />}
+          </button>
+          {helpOpen && (
+            <div className="px-5 pb-5 space-y-4">
+              <p className="text-xs" style={{ color: 'hsl(38 30% 65%)' }}>
+                Seu e-mail pode levar alguns minutos para ser processado pelo sistema. Se houver erro de autorização, aguarde 2 minutos e tente novamente.
+              </p>
+              {[
+                { icon: <AlertTriangle className="w-4 h-4" style={{ color: 'hsl(0 60% 55%)' }} />, title: '"Email não autorizado"', sol: 'Verifique se digitou o MESMO email da compra. Aguarde 2 min se acabou de comprar.' },
+                { icon: <AlertTriangle className="w-4 h-4" style={{ color: 'hsl(45 80% 50%)' }} />, title: '"Acesso já utilizado"', sol: 'Você já tem conta. Use "Entrar" ao invés de "Criar Conta".' },
+                { icon: <Smartphone className="w-4 h-4" style={{ color: 'hsl(210 60% 60%)' }} />, title: 'App não instala', sol: 'Android: Chrome. iPhone: Safari. Limpe o cache e tente novamente.' },
+                { icon: <RefreshCw className="w-4 h-4" style={{ color: 'hsl(40 60% 55%)' }} />, title: 'Esqueci a senha', sol: 'Na tela de login, toque em "Esqueceu a senha?" para recuperar via email.' },
+              ].map(({ icon, title, sol }, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <div className="mt-0.5">{icon}</div>
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: 'hsl(38 40% 85%)' }}>{title}</p>
+                    <p className="text-xs" style={{ color: 'hsl(30 15% 55%)' }}>→ {sol}</p>
+                  </div>
+                </div>
+              ))}
+              <a href="mailto:centrobiblicoonline@gmail.com" className="block text-center">
+                <Button variant="outline" size="sm" className="text-xs border-primary/30">
+                  📧 Suporte via E-mail
+                </Button>
+              </a>
+            </div>
+          )}
+        </div>
+
+        {/* ── VERSÍCULO ── */}
+        <div className="text-center pt-4 pb-8 space-y-4">
+          <p className="text-sm italic" style={{ color: 'hsl(38 30% 55%)' }}>
+            "Esforçai-vos por entrar pela porta estreita..."
+          </p>
+          <p className="text-xs" style={{ color: 'hsl(30 15% 45%)' }}>— Lucas 13:24</p>
+          <img src={logoImg} alt="O Peregrino" className="w-10 h-10 mx-auto rounded-lg opacity-50" />
+          <p className="text-xs" style={{ color: 'hsl(30 15% 40%)' }}>
             O Peregrino © {new Date().getFullYear()} — Centro Bíblico Online
           </p>
         </div>
