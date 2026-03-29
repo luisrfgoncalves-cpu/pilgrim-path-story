@@ -5,23 +5,30 @@ import { useCloudSync } from '@/hooks/useCloudSync';
 import { getChapter, storyChapters } from '@/data/story';
 import { getPart2Chapter, part2Chapters } from '@/data/storyPart2';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { getStreak, getDashboardMessage } from '@/lib/gameLoop';
 import { downloadBackup, importBackup } from '@/lib/progressBackup';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import SplashScreen from '@/components/SplashScreen';
+import Onboarding from '@/components/Onboarding';
 import GameNotification from '@/components/GameNotification';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen, Home, Download, Upload } from 'lucide-react';
+import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen, Home, Download, Upload, Sun, Moon } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Index = () => {
   const navigate = useNavigate();
   const { hasProgress, startJourney, resetProgress, progress, history, isReplay, loadFromCloud } = useStoryProgress();
   const { user, profile } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   useCloudSync(loadFromCloud);
 
   const [showSplash, setShowSplash] = useState(() => {
     const seen = sessionStorage.getItem('splash_seen');
     return !seen;
+  });
+
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    return !localStorage.getItem('peregrino-onboarding-done');
   });
 
   const handleSplashDone = useCallback(() => {
@@ -71,6 +78,10 @@ const Index = () => {
 
   if (showSplash) {
     return <SplashScreen onFinish={handleSplashDone} />;
+  }
+
+  if (showOnboarding && !hasProgress) {
+    return <Onboarding onComplete={() => setShowOnboarding(false)} />;
   }
 
   return (
@@ -195,14 +206,21 @@ const Index = () => {
           </button>
         </div>
 
-        {/* Backup actions */}
+        {/* Theme toggle + Backup */}
         <div className="flex gap-2">
+          <button
+            onClick={toggleTheme}
+            className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
+            aria-label={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
           <button
             onClick={() => { downloadBackup(); toast.success('Backup salvo!'); }}
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
           >
             <Download className="w-4 h-4" />
-            Salvar Backup
+            Backup
           </button>
           <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all cursor-pointer">
             <Upload className="w-4 h-4" />

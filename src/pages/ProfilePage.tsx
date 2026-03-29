@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { ArrowLeft, Save, LogOut } from 'lucide-react';
+import { ArrowLeft, Save, LogOut, Bell, BellOff, Sun, Moon } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
+import { requestNotificationPermission, isNotificationsEnabled, toggleNotifications } from '@/lib/notifications';
 
 const AVATAR_STYLES = ['peregrino', 'monge', 'cavaleiro', 'eremita', 'profeta'];
 const JOURNEY_PREFS = ['contemplativa', 'aventureira', 'devocional', 'exploratória'];
@@ -14,11 +16,13 @@ const JOURNEY_PREFS = ['contemplativa', 'aventureira', 'devocional', 'explorató
 const ProfilePage: React.FC = () => {
   const { profile, updateProfile, signOut, user } = useAuth();
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
   const [displayName, setDisplayName] = useState(profile?.display_name || '');
   const [bio, setBio] = useState(profile?.bio || '');
   const [avatarStyle, setAvatarStyle] = useState(profile?.avatar_style || 'peregrino');
   const [journeyPref, setJourneyPref] = useState(profile?.journey_preference || 'contemplativa');
   const [saving, setSaving] = useState(false);
+  const [notifEnabled, setNotifEnabled] = useState(isNotificationsEnabled());
 
   const handleSave = async () => {
     setSaving(true);
@@ -109,6 +113,52 @@ const ProfilePage: React.FC = () => {
                   {p}
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Settings */}
+          <div className="pt-4 border-t border-border space-y-3">
+            <h2 className="text-sm font-display text-foreground">Configurações</h2>
+            
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-2 text-sm text-foreground/80">
+                {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                Tema {theme === 'dark' ? 'Escuro' : 'Claro'}
+              </div>
+              <button
+                onClick={toggleTheme}
+                className="px-3 py-1.5 rounded-md text-xs bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
+              >
+                {theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-2 text-sm text-foreground/80">
+                {notifEnabled ? <Bell className="w-4 h-4" /> : <BellOff className="w-4 h-4" />}
+                Notificações
+              </div>
+              <button
+                onClick={async () => {
+                  if (!notifEnabled) {
+                    const ok = await requestNotificationPermission();
+                    setNotifEnabled(ok);
+                    if (ok) toast.success('Notificações ativadas!');
+                    else toast.error('Permissão negada pelo navegador');
+                  } else {
+                    toggleNotifications(false);
+                    setNotifEnabled(false);
+                    toast.success('Notificações desativadas');
+                  }
+                }}
+                className={`px-3 py-1.5 rounded-md text-xs transition-colors ${
+                  notifEnabled 
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                }`}
+              >
+                {notifEnabled ? 'Desativar' : 'Ativar'}
+              </button>
             </div>
           </div>
 

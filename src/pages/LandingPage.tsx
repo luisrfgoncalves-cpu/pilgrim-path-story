@@ -17,9 +17,14 @@ const testimonials = [
   { name: 'Rafael S.', text: 'A história é envolvente e os mini-games são muito bem feitos. Já joguei 3 vezes e cada uma foi diferente.', stars: 5 },
 ];
 
+const SALE_URL = 'https://ocapelao-app.centrobiblico.online/venda';
+
 const LandingPage = () => {
   const navigate = useNavigate();
 
+  const handleBuy = () => {
+    window.open(SALE_URL, '_blank', 'noopener');
+  };
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
@@ -107,13 +112,22 @@ const LandingPage = () => {
         <div className="max-w-md mx-auto space-y-6">
           <h2 className="font-display text-2xl text-foreground">Pronto para a jornada?</h2>
           <p className="text-sm text-foreground/70">Gratuito. Sem anúncios. Funciona offline. Instale no celular como um app.</p>
-          <button
-            onClick={() => navigate('/')}
-            className="btn-medieval flex items-center justify-center gap-2 px-10 mx-auto"
-          >
-            <Sparkles className="w-5 h-5" />
-            Começar Agora
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button
+              onClick={() => navigate('/')}
+              className="btn-medieval flex items-center justify-center gap-2 px-10"
+            >
+              <Sparkles className="w-5 h-5" />
+              Jogar Grátis
+            </button>
+            <button
+              onClick={handleBuy}
+              className="btn-medieval-secondary flex items-center justify-center gap-2 px-10"
+            >
+              <ChevronRight className="w-5 h-5" />
+              Adquirir Versão Completa
+            </button>
+          </div>
           <div className="flex items-center justify-center gap-6 pt-4">
             <button
               onClick={() => {
