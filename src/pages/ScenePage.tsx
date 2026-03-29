@@ -58,6 +58,13 @@ const ScenePage = () => {
   const [transitioning, setTransitioning] = useState(false);
   const [surprise, setSurprise] = useState<Surprise | null>(null);
   const [surpriseShown, setSurpriseShown] = useState(false);
+  // Inline consequence overlay state
+  const [inlineConsequence, setInlineConsequence] = useState<InlineConsequence | null>(null);
+  const [consequencePhase, setConsequencePhase] = useState<'enter' | 'attrs' | 'ready'>('enter');
+  // Streak/combo counter
+  const [streak, setStreak] = useState(0);
+  const [lastStreakEffect, setLastStreakEffect] = useState<'positive' | 'negative' | null>(null);
+  const [showStreakBurst, setShowStreakBurst] = useState(false);
   const { triggerChoiceEffect } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
