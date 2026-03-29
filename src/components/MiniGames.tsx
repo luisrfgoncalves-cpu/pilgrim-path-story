@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ChoiceEffect } from '@/data/story';
 import { Dice3D } from '@/components/Dice3D';
+import { playGameSfx } from '@/lib/gameSfx';
 
 /**
  * 4 Active Gameplay Mechanics:
