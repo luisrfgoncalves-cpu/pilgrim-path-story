@@ -42,7 +42,7 @@ const ScenePage = () => {
 
   // Emotional state system (9 postures)
   const emotional = useMemo(() => 
-    chapter ? resolveEmotionalState(progress.attributes, chapter.id, progress.flags, recentEffects) : null
+    chapter ? resolveEmotionalState(progress.attributes, chapter.id, Object.keys(progress.flags).filter(k => (progress.flags as Record<string, boolean>)[k]), recentEffects) : null
   , [progress.attributes, chapter?.id, progress.flags, recentEffects]);
 
   const emotionalClass = emotional?.sceneClass || '';
@@ -110,9 +110,9 @@ const ScenePage = () => {
   // Audio: set ambience when scene or emotional state changes
   useEffect(() => {
     if (chapter && emotional) {
-      setAmbienceForScene(chapter.id, emotional.tone);
+      setAmbienceForScene(chapter.id, legacyTone);
     }
-  }, [chapter?.id, emotional?.tone, setAmbienceForScene]);
+  }, [chapter?.id, legacyTone, setAmbienceForScene]);
 
   useEffect(() => {
     if (!chapter) return;
@@ -188,7 +188,7 @@ const ScenePage = () => {
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => setShowStats(s => !s)} className="flex-shrink-0">
-            <PilgrimAvatar attributes={progress.attributes} tone={emotional?.tone} size="sm" />
+            <PilgrimAvatar attributes={progress.attributes} tone={legacyTone} size="sm" storyFlag={emotional?.flagOverride} />
           </button>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
