@@ -725,7 +725,8 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Continuar mesmo assim",
         nextChapterId: "fase3-cena2",
         effects: { coragem: 1 },
-        flag: "enfrentou_vale"
+        flag: "enfrentou_vale",
+        item: "armadura_fe"
       },
       {
         text: "Hesitar",
