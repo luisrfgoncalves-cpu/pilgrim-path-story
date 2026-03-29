@@ -10,12 +10,13 @@ import { analyzePerformance } from '@/lib/performanceAnalysis';
 import { useVisualEffects } from '@/hooks/useVisualEffects';
 import { useAudioEngine } from '@/hooks/useAudioEngine';
 import { useAtmosphere } from '@/hooks/useAtmosphere';
+import { useDynamicEvents } from '@/hooks/useDynamicEvents';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
 import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
-import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX } from 'lucide-react';
+import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass } from 'lucide-react';
 
 const ScenePage = () => {
   const navigate = useNavigate();
