@@ -1,15 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { useCloudSync } from '@/hooks/useCloudSync';
 import { getChapter, storyChapters } from '@/data/story';
 import { getPart2Chapter, part2Chapters } from '@/data/storyPart2';
 import { useAuth } from '@/contexts/AuthContext';
 import { getStreak, getDashboardMessage } from '@/lib/gameLoop';
+import { downloadBackup, importBackup } from '@/lib/progressBackup';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import SplashScreen from '@/components/SplashScreen';
 import GameNotification from '@/components/GameNotification';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen, Home } from 'lucide-react';
+import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen, Home, Download, Upload } from 'lucide-react';
+import { toast } from 'sonner';
 
 const Index = () => {
   const navigate = useNavigate();
