@@ -748,11 +748,11 @@ function StealthGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'intro') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-4xl">🤫</div>
-        <h3 className="font-display text-xl text-primary">Furtividade</h3>
-        <p className="text-sm text-foreground/80">{config.intro}</p>
-        <p className="text-xs text-muted-foreground">Toque quando o indicador estiver na zona segura (verde)!</p>
+      <div className="game-card text-center space-y-4 animate-scale-in">
+        <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 12px hsl(270 60% 50% / 0.5))' }}>🤫</div>
+        <h3 className="game-title">Furtividade</h3>
+        <p className="game-subtitle">{config.intro}</p>
+        <p className="game-text-muted">Toque quando o indicador estiver na zona segura (verde)!</p>
         <button onClick={() => setPhase('playing')} className="btn-medieval w-full">
           Começar!
         </button>
@@ -762,57 +762,63 @@ function StealthGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'result') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-4xl">{success ? '🤫' : '🚨'}</div>
-        <h3 className="font-display text-xl text-primary">
-          {success ? 'Passou despercebido!' : 'Foi descoberto...'}
-        </h3>
-        <p className="text-sm text-foreground/80">
-          Conseguiu {successes} de {totalAttempts} passagens ({finalScore}%)
-        </p>
-        <div className="h-3 bg-secondary rounded-full overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all duration-1000 ${success ? 'bg-primary' : 'bg-destructive'}`}
-            style={{ width: `${finalScore}%` }}
-          />
+      <div className="game-card text-center space-y-4 animate-scale-in">
+        <div className="text-5xl" style={{ filter: `drop-shadow(0 0 15px ${success ? 'hsl(40 70% 50% / 0.5)' : 'hsl(0 60% 50% / 0.4)'})` }}>{success ? '🤫' : '🚨'}</div>
+        <h3 className="game-title">{success ? 'Passou despercebido!' : 'Foi descoberto...'}</h3>
+        <p className="game-subtitle">Conseguiu {successes} de {totalAttempts} passagens ({finalScore}%)</p>
+        <div className="game-progress-bar">
+          <div className={success ? 'game-progress-fill-success' : 'game-progress-fill-fail'}
+            style={{ width: `${finalScore}%` }} />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-card/50 border-2 border-primary/20 rounded-2xl p-4 space-y-4">
+    <div className="game-card space-y-4">
       {/* HUD */}
-      <div className="flex justify-between text-xs font-display">
-        <span className="text-primary bg-card/80 px-2 py-1 rounded-lg">Passagem {attempt + 1}/{totalAttempts}</span>
-        <span className="text-muted-foreground bg-card/80 px-2 py-1 rounded-lg">✓ {successes}</span>
+      <div className="flex justify-between">
+        <span className="game-hud-tag">Passagem {attempt + 1}/{totalAttempts}</span>
+        <span className="game-hud-tag">✓ {successes}</span>
       </div>
 
       {/* Timing bar */}
-      <div className="relative h-12 bg-secondary/50 rounded-xl overflow-hidden border-2 border-border">
+      <div className="relative h-14 rounded-xl overflow-hidden" style={{
+        background: 'hsl(0 0% 6%)',
+        border: '3px solid hsl(40 50% 35%)',
+        boxShadow: '0 0 10px hsl(40 50% 30% / 0.2)',
+      }}>
         {/* Safe zone */}
-        <div
-          className="absolute top-0 bottom-0 bg-green-500/30 border-x-2 border-green-500/50"
-          style={{ left: `${safeStart}%`, width: `${safeZoneSize}%` }}
-        />
+        <div className="absolute top-0 bottom-0" style={{
+          left: `${safeStart}%`, width: `${safeZoneSize}%`,
+          background: 'hsl(120 50% 25% / 0.4)',
+          borderLeft: '3px solid hsl(120 60% 45%)',
+          borderRight: '3px solid hsl(120 60% 45%)',
+          boxShadow: '0 0 12px hsl(120 60% 40% / 0.3)',
+        }} />
         {/* Danger zones */}
-        <div className="absolute top-0 bottom-0 left-0 bg-destructive/10" style={{ width: `${safeStart}%` }} />
-        <div className="absolute top-0 bottom-0 right-0 bg-destructive/10" style={{ left: `${safeStart + safeZoneSize}%` }} />
+        <div className="absolute top-0 bottom-0 left-0" style={{ width: `${safeStart}%`, background: 'hsl(0 50% 20% / 0.2)' }} />
+        <div className="absolute top-0 bottom-0 right-0" style={{ left: `${safeStart + safeZoneSize}%`, background: 'hsl(0 50% 20% / 0.2)' }} />
 
         {/* Moving indicator */}
-        <div
-          className="absolute top-1 bottom-1 w-2 bg-foreground rounded-full shadow-lg transition-none"
-          style={{ left: `${indicator}%` }}
-        />
+        <div className="absolute top-1 bottom-1 w-3 rounded-full transition-none" style={{
+          left: `${indicator}%`,
+          background: 'linear-gradient(180deg, hsl(40 80% 65%) 0%, hsl(40 70% 50%) 100%)',
+          boxShadow: '0 0 10px hsl(40 80% 55% / 0.6)',
+        }} />
       </div>
 
       {/* Tap button */}
       <button
         onClick={handleTap}
         disabled={!!feedback}
-        className="w-full py-5 rounded-xl border-3 border-primary/40 bg-card text-lg font-display text-primary active:scale-95 active:bg-primary/10 transition-all disabled:opacity-50"
+        className="w-full py-6 rounded-xl font-display font-bold text-lg active:scale-95 transition-all disabled:opacity-50"
         style={{
-          boxShadow: '0 4px 0 0 hsl(30 15% 10%), 0 5px 10px hsl(0 0% 0% / 0.2)',
+          background: 'linear-gradient(180deg, hsl(40 50% 28%) 0%, hsl(40 45% 20%) 100%)',
+          border: '3px solid hsl(40 60% 50%)',
+          color: 'hsl(40 70% 70%)',
+          boxShadow: '0 5px 0 hsl(40 40% 12%), 0 0 15px hsl(40 60% 45% / 0.2)',
+          textShadow: '0 0 8px hsl(40 60% 50% / 0.4)',
         }}
       >
         {feedback || '👆 TOQUE AGORA'}
