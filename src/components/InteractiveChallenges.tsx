@@ -34,8 +34,8 @@ export const TimedChoice = ({ timeLimit, onTimeout, children }: TimedChoiceProps
 
   return (
     <div className="relative">
-      {/* Timer bar */}
-      <div className="h-2 bg-secondary rounded-full overflow-hidden mb-3">
+      {/* Timer bar - larger and more visible */}
+      <div className="h-4 bg-secondary rounded-full overflow-hidden mb-4 border-2 border-border shadow-inner">
         <div
           className={`h-full rounded-full transition-all duration-100 ${
             urgent ? 'bg-destructive' : 'bg-primary'
@@ -43,18 +43,23 @@ export const TimedChoice = ({ timeLimit, onTimeout, children }: TimedChoiceProps
           style={{ width: `${pct}%` }}
         />
       </div>
-      <div className="flex items-center justify-between mb-3">
-        <span className={`text-[10px] uppercase tracking-wider font-medium ${urgent ? 'text-destructive animate-pulse' : 'text-muted-foreground'}`}>
+      <div className="flex items-center justify-between mb-4">
+        <span className={`text-sm uppercase tracking-wider font-display ${urgent ? 'text-destructive animate-pulse' : 'text-muted-foreground'}`}>
           {urgent ? '⚡ Decida agora!' : '⏳ Tempo restante'}
         </span>
-        <span className={`text-sm font-mono font-bold ${urgent ? 'text-destructive' : 'text-muted-foreground'}`}>
+        <span className={`text-lg font-mono font-bold ${urgent ? 'text-destructive' : 'text-foreground'}`}>
           {Math.ceil(timeLeft)}s
         </span>
+      </div>
+      {/* Instruction */}
+      <div className="bg-card/50 border border-primary/20 rounded-xl p-3 mb-4 text-center">
+        <p className="text-sm text-primary font-display">👆 Segure o botão para confirmar sua escolha</p>
+        <p className="text-xs text-muted-foreground mt-1">Pressione e mantenha pressionado até completar</p>
       </div>
       {/* Screen pulse when urgent */}
       {urgent && (
         <div className="fixed inset-0 pointer-events-none z-50 animate-pulse">
-          <div className="absolute inset-0 border-2 border-destructive/30 rounded-none" />
+          <div className="absolute inset-0 border-4 border-destructive/40 rounded-none" />
           <div className="absolute inset-0 bg-destructive/5" />
         </div>
       )}
@@ -68,7 +73,7 @@ export const TimedChoice = ({ timeLimit, onTimeout, children }: TimedChoiceProps
    ─────────────────────────────────────────── */
 
 interface HoldButtonProps {
-  holdDuration?: number; // seconds, default 1.5
+  holdDuration?: number;
   onConfirm: () => void;
   children: React.ReactNode;
   className?: string;
@@ -102,15 +107,11 @@ export const HoldButton = ({ holdDuration = 1.5, onConfirm, children, className 
   const endHold = useCallback(() => {
     setHolding(false);
     if (intervalRef.current) clearInterval(intervalRef.current);
-    if (!completed) {
-      setProgress(0);
-    }
+    if (!completed) setProgress(0);
   }, [completed]);
 
   useEffect(() => {
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
   }, []);
 
   return (
@@ -121,43 +122,47 @@ export const HoldButton = ({ holdDuration = 1.5, onConfirm, children, className 
       onTouchStart={startHold}
       onTouchEnd={endHold}
       onTouchCancel={endHold}
-      className={`relative w-full text-left p-4 rounded-lg border-2 transition-all duration-150 select-none overflow-hidden ${
+      className={`relative w-full text-left p-5 rounded-xl border-3 transition-all duration-150 select-none overflow-hidden min-h-[72px] ${
         completed
           ? 'border-primary bg-primary/15 scale-[0.98]'
           : holding
           ? 'border-primary/60 bg-card scale-[0.97]'
           : 'border-border bg-card hover:border-primary/30'
       } ${className}`}
+      style={{
+        boxShadow: holding
+          ? '0 2px 0 0 hsl(30 15% 10%), inset 0 2px 8px hsl(var(--primary) / 0.1)'
+          : '0 4px 0 0 hsl(30 15% 10%), 0 5px 10px hsl(0 0% 0% / 0.2)',
+        transform: holding ? 'translateY(2px)' : completed ? 'translateY(0)' : 'translateY(0)',
+      }}
     >
       {/* Fill progress background */}
       <div
-        className="absolute inset-0 bg-primary/10 transition-all duration-75 pointer-events-none"
+        className="absolute inset-0 bg-primary/15 transition-all duration-75 pointer-events-none rounded-xl"
         style={{ width: `${progress}%` }}
       />
       {/* Content */}
-      <div className="relative z-10">
-        {children}
-      </div>
-      {/* Hold hint */}
+      <div className="relative z-10">{children}</div>
+      {/* Hold hint - larger and more visible */}
       {!completed && (
-        <div className="relative z-10 mt-2 flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-full border border-muted-foreground/40 flex items-center justify-center">
+        <div className="relative z-10 mt-3 flex items-center gap-2">
+          <div className="w-5 h-5 rounded-full border-2 border-primary/50 flex items-center justify-center bg-card">
             <div
               className="rounded-full bg-primary transition-all duration-75"
               style={{
-                width: `${Math.max(2, progress * 0.1)}px`,
-                height: `${Math.max(2, progress * 0.1)}px`,
+                width: `${Math.max(4, progress * 0.16)}px`,
+                height: `${Math.max(4, progress * 0.16)}px`,
               }}
             />
           </div>
-          <span className="text-[9px] text-muted-foreground uppercase tracking-wider">
-            {holding ? `${Math.round(progress)}%` : 'Segure para confirmar'}
+          <span className="text-sm text-primary/80 font-display tracking-wide">
+            {holding ? `${Math.round(progress)}% — Continue segurando!` : '👆 Segure para confirmar'}
           </span>
         </div>
       )}
       {completed && (
-        <div className="relative z-10 mt-2">
-          <span className="text-[9px] text-primary uppercase tracking-wider font-medium">✓ Confirmado</span>
+        <div className="relative z-10 mt-3">
+          <span className="text-sm text-primary font-display tracking-wide">✓ Confirmado!</span>
         </div>
       )}
     </button>
@@ -186,11 +191,7 @@ export const HoldChallenge = ({ duration, onComplete, onFail, label }: HoldChall
     const interval = setInterval(() => {
       setProgress(p => {
         const next = p + (100 / (duration * 20));
-        if (next >= 100) {
-          setCompleted(true);
-          onComplete();
-          return 100;
-        }
+        if (next >= 100) { setCompleted(true); onComplete(); return 100; }
         return next;
       });
     }, 50);
@@ -202,16 +203,20 @@ export const HoldChallenge = ({ duration, onComplete, onFail, label }: HoldChall
     if (!completed && progress > 10) {
       setProgress(0);
       setFailed(true);
-      setTimeout(() => {
-        setFailed(false);
-        onFail();
-      }, 800);
+      setTimeout(() => { setFailed(false); onFail(); }, 800);
     }
   };
 
   return (
-    <div className="space-y-3">
-      <p className="text-xs uppercase tracking-widest text-muted-foreground text-center">{label}</p>
+    <div className="space-y-4">
+      <p className="text-base uppercase tracking-widest text-muted-foreground text-center font-display">{label}</p>
+      
+      {/* Instruction box */}
+      <div className="bg-card/50 border border-primary/20 rounded-xl p-3 text-center">
+        <p className="text-sm text-primary font-display">👇 Pressione e segure o botão abaixo</p>
+        <p className="text-xs text-muted-foreground mt-1">Não solte até completar — resistir é essencial!</p>
+      </div>
+
       <button
         onMouseDown={() => setHolding(true)}
         onMouseUp={handleRelease}
@@ -219,7 +224,7 @@ export const HoldChallenge = ({ duration, onComplete, onFail, label }: HoldChall
         onTouchStart={() => setHolding(true)}
         onTouchEnd={handleRelease}
         onTouchCancel={handleRelease}
-        className={`w-full py-8 rounded-lg border-2 transition-all duration-200 select-none ${
+        className={`w-full py-10 rounded-xl border-3 transition-all duration-200 select-none text-lg font-display ${
           completed
             ? 'border-primary bg-primary/20 text-primary'
             : failed
@@ -228,27 +233,33 @@ export const HoldChallenge = ({ duration, onComplete, onFail, label }: HoldChall
             ? 'border-primary/70 bg-primary/10 scale-[0.97]'
             : 'border-border bg-card hover:border-primary/30'
         }`}
+        style={{
+          boxShadow: holding
+            ? '0 2px 0 0 hsl(30 15% 10%), inset 0 3px 10px hsl(var(--primary) / 0.15)'
+            : '0 5px 0 0 hsl(30 15% 10%), 0 6px 12px hsl(0 0% 0% / 0.3)',
+          transform: holding ? 'translateY(3px)' : 'translateY(0)',
+        }}
       >
         <div className="relative overflow-hidden rounded">
           <div
             className="absolute inset-0 bg-primary/15 transition-all duration-75"
             style={{ width: `${progress}%` }}
           />
-          <span className="relative font-display text-sm">
-            {completed ? '✓ Resistiu!' : failed ? '✗ Cedeu...' : holding ? 'Segurando...' : '⟐ Segure para resistir'}
+          <span className="relative">
+            {completed ? '✓ Resistiu!' : failed ? '✗ Cedeu...' : holding ? '🔥 Segurando...' : '⟐ Segure para resistir'}
           </span>
         </div>
       </button>
-      {/* Circular progress */}
+      {/* Circular progress - larger */}
       <div className="flex justify-center">
-        <svg width="36" height="36" className="transform -rotate-90">
-          <circle cx="18" cy="18" r="14" fill="none" stroke="hsl(var(--secondary))" strokeWidth="3" />
+        <svg width="56" height="56" className="transform -rotate-90">
+          <circle cx="28" cy="28" r="22" fill="none" stroke="hsl(var(--secondary))" strokeWidth="4" />
           <circle
-            cx="18" cy="18" r="14" fill="none"
+            cx="28" cy="28" r="22" fill="none"
             stroke={completed ? 'hsl(var(--primary))' : 'hsl(var(--foreground) / 0.5)'}
-            strokeWidth="3"
-            strokeDasharray={`${2 * Math.PI * 14}`}
-            strokeDashoffset={`${2 * Math.PI * 14 * (1 - progress / 100)}`}
+            strokeWidth="4"
+            strokeDasharray={`${2 * Math.PI * 22}`}
+            strokeDashoffset={`${2 * Math.PI * 22 * (1 - progress / 100)}`}
             className="transition-all duration-75"
             strokeLinecap="round"
           />
@@ -311,14 +322,17 @@ export const DragToChoose = ({ leftChoice, rightChoice, onChoose, threshold = 80
   const rightScale = dragX > 30 ? 1.05 : 1;
 
   return (
-    <div className="space-y-4">
-      <p className="text-xs uppercase tracking-widest text-muted-foreground text-center font-medium">
-        ← Arraste para escolher →
-      </p>
+    <div className="space-y-5">
+      {/* Instruction box */}
+      <div className="bg-card/50 border border-primary/20 rounded-xl p-3 text-center">
+        <p className="text-base text-primary font-display">👆 Arraste o botão para escolher</p>
+        <p className="text-sm text-muted-foreground mt-1">Deslize para a esquerda ou direita</p>
+      </div>
 
-      {/* Drag indicator */}
-      <div className="flex items-center justify-center gap-2 h-6">
-        <div className={`h-0.5 rounded-full bg-primary/40 transition-all duration-150`} style={{ width: `${Math.max(0, -dragX * 0.3)}px` }} />
+      {/* Drag indicator - larger */}
+      <div className="flex items-center justify-center gap-3 h-10">
+        <span className="text-sm text-muted-foreground font-display">◀</span>
+        <div className={`h-1 rounded-full bg-primary/40 transition-all duration-150`} style={{ width: `${Math.max(0, -dragX * 0.4)}px` }} />
         <div
           ref={containerRef}
           onMouseDown={(e) => handleStart(e.clientX)}
@@ -329,40 +343,45 @@ export const DragToChoose = ({ leftChoice, rightChoice, onChoose, threshold = 80
           onTouchMove={(e) => handleMove(e.touches[0].clientX)}
           onTouchEnd={handleEnd}
           onTouchCancel={handleEnd}
-          className={`w-12 h-6 rounded-full border-2 flex items-center justify-center cursor-grab active:cursor-grabbing transition-colors ${
+          className={`w-16 h-10 rounded-full border-3 flex items-center justify-center cursor-grab active:cursor-grabbing transition-colors ${
             chosen === 'left' ? 'border-primary bg-primary/20' :
             chosen === 'right' ? 'border-primary bg-primary/20' :
-            isDragging ? 'border-primary/60' : 'border-border'
+            isDragging ? 'border-primary/60 bg-primary/10' : 'border-border bg-card'
           }`}
-          style={{ transform: `translateX(${chosen ? (chosen === 'right' ? 100 : -100) : dragX}px)`, transition: isDragging ? 'none' : 'transform 0.3s ease' }}
+          style={{
+            transform: `translateX(${chosen ? (chosen === 'right' ? 100 : -100) : dragX}px)`,
+            transition: isDragging ? 'none' : 'transform 0.3s ease',
+            boxShadow: '0 3px 0 0 hsl(30 15% 10%), 0 4px 8px hsl(0 0% 0% / 0.25)',
+          }}
         >
-          <div className="w-2 h-2 rounded-full bg-foreground/50" />
+          <span className="text-lg">⚔️</span>
         </div>
-        <div className={`h-0.5 rounded-full bg-primary/40 transition-all duration-150`} style={{ width: `${Math.max(0, dragX * 0.3)}px` }} />
+        <div className={`h-1 rounded-full bg-primary/40 transition-all duration-150`} style={{ width: `${Math.max(0, dragX * 0.4)}px` }} />
+        <span className="text-sm text-muted-foreground font-display">▶</span>
       </div>
 
-      {/* Choice cards */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* Choice cards - larger */}
+      <div className="grid grid-cols-2 gap-4">
         <div
-          className={`p-3 rounded-lg border transition-all duration-200 ${
-            chosen === 'left' ? 'border-primary bg-primary/15 ring-1 ring-primary' : 'border-border bg-card'
+          className={`p-4 rounded-xl border-2 transition-all duration-200 min-h-[80px] ${
+            chosen === 'left' ? 'border-primary bg-primary/15 ring-2 ring-primary shadow-lg' : 'border-border bg-card'
           }`}
           style={{ opacity: leftOpacity, transform: `scale(${leftScale})`, transition: isDragging ? 'opacity 0.1s' : 'all 0.3s' }}
         >
-          <p className="text-sm font-medium text-foreground">{leftChoice.label}</p>
+          <p className="text-base font-display text-foreground">{leftChoice.label}</p>
           {leftChoice.description && (
-            <p className="text-[10px] text-muted-foreground mt-1">{leftChoice.description}</p>
+            <p className="text-sm text-muted-foreground mt-1">{leftChoice.description}</p>
           )}
         </div>
         <div
-          className={`p-3 rounded-lg border transition-all duration-200 ${
-            chosen === 'right' ? 'border-primary bg-primary/15 ring-1 ring-primary' : 'border-border bg-card'
+          className={`p-4 rounded-xl border-2 transition-all duration-200 min-h-[80px] ${
+            chosen === 'right' ? 'border-primary bg-primary/15 ring-2 ring-primary shadow-lg' : 'border-border bg-card'
           }`}
           style={{ opacity: rightOpacity, transform: `scale(${rightScale})`, transition: isDragging ? 'opacity 0.1s' : 'all 0.3s' }}
         >
-          <p className="text-sm font-medium text-foreground">{rightChoice.label}</p>
+          <p className="text-base font-display text-foreground">{rightChoice.label}</p>
           {rightChoice.description && (
-            <p className="text-[10px] text-muted-foreground mt-1">{rightChoice.description}</p>
+            <p className="text-sm text-muted-foreground mt-1">{rightChoice.description}</p>
           )}
         </div>
       </div>
