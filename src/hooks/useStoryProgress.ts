@@ -15,6 +15,7 @@ export interface DecisionRecord {
   choiceText: string;
   timestamp: number;
   effects: ChoiceEffect;
+  flag?: string;
 }
 
 export interface StoryProgress {
@@ -23,6 +24,7 @@ export interface StoryProgress {
   choicesMade: number;
   attributes: PlayerAttributes;
   decisions: DecisionRecord[];
+  flags: Record<string, boolean>;
   started: boolean;
 }
 
@@ -42,6 +44,7 @@ const getInitialProgress = (): StoryProgress => {
         ...parsed,
         attributes: parsed.attributes || defaultAttributes,
         decisions: parsed.decisions || [],
+        flags: parsed.flags || {},
         started: parsed.started ?? false,
       };
     }
@@ -52,6 +55,7 @@ const getInitialProgress = (): StoryProgress => {
     choicesMade: 0,
     attributes: defaultAttributes,
     decisions: [],
+    flags: {},
     started: false,
   };
 };
@@ -67,7 +71,8 @@ export const useStoryProgress = () => {
     chapterId: string,
     nextChapterId: string,
     choiceText: string,
-    effects: ChoiceEffect
+    effects: ChoiceEffect,
+    flag?: string
   ) => {
     setProgress(prev => {
       const newAttrs = { ...prev.attributes };
@@ -75,24 +80,29 @@ export const useStoryProgress = () => {
         if (val) newAttrs[key as keyof PlayerAttributes] += val;
       }
 
-      const destination = nextChapterId;
+      const newFlags = { ...prev.flags };
+      if (flag) {
+        newFlags[flag] = true;
+      }
 
       const decision: DecisionRecord = {
         chapterId,
         choiceText,
         timestamp: Date.now(),
         effects,
+        flag,
       };
 
       return {
         ...prev,
-        currentChapterId: destination,
-        visitedChapters: prev.visitedChapters.includes(destination)
+        currentChapterId: nextChapterId,
+        visitedChapters: prev.visitedChapters.includes(nextChapterId)
           ? prev.visitedChapters
-          : [...prev.visitedChapters, destination],
+          : [...prev.visitedChapters, nextChapterId],
         choicesMade: prev.choicesMade + 1,
         attributes: newAttrs,
         decisions: [...prev.decisions, decision],
+        flags: newFlags,
         started: true,
       };
     });
@@ -120,11 +130,16 @@ export const useStoryProgress = () => {
       choicesMade: 0,
       attributes: defaultAttributes,
       decisions: [],
+      flags: {},
       started: false,
     });
   }, []);
 
   const hasProgress = progress.started || progress.choicesMade > 0;
+
+  const hasFlag = useCallback((flag: string): boolean => {
+    return !!progress.flags[flag];
+  }, [progress.flags]);
 
   const meetsRequirements = useCallback((requires?: Partial<ChoiceEffect>): boolean => {
     if (!requires) return true;
@@ -134,5 +149,5 @@ export const useStoryProgress = () => {
     return true;
   }, [progress.attributes]);
 
-  return { progress, makeChoice, goToChapter, resetProgress, startJourney, hasProgress, meetsRequirements };
+  return { progress, makeChoice, goToChapter, resetProgress, startJourney, hasProgress, hasFlag, meetsRequirements };
 };
