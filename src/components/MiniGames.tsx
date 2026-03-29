@@ -576,45 +576,42 @@ function MemoryGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'result') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-4xl">{success ? '🧠' : '😵'}</div>
-        <h3 className="font-display text-xl text-primary">
-          {success ? 'Mente afiada!' : 'A memória falhou...'}
-        </h3>
-        <p className="text-sm text-foreground/80">
-          Acertou {wins} de {maxRounds} rodadas ({finalScore}%)
-        </p>
-        <div className="h-3 bg-secondary rounded-full overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all duration-1000 ${success ? 'bg-primary' : 'bg-destructive'}`}
-            style={{ width: `${finalScore}%` }}
-          />
+      <div className="game-card text-center space-y-4 animate-scale-in">
+        <div className="text-5xl" style={{ filter: `drop-shadow(0 0 15px ${success ? 'hsl(40 70% 50% / 0.5)' : 'hsl(0 60% 50% / 0.4)'})` }}>{success ? '🧠' : '😵'}</div>
+        <h3 className="game-title">{success ? 'Mente afiada!' : 'A memória falhou...'}</h3>
+        <p className="game-subtitle">Acertou {wins} de {maxRounds} rodadas ({finalScore}%)</p>
+        <div className="game-progress-bar">
+          <div className={success ? 'game-progress-fill-success' : 'game-progress-fill-fail'}
+            style={{ width: `${finalScore}%` }} />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-card/50 border-2 border-primary/20 rounded-2xl p-4 space-y-4">
+    <div className="game-card space-y-4">
       {/* HUD */}
-      <div className="flex justify-between text-xs font-display">
-        <span className="text-primary bg-card/80 px-2 py-1 rounded-lg">Rodada {round + 1}/{maxRounds}</span>
-        <span className="text-muted-foreground bg-card/80 px-2 py-1 rounded-lg">✓ {wins}</span>
+      <div className="flex justify-between">
+        <span className="game-hud-tag">Rodada {round + 1}/{maxRounds}</span>
+        <span className="game-hud-tag">✓ {wins}</span>
       </div>
 
       {/* Showing phase */}
       {phase === 'showing' && (
         <div className="text-center space-y-3">
-          <p className="text-sm text-muted-foreground font-display">Memorize...</p>
+          <p className="game-text-muted text-sm">Memorize...</p>
           <div className="flex justify-center gap-2 flex-wrap min-h-[60px] items-center">
             {sequence.map((s, i) => (
               <div
                 key={i}
-                className={`w-12 h-12 rounded-xl border-2 flex items-center justify-center transition-all duration-300 ${
-                  i <= currentShowIndex
-                    ? 'border-primary bg-primary/20 scale-110'
-                    : 'border-border bg-card opacity-30 scale-90'
-                }`}
+                className="w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-300"
+                style={{
+                  border: i <= currentShowIndex ? '3px solid hsl(40 60% 50%)' : '3px solid hsl(30 15% 22%)',
+                  background: i <= currentShowIndex ? 'hsl(40 40% 18%)' : 'hsl(30 18% 12%)',
+                  transform: i <= currentShowIndex ? 'scale(1.1)' : 'scale(0.9)',
+                  opacity: i <= currentShowIndex ? 1 : 0.3,
+                  boxShadow: i <= currentShowIndex ? '0 0 12px hsl(40 60% 45% / 0.3)' : 'none',
+                }}
               >
                 <span className="text-xl">{i <= currentShowIndex ? s : '?'}</span>
               </div>
@@ -626,31 +623,34 @@ function MemoryGame({ config, onComplete }: MiniGameProps) {
       {/* Input phase */}
       {phase === 'input' && (
         <div className="text-center space-y-3">
-          <p className="text-sm text-primary font-display">Sua vez! Repita a sequência</p>
-          {/* Progress */}
+          <p className="font-display font-bold" style={{ color: 'hsl(40 70% 65%)' }}>Sua vez! Repita a sequência</p>
           <div className="flex justify-center gap-2 min-h-[40px] items-center">
             {sequence.map((_, i) => (
               <div
                 key={i}
-                className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center ${
-                  i < playerInput.length
-                    ? 'border-primary bg-primary/20'
-                    : 'border-border bg-card/50'
-                }`}
+                className="w-12 h-12 rounded-lg flex items-center justify-center"
+                style={{
+                  border: i < playerInput.length ? '3px solid hsl(40 60% 50%)' : '3px solid hsl(30 15% 22%)',
+                  background: i < playerInput.length ? 'hsl(40 40% 18%)' : 'hsl(30 15% 12%)',
+                }}
               >
                 <span className="text-lg">{i < playerInput.length ? playerInput[i] : '·'}</span>
               </div>
             ))}
           </div>
-          {/* Symbol buttons */}
           <div className="grid grid-cols-4 gap-2">
             {symbols.slice(0, 8).map((s, i) => (
               <button
                 key={i}
                 onClick={() => handleSymbolTap(s)}
-                className="w-full py-3 rounded-xl border-2 border-border bg-card hover:border-primary/50 hover:bg-primary/10 active:scale-90 transition-all"
+                className="w-full py-4 rounded-xl active:scale-90 transition-all"
+                style={{
+                  background: 'linear-gradient(180deg, hsl(30 20% 16%) 0%, hsl(30 18% 12%) 100%)',
+                  border: '3px solid hsl(40 50% 35%)',
+                  boxShadow: '0 3px 0 hsl(30 15% 8%)',
+                }}
               >
-                <span className="text-xl">{s}</span>
+                <span className="text-2xl">{s}</span>
               </button>
             ))}
           </div>
@@ -660,7 +660,7 @@ function MemoryGame({ config, onComplete }: MiniGameProps) {
       {/* Feedback */}
       {phase === 'feedback' && (
         <div className="text-center py-6 animate-scale-in">
-          <span className="text-2xl font-display">{feedbackText}</span>
+          <span className="text-2xl font-display font-bold" style={{ color: 'hsl(40 70% 65%)', textShadow: '0 0 10px hsl(40 60% 50% / 0.4)' }}>{feedbackText}</span>
         </div>
       )}
     </div>
