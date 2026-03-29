@@ -100,209 +100,42 @@ const CountdownTimer = ({ compact = false }: { compact?: boolean }) => {
 };
 
 /* ═══════════════════════════════════════════════════════════
-   PHONE MOCKUP — SHOWS THE REAL APP VIA IFRAME
-   Auto-navigates through real app routes.
-   User can pause and manually pick a screen.
+   PHONE MOCKUP — REAL APP PREVIEW
    ═══════════════════════════════════════════════════════════ */
 
-const MockScreen = ({ id }: { id: number }) => {
-  const screens: Record<number, React.ReactNode> = {
-    0: (
-      <div className="flex flex-col items-center justify-center h-full" style={{ background: 'radial-gradient(ellipse at center, #1a1440 0%, #0c0a14 100%)' }}>
-        <div className="text-4xl mb-2">⚔️</div>
-        <p className="font-display text-lg font-bold" style={{ color: '#d4a44a' }}>O Peregrino</p>
-        <p className="text-[10px] mt-1" style={{ color: '#a89060' }}>A Jornada Interativa</p>
-        <div className="mt-4 w-20 h-1 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #d4a44a, transparent)' }} />
-      </div>
-    ),
-    1: (
-      <div className="flex flex-col h-full p-3 gap-2" style={{ background: 'linear-gradient(180deg, #12101e 0%, #0c0a14 100%)' }}>
-        <div className="flex items-center gap-2 mb-1">
-          <div className="w-8 h-8 rounded-full" style={{ background: 'linear-gradient(135deg, #d4a44a, #8b6914)' }} />
-          <div><p className="text-[10px] font-bold" style={{ color: '#d4a44a' }}>Cristão</p><p className="text-[8px]" style={{ color: '#888' }}>Nível 5</p></div>
-        </div>
-        {['Fé', 'Coragem', 'Sabedoria', 'Resistência'].map((attr, i) => (
-          <div key={attr} className="flex items-center gap-1.5">
-            <span className="text-[8px] w-12" style={{ color: '#a89060' }}>{attr}</span>
-            <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: '#1a1630' }}>
-              <div className="h-full rounded-full" style={{ width: `${60 + i * 10}%`, background: `linear-gradient(90deg, #d4a44a, ${i % 2 === 0 ? '#e8c547' : '#c4943a'})`, boxShadow: '0 0 6px #d4a44a88' }} />
-            </div>
-          </div>
-        ))}
-        <div className="mt-2 grid grid-cols-3 gap-1.5">
-          {['📖 Jornada', '⚔️ Duelos', '🗺️ Mapa'].map(item => (
-            <div key={item} className="rounded-lg p-2 text-center text-[8px] font-bold" style={{ background: 'linear-gradient(145deg, #1e1a30, #14122a)', border: '1px solid #d4a44a33', color: '#d4a44a', boxShadow: '0 0 8px #d4a44a22' }}>{item}</div>
-          ))}
-        </div>
-        <div className="mt-auto rounded-lg p-2" style={{ background: '#1a1630', border: '1px solid #d4a44a22' }}>
-          <p className="text-[8px]" style={{ color: '#d4a44a' }}>📍 Próxima Cena</p>
-          <p className="text-[9px] font-bold" style={{ color: '#eee' }}>O Vale da Sombra da Morte</p>
-        </div>
-      </div>
-    ),
-    2: (
-      <div className="flex flex-col h-full" style={{ background: '#0c0a14' }}>
-        <div className="h-[45%] relative" style={{ background: 'linear-gradient(180deg, #2a1a10 0%, #1a1040 60%, #0c0a14 100%)' }}>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-3xl">🏰</div>
-          </div>
-          <div className="absolute bottom-2 left-2 right-2 rounded-lg p-1.5" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
-            <p className="text-[8px] font-bold" style={{ color: '#d4a44a' }}>Capítulo 3</p>
-            <p className="text-[10px] font-bold" style={{ color: '#eee' }}>A Cidade da Destruição</p>
-          </div>
-        </div>
-        <div className="flex-1 p-3">
-          <p className="text-[9px] leading-relaxed" style={{ color: '#ccc' }}>Cristão olhou ao redor da cidade onde nascera. Havia algo diferente no ar — uma urgência que não podia mais ignorar...</p>
-          <div className="mt-3 flex flex-col gap-1.5">
-            <div className="rounded-lg p-2 text-[8px] font-bold" style={{ background: 'linear-gradient(90deg, #d4a44a22, #d4a44a11)', border: '1px solid #d4a44a44', color: '#d4a44a' }}>⚡ Fugir imediatamente</div>
-            <div className="rounded-lg p-2 text-[8px] font-bold" style={{ background: 'linear-gradient(90deg, #d4a44a11, #d4a44a08)', border: '1px solid #d4a44a22', color: '#a89060' }}>🗣️ Tentar convencer a família</div>
-          </div>
-        </div>
-      </div>
-    ),
-    3: (
-      <div className="flex flex-col items-center justify-center h-full gap-3 p-4" style={{ background: 'radial-gradient(ellipse at center, #2a1020 0%, #0c0a14 100%)' }}>
-        <p className="text-[10px] font-bold" style={{ color: '#ff6666' }}>⚔️ DUELO ÉPICO</p>
-        <div className="flex items-center gap-4 w-full justify-center">
-          <div className="text-center"><div className="text-2xl">🛡️</div><p className="text-[8px] font-bold mt-1" style={{ color: '#d4a44a' }}>Cristão</p><div className="w-16 h-1.5 rounded-full mt-1" style={{ background: '#1a1630' }}><div className="h-full rounded-full" style={{ width: '70%', background: '#4ade80', boxShadow: '0 0 6px #4ade8088' }} /></div></div>
-          <div className="text-lg font-bold" style={{ color: '#ff4444' }}>VS</div>
-          <div className="text-center"><div className="text-2xl">👹</div><p className="text-[8px] font-bold mt-1" style={{ color: '#ff6666' }}>Apolião</p><div className="w-16 h-1.5 rounded-full mt-1" style={{ background: '#1a1630' }}><div className="h-full rounded-full" style={{ width: '85%', background: '#ef4444', boxShadow: '0 0 6px #ef444488' }} /></div></div>
-        </div>
-        <div className="w-16 h-16 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #d4a44a, #8b6914)', boxShadow: '0 0 20px #d4a44a66' }}>
-          <span className="text-2xl font-bold text-white">🎲</span>
-        </div>
-        <p className="text-[8px]" style={{ color: '#888' }}>Toque para rolar os dados</p>
-      </div>
-    ),
-    4: (
-      <div className="flex flex-col h-full p-3" style={{ background: 'linear-gradient(180deg, #0f1a0f 0%, #0c0a14 100%)' }}>
-        <p className="text-[10px] font-bold mb-2" style={{ color: '#4ade80' }}>🗺️ Mapa da Jornada</p>
-        <div className="flex-1 flex flex-col gap-1">
-          {['Cidade da Destruição', 'Pântano do Desânimo', 'Portão Estreito', 'Casa do Intérprete', 'Vale da Humilhação', 'Vale da Sombra', 'Feira das Vaidades', 'Castelo da Dúvida', 'Montanhas Deleitosas', 'Cidade Celestial'].map((loc, i) => (
-            <div key={loc} className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full flex items-center justify-center text-[6px]" style={{ background: i < 5 ? '#4ade80' : i === 5 ? '#d4a44a' : '#333', boxShadow: i === 5 ? '0 0 8px #d4a44a88' : 'none' }}>{i < 5 ? '✓' : i === 5 ? '▶' : ''}</div>
-              <div className="h-px flex-1" style={{ background: i < 5 ? '#4ade8044' : '#333' }} />
-              <span className="text-[7px]" style={{ color: i < 5 ? '#4ade80' : i === 5 ? '#d4a44a' : '#555' }}>{loc}</span>
-            </div>
-          ))}
-        </div>
-        <div className="mt-2 text-center"><p className="text-[8px]" style={{ color: '#d4a44a' }}>50% concluído</p></div>
-      </div>
-    ),
-    5: (
-      <div className="flex flex-col h-full p-3" style={{ background: 'linear-gradient(180deg, #1a1040 0%, #0c0a14 100%)' }}>
-        <p className="text-[10px] font-bold mb-2" style={{ color: '#a78bfa' }}>🎮 Multiplayer Online</p>
-        <div className="rounded-xl p-2 mb-2" style={{ background: '#1e1a30', border: '1px solid #a78bfa33' }}>
-          <div className="grid grid-cols-4 gap-1 mb-2">
-            {['🟢 João', '🟢 Maria', '🟡 Pedro', '🔴 Ana'].map(p => (
-              <div key={p} className="text-center"><div className="w-6 h-6 rounded-full mx-auto mb-0.5" style={{ background: '#2a2640' }} /><p className="text-[6px]" style={{ color: '#a78bfa' }}>{p}</p></div>
-            ))}
-          </div>
-          <div className="h-20 rounded-lg relative" style={{ background: 'linear-gradient(135deg, #2a1a10 0%, #1a1040 100%)', border: '1px solid #d4a44a22' }}>
-            <p className="absolute top-1 left-2 text-[7px]" style={{ color: '#d4a44a' }}>Tabuleiro Premium</p>
-            <div className="absolute bottom-1 right-2 text-[7px]" style={{ color: '#4ade80' }}>Vez de João 🎲</div>
-          </div>
-        </div>
-        <div className="rounded-lg p-1.5" style={{ background: '#14122a', border: '1px solid #a78bfa22' }}>
-          <p className="text-[7px]" style={{ color: '#888' }}>💬 Chat: "Boa jogada!" — Maria</p>
-        </div>
-      </div>
-    ),
-    6: (
-      <div className="flex flex-col h-full p-3" style={{ background: 'linear-gradient(180deg, #1a1510 0%, #0c0a14 100%)' }}>
-        <p className="text-[10px] font-bold mb-2" style={{ color: '#f59e0b' }}>🏠 Modo Reunidos</p>
-        <div className="rounded-xl p-3 text-center mb-2" style={{ background: '#1e1a14', border: '1px solid #f59e0b33' }}>
-          <p className="text-3xl mb-1">📱</p>
-          <p className="text-[9px] font-bold" style={{ color: '#f59e0b' }}>Jogue Presencialmente</p>
-          <p className="text-[7px]" style={{ color: '#888' }}>Até 6 jogadores no mesmo ambiente</p>
-        </div>
-        <div className="grid grid-cols-3 gap-1.5">
-          {['Criar Sala', 'Entrar', 'Tutorial'].map(btn => (
-            <div key={btn} className="rounded-lg p-2 text-center text-[7px] font-bold" style={{ background: '#d4a44a22', border: '1px solid #d4a44a44', color: '#d4a44a' }}>{btn}</div>
-          ))}
-        </div>
-      </div>
-    ),
-    7: (
-      <div className="flex flex-col h-full p-3 gap-2" style={{ background: 'linear-gradient(180deg, #14101e 0%, #0c0a14 100%)' }}>
-        <p className="text-[10px] font-bold" style={{ color: '#d4a44a' }}>👥 Personagens</p>
-        <div className="grid grid-cols-2 gap-1.5 flex-1">
-          {[{n:'Cristão',e:'🛡️',c:'#d4a44a'},{n:'Evangelista',e:'📖',c:'#60a5fa'},{n:'Fiel',e:'⚔️',c:'#4ade80'},{n:'Esperançoso',e:'🌟',c:'#f59e0b'},{n:'Apolião',e:'👹',c:'#ef4444'},{n:'Gigante Desespero',e:'👊',c:'#8b5cf6'}].map(ch => (
-            <div key={ch.n} className="rounded-lg p-2 flex flex-col items-center" style={{ background: '#1a1630', border: `1px solid ${ch.c}33` }}>
-              <span className="text-lg">{ch.e}</span>
-              <p className="text-[7px] font-bold mt-0.5" style={{ color: ch.c }}>{ch.n}</p>
-            </div>
-          ))}
-        </div>
-        <p className="text-[7px] text-center" style={{ color: '#888' }}>40+ personagens com arte original</p>
-      </div>
-    ),
-    8: (
-      <div className="flex flex-col h-full p-3" style={{ background: 'linear-gradient(180deg, #10141e 0%, #0c0a14 100%)' }}>
-        <p className="text-[10px] font-bold mb-2" style={{ color: '#60a5fa' }}>🙏 Reflexões Espirituais</p>
-        <div className="rounded-xl p-3 mb-2" style={{ background: '#1a1e30', border: '1px solid #60a5fa33' }}>
-          <p className="text-[8px] italic leading-relaxed" style={{ color: '#bbb' }}>"Porque estreita é a porta, e apertado o caminho que leva à vida, e poucos há que a encontrem."</p>
-          <p className="text-[7px] mt-1 text-right" style={{ color: '#60a5fa' }}>— Mateus 7:14</p>
-        </div>
-        <div className="rounded-lg p-2" style={{ background: '#14182a', border: '1px solid #60a5fa22' }}>
-          <p className="text-[7px] font-bold mb-1" style={{ color: '#60a5fa' }}>💭 Reflexão do Dia</p>
-          <p className="text-[7px]" style={{ color: '#888' }}>O que significa escolher o caminho estreito na sua vida diária?</p>
-        </div>
-      </div>
-    ),
-    9: (
-      <div className="flex flex-col items-center justify-center h-full p-4 gap-2" style={{ background: 'radial-gradient(ellipse at center, #1a1a10 0%, #0c0a14 100%)' }}>
-        <div className="text-3xl">🏆</div>
-        <p className="text-[10px] font-bold" style={{ color: '#d4a44a' }}>Jornada Concluída!</p>
-        <div className="w-full grid grid-cols-2 gap-1.5 mt-1">
-          {[{l:'Fé',v:'92%'},{l:'Coragem',v:'85%'},{l:'Sabedoria',v:'78%'},{l:'Resistência',v:'88%'}].map(s => (
-            <div key={s.l} className="rounded-lg p-1.5 text-center" style={{ background: '#1a1630', border: '1px solid #d4a44a22' }}>
-              <p className="text-[7px]" style={{ color: '#888' }}>{s.l}</p>
-              <p className="text-[10px] font-bold" style={{ color: '#d4a44a' }}>{s.v}</p>
-            </div>
-          ))}
-        </div>
-        <div className="mt-2 rounded-lg px-4 py-1.5 text-[8px] font-bold" style={{ background: 'linear-gradient(135deg, #d4a44a, #8b6914)', color: '#fff', boxShadow: '0 0 12px #d4a44a66' }}>Compartilhar Resultado</div>
-      </div>
-    ),
-  };
-  return screens[id] || screens[0];
-};
+const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
+  const [showPaywall, setShowPaywall] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-const PhoneMockupTour = () => {
-  const [isPaused, setIsPaused] = useState(false);
-  const [activeScreen, setActiveScreen] = useState(0);
-  const autoRef = useRef<ReturnType<typeof setInterval>>();
-
-  const screens = [
-    { label: 'Splash Screen', desc: 'Tela de abertura do app' },
-    { label: 'Dashboard', desc: 'Painel do peregrino' },
-    { label: 'Cena Narrativa', desc: 'Escolhas que mudam a história' },
-    { label: 'Duelo de Dados', desc: 'Batalhas épicas com dados 3D' },
-    { label: 'Mapa da Jornada', desc: 'Progresso na peregrinação' },
-    { label: 'Multiplayer Online', desc: 'Tabuleiro premium digital' },
-    { label: 'Modo Reunidos', desc: 'Jogue presencialmente' },
-    { label: 'Personagens', desc: '40+ personagens bíblicos' },
-    { label: 'Reflexões', desc: 'Meditações espirituais' },
-    { label: 'Resultado Final', desc: 'Sua jornada completa' },
-  ];
+  // Routes the user can browse freely (strategic showcase)
+  const allowedPaths = ['/', '/jornada', '/personagens', '/comunidade', '/multiplayer', '/reflexoes', '/progresso'];
 
   useEffect(() => {
-    if (isPaused) return;
-    autoRef.current = setInterval(() => {
-      setActiveScreen(prev => (prev + 1) % screens.length);
-    }, 3500);
-    return () => clearInterval(autoRef.current);
-  }, [isPaused, screens.length]);
+    const handleMessage = (e: MessageEvent) => {
+      // Listen for navigation attempts from the iframe
+      if (e.data?.type === 'navigation' && e.data?.path) {
+        const path = e.data.path;
+        const isAllowed = allowedPaths.some(p => path === p || path.startsWith(p));
+        if (!isAllowed) {
+          setShowPaywall(true);
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
-  const goToScreen = (idx: number) => {
-    setIsPaused(true);
-    setActiveScreen(idx);
-  };
+  // Show paywall overlay after user explores for a bit
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // After 45s of browsing, show a gentle CTA
+    }, 45000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="flex flex-col items-center gap-5">
-      {/* Phone frame */}
+      {/* Phone frame with REAL app inside */}
       <div
         className="relative"
         style={{
@@ -325,17 +158,56 @@ const PhoneMockupTour = () => {
           <div className="absolute -left-[3px] top-[170px] w-[3px] h-12 rounded-l-sm" style={{ background: '#333' }} />
           <div className="absolute -right-[3px] top-[130px] w-[3px] h-16 rounded-r-sm" style={{ background: '#333' }} />
 
-          {/* Screen */}
+          {/* Screen with real app iframe */}
           <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-[#0c0a14]">
             {/* Dynamic Island */}
             <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-[22px] bg-black rounded-full z-30" style={{ boxShadow: 'inset 0 0 4px rgba(0,0,0,0.8)' }}>
               <div className="absolute right-[18px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full" style={{ background: 'radial-gradient(circle, #1a3a5c, #0a1a2c)' }} />
             </div>
 
-            {/* Rendered app screen */}
-            <div className="absolute inset-0 z-10 transition-opacity duration-500">
-              <MockScreen id={activeScreen} />
-            </div>
+            {/* Real app iframe */}
+            <iframe
+              ref={iframeRef}
+              src="/?preview=landing"
+              className="absolute inset-0 w-full h-full z-10 border-0"
+              style={{ borderRadius: '2rem' }}
+              title="Preview do App"
+              sandbox="allow-scripts allow-same-origin"
+            />
+
+            {/* Paywall overlay */}
+            {showPaywall && (
+              <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+                <div className="text-center space-y-3">
+                  <div className="text-4xl">🔒</div>
+                  <p className="font-display text-sm font-bold" style={{ color: '#d4a44a' }}>
+                    Conteúdo Exclusivo
+                  </p>
+                  <p className="text-[10px]" style={{ color: '#a89060' }}>
+                    Adquira o acesso completo para viver toda a jornada do Peregrino
+                  </p>
+                  <button
+                    onClick={onBuy}
+                    className="px-5 py-2 rounded-xl text-[11px] font-display font-bold"
+                    style={{
+                      background: 'linear-gradient(135deg, #d4a44a, #8b6914)',
+                      color: '#fff',
+                      boxShadow: '0 0 16px #d4a44a66',
+                    }}
+                  >
+                    <Crown className="w-3.5 h-3.5 inline mr-1.5" />
+                    Adquirir — R$147/ano
+                  </button>
+                  <button
+                    onClick={() => setShowPaywall(false)}
+                    className="block mx-auto text-[9px] mt-2"
+                    style={{ color: '#888' }}
+                  >
+                    Continuar explorando
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Home indicator */}
             <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-28 h-[4px] bg-white/30 rounded-full z-30" />
@@ -346,52 +218,25 @@ const PhoneMockupTour = () => {
         <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-10 rounded-full" style={{ background: 'radial-gradient(ellipse, hsl(40 70% 50% / 0.12), transparent)' }} />
       </div>
 
-      {/* Screen label */}
-      <div className="text-center">
-        <p className="font-display text-sm text-foreground font-bold">{screens[activeScreen].label}</p>
-        <p className="text-xs text-muted-foreground">{screens[activeScreen].desc}</p>
+      {/* Label */}
+      <div className="text-center space-y-2">
+        <p className="font-display text-sm text-foreground font-bold">Explore o app por dentro</p>
+        <p className="text-xs text-muted-foreground">Navegue livremente pelo app — toque, role, explore!</p>
       </div>
 
-      {/* Controls */}
-      <div className="flex flex-col items-center gap-3 w-full max-w-xs">
-        <button
-          onClick={() => setIsPaused(p => !p)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl border-2 border-primary/40 bg-card/80 hover:border-primary/70 transition-all text-sm hover:scale-105"
-          style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.2), 0 0 40px hsl(40 70% 50% / 0.08), inset 0 1px 0 hsl(40 80% 75% / 0.1)' }}
-        >
-          {isPaused ? (
-            <><Play className="w-4 h-4 text-primary" /> <span className="text-foreground text-xs font-display">Retomar Tour</span></>
-          ) : (
-            <><Clock className="w-4 h-4 text-primary" /> <span className="text-foreground text-xs font-display">Pausar Tour</span></>
-          )}
-        </button>
-
-        <div className="flex flex-wrap justify-center gap-1.5">
-          {screens.map((screen, i) => (
-            <button
-              key={i}
-              onClick={() => goToScreen(i)}
-              className="group relative"
-            >
-              <div
-                className="w-2.5 h-2.5 rounded-full transition-all duration-300"
-                style={{
-                  background: i === activeScreen ? 'hsl(40 70% 50%)' : 'rgba(255,255,255,0.12)',
-                  boxShadow: i === activeScreen ? '0 0 8px hsl(40 70% 50% / 0.5)' : 'none',
-                  transform: i === activeScreen ? 'scale(1.3)' : 'scale(1)',
-                }}
-              />
-              <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] text-foreground bg-card/90 border border-border px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                {screen.label}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        <p className="text-[10px] text-muted-foreground">
-          {isPaused ? '👆 Clique nos pontos para navegar' : '⏩ Tour automático — clique para pausar'}
-        </p>
-      </div>
+      {/* CTA below mockup */}
+      <button
+        onClick={onBuy}
+        className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-display text-sm font-bold text-primary-foreground"
+        style={{
+          background: 'linear-gradient(135deg, hsl(40 70% 45%), hsl(40 60% 30%))',
+          boxShadow: '0 0 20px hsl(40 70% 50% / 0.3), 0 4px 15px rgba(0,0,0,0.4)',
+          border: '1px solid hsl(40 70% 55% / 0.3)',
+        }}
+      >
+        <Crown className="w-4 h-4" />
+        Quero o Acesso Completo
+      </button>
     </div>
   );
 };
@@ -754,10 +599,6 @@ const LandingPage = () => {
               <Crown className="w-5 h-5" />
               Adquirir — R$147/ano
             </CtaButton>
-            <CtaButton onClick={() => navigate('/')} variant="secondary">
-              <Play className="w-5 h-5" />
-              Experimentar Grátis
-            </CtaButton>
           </div>
 
           <div className="flex items-center justify-center gap-4 pt-2 text-xs text-foreground/70 flex-wrap" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
@@ -1056,7 +897,7 @@ const LandingPage = () => {
             Dashboard, cenas narrativas, duelos de dados, mini-games, tabuleiro multiplayer e mapa da jornada — tudo que você terá acesso
           </p>
 
-          <PhoneMockupTour />
+          <PhoneMockupTour onBuy={handleBuy} />
         </div>
       </section>
 
@@ -1543,10 +1384,6 @@ const LandingPage = () => {
             <CtaButton onClick={handleBuy} variant="primary" className="w-full text-base">
               <Crown className="w-5 h-5" />
               Adquirir Agora — R$147/ano
-            </CtaButton>
-            <CtaButton onClick={() => navigate('/')} variant="secondary" className="w-full">
-              <Play className="w-5 h-5" />
-              Experimentar Versão Gratuita
             </CtaButton>
           </div>
 
