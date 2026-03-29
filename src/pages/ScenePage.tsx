@@ -67,6 +67,10 @@ const ScenePage = () => {
   const [streak, setStreak] = useState(0);
   const [lastStreakEffect, setLastStreakEffect] = useState<'positive' | 'negative' | null>(null);
   const [showStreakBurst, setShowStreakBurst] = useState(false);
+  // Mini-game state
+  const [miniGameDone, setMiniGameDone] = useState(false);
+  const [miniGameResult, setMiniGameResult] = useState<MiniGameResult | null>(null);
+  const [showMiniGameResult, setShowMiniGameResult] = useState(false);
   const { triggerChoiceEffect } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
@@ -162,6 +166,9 @@ const ScenePage = () => {
     setSceneEventDone(false);
     setSuspenseActive(false);
     setPendingChoice(null);
+    setMiniGameDone(false);
+    setMiniGameResult(null);
+    setShowMiniGameResult(false);
     const t = setTimeout(() => setTransitioning(false), 100);
     return () => clearTimeout(t);
   }, [progress.currentChapterId]);
