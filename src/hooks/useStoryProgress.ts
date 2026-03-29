@@ -39,6 +39,7 @@ export interface StoryProgress {
   attributes: PlayerAttributes;
   decisions: DecisionRecord[];
   flags: Record<string, boolean>;
+  items: string[];
   started: boolean;
   playthrough: number;
 }
