@@ -164,38 +164,55 @@ export function resolveEmotionalState(
     }
   }
 
-  // 2. Resolve from attributes + trend
+  // 2. Phase baseline — the story phase sets gravitational pull
+  const phase = getPhaseFromChapter(chapterId);
+  const baseline = phaseBaselines[phase];
+
+  // 3. Resolve posture: phase baseline modulated by attributes + trend
   let posture: PostureState;
   let intensity: number;
 
-  if (avg >= 8.5 && trend >= 0) {
-    posture = 'vitoria_final';
-    intensity = Math.min((avg - 8) / 4, 1);
-  } else if (avg >= 7 && trend >= 0) {
-    posture = 'esperancoso';
-    intensity = Math.min((avg - 6.5) / 3.5, 1);
-  } else if (avg >= 5.5 && trend >= -0.5) {
-    posture = 'determinado';
-    intensity = 0.4 + (avg - 5.5) / 5;
-  } else if (avg >= 4 && trend < -1) {
-    // Declining despite decent attributes → conflict
-    posture = 'em_conflito';
-    intensity = Math.min(Math.abs(trend) / 3, 1);
-  } else if (avg >= 4 && trend >= 0) {
-    posture = 'recuperacao';
-    intensity = 0.4;
-  } else if (avg >= 3) {
-    // Individual attribute analysis
-    if (fe < 3 && coragem < 3) {
-      posture = 'em_dificuldade';
-      intensity = Math.min((4 - avg) / 4, 1);
+  if (baseline) {
+    // Use phase baseline as the anchor
+    const basePosture = avg >= baseline.threshold ? baseline.high : baseline.low;
+
+    // Allow strong attribute performance to override phase gravity upward
+    if (avg >= 8.5 && trend >= 0) {
+      posture = 'vitoria_final';
+      intensity = Math.min((avg - 8) / 4, 1);
+    } else if (avg >= 7 && trend >= 0 && phase !== 'fase1') {
+      posture = 'esperancoso';
+      intensity = Math.min((avg - 6.5) / 3.5, 1);
+    } else if (trend < -1.5 && avg < 5) {
+      // Sharp decline overrides phase → conflict or difficulty
+      posture = avg >= 4 ? 'em_conflito' : 'em_dificuldade';
+      intensity = Math.min(Math.abs(trend) / 3, 1);
     } else {
-      posture = 'confuso';
-      intensity = Math.min((4 - avg) / 3, 1);
+      // Default: follow phase baseline
+      posture = basePosture;
+      intensity = Math.abs(avg - baseline.threshold) / 5 + 0.3;
     }
   } else {
-    posture = 'abatido';
-    intensity = Math.min((3 - avg) / 3, 1);
+    // Fallback: pure attribute-based (shouldn't happen)
+    if (avg >= 8.5) {
+      posture = 'vitoria_final';
+      intensity = 1;
+    } else if (avg >= 7) {
+      posture = 'esperancoso';
+      intensity = 0.7;
+    } else if (avg >= 5.5) {
+      posture = 'determinado';
+      intensity = 0.5;
+    } else if (avg >= 4) {
+      posture = trend < -1 ? 'em_conflito' : 'recuperacao';
+      intensity = 0.4;
+    } else if (avg >= 3) {
+      posture = fe < 3 && coragem < 3 ? 'em_dificuldade' : 'confuso';
+      intensity = 0.5;
+    } else {
+      posture = 'abatido';
+      intensity = 0.7;
+    }
   }
 
   const lines = atmosphereLines[posture];
