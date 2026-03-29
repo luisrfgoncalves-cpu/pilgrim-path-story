@@ -13,6 +13,7 @@ import SplashScreen from '@/components/SplashScreen';
 import Onboarding from '@/components/Onboarding';
 import GameNotification from '@/components/GameNotification';
 import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen, Home, Sun, Moon } from 'lucide-react';
+import { Smartphone, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Index = () => {
@@ -21,6 +22,53 @@ const Index = () => {
   const { user, profile } = useAuth();
   const { theme, toggleTheme } = useTheme();
   useCloudSync(loadFromCloud);
+
+  // ── PWA Install Banner ──
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
+  const [showInstallInstructions, setShowInstallInstructions] = useState(false);
+
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true;
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  useEffect(() => {
+    if (isStandalone) return; // Already installed
+    const dismissed = sessionStorage.getItem('install_banner_dismissed');
+    if (dismissed) return;
+
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+      setShowInstallBanner(true);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+
+    if (isMobile && !isStandalone) {
+      const timeout = setTimeout(() => {
+        setShowInstallBanner(prev => prev ? prev : true);
+      }, 3000);
+      return () => { clearTimeout(timeout); window.removeEventListener('beforeinstallprompt', handler); };
+    }
+
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstall = async () => {
+    if (installPrompt) {
+      installPrompt.prompt();
+      const result = await installPrompt.userChoice;
+      if (result.outcome === 'accepted') setShowInstallBanner(false);
+      setInstallPrompt(null);
+    } else {
+      setShowInstallInstructions(true);
+    }
+  };
+
+  const dismissInstallBanner = () => {
+    setShowInstallBanner(false);
+    sessionStorage.setItem('install_banner_dismissed', '1');
+  };
 
   const [showSplash, setShowSplash] = useState(() => {
     const seen = sessionStorage.getItem('splash_seen');
@@ -86,6 +134,54 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Install Banner */}
+      {showInstallBanner && (
+        <div className="sticky top-0 z-50 flex items-center justify-between gap-3 px-4 py-3 border-b border-primary/20 bg-card">
+          <div className="flex items-center gap-2 min-w-0">
+            <Smartphone className="w-5 h-5 text-primary flex-shrink-0" />
+            <span className="text-xs text-foreground/90 font-display font-bold truncate">
+              Instale o App no seu celular!
+            </span>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button onClick={handleInstall} className="px-3 py-1.5 text-xs font-display font-bold rounded-lg bg-primary text-primary-foreground border border-primary/60">
+              INSTALAR
+            </button>
+            <button onClick={dismissInstallBanner} className="p-1 text-muted-foreground hover:text-foreground transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Install Instructions Modal */}
+      {showInstallInstructions && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-6" onClick={() => setShowInstallInstructions(false)}>
+          <div className="w-full max-w-sm rounded-2xl border border-primary/30 bg-card p-6 space-y-4" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center gap-3">
+              <Smartphone className="w-6 h-6 text-primary" />
+              <h3 className="font-display text-lg text-foreground font-bold">Instalar o App</h3>
+            </div>
+            {isIOS ? (
+              <div className="space-y-3 text-sm text-foreground/80">
+                <p className="font-display text-primary text-xs uppercase tracking-wider">No iPhone / iPad:</p>
+                <div className="flex items-start gap-3"><span className="text-primary font-bold">1.</span><p>Toque no ícone de <strong className="text-foreground">Compartilhar</strong> (quadrado com seta para cima) na barra do Safari</p></div>
+                <div className="flex items-start gap-3"><span className="text-primary font-bold">2.</span><p>Role para baixo e toque em <strong className="text-foreground">"Adicionar à Tela de Início"</strong></p></div>
+                <div className="flex items-start gap-3"><span className="text-primary font-bold">3.</span><p>Toque em <strong className="text-foreground">"Adicionar"</strong></p></div>
+              </div>
+            ) : (
+              <div className="space-y-3 text-sm text-foreground/80">
+                <p className="font-display text-primary text-xs uppercase tracking-wider">No Android:</p>
+                <div className="flex items-start gap-3"><span className="text-primary font-bold">1.</span><p>Toque no menu <strong className="text-foreground">⋮</strong> (três pontos) no Chrome</p></div>
+                <div className="flex items-start gap-3"><span className="text-primary font-bold">2.</span><p>Toque em <strong className="text-foreground">"Instalar aplicativo"</strong></p></div>
+                <div className="flex items-start gap-3"><span className="text-primary font-bold">3.</span><p>Confirme tocando em <strong className="text-foreground">"Instalar"</strong></p></div>
+              </div>
+            )}
+            <button onClick={() => setShowInstallInstructions(false)} className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-display font-bold text-sm">Entendi!</button>
+          </div>
+        </div>
+      )}
+
       {/* Streak toast */}
       <GameNotification visible={streakShown} onDismiss={() => setStreakShown(false)} duration={10000}>
         <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground shadow-lg">
@@ -181,7 +277,7 @@ const Index = () => {
         </button>
 
         {/* Nav grid */}
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-4 gap-2">
           <button onClick={handleBackToSplash} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 h-16 overflow-hidden">
             <Home className="w-5 h-5 text-primary flex-shrink-0" />
             <span className="text-[10px] text-primary font-display leading-tight truncate w-full text-center">Início</span>
@@ -193,10 +289,6 @@ const Index = () => {
           <button onClick={() => navigate('/multiplayer')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 h-16 overflow-hidden !border-primary/30">
             <Swords className="w-5 h-5 text-primary flex-shrink-0" />
             <span className="text-[10px] text-primary font-display leading-tight truncate w-full text-center">Múltiplo</span>
-          </button>
-          <button onClick={() => user ? navigate('/perfil') : navigate('/auth')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 h-16 overflow-hidden">
-            {user ? <User className="w-5 h-5 text-muted-foreground flex-shrink-0" /> : <LogIn className="w-5 h-5 text-muted-foreground flex-shrink-0" />}
-            <span className="text-[10px] text-muted-foreground font-display leading-tight truncate w-full text-center">{user ? (profile?.display_name || 'Perfil') : 'Entrar'}</span>
           </button>
           <button onClick={() => navigate('/comunidade')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 h-16 overflow-hidden">
             <Users className="w-5 h-5 text-muted-foreground flex-shrink-0" />
