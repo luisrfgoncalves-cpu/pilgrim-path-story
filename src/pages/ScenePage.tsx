@@ -103,13 +103,44 @@ const ScenePage = () => {
     const protagonistId = isPart2 ? 'crista' : 'cristao';
     const sceneCharIds = chapter.characters || [];
     const charIds = sceneCharIds.includes(protagonistId) ? sceneCharIds : [protagonistId, ...sceneCharIds];
-    return charIds
+    const portraits = charIds
       .map(id => {
         const char = allChars.find(c => c.id === id);
         const img = characterImages[id];
         return img ? { id, name: char?.name || id, img } : null;
       })
       .filter(Boolean) as { id: string; name: string; img: string }[];
+
+    // For dice duels: ensure enemy portrait exists by matching duelEnemy name to characters
+    const mapping = miniGameMappings[chapter.id];
+    if (mapping?.duelEnemy && portraits.length <= 1) {
+      const enemyName = mapping.duelEnemy.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      // Try to find matching character by name
+      const matchedChar = allChars.find(c => {
+        const cName = c.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return cName.includes(enemyName) || enemyName.includes(cName);
+      });
+      if (matchedChar) {
+        const img = characterImages[matchedChar.id];
+        if (img && !portraits.find(p => p.id === matchedChar.id)) {
+          portraits.push({ id: matchedChar.id, name: matchedChar.name, img });
+        }
+      }
+      // Fallback mapping for enemies without character matches
+      if (portraits.length <= 1) {
+        const fallbackMap: Record<string, string> = {
+          'instrutor': 'discricao', // Discrição trains at the Palace
+          'acusador': 'juiz_odio_ao_bem', // Judge Hatred-of-Good
+        };
+        const fallbackId = fallbackMap[enemyName];
+        if (fallbackId && characterImages[fallbackId] && !portraits.find(p => p.id === fallbackId)) {
+          const fChar = allChars.find(c => c.id === fallbackId);
+          portraits.push({ id: fallbackId, name: mapping.duelEnemy.name, img: characterImages[fallbackId] });
+        }
+      }
+    }
+
+    return portraits;
   }, [chapter, progress.campaign]);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
@@ -521,6 +552,48 @@ const ScenePage = () => {
       </header>
 
       <main className={`flex-1 max-w-lg mx-auto w-full ${transitioning ? 'opacity-0' : 'scene-transition-enter'}`}>
+        {/* When inline mini-game is active, show it at the top and hide scene content */}
+        {miniGameReady && !miniGameDone && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
+          <div id="minigame-area" className="px-5 py-4 animate-scale-in space-y-4">
+            {scenePortraits.length > 0 && (
+              <div className="flex items-center justify-center gap-3 overflow-x-auto pb-1">
+                {scenePortraits.slice(0, 3).map((p, idx) => (
+                  <div key={p.id} className="text-center flex-shrink-0">
+                    <img
+                      src={p.img}
+                      alt={p.name}
+                      className="w-16 h-16 rounded-full object-cover border-2"
+                      style={{
+                        borderColor: idx === 0 ? 'hsl(120 40% 45%)' : 'hsl(40 55% 45%)',
+                        boxShadow: idx === 0
+                          ? '0 0 16px hsl(120 50% 45% / 0.4)'
+                          : '0 0 14px hsl(40 60% 50% / 0.35)',
+                      }}
+                    />
+                    <p className="text-[10px] font-display font-bold mt-1 text-foreground/90">{p.name}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+            <MiniGame
+              config={miniGameMappings[chapter.id]}
+              characterPortraits={scenePortraits}
+              onComplete={(result) => {
+                setMiniGameResult(result);
+                setMiniGameDone(true);
+                setShowMiniGameResult(true);
+                if (result.effects) {
+                  triggerChoiceEffect(result.effects as Record<string, number>);
+                  sfxForChoice(result.effects as Record<string, number>);
+                }
+              }}
+            />
+          </div>
+        )}
+
+        {/* Scene content — hidden when inline mini-game is active */}
+        {!(miniGameReady && !miniGameDone && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id]?.type)) && (
+        <>
         {/* Scene image with preloading */}
         {bgImage && (
           <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px', minHeight: '180px', background: 'hsl(var(--card))' }}>
@@ -651,20 +724,28 @@ const ScenePage = () => {
             <div className="mb-5 animate-scale-in" id="minigame-trigger">
               <button
                 onClick={() => {
-                  // Always scroll to top first so user sees the mini-game immediately
-                  window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+                  // Force scroll to absolute top before showing mini-game
+                  window.scrollTo(0, 0);
                   document.documentElement.scrollTop = 0;
                   document.body.scrollTop = 0;
                   setMiniGameReady(true);
-                  // Then scroll to mini-game area after render
+                  // Multiple scroll attempts to ensure it works
+                  requestAnimationFrame(() => {
+                    window.scrollTo(0, 0);
+                    document.documentElement.scrollTop = 0;
+                    document.body.scrollTop = 0;
+                  });
                   setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    document.documentElement.scrollTop = 0;
                     const el = document.getElementById('minigame-area');
-                    if (el) {
-                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    } else {
-                      window.scrollTo({ top: 0, left: 0 });
-                    }
-                  }, 150);
+                    if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+                  }, 50);
+                  setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    const el = document.getElementById('minigame-area');
+                    if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+                  }, 200);
                 }}
                 className="btn-medieval w-full flex items-center justify-center gap-3"
               >
@@ -678,46 +759,7 @@ const ScenePage = () => {
             </div>
           )}
 
-          {/* ═══ MINI-GAME (inline for minor games) ═══ */}
-          {showChoices && !miniGameDone && miniGameReady && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
-            <div id="minigame-area" className="mb-5 animate-scale-in space-y-4">
-              {scenePortraits.length > 0 && (
-                <div className="flex items-center justify-center gap-3 overflow-x-auto pb-1">
-                  {scenePortraits.slice(0, 3).map((p, idx) => (
-                    <div key={p.id} className="text-center flex-shrink-0">
-                      <img
-                        src={p.img}
-                        alt={p.name}
-                        className="w-16 h-16 rounded-full object-cover border-2"
-                        style={{
-                          borderColor: idx === 0 ? 'hsl(120 40% 45%)' : 'hsl(40 55% 45%)',
-                          boxShadow: idx === 0
-                            ? '0 0 16px hsl(120 50% 45% / 0.4)'
-                            : '0 0 14px hsl(40 60% 50% / 0.35)',
-                        }}
-                      />
-                      <p className="text-[10px] font-display font-bold mt-1 text-foreground/90">{p.name}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <MiniGame
-                config={miniGameMappings[chapter.id]}
-                characterPortraits={scenePortraits}
-                onComplete={(result) => {
-                  setMiniGameResult(result);
-                  setMiniGameDone(true);
-                  setShowMiniGameResult(true);
-                  if (result.effects) {
-                    triggerChoiceEffect(result.effects as Record<string, number>);
-                    sfxForChoice(result.effects as Record<string, number>);
-                  }
-                  // GameNotification handles dismiss
-                }}
-              />
-            </div>
-          )}
+          {/* Old inline mini-game area removed — now renders at top of main */}
 
           {/* ═══ FULLSCREEN MINI-GAME (major games) ═══ */}
           {showChoices && !miniGameDone && miniGameReady && miniGameMappings[chapter.id] && FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
@@ -969,6 +1011,8 @@ const ScenePage = () => {
             </div>
           )}
         </div>
+        </>
+        )}
       </main>
 
       {/* ═══ INLINE CONSEQUENCE OVERLAY ═══ */}
