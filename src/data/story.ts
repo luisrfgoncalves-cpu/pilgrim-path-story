@@ -89,7 +89,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Ignorar esse sentimento",
         nextChapterId: "cena2",
-        effects: { fe: -1, discernimento: -1 }
+        effects: { fe: -1, discernimento: -1 },
+        flag: "ignorou_inquietacao"
       },
       {
         text: "Tentar entender o que está acontecendo",
@@ -224,12 +225,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Caminho fácil",
         nextChapterId: "cena8",
-        effects: { discernimento: -1 }
+        effects: { discernimento: -1 },
+        flag: "escolheu_caminho_facil"
       },
       {
         text: "Caminho estreito",
         nextChapterId: "cena9",
-        effects: { fe: 2 }
+        effects: { fe: 2 },
+        flag: "escolheu_caminho_estreito"
       }
     ]
   },
