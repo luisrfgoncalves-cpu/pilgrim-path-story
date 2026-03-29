@@ -522,6 +522,55 @@ export const eventPools: Record<string, PhaseEventPool> = {
         ],
         weight: 3,
       },
+      // ── Personagem: Vergonha confronta Fiel ──
+      {
+        id: 'f3-vergonha',
+        type: 'variable',
+        narrative: [
+          'No caminho, Fiel conta sobre um encontro que teve: "Um homem chamado Vergonha me abordou. Disse que religião é coisa de fracos, de gente sem educação."',
+          '"Disse que os grandes pensadores riem da fé. Que nenhum homem corajoso desperdiçaria a vida em peregrinação." Fiel pausa. "Foi o ataque mais difícil. Mais que Apolião."',
+        ],
+        choices: [
+          {
+            text: '"A verdadeira vergonha é abandonar a verdade por medo da opinião alheia."',
+            effects: { fe: 2, coragem: 1 },
+            consequence: 'Fiel sorri: "Exatamente o que eu disse a ele. E ele foi embora."',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Admitir que o argumento de Vergonha é forte',
+            effects: { fe: -1, coragem: -1 },
+            consequence: 'A dúvida é uma semente. Vergonha a plantou, e ela germina.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.5,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
+      },
+      // ── Presunção, Preguiça e Simples ──
+      {
+        id: 'f3-tres-dorminhocoes',
+        type: 'variable',
+        narrative: [
+          'Três homens dormem à beira do caminho, com grilhões nos pés. Um peregrino que passou antes deixou marcas de aviso na pedra, mas eles não as viram.',
+          'Você tenta acordá-los. O primeiro, Presunção, murmura: "Cada um cuide de si." O segundo, Preguiça, geme: "Mais um cochilo..." O terceiro, Simples, boceja: "Não vejo perigo nenhum."',
+        ],
+        choices: [
+          {
+            text: 'Insistir em acordá-los com urgência',
+            effects: { coragem: 1, fe: 1 },
+            consequence: 'Eles viram de lado e voltam a dormir. Nem todos querem ser salvos. A lição é amarga.',
+            consequenceKey: 'mostrou_misericordia',
+          },
+          {
+            text: 'Seguir em frente — não se pode salvar quem não quer ser salvo',
+            effects: { discernimento: 1, perseveranca: 1 },
+            consequence: 'Os grilhões continuam nos seus pés. Você continua seu caminho, mais sóbrio.',
+          },
+        ],
+        weight: 2,
+      },
     ],
   },
 
