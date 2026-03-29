@@ -26,8 +26,9 @@ export interface StoryChoice {
   flag?: string;
   requiresFlag?: string;
   excludesFlag?: string;
-  /** Delayed consequences: bonus/penalty based on current attributes */
   conditionalEffects?: ConditionalEffect[];
+  /** Item granted when this choice is made */
+  item?: string;
 }
 
 /** Tone variation: shows different text based on whether an attribute is high or low */
