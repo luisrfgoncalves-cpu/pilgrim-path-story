@@ -195,6 +195,38 @@ const Index = () => {
           </button>
         </div>
 
+        {/* Backup actions */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => { downloadBackup(); toast.success('Backup salvo!'); }}
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
+          >
+            <Download className="w-4 h-4" />
+            Salvar Backup
+          </button>
+          <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all cursor-pointer">
+            <Upload className="w-4 h-4" />
+            Restaurar
+            <input
+              type="file"
+              accept=".json"
+              className="hidden"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const result = await importBackup(file);
+                if (result.success) {
+                  toast.success('Progresso restaurado! Recarregando...');
+                  setTimeout(() => window.location.reload(), 1000);
+                } else {
+                  toast.error(result.error || 'Erro ao restaurar');
+                }
+                e.target.value = '';
+              }}
+            />
+          </label>
+        </div>
+
         {/* Restart */}
         {hasProgress && (
           <button onClick={() => handleNewJourney(progress.campaign || 'part1')} className="w-full text-center text-[11px] text-muted-foreground hover:text-foreground transition-colors pt-1">
@@ -204,6 +236,7 @@ const Index = () => {
       </div>
     </div>
   );
+};
 };
 
 export default Index;
