@@ -903,3 +903,22 @@
   0% { opacity: 0; transform: translateY(20px); }
   100% { opacity: 1; transform: translateY(0); }
 }
+
+/* ═══ Phone Mockup Auto-Scroll ═══ */
+@keyframes phoneScroll {
+  0% { transform: translateY(0); }
+  10% { transform: translateY(0); }
+  17% { transform: translateY(-580px); }
+  24% { transform: translateY(-580px); }
+  31% { transform: translateY(-1160px); }
+  38% { transform: translateY(-1160px); }
+  45% { transform: translateY(-1740px); }
+  52% { transform: translateY(-1740px); }
+  59% { transform: translateY(-2320px); }
+  66% { transform: translateY(-2320px); }
+  73% { transform: translateY(-2900px); }
+  80% { transform: translateY(-2900px); }
+  87% { transform: translateY(-3480px); }
+  94% { transform: translateY(-3480px); }
+  100% { transform: translateY(0); }
+}
