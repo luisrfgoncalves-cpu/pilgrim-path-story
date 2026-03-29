@@ -2149,6 +2149,35 @@ export const storyChapters: Record<string, StoryChapter> = {
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "A certeza que começou como uma inquietação na Cidade da Destruição agora é visão. Você vê o que antes apenas cria. A fé se transformou em vista.", lowThreshold: 4, lowText: "O caminho foi tortuoso, cheio de dúvidas e desvios. Mas você chegou. E no final, é isso que importa." }
     ],
+    choices: [
+      {
+        text: "Olhar para trás uma última vez",
+        nextChapterId: "fase6-cena9",
+        effects: {}
+      }
+    ]
+  },
+
+  "fase6-cena9": {
+    id: "fase6-cena9",
+    title: "A Rejeição de Ignorância",
+    location: "Portões da Cidade Celestial",
+    characters: ["cristao", "ignorancia"],
+    reflection: "r15",
+    narrative: [
+      "Antes que os portões se fechem, Bunyan mostra uma última cena — a mais solene de todo o livro.",
+      "Ignorância chega aos portões. Ele também fez a jornada — mas nunca passou pela Porta Estreita. Nunca carregou o fardo à cruz. Nunca recebeu o pergaminho selado.",
+      "\"Boas obras são meu passaporte\", diz ele confiante. Mas quando buscam seu nome no livro, ele não está lá. Os portões não se abrem. Dois Seres Resplandecentes o tomam pelos braços e o levam embora — não para a Cidade, mas para uma porta lateral no monte que leva ao abismo.",
+      "Bunyan termina com uma frase que ecoa pelos séculos: \"Então vi que havia um caminho para o inferno, mesmo dos portões do Céu.\"",
+      "A jornada terminou. A graça triunfou — não por suas forças, mas pela fidelidade de Quem prometeu."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 8, highText: "A cena de Ignorância te faz estremecer mesmo na glória. A graça não é merecida — é recebida. E você a recebeu.", lowThreshold: 4, lowText: "O destino de Ignorância é um aviso final: boas intenções não bastam. A porta estreita existe por uma razão." }
+    ],
+    flagNarrative: [
+      { flag: "entrou_casa_interprete", text: "O Intérprete te mostrou a diferença entre a vassoura e a água, entre a Lei e a Graça. Ignorância confiou na vassoura até o fim." },
+      { flag: "confiou_rio", text: "Você confiou nas águas escuras. Ignorância confiou em si mesmo. A diferença é eterna." }
+    ],
     choices: [],
     isEnding: true,
     endingType: "final_good"
