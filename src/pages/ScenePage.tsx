@@ -42,7 +42,7 @@ const ScenePage = () => {
 
   // Emotional state system (9 postures)
   const emotional = useMemo(() => 
-    chapter ? resolveEmotionalState(progress.attributes, chapter.id, Object.keys(progress.flags).filter(k => (progress.flags as Record<string, boolean>)[k]), recentEffects) : null
+    chapter ? resolveEmotionalState(progress.attributes, chapter.id, Object.entries(progress.flags).filter(([, v]) => v).map(([k]) => k), recentEffects) : null
   , [progress.attributes, chapter?.id, progress.flags, recentEffects]);
 
   const emotionalClass = emotional?.sceneClass || '';
