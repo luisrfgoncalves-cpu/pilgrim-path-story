@@ -276,6 +276,20 @@ const ScenePage = () => {
           </div>
         </div>
       )}
+      {/* Support bonus toast */}
+      {supportToastShown && newSupportCount > 0 && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
+          <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-card border border-primary/30 shadow-lg max-w-xs">
+            <Heart className="w-5 h-5 text-primary" />
+            <div>
+              <p className="text-xs font-display text-primary">Apoio recebido!</p>
+              <p className="text-[10px] text-foreground/80">
+                {newSupportCount} {newSupportCount === 1 ? 'peregrino orou' : 'peregrinos oraram'} por você.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Header with avatar */}
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
