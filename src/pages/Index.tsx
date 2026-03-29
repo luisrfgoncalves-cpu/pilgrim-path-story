@@ -236,7 +236,7 @@ const Index = () => {
           </button>
         ) : (
           <button
-            onClick={handleNewJourney}
+            onClick={() => handleNewJourney()}
             className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 transition-opacity glow-gold"
           >
             {history.totalPlaythroughs > 0 ? (
@@ -288,7 +288,7 @@ const Index = () => {
         {/* Restart option when in progress */}
         {hasProgress && (
           <button
-            onClick={handleNewJourney}
+            onClick={() => handleNewJourney(progress.campaign || 'part1')}
             className="w-full text-center text-[11px] text-muted-foreground hover:text-foreground transition-colors pt-1"
           >
             Recomeçar do início
