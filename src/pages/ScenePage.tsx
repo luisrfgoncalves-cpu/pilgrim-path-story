@@ -1049,42 +1049,66 @@ const ScenePage = () => {
         </div>
       )}
 
-      {/* ═══ CHARACTER ENTRANCE REVEAL ═══ */}
+      {/* ═══ CHARACTER ENTRANCE REVEAL — 3D style, no circle ═══ */}
       {charReveal && (
         <div
-          className="fixed inset-0 z-[55] flex items-center justify-center pointer-events-none"
-          onClick={() => setCharReveal(null)}
-          style={{ animation: 'charRevealBg 3s ease-out forwards' }}
+          className="fixed inset-0 z-[55] flex items-end justify-center pointer-events-auto"
+          onClick={() => {
+            setCharReveal(null);
+            setCharRevealDone(true);
+            setPersistentChar(charReveal);
+          }}
+          style={{ animation: 'charRevealBg 6s ease-out forwards' }}
         >
+          {/* Dark cinematic backdrop */}
           <div className="absolute inset-0" style={{
-            background: 'radial-gradient(ellipse at center, hsl(0 0% 0% / 0.7) 0%, hsl(0 0% 0% / 0.3) 60%, transparent 100%)',
+            background: 'linear-gradient(180deg, hsl(0 0% 0% / 0.3) 0%, hsl(0 0% 0% / 0.75) 50%, hsl(0 0% 0% / 0.85) 100%)',
           }} />
-          <div className="relative z-10 text-center" style={{ animation: 'charRevealIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}>
-            <img
-              src={charReveal.img}
-              alt={charReveal.name}
-              className="w-40 h-40 md:w-52 md:h-52 rounded-full object-cover mx-auto"
-              style={{
-                border: '4px solid hsl(40 60% 50%)',
-                boxShadow: '0 0 40px hsl(40 60% 50% / 0.5), 0 0 80px hsl(40 50% 40% / 0.3), 0 20px 60px hsl(0 0% 0% / 0.5)',
-              }}
-            />
-            <div className="mt-4" style={{ animation: 'charRevealName 0.6s ease-out 0.4s both' }}>
-              <p className="font-display text-2xl md:text-3xl font-bold" style={{
-                color: 'hsl(40 70% 70%)',
-                textShadow: '0 2px 12px hsl(0 0% 0% / 0.8), 0 0 30px hsl(40 60% 50% / 0.4)',
-              }}>
-                {charReveal.name}
-              </p>
-              {charReveal.role && (
-                <p className="text-sm md:text-base mt-1 font-display" style={{
-                  color: 'hsl(40 40% 55%)',
-                  textShadow: '0 1px 6px hsl(0 0% 0% / 0.6)',
+
+          {/* Character image — BIG, no circle, 3D-style with shadow */}
+          <div className="relative z-10 w-full max-w-lg mx-auto flex flex-col items-center pb-8" style={{ animation: 'charRevealIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
+            <div className="relative">
+              <img
+                src={charReveal.img}
+                alt={charReveal.name}
+                className="w-52 h-64 md:w-64 md:h-80 object-cover object-top mx-auto"
+                style={{
+                  borderRadius: '16px 16px 0 0',
+                  boxShadow: '0 -8px 40px hsl(40 50% 45% / 0.3), 0 20px 60px hsl(0 0% 0% / 0.7), -20px 0 40px hsl(0 0% 0% / 0.4), 20px 0 40px hsl(0 0% 0% / 0.4)',
+                  filter: 'contrast(1.1) brightness(1.05)',
+                }}
+              />
+              {/* 3D depth effect — bottom gradient fade */}
+              <div className="absolute bottom-0 left-0 right-0 h-24" style={{
+                background: 'linear-gradient(180deg, transparent 0%, hsl(0 0% 0% / 0.9) 100%)',
+                borderRadius: '0 0 0 0',
+              }} />
+              {/* Name overlay on image */}
+              <div className="absolute bottom-4 left-0 right-0 text-center" style={{ animation: 'charRevealName 0.7s ease-out 0.5s both' }}>
+                <p className="font-display text-3xl md:text-4xl font-bold" style={{
+                  color: 'hsl(40 80% 75%)',
+                  textShadow: '0 3px 16px hsl(0 0% 0% / 0.9), 0 0 40px hsl(40 60% 50% / 0.5)',
+                  letterSpacing: '0.02em',
                 }}>
-                  {charReveal.role}
+                  {charReveal.name}
                 </p>
-              )}
+                {charReveal.role && (
+                  <p className="text-sm md:text-base mt-1.5 font-display uppercase tracking-widest" style={{
+                    color: 'hsl(40 50% 60%)',
+                    textShadow: '0 2px 8px hsl(0 0% 0% / 0.8)',
+                  }}>
+                    {charReveal.role}
+                  </p>
+                )}
+              </div>
             </div>
+            {/* Tap to dismiss hint */}
+            <p className="text-[10px] mt-4 font-display uppercase tracking-widest" style={{
+              color: 'hsl(0 0% 50%)',
+              animation: 'charRevealName 0.5s ease-out 1.5s both',
+            }}>
+              Toque para continuar
+            </p>
           </div>
         </div>
       )}
