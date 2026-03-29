@@ -129,6 +129,33 @@ function getPhaseFromChapter(chapterId: string): string {
 }
 
 /**
+ * Emotional progression ladder (ordered weakest → strongest).
+ * Decisions shift the player up or down this ladder.
+ */
+const POSTURE_LADDER: PostureState[] = [
+  'abatido',
+  'em_dificuldade',
+  'confuso',
+  'em_conflito',
+  'recuperacao',
+  'determinado',
+  'esperancoso',
+  'vitoria_final',
+];
+
+function ladderIndex(p: PostureState): number {
+  const i = POSTURE_LADDER.indexOf(p);
+  return i >= 0 ? i : 3; // default to middle
+}
+
+/** Shift a posture up or down the ladder by N steps */
+function shiftPosture(base: PostureState, steps: number): PostureState {
+  const idx = ladderIndex(base);
+  const next = Math.max(0, Math.min(POSTURE_LADDER.length - 1, idx + steps));
+  return POSTURE_LADDER[next];
+}
+
+/**
  * Recent decision trend: checks if last N choices were mostly positive or negative.
  */
 function getDecisionTrend(recentEffects: Array<Record<string, number>>): number {
@@ -136,6 +163,19 @@ function getDecisionTrend(recentEffects: Array<Record<string, number>>): number 
   const last = recentEffects.slice(-3);
   const totals = last.map(e => Object.values(e).reduce((s, v) => s + (v || 0), 0));
   return totals.reduce((s, v) => s + v, 0) / totals.length;
+}
+
+/**
+ * Convert trend magnitude into ladder steps:
+ * strong positive → +2, mild positive → +1
+ * strong negative → -2, mild negative → -1
+ */
+function trendToSteps(trend: number): number {
+  if (trend >= 2) return 2;
+  if (trend >= 0.5) return 1;
+  if (trend <= -2) return -2;
+  if (trend <= -0.5) return -1;
+  return 0;
 }
 
 export function resolveEmotionalState(
@@ -147,6 +187,7 @@ export function resolveEmotionalState(
   const { fe, coragem, perseveranca, discernimento } = attrs;
   const avg = (fe + coragem + perseveranca + discernimento) / 4;
   const trend = recentEffects ? getDecisionTrend(recentEffects) : 0;
+  const trendSteps = trendToSteps(trend);
   const seed = chapterId.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
 
   // 1. Flag overrides (highest priority)
@@ -168,52 +209,23 @@ export function resolveEmotionalState(
   const phase = getPhaseFromChapter(chapterId);
   const baseline = phaseBaselines[phase];
 
-  // 3. Resolve posture: phase baseline modulated by attributes + trend
-  let posture: PostureState;
-  let intensity: number;
+  // 3. Determine base posture from phase + attributes
+  let basePosture: PostureState;
 
   if (baseline) {
-    // Use phase baseline as the anchor
-    const basePosture = avg >= baseline.threshold ? baseline.high : baseline.low;
-
-    // Allow strong attribute performance to override phase gravity upward
-    if (avg >= 8.5 && trend >= 0) {
-      posture = 'vitoria_final';
-      intensity = Math.min((avg - 8) / 4, 1);
-    } else if (avg >= 7 && trend >= 0 && phase !== 'fase1') {
-      posture = 'esperancoso';
-      intensity = Math.min((avg - 6.5) / 3.5, 1);
-    } else if (trend < -1.5 && avg < 5) {
-      // Sharp decline overrides phase → conflict or difficulty
-      posture = avg >= 4 ? 'em_conflito' : 'em_dificuldade';
-      intensity = Math.min(Math.abs(trend) / 3, 1);
-    } else {
-      // Default: follow phase baseline
-      posture = basePosture;
-      intensity = Math.abs(avg - baseline.threshold) / 5 + 0.3;
-    }
+    basePosture = avg >= baseline.threshold ? baseline.high : baseline.low;
   } else {
-    // Fallback: pure attribute-based (shouldn't happen)
-    if (avg >= 8.5) {
-      posture = 'vitoria_final';
-      intensity = 1;
-    } else if (avg >= 7) {
-      posture = 'esperancoso';
-      intensity = 0.7;
-    } else if (avg >= 5.5) {
-      posture = 'determinado';
-      intensity = 0.5;
-    } else if (avg >= 4) {
-      posture = trend < -1 ? 'em_conflito' : 'recuperacao';
-      intensity = 0.4;
-    } else if (avg >= 3) {
-      posture = fe < 3 && coragem < 3 ? 'em_dificuldade' : 'confuso';
-      intensity = 0.5;
-    } else {
-      posture = 'abatido';
-      intensity = 0.7;
-    }
+    // Pure attribute fallback
+    if (avg >= 7) basePosture = 'esperancoso';
+    else if (avg >= 5.5) basePosture = 'determinado';
+    else if (avg >= 4) basePosture = 'recuperacao';
+    else if (avg >= 3) basePosture = 'confuso';
+    else basePosture = 'abatido';
   }
+
+  // 4. Apply decision trend: shift up/down the ladder
+  const posture = shiftPosture(basePosture, trendSteps);
+  const intensity = Math.max(0.2, Math.min(1, 0.3 + Math.abs(avg - 5) / 5 + Math.abs(trend) / 4));
 
   const lines = atmosphereLines[posture];
   return {
