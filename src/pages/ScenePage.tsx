@@ -25,6 +25,7 @@ import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
 import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
 import { MiniGame, MiniGameResult } from '@/components/MiniGames';
+import { FullscreenMiniGame, FULLSCREEN_GAMES } from '@/components/FullscreenMiniGame';
 import { miniGameMappings } from '@/data/miniGameMappings';
 import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, Zap, Star, Shield, Flame } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
@@ -547,8 +548,8 @@ const ScenePage = () => {
             </>
           )}
 
-          {/* ═══ MINI-GAME ═══ */}
-          {showChoices && !miniGameDone && miniGameMappings[chapter.id] && (
+          {/* ═══ MINI-GAME (inline for minor games) ═══ */}
+          {showChoices && !miniGameDone && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
             <div className="mb-5 animate-scale-in">
               <MiniGame
                 config={miniGameMappings[chapter.id]}
@@ -556,7 +557,6 @@ const ScenePage = () => {
                   setMiniGameResult(result);
                   setMiniGameDone(true);
                   setShowMiniGameResult(true);
-                  // Apply effects from mini-game
                   if (result.effects) {
                     triggerChoiceEffect(result.effects as Record<string, number>);
                     sfxForChoice(result.effects as Record<string, number>);
@@ -565,6 +565,27 @@ const ScenePage = () => {
                 }}
               />
             </div>
+          )}
+
+          {/* ═══ FULLSCREEN MINI-GAME (major games) ═══ */}
+          {showChoices && !miniGameDone && miniGameMappings[chapter.id] && FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
+            <FullscreenMiniGame
+              config={miniGameMappings[chapter.id]}
+              chapterId={chapter.id}
+              onComplete={(result) => {
+                setMiniGameResult(result);
+                setMiniGameDone(true);
+                setShowMiniGameResult(true);
+                if (result.effects) {
+                  triggerChoiceEffect(result.effects as Record<string, number>);
+                  sfxForChoice(result.effects as Record<string, number>);
+                }
+                setTimeout(() => setShowMiniGameResult(false), 3000);
+              }}
+              onSkip={() => {
+                setMiniGameDone(true);
+              }}
+            />
           )}
 
           {/* Mini-game result toast */}
