@@ -156,15 +156,15 @@
   transition: background 2s ease, opacity 2s ease;
 }
 
-/* Abatido — tela escura, baixo contraste, opressivo */
+/* Abatido — tom mais sóbrio, mas ainda legível */
 .emotional-abatido {
-  --bg-overlay: hsl(220 20% 5% / 0.35);
+  --bg-overlay: hsl(220 20% 5% / 0.15);
 }
 .emotional-abatido .scene-image {
-  filter: brightness(0.55) saturate(0.4) contrast(0.85);
+  filter: brightness(0.75) saturate(0.6) contrast(0.9);
 }
 .emotional-abatido .narrative-text {
-  color: hsl(var(--foreground) / 0.6);
+  color: hsl(var(--foreground) / 0.8);
 }
 .emotional-abatido .scene-overlay {
   background: linear-gradient(to top, hsl(var(--background)), hsl(var(--background) / 0.8), hsl(220 30% 5% / 0.5));
@@ -178,15 +178,15 @@
   border-color: hsl(var(--border) / 0.4);
 }
 
-/* Confuso — leve blur generalizado, instabilidade visual */
+/* Confuso — leve instabilidade mas legível */
 .emotional-confuso {
-  --bg-overlay: hsl(240 15% 12% / 0.15);
+  --bg-overlay: hsl(240 15% 12% / 0.08);
 }
 .emotional-confuso .scene-image {
-  filter: brightness(0.82) saturate(0.75) blur(0.8px) contrast(0.9);
+  filter: brightness(0.88) saturate(0.8) blur(0.4px) contrast(0.95);
 }
 .emotional-confuso .narrative-text {
-  color: hsl(var(--foreground) / 0.72);
+  color: hsl(var(--foreground) / 0.82);
   text-shadow: 0 0 8px hsl(var(--background) / 0.3);
 }
 .emotional-confuso .scene-overlay {
@@ -207,15 +207,15 @@
   background: linear-gradient(to top, hsl(var(--background)), hsl(var(--background) / 0.35), transparent);
 }
 
-/* Em Dificuldade — pesado, escuro, comprimido */
+/* Em Dificuldade — pesado mas legível */
 .emotional-dificuldade {
-  --bg-overlay: hsl(0 15% 8% / 0.25);
+  --bg-overlay: hsl(0 15% 8% / 0.12);
 }
 .emotional-dificuldade .scene-image {
-  filter: brightness(0.65) saturate(0.55) contrast(1.15);
+  filter: brightness(0.78) saturate(0.7) contrast(1.05);
 }
 .emotional-dificuldade .narrative-text {
-  color: hsl(var(--foreground) / 0.68);
+  color: hsl(var(--foreground) / 0.82);
 }
 .emotional-dificuldade .scene-overlay {
   background: linear-gradient(to top, hsl(var(--background)), hsl(var(--background) / 0.7), hsl(0 20% 8% / 0.35));
@@ -262,15 +262,15 @@
   box-shadow: 0 0 12px hsl(var(--primary) / 0.08);
 }
 
-/* Em Conflito — sombras duras, divisão */
+/* Em Conflito — tensão mas legível */
 .emotional-conflito {
-  --bg-overlay: hsl(0 10% 8% / 0.2);
+  --bg-overlay: hsl(0 10% 8% / 0.1);
 }
 .emotional-conflito .scene-image {
-  filter: brightness(0.72) saturate(0.65) contrast(1.2);
+  filter: brightness(0.82) saturate(0.75) contrast(1.1);
 }
 .emotional-conflito .narrative-text {
-  color: hsl(var(--foreground) / 0.72);
+  color: hsl(var(--foreground) / 0.82);
 }
 .emotional-conflito .scene-overlay {
   background: linear-gradient(135deg, hsl(0 20% 8% / 0.35), transparent 50%, hsl(220 20% 8% / 0.35));
@@ -320,7 +320,7 @@
   filter: brightness(1.1) saturate(1.15);
 }
 .emotional-heavy .scene-image {
-  filter: brightness(0.7) saturate(0.6);
+  filter: brightness(0.8) saturate(0.7);
 }
 
 /* Visual effects */

@@ -8,44 +8,57 @@ import valeHumilhacao from '@/assets/scenes/vale-humilhacao.jpg';
 import feiraVaidade from '@/assets/scenes/feira-vaidade.jpg';
 import casteloDuvida from '@/assets/scenes/castelo-duvida.jpg';
 import cidadeCelestial from '@/assets/scenes/cidade-celestial.jpg';
+import cruzFardo from '@/assets/scenes/cruz-fardo.jpg';
+import monteSinai from '@/assets/scenes/monte-sinai.jpg';
+import valeSombra from '@/assets/scenes/vale-sombra.jpg';
+import fielEncontro from '@/assets/scenes/fiel-encontro.jpg';
+import palacioBelo from '@/assets/scenes/palacio-belo.jpg';
+import esperancaEncontro from '@/assets/scenes/esperanca-encontro.jpg';
 
 export const sceneImages: Record<string, string> = {
+  // FASE 1: Cidade da Destruição ao Caminho
   'cena1': cidadeDestruicao,
   'cena2': cidadeDestruicao,
   'cena3': cidadeDestruicao,
   'cena4': cidadeDestruicao,
   'cena5': sabedoriaMundana,
-  'cena6': cidadeDestruicao,
+  'cena6': colinaDificuldade,
   'cena7': portaoEstreito,
-  'cena8': colinaDificuldade,
+  'cena8': sabedoriaMundana,
   'cena9': portaoEstreito,
-  'cena10': colinaDificuldade,
+  'cena10': monteSinai,
   'cena11': pantanoDesanimo,
   'cena12': pantanoDesanimo,
   'cena13': pantanoDesanimo,
   'cena14': pantanoDesanimo,
-  'cena15': portaoEstreito,
+  'cena15': cruzFardo,
+
+  // FASE 2: Casa do Intérprete
   'fase2-cena1': casaInterprete,
   'fase2-cena2': casaInterprete,
   'fase2-cena3': portaoEstreito,
   'fase2-cena4': casaInterprete,
   'fase2-cena5': casaInterprete,
   'fase2-cena6': casaInterprete,
-  'fase2-cena7': casaInterprete,
+  'fase2-cena7': palacioBelo,
   'fase2-cena8': casaInterprete,
   'fase2-cena9': casaInterprete,
   'fase2-cena10': casaInterprete,
-  'fase2-cena11': casaInterprete,
+  'fase2-cena11': colinaDificuldade,
+
+  // FASE 3: Vale da Humilhação e Apolião
   'fase3-cena1': valeHumilhacao,
   'fase3-cena2': valeHumilhacao,
   'fase3-cena3': valeHumilhacao,
   'fase3-cena4': valeHumilhacao,
-  'fase3-cena5': valeHumilhacao,
-  'fase3-cena6': valeHumilhacao,
-  'fase3-cena7': valeHumilhacao,
-  'fase3-cena8': valeHumilhacao,
-  'fase3-cena9': valeHumilhacao,
-  'fase3-cena10': valeHumilhacao,
+  'fase3-cena5': valeSombra,
+  'fase3-cena6': valeSombra,
+  'fase3-cena7': valeSombra,
+  'fase3-cena8': fielEncontro,
+  'fase3-cena9': valeSombra,
+  'fase3-cena10': fielEncontro,
+
+  // FASE 4: Feira da Vaidade
   'fase4-cena1': feiraVaidade,
   'fase4-cena2': feiraVaidade,
   'fase4-cena3': feiraVaidade,
@@ -53,10 +66,12 @@ export const sceneImages: Record<string, string> = {
   'fase4-cena5': feiraVaidade,
   'fase4-cena6': feiraVaidade,
   'fase4-cena7': feiraVaidade,
-  'fase4-cena8': feiraVaidade,
+  'fase4-cena8': esperancaEncontro,
   'fase4-cena9': feiraVaidade,
-  'fase4-cena10': feiraVaidade,
-  'fase5-cena1': casteloDuvida,
+  'fase4-cena10': esperancaEncontro,
+
+  // FASE 5: Castelo da Dúvida
+  'fase5-cena1': colinaDificuldade,
   'fase5-cena2': casteloDuvida,
   'fase5-cena3': casteloDuvida,
   'fase5-cena4': casteloDuvida,
@@ -64,11 +79,12 @@ export const sceneImages: Record<string, string> = {
   'fase5-cena6': casteloDuvida,
   'fase5-cena7': casteloDuvida,
   'fase5-cena8': casteloDuvida,
-  'fase5-cena9': casteloDuvida,
-  'fase5-cena10': casteloDuvida,
+  'fase5-cena9': esperancaEncontro,
+  'fase5-cena10': colinaDificuldade,
+
+  // FASE 6: Rio e Cidade Celestial
   'fase6-cena1': cidadeCelestial,
   'fase6-cena2': cidadeCelestial,
-  'fase6-cena3': cidadeCelestial,
   'fase6-cena4': cidadeCelestial,
   'fase6-cena5': cidadeCelestial,
   'fase6-cena6': cidadeCelestial,
