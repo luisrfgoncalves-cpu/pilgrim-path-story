@@ -334,12 +334,12 @@ const Index = () => {
           </button>
         )}
 
-        <div className="flex items-center justify-center gap-3 pt-2">
-          <button onClick={() => navigate('/termos')} className="px-4 py-2 text-[10px] text-muted-foreground hover:text-foreground border border-border rounded-lg bg-card hover:border-primary/30 transition-all font-display">
-            Termos e Privacidade
+        <div className="flex items-center justify-center gap-3 pt-2 flex-wrap">
+          <button onClick={() => navigate('/termos')} className="px-4 py-2 text-[10px] text-muted-foreground hover:text-foreground border border-border rounded-lg bg-card hover:border-primary/30 transition-all font-display whitespace-nowrap">
+            Políticas e Termos
           </button>
-          <button onClick={() => navigate('/landing')} className="px-4 py-2 text-[10px] text-muted-foreground hover:text-foreground border border-border rounded-lg bg-card hover:border-primary/30 transition-all font-display">
-            Sobre o App
+          <button onClick={() => navigate('/landing')} className="px-4 py-2 text-[10px] text-muted-foreground hover:text-foreground border border-border rounded-lg bg-card hover:border-primary/30 transition-all font-display whitespace-nowrap">
+            Sobre o aplicativo
           </button>
         </div>
       </div>
