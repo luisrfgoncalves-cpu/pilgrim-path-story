@@ -51,6 +51,7 @@ interface InlineConsequence {
 const ScenePage = () => {
   const navigate = useNavigate();
   const { progress, makeChoice, goToChapter, meetsRequirements, hasFlag, isReplay, completePlaythrough, hadFlagBefore, addItem, history } = useStoryProgress();
+  const { profile } = useAuth();
   useProgressSync(progress);
   const [narrativeIndex, setNarrativeIndex] = useState(0);
   const [showChoices, setShowChoices] = useState(false);
