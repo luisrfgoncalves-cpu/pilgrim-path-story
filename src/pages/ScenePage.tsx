@@ -191,6 +191,7 @@ const ScenePage = () => {
     setMiniGameResult(null);
     setShowMiniGameResult(false);
     setMiniGameReady(false);
+    setCharReveal(null);
     const t = setTimeout(() => {
       setTransitioning(false);
       // Auto-trigger dramatic VFX on scene entry
@@ -198,6 +199,33 @@ const ScenePage = () => {
     }, 100);
     return () => clearTimeout(t);
   }, [progress.currentChapterId]);
+
+  // Dramatic character entrance — show big portrait for non-protagonist characters
+  useEffect(() => {
+    if (!chapter || transitioning) return;
+    const allChars = [...characters, ...part2Characters];
+    const isPart2 = progress.campaign === 'part2';
+    const protagonistId = isPart2 ? 'crista' : 'cristao';
+    const sceneCharIds = chapter.characters || [];
+    // Find the most important non-protagonist character to reveal
+    const revealChar = sceneCharIds
+      .filter(id => id !== protagonistId)
+      .map(id => {
+        const char = allChars.find(c => c.id === id);
+        const img = characterImages[id];
+        return char && img ? { name: char.name, img, role: char.role } : null;
+      })
+      .find(Boolean);
+    
+    if (revealChar) {
+      const delay = setTimeout(() => {
+        setCharReveal(revealChar);
+        // Auto-dismiss after 3 seconds
+        setTimeout(() => setCharReveal(null), 3000);
+      }, 800); // Show after scene image loads
+      return () => clearTimeout(delay);
+    }
+  }, [chapter?.id, transitioning]);
 
   // Roll for surprise on scene entry
   useEffect(() => {
