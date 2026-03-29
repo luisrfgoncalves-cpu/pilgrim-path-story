@@ -4,7 +4,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ArrowLeft, Heart, HandHeart, Sparkles, MapPin, Users, MessageCircle, Activity, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Heart, HandHeart, Sparkles, MapPin, Users, MessageCircle, Activity, ChevronRight, Trophy, Clock, Target, Gift } from 'lucide-react';
+import { useCollectiveEvent } from '@/hooks/useCollectiveEvent';
+import { Progress } from '@/components/ui/progress';
 import { NavLink } from '@/components/NavLink';
 
 // ─── Types ───
