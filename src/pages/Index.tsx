@@ -170,14 +170,18 @@ const Index = () => {
         )}
 
         {/* Nav grid */}
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-5 gap-2">
+          <button onClick={handleBackToSplash} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4">
+            <Home className="w-6 h-6 text-primary" />
+            <span className="text-xs text-primary font-display">Início</span>
+          </button>
           <button onClick={() => navigate('/jornada')} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4">
             <Map className="w-6 h-6 text-muted-foreground" />
             <span className="text-xs text-muted-foreground font-display">Mapa</span>
           </button>
           <button onClick={() => navigate('/multiplayer')} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4 !border-primary/30">
             <Swords className="w-6 h-6 text-primary" />
-            <span className="text-xs text-primary font-display">Multiplayer</span>
+            <span className="text-xs text-primary font-display">Multi</span>
           </button>
           <button onClick={() => user ? navigate('/perfil') : navigate('/auth')} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4">
             {user ? <User className="w-6 h-6 text-muted-foreground" /> : <LogIn className="w-6 h-6 text-muted-foreground" />}
@@ -185,7 +189,7 @@ const Index = () => {
           </button>
           <button onClick={() => navigate('/comunidade')} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4">
             <Users className="w-6 h-6 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground font-display">Comunidade</span>
+            <span className="text-xs text-muted-foreground font-display">Social</span>
           </button>
         </div>
 
