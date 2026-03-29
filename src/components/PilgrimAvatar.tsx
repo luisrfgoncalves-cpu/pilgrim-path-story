@@ -42,6 +42,23 @@ const postureLabels: Record<PostureState, string> = {
   radiant: 'Radiante',
 };
 
+/* Breathing speed varies by posture — burdened breathes heavier/slower */
+const breatheDuration: Record<PostureState, string> = {
+  burdened: '5s',
+  doubt: '4.5s',
+  standing: '4s',
+  advancing: '3.8s',
+  radiant: '4.2s',
+};
+
+const swayDuration: Record<PostureState, string> = {
+  burdened: '7s',
+  doubt: '6s',
+  standing: '8s',
+  advancing: '5s',
+  radiant: '6s',
+};
+
 const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = '', showLabel = false }: PilgrimAvatarProps) => {
   const { fe, coragem, perseveranca, discernimento } = attributes;
   const avg = (fe + coragem + perseveranca + discernimento) / 4;
@@ -62,21 +79,29 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
     }
   }, [posture]);
 
-  // Size configs: sm for header, md for cards, lg for hero display
   const sizeConfig = {
-    sm: { container: 'w-10 h-10', rounded: 'rounded-full' },
-    md: { container: 'w-20 h-20', rounded: 'rounded-2xl' },
-    lg: { container: 'w-44 h-56', rounded: 'rounded-2xl' },
+    sm: { container: 'w-10 h-10', rounded: 'rounded-full', showParticles: false },
+    md: { container: 'w-20 h-20', rounded: 'rounded-2xl', showParticles: false },
+    lg: { container: 'w-44 h-56', rounded: 'rounded-2xl', showParticles: true },
   }[size];
+
+  const enableAnimations = size === 'md' || size === 'lg';
 
   return (
     <div className={`relative flex flex-col items-center gap-1.5 ${className}`}>
       <div className={`${sizeConfig.container} ${sizeConfig.rounded} ${visual.border} ${visual.shadow} overflow-hidden relative bg-card transition-all duration-700`}>
+        {/* Avatar image with breathing + sway animations */}
         <img
           src={postureAssets[posture]}
           alt={postureLabels[posture]}
           className={`w-full h-full object-cover transition-all duration-700 ${visual.overlayClass}`}
-          style={{ objectPosition: size === 'sm' ? 'center 15%' : 'center 20%' }}
+          style={{
+            objectPosition: size === 'sm' ? 'center 15%' : 'center 20%',
+            ...(enableAnimations ? {
+              animation: `pilgrimBreathe ${breatheDuration[posture]} ease-in-out infinite, pilgrimSway ${swayDuration[posture]} ease-in-out infinite`,
+              transformOrigin: 'center bottom',
+            } : {}),
+          }}
           width={512}
           height={768}
         />
@@ -84,6 +109,27 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
         {/* Radiant glow pulse */}
         {posture === 'radiant' && (
           <div className="absolute inset-0 bg-primary/10 animate-[pulse_3s_ease-in-out_infinite] pointer-events-none" />
+        )}
+
+        {/* Ambient dust particles — only on lg */}
+        {sizeConfig.showParticles && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {[...Array(6)].map((_, i) => (
+              <span
+                key={i}
+                className="absolute rounded-full bg-primary/30"
+                style={{
+                  width: `${1.5 + Math.random() * 2}px`,
+                  height: `${1.5 + Math.random() * 2}px`,
+                  left: `${10 + (i * 15) % 80}%`,
+                  bottom: `${5 + (i * 12) % 40}%`,
+                  animation: `pilgrimDust ${4 + i * 0.7}s ease-in-out infinite`,
+                  animationDelay: `${i * 0.8}s`,
+                  opacity: 0,
+                }}
+              />
+            ))}
+          </div>
         )}
 
         {/* Bottom gradient for readability when large */}
