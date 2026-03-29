@@ -928,7 +928,7 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
   }, []);
 
   const success = enemyHP <= 0 || (playerHP > 0 && playerHP > enemyHP);
-  const finalScore = Math.round((Math.max(0, playerHP) / 10) * 100);
+  const finalScore = Math.round((Math.max(0, playerHP) / maxHP) * 100);
 
   useEffect(() => {
     if (phase === 'final') {
@@ -971,7 +971,7 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
           {success ? `${enemy.name} foi derrotado!` : `${enemy.name} prevaleceu...`}
         </h3>
         <p className="text-sm text-foreground/80">
-          Sua vida: {Math.max(0, playerHP)}/10 · {enemy.name}: {Math.max(0, enemyHP)}/10
+          Sua vida: {Math.max(0, playerHP)}/{maxHP} · {enemy.name}: {Math.max(0, enemyHP)}/{maxHP}
         </p>
         <div className="h-3 bg-secondary rounded-full overflow-hidden">
           <div className={`h-full rounded-full transition-all duration-1000 ${success ? 'bg-primary' : 'bg-destructive'}`}
