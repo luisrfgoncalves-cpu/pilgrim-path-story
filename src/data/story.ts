@@ -1221,6 +1221,280 @@ export const storyChapters: Record<string, StoryChapter> = {
     flagNarrative: [
       { flag: "aceitou_custo_feira", text: "Aceitar o custo foi difícil, mas te transformou. Você sai da feira mais forte e mais decidido." }
     ],
+    choices: [
+      {
+        text: "Seguir em frente",
+        nextChapterId: "fase5-cena1",
+        effects: { fe: 1 }
+      }
+    ]
+  },
+
+  // ========== FASE 5: CASTELO DA DÚVIDA ==========
+
+  "fase5-cena1": {
+    id: "fase5-cena1",
+    title: "O Erro",
+    location: "Castelo da Dúvida",
+    characters: ["cristao"],
+    narrative: [
+      "Após um caminho aparentemente mais fácil, você percebe que tomou uma decisão errada."
+    ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 7, highText: "Seu discernimento grita: você sabia que algo estava errado, mas ignorou os sinais.", lowThreshold: 3, lowText: "Você nem consegue entender onde errou. Tudo parece confuso demais." }
+    ],
+    flagNarrative: [
+      { flag: "escolheu_caminho_facil", text: "Não é a primeira vez que o caminho fácil te engana. A lição se repete." }
+    ],
+    choices: [
+      {
+        text: "Reconhecer o erro",
+        nextChapterId: "fase5-cena2",
+        effects: { discernimento: 1 },
+        flag: "reconheceu_erro_castelo"
+      },
+      {
+        text: "Ignorar",
+        nextChapterId: "fase5-cena3",
+        effects: { discernimento: -1 }
+      }
+    ]
+  },
+
+  "fase5-cena2": {
+    id: "fase5-cena2",
+    title: "Sem Volta",
+    location: "Castelo da Dúvida",
+    characters: ["cristao"],
+    narrative: [
+      "Você tenta voltar, mas já está longe demais. O caminho se torna confuso."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "Mesmo perdido, uma voz interior te diz: há saída. Sempre há.", lowThreshold: 3, lowText: "O pânico começa a crescer. Você não sabe mais o que fazer." }
+    ],
+    choices: [
+      {
+        text: "Procurar saída",
+        nextChapterId: "fase5-cena4",
+        effects: { fe: 1 }
+      },
+      {
+        text: "Desanimar",
+        nextChapterId: "fase5-cena3",
+        effects: { fe: -1 }
+      }
+    ]
+  },
+
+  "fase5-cena3": {
+    id: "fase5-cena3",
+    title: "A Dúvida Cresce",
+    location: "Castelo da Dúvida",
+    characters: ["cristao"],
+    narrative: [
+      "A dúvida começa a crescer. Você já não tem certeza de onde está."
+    ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 6, highText: "Mas algo dentro de você se recusa a parar. Você já passou por coisas piores.", lowThreshold: 3, lowText: "Cada sombra parece uma ameaça. O medo é seu companheiro constante agora." }
+    ],
+    flagNarrative: [
+      { flag: "enfrentou_presenca", text: "No vale, você enfrentou algo muito mais assustador. Isso te dá uma faísca de coragem." }
+    ],
+    choices: [
+      {
+        text: "Continuar mesmo sem certeza",
+        nextChapterId: "fase5-cena4",
+        effects: { coragem: 1 }
+      },
+      {
+        text: "Parar",
+        nextChapterId: "fase5-cena5",
+        effects: { perseveranca: -1 }
+      }
+    ]
+  },
+
+  "fase5-cena4": {
+    id: "fase5-cena4",
+    title: "Aprisionado",
+    location: "Castelo da Dúvida",
+    characters: ["cristao"],
+    narrative: [
+      "Um lugar fechado surge à frente. Antes que perceba, você está preso."
+    ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 7, highText: "Você analisa as paredes, a porta, os detalhes. Deve haver uma lógica aqui.", lowThreshold: 3, lowText: "Tudo parece igual. Paredes, escuridão, silêncio. Você não sabe por onde começar." }
+    ],
+    choices: [
+      {
+        text: "Tentar entender a situação",
+        nextChapterId: "fase5-cena6",
+        effects: { discernimento: 1 },
+        conditionalEffects: [
+          { attr: "discernimento", threshold: 6, bonus: { fe: 1 }, penalty: {} }
+        ]
+      },
+      {
+        text: "Entrar em desespero",
+        nextChapterId: "fase5-cena5",
+        effects: { fe: -2 }
+      }
+    ]
+  },
+
+  "fase5-cena5": {
+    id: "fase5-cena5",
+    title: "Desespero",
+    location: "Castelo da Dúvida",
+    characters: ["cristao"],
+    narrative: [
+      "O desespero domina. Pensamentos negativos começam a surgir."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 6, highText: "Mas no fundo, uma chama ainda resiste. Você sabe que já superou momentos assim.", lowThreshold: 3, lowText: "A escuridão interior é pior que a exterior. Você se sente completamente abandonado." },
+      { attr: "perseveranca", highThreshold: 6, highText: "Sua persistência te impede de desistir completamente. Ainda há luta dentro de você.", lowThreshold: 3, lowText: "Você está exausto. A vontade de desistir é quase irresistível." }
+    ],
+    flagNarrative: [
+      { flag: "pediu_ajuda_pantano", text: "No pântano, a ajuda veio quando você pediu. Talvez não esteja tão sozinho quanto pensa." }
+    ],
+    choices: [
+      {
+        text: "Lutar contra isso",
+        nextChapterId: "fase5-cena6",
+        effects: { fe: 1 },
+        conditionalEffects: [
+          { attr: "fe", threshold: 5, bonus: { coragem: 1 }, penalty: { coragem: -1 } }
+        ]
+      },
+      {
+        text: "Se entregar",
+        nextChapterId: "fase5-cena7",
+        effects: { fe: -2 }
+      }
+    ]
+  },
+
+  "fase5-cena6": {
+    id: "fase5-cena6",
+    title: "Reflexão",
+    location: "Castelo da Dúvida",
+    characters: ["cristao"],
+    narrative: [
+      "Mesmo preso, você começa a refletir sobre tudo que aprendeu até aqui."
+    ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 7, highText: "As lições do caminho ganham novo significado. Você começa a ver um padrão.", lowThreshold: 3, lowText: "Você tenta lembrar, mas tudo parece distante e desconexo." }
+    ],
+    flagNarrative: [
+      { flag: "entrou_casa_interprete", text: "As visões do Intérprete voltam à sua mente: a poeira, o fogo, a perseverança. Tudo faz sentido agora." },
+      { flag: "reconheceu_erro_castelo", text: "Reconhecer o erro foi o primeiro passo. Agora você precisa encontrar o próximo." }
+    ],
+    choices: [
+      {
+        text: "Relembrar ensinamentos",
+        nextChapterId: "fase5-cena8",
+        effects: { discernimento: 2 },
+        conditionalEffects: [
+          { attr: "perseveranca", threshold: 7, bonus: { fe: 1 }, penalty: {} }
+        ]
+      },
+      {
+        text: "Focar no problema",
+        nextChapterId: "fase5-cena7",
+        effects: { fe: -1 }
+      }
+    ]
+  },
+
+  "fase5-cena7": {
+    id: "fase5-cena7",
+    title: "Sem Saída",
+    location: "Castelo da Dúvida",
+    characters: ["cristao"],
+    narrative: [
+      "A dúvida aumenta. A saída parece impossível."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 5, highText: "Mas impossível não é o mesmo que sem esperança. Você ainda acredita.", lowThreshold: 2, lowText: "Você não acredita mais em nada. O castelo venceu?" }
+    ],
+    choices: [
+      {
+        text: "Buscar esperança",
+        nextChapterId: "fase5-cena6",
+        effects: { fe: 1 }
+      },
+      {
+        text: "Permanecer assim",
+        nextChapterId: "fase5-cena7",
+        effects: {}
+      }
+    ]
+  },
+
+  "fase5-cena8": {
+    id: "fase5-cena8",
+    title: "A Chave",
+    location: "Castelo da Dúvida",
+    characters: ["cristao"],
+    narrative: [
+      "Você percebe que a saída não depende da situação, mas da sua decisão."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "A clareza é absoluta. Você sempre teve o que precisava. Só faltava decidir.", lowThreshold: 3, lowText: "A ideia é frágil, mas é tudo que você tem. Talvez seja suficiente." }
+    ],
+    flagNarrative: [
+      { flag: "aceitou_custo_feira", text: "Na feira, você aceitou o custo. Aqui, a decisão é parecida: agir apesar da incerteza." }
+    ],
+    choices: [
+      {
+        text: "Agir com fé",
+        nextChapterId: "fase5-cena9",
+        effects: { fe: 2 },
+        flag: "escapou_castelo_fe",
+        conditionalEffects: [
+          { attr: "fe", threshold: 6, bonus: { perseveranca: 2 }, penalty: {} }
+        ]
+      },
+      {
+        text: "Hesitar",
+        nextChapterId: "fase5-cena7",
+        effects: { coragem: -1 }
+      }
+    ]
+  },
+
+  "fase5-cena9": {
+    id: "fase5-cena9",
+    title: "A Saída",
+    location: "Castelo da Dúvida",
+    characters: ["cristao"],
+    narrative: [
+      "Você encontra uma saída que antes não conseguia ver."
+    ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 6, highText: "Sem hesitar, você avança. A luz do lado de fora nunca pareceu tão real.", lowThreshold: 3, lowText: "Com as mãos tremendo, você se arrasta em direção à luz. Cada passo é uma vitória." }
+    ],
+    choices: [
+      {
+        text: "Sair imediatamente",
+        nextChapterId: "fase5-cena10",
+        effects: { coragem: 1 }
+      }
+    ]
+  },
+
+  "fase5-cena10": {
+    id: "fase5-cena10",
+    title: "A Lição",
+    location: "Saída do Castelo",
+    characters: ["cristao"],
+    narrative: [
+      "Você deixa o lugar com uma lição importante: decisões erradas têm consequências, mas é possível se recuperar."
+    ],
+    flagNarrative: [
+      { flag: "escapou_castelo_fe", text: "A fé foi sua chave. Não a certeza, não a força — a fé. Isso muda tudo." },
+      { flag: "reconheceu_erro_castelo", text: "Reconhecer o erro no início fez toda a diferença. Humildade abre portas que orgulho fecha." }
+    ],
     choices: [],
     isEnding: true,
     endingType: "parte1"
