@@ -24,8 +24,24 @@ import { ParticleEffects, getParticleTypeForScene } from '@/components/ParticleE
 import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
 import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
-import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart } from 'lucide-react';
+import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, Zap, Star, Shield, Flame } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
+
+const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
+  fe: { label: 'Fé', emoji: '🔥', icon: Flame },
+  perseveranca: { label: 'Perseverança', emoji: '⛰️', icon: Shield },
+  discernimento: { label: 'Discernimento', emoji: '👁️', icon: Star },
+  coragem: { label: 'Coragem', emoji: '🛡️', icon: Zap },
+};
+
+interface InlineConsequence {
+  text: string;
+  effects: ChoiceEffect;
+  nextChapterId: string;
+  choiceText: string;
+  flag?: string;
+  conditionalEffects?: ConditionalEffect[];
+}
 
 const ScenePage = () => {
   const navigate = useNavigate();
