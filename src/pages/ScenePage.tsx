@@ -117,18 +117,32 @@ const ScenePage = () => {
   const lockedChoices = chapter.choices.filter(c => !meetsRequirements(c.requires) && !c.requiresFlag && !c.excludesFlag);
 
   return (
-    <div className={`min-h-screen bg-background flex flex-col transition-all duration-1000 ${emotionalClass}`}>
-      {/* Header */}
+    <div id="scene-container" className={`min-h-screen bg-background flex flex-col transition-all duration-1000 ${emotionalClass}`}>
+      {/* Header with avatar */}
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
-        <div className="flex items-center justify-between max-w-lg mx-auto">
-          <button onClick={() => navigate('/')} className="text-muted-foreground hover:text-foreground transition-colors text-xs">
+        <div className="flex items-center gap-3 max-w-lg mx-auto">
+          <button onClick={() => setShowStats(s => !s)} className="flex-shrink-0">
+            <PilgrimAvatar attributes={progress.attributes} tone={emotional?.tone} size="sm" />
+          </button>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <div className="h-0.5 flex-1 bg-secondary rounded-full overflow-hidden">
+                <div className="h-full bg-primary transition-all duration-700 rounded-full" style={{ width: `${progressPercent}%` }} />
+              </div>
+              <span className="text-[10px] text-muted-foreground flex-shrink-0">{progressPercent}%</span>
+            </div>
+          </div>
+          <button onClick={() => navigate('/')} className="text-muted-foreground hover:text-foreground transition-colors text-xs flex-shrink-0">
             ← Início
           </button>
-          <div className="h-0.5 flex-1 mx-4 bg-secondary rounded-full overflow-hidden">
-            <div className="h-full bg-primary transition-all duration-700 rounded-full" style={{ width: `${progressPercent}%` }} />
-          </div>
-          <span className="text-[10px] text-muted-foreground">{progressPercent}%</span>
         </div>
+
+        {/* Expandable attribute bars */}
+        {showStats && (
+          <div className="max-w-lg mx-auto pt-3 pb-1 animate-fade-in">
+            <AttributeBars attributes={progress.attributes} compact />
+          </div>
+        )}
       </header>
 
       <main className="flex-1 max-w-lg mx-auto w-full">
