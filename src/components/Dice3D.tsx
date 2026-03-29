@@ -22,42 +22,42 @@ const DOT_POSITIONS: Record<number, [number, number][]> = {
   6: [[25, 25], [75, 25], [25, 50], [75, 50], [25, 75], [75, 75]],
 };
 
-const FACE_ROTATIONS: Record<number, string> = {
-  1: 'rotateX(0deg) rotateY(0deg)',
-  2: 'rotateY(90deg)',
-  3: 'rotateX(-90deg)',
-  4: 'rotateX(90deg)',
-  5: 'rotateY(-90deg)',
-  6: 'rotateX(180deg)',
+const FINAL_ROTATIONS: Record<number, { x: number; y: number; z: number }> = {
+  1: { x: 0, y: 0, z: 0 },
+  2: { x: 0, y: -90, z: 0 },
+  3: { x: 90, y: 0, z: 0 },
+  4: { x: -90, y: 0, z: 0 },
+  5: { x: 0, y: 90, z: 0 },
+  6: { x: 180, y: 0, z: 0 },
 };
 
 const COLOR_THEMES = {
   gold: {
-    face: 'linear-gradient(135deg, hsl(0 0% 98%) 0%, hsl(0 0% 90%) 100%)',
-    border: 'hsl(0 0% 75%)',
-    dot: 'hsl(0 0% 10%)',
-    glow: 'hsl(0 0% 60% / 0.4)',
+    face: 'linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(0 0% 94%) 100%)',
+    border: 'hsl(0 0% 72%)',
+    dot: 'hsl(0 0% 8%)',
+    glow: 'hsl(0 0% 100% / 0.28)',
     shadow: 'hsl(0 0% 0% / 0.5)',
   },
   red: {
-    face: 'linear-gradient(135deg, hsl(0 0% 98%) 0%, hsl(0 0% 90%) 100%)',
-    border: 'hsl(0 0% 75%)',
-    dot: 'hsl(0 0% 10%)',
-    glow: 'hsl(0 0% 60% / 0.4)',
+    face: 'linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(0 0% 94%) 100%)',
+    border: 'hsl(0 0% 72%)',
+    dot: 'hsl(0 0% 8%)',
+    glow: 'hsl(0 0% 100% / 0.28)',
     shadow: 'hsl(0 0% 0% / 0.5)',
   },
   blue: {
-    face: 'linear-gradient(135deg, hsl(0 0% 98%) 0%, hsl(0 0% 90%) 100%)',
-    border: 'hsl(0 0% 75%)',
-    dot: 'hsl(0 0% 10%)',
-    glow: 'hsl(0 0% 60% / 0.4)',
+    face: 'linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(0 0% 94%) 100%)',
+    border: 'hsl(0 0% 72%)',
+    dot: 'hsl(0 0% 8%)',
+    glow: 'hsl(0 0% 100% / 0.28)',
     shadow: 'hsl(0 0% 0% / 0.5)',
   },
   dark: {
-    face: 'linear-gradient(135deg, hsl(0 0% 98%) 0%, hsl(0 0% 90%) 100%)',
-    border: 'hsl(0 0% 75%)',
-    dot: 'hsl(0 0% 10%)',
-    glow: 'hsl(0 0% 60% / 0.4)',
+    face: 'linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(0 0% 94%) 100%)',
+    border: 'hsl(0 0% 72%)',
+    dot: 'hsl(0 0% 8%)',
+    glow: 'hsl(0 0% 100% / 0.28)',
     shadow: 'hsl(0 0% 0% / 0.5)',
   },
 };
@@ -74,7 +74,7 @@ function DiceFace({ value, size, theme }: { value: number; size: number; theme: 
         height: size,
         background: theme.face,
         border: `2px solid ${theme.border}`,
-        boxShadow: `inset 0 1px 2px hsl(0 0% 100% / 0.1), inset 0 -2px 4px hsl(0 0% 0% / 0.3)`,
+        boxShadow: 'inset 0 2px 4px hsl(0 0% 100% / 0.75), inset 0 -3px 5px hsl(0 0% 0% / 0.16)',
       }}
     >
       {dots.map(([x, y], i) => (
@@ -87,8 +87,8 @@ function DiceFace({ value, size, theme }: { value: number; size: number; theme: 
             left: `${x}%`,
             top: `${y}%`,
             transform: 'translate(-50%, -50%)',
-            background: `radial-gradient(circle at 30% 30%, ${theme.dot}, ${theme.dot}88)`,
-            boxShadow: `0 0 ${dotSize / 2}px ${theme.glow}, inset 0 1px 1px hsl(0 0% 100% / 0.3)`,
+            background: theme.dot,
+            boxShadow: 'inset 0 1px 1px hsl(0 0% 100% / 0.08)',
           }}
         />
       ))}
@@ -100,40 +100,42 @@ export function Dice3D({ value, rolling, size = 80, color = 'gold', onRollEnd }:
   const [displayValue, setDisplayValue] = useState(value);
   const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
   const rollRef = useRef<ReturnType<typeof setInterval>>();
+  const wasRollingRef = useRef(false);
   const theme = COLOR_THEMES[color];
   const half = size / 2;
 
   useEffect(() => {
     if (rolling) {
-      let tick = 0;
+      wasRollingRef.current = true;
       rollRef.current = setInterval(() => {
         setDisplayValue(Math.ceil(Math.random() * 6));
         setRotation({
           x: Math.random() * 720 - 360,
           y: Math.random() * 720 - 360,
-          z: Math.random() * 360 - 180,
+          z: Math.random() * 260 - 130,
         });
-        tick++;
-        if (tick >= 20) {
-          if (rollRef.current) clearInterval(rollRef.current);
-          setDisplayValue(value);
-          // Set final rotation to land flat on the correct face
-          const FINAL_ROTATIONS: Record<number, { x: number; y: number; z: number }> = {
-            1: { x: 0, y: 0, z: 0 },
-            2: { x: 0, y: -90, z: 0 },
-            3: { x: 90, y: 0, z: 0 },
-            4: { x: -90, y: 0, z: 0 },
-            5: { x: 0, y: 90, z: 0 },
-            6: { x: 180, y: 0, z: 0 },
-          };
-          const final = FINAL_ROTATIONS[value] || FINAL_ROTATIONS[1];
-          setRotation({ x: final.x + 720, y: final.y + 720, z: 0 });
-          onRollEnd?.();
-        }
       }, 80);
+
+      return () => {
+        if (rollRef.current) clearInterval(rollRef.current);
+      };
     }
-    return () => { if (rollRef.current) clearInterval(rollRef.current); };
-  }, [rolling, value]);
+
+    if (rollRef.current) clearInterval(rollRef.current);
+
+    const final = FINAL_ROTATIONS[value] || FINAL_ROTATIONS[1];
+    setDisplayValue(value);
+    setRotation({ x: final.x + 720, y: final.y + 720, z: 0 });
+
+    if (wasRollingRef.current) {
+      onRollEnd?.();
+      wasRollingRef.current = false;
+    }
+
+    return () => {
+      if (rollRef.current) clearInterval(rollRef.current);
+    };
+  }, [rolling, value, onRollEnd]);
 
   // Build all 6 faces
   const faces = [

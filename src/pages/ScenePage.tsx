@@ -586,7 +586,28 @@ const ScenePage = () => {
 
           {/* ═══ MINI-GAME (inline for minor games) ═══ */}
           {showChoices && !miniGameDone && miniGameReady && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
-            <div className="mb-5 animate-scale-in">
+            <div className="mb-5 animate-scale-in space-y-4">
+              {scenePortraits.length > 0 && (
+                <div className="flex items-center justify-center gap-3 overflow-x-auto pb-1">
+                  {scenePortraits.slice(0, 3).map((p, idx) => (
+                    <div key={p.id} className="text-center flex-shrink-0">
+                      <img
+                        src={p.img}
+                        alt={p.name}
+                        className="w-16 h-16 rounded-full object-cover border-2"
+                        style={{
+                          borderColor: idx === 0 ? 'hsl(120 40% 45%)' : 'hsl(40 55% 45%)',
+                          boxShadow: idx === 0
+                            ? '0 0 16px hsl(120 50% 45% / 0.4)'
+                            : '0 0 14px hsl(40 60% 50% / 0.35)',
+                        }}
+                      />
+                      <p className="text-[10px] font-display font-bold mt-1 text-foreground/90">{p.name}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <MiniGame
                 config={miniGameMappings[chapter.id]}
                 characterPortraits={scenePortraits}
@@ -609,6 +630,7 @@ const ScenePage = () => {
             <FullscreenMiniGame
               config={miniGameMappings[chapter.id]}
               chapterId={chapter.id}
+              characterPortraits={scenePortraits}
               onComplete={(result) => {
                 setMiniGameResult(result);
                 setMiniGameDone(true);
