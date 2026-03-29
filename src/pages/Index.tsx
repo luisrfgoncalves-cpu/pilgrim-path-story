@@ -3,11 +3,12 @@ import { useMemo, useState, useEffect } from 'react';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { useCloudSync } from '@/hooks/useCloudSync';
 import { getChapter, storyChapters, chapterOrder } from '@/data/story';
+import { getPart2Chapter, part2Chapters, part2ChapterOrder } from '@/data/storyPart2';
 import { getReplayIncentive, getUnlockableHints } from '@/data/sceneVariations';
 import { useAuth } from '@/contexts/AuthContext';
 import { getStreak, getDashboardMessage, getMilestones } from '@/lib/gameLoop';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, KeyRound, Flame, Star, Swords } from 'lucide-react';
+import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, KeyRound, Flame, Star, Swords, BookOpen } from 'lucide-react';
 
 const getPlayerState = (attrs: { fe: number; coragem: number; perseveranca: number; discernimento: number }) => {
   const avg = (attrs.fe + attrs.coragem + attrs.perseveranca + attrs.discernimento) / 4;
@@ -41,14 +42,15 @@ const Index = () => {
     navigate('/cena');
   };
 
-  const handleNewJourney = () => {
-    resetProgress();
+  const handleNewJourney = (campaign: 'part1' | 'part2' = 'part1') => {
+    resetProgress(campaign);
     startJourney();
     navigate('/cena');
   };
 
-  const currentChapter = getChapter(progress.currentChapterId);
-  const totalChapters = Object.keys(storyChapters).length;
+  const isPart2 = progress.campaign === 'part2';
+  const currentChapter = isPart2 ? getPart2Chapter(progress.currentChapterId) : getChapter(progress.currentChapterId);
+  const totalChapters = isPart2 ? Object.keys(part2Chapters).length : Object.keys(storyChapters).length;
   const progressPercent = Math.round((progress.visitedChapters.length / totalChapters) * 100);
   const playerState = getPlayerState(progress.attributes);
 
@@ -102,7 +104,7 @@ const Index = () => {
               </p>
             )}
             <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground font-medium">
-              {hasProgress ? `Fase ${currentPhase.num} · ${currentPhase.name}` : 'O Peregrino'}
+              {hasProgress ? `${isPart2 ? 'Parte II · ' : ''}Fase ${currentPhase.num} · ${currentPhase.name}` : 'O Peregrino'}
             </p>
           </div>
 
@@ -234,7 +236,7 @@ const Index = () => {
           </button>
         ) : (
           <button
-            onClick={handleNewJourney}
+            onClick={() => handleNewJourney()}
             className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 transition-opacity glow-gold"
           >
             {history.totalPlaythroughs > 0 ? (
@@ -248,6 +250,17 @@ const Index = () => {
                 Iniciar Jornada
               </>
             )}
+          </button>
+        )}
+
+        {/* Campaign selector — Part II */}
+        {!hasProgress && (
+          <button
+            onClick={() => handleNewJourney('part2')}
+            className="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-xl bg-card border border-primary/30 text-foreground font-display text-sm hover:border-primary/60 transition-colors"
+          >
+            <BookOpen className="w-5 h-5 text-primary" />
+            Parte II — A Peregrina
           </button>
         )}
 
@@ -286,7 +299,7 @@ const Index = () => {
         {/* Restart option when in progress */}
         {hasProgress && (
           <button
-            onClick={handleNewJourney}
+            onClick={() => handleNewJourney(progress.campaign || 'part1')}
             className="w-full text-center text-[11px] text-muted-foreground hover:text-foreground transition-colors pt-1"
           >
             Recomeçar do início

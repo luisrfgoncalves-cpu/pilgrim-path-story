@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { characters } from '@/data/story';
+import { part2Characters } from '@/data/storyPart2';
 import { characterImages } from '@/data/characterImages';
 import { ArrowLeft, Lock } from 'lucide-react';
 
@@ -20,7 +21,7 @@ const CharactersPage = () => {
       </header>
 
       <main className="max-w-lg mx-auto px-5 py-6 space-y-3">
-        {characters.map(char => {
+        {[...characters, ...part2Characters].map(char => {
           const unlocked = progress.visitedChapters.includes(char.unlockedAtChapter);
           const portrait = characterImages[char.id];
           return (

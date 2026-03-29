@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { reflections } from '@/data/story';
+import { part2Reflections } from '@/data/storyPart2';
 import { ArrowLeft, Lock, ScrollText } from 'lucide-react';
 import { useState } from 'react';
 
@@ -21,7 +22,7 @@ const ReflectionsPage = () => {
       </header>
 
       <main className="max-w-lg mx-auto px-5 py-6 space-y-3">
-        {reflections.map(ref => {
+        {[...reflections, ...part2Reflections].map(ref => {
           const unlocked = progress.visitedChapters.includes(ref.unlockedAtChapter);
           const isExpanded = expandedId === ref.id;
 

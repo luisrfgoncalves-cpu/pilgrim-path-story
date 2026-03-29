@@ -1,4 +1,5 @@
 import cidadeDestruicao from '@/assets/scenes/cidade-destruicao.jpg';
+import cristaPartida from '@/assets/scenes/crista-partida.jpg';
 import pantanoDesanimo from '@/assets/scenes/pantano-desanimo.jpg';
 import portaoEstreito from '@/assets/scenes/portao-estreito.jpg';
 import sabedoriaMundana from '@/assets/scenes/sabedoria-mundana.jpg';
@@ -113,4 +114,38 @@ export const sceneImages: Record<string, string> = {
   'fase6-cena7': cidadeCelestial,
   'fase6-cena8': cidadeCelestial,
   'fase6-cena9': cidadeCelestial,
+
+  // ═══════ PARTE II ═══════
+  'p2-cena1': cristaPartida,
+  'p2-cena2': cristaPartida,
+  'p2-cena3': pantanoDesanimo,
+  'p2-cena4': portaoEstreito,
+  'p2-cena5': portaoEstreito,
+  'p2-cena6': casaInterprete,
+  'p2-fase2-cena1': casaInterprete,
+  'p2-fase2-cena2': cruzFardo,
+  'p2-fase2-cena3': colinaDificuldadeSubida,
+  'p2-fase2-cena4': leoesPalacio,
+  'p2-fase2-cena5': palacioBelo,
+  'p2-fase3-cena1': valeHumilhacao,
+  'p2-fase3-cena2': valeSombra,
+  'p2-fase3-cena3': valeSombra,
+  'p2-fase3-cena4': fielEncontro,
+  'p2-fase3-cena5': fielEncontro,
+  'p2-fase3-cena6': feiraVaidade,
+  'p2-fase4-cena1': esperancaEncontro,
+  'p2-fase4-cena2': minaDemas,
+  'p2-fase4-cena3': esperancaEncontro,
+  'p2-fase4-cena4': pradoAgradavel,
+  'p2-fase5-cena1': casteloDuvida,
+  'p2-fase5-cena2': casteloDuvida,
+  'p2-fase5-cena3': casteloDuvida,
+  'p2-fase5-cena4': casteloDuvida,
+  'p2-fase5-cena5': montanhasDeleitosas,
+  'p2-fase6-cena1': terraEncantada,
+  'p2-fase6-cena2': paisBeula,
+  'p2-fase6-cena3': rioFinal,
+  'p2-fase6-cena4': rioFinal,
+  'p2-fase6-cena5': rioFinal,
+  'p2-fase6-cena6': cidadeCelestial,
 };
