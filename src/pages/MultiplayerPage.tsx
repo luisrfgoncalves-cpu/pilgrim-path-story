@@ -20,6 +20,14 @@ const MultiplayerPage = () => {
   const [joinCode, setJoinCode] = useState('');
   const [view, setView] = useState<'menu' | 'lobby' | 'game'>('menu');
 
+  // Auto-join via link
+  useEffect(() => {
+    const codeFromUrl = searchParams.get('code');
+    if (codeFromUrl && user && !room) {
+      joinRoom(codeFromUrl);
+    }
+  }, [searchParams, user]);
+
   // Auto-detect view from room state
   const currentView = room
     ? room.status === 'playing' || room.status === 'finished' ? 'game' : 'lobby'
