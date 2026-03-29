@@ -115,6 +115,18 @@ export const boardEvents: BoardEvent[] = [
   { id: 'ev38', type: 'safe', title: 'País de Beulá', description: 'Você chega à terra de paz e abundância, às portas da Cidade Celestial. O ar é doce e as flores perfumam.', effect: { target: 'self', attribute: 'fe', amount: 1 }, emoji: '🌸' },
   { id: 'ev39', type: 'safe', title: 'Folhas da Árvore da Vida', description: 'Você encontra folhas curativas e restaura suas forças. Perseverança +1.', effect: { target: 'self', attribute: 'perseveranca', amount: 1 }, emoji: '🌿' },
   { id: 'ev40', type: 'safe', title: 'Companhia de Fiel', description: 'Fiel caminha ao seu lado e compartilha seu testemunho. Coragem +1.', effect: { target: 'self', attribute: 'coragem', amount: 1 }, emoji: '🤝' },
+
+  // ═══ Parte II — Eventos extras ═══
+  { id: 'ev41', type: 'advance', title: 'Cristã e Misericórdia', description: 'Cristã e Misericórdia te encorajam no caminho! O testemunho delas te impulsiona.', effect: { target: 'self', positions: 2 }, emoji: '👩' },
+  { id: 'ev42', type: 'boost', title: 'Valente-pela-Verdade', description: 'Valente-pela-Verdade aparece coberto de sangue da batalha: "Eu venci! E você também vencerá!" Coragem +2.', effect: { target: 'self', attribute: 'coragem', amount: 2 }, emoji: '⚔️' },
+  { id: 'ev43', type: 'stun', title: 'Gigante Mata-Bons', description: 'O Gigante Mata-Bons bloqueia o caminho! Perde uma rodada até Grande-Coração te resgatar.', effect: { target: 'self', stunTurns: 1 }, emoji: '👹' },
+  { id: 'ev44', type: 'retreat', title: 'Ateísmo Zomba', description: 'Ateísmo aparece rindo: "Não existe Cidade Celestial! Eu busquei por 20 anos!" Sua dúvida te faz recuar.', effect: { target: 'self', positions: -2 }, emoji: '😂' },
+  { id: 'ev45', type: 'challenge', title: 'Resistir a Madame Bolha', description: 'Madame Bolha oferece ouro e conforto! Role 4+ para resistir como Firme e avançar 3.', effect: { target: 'self', positions: 3 }, emoji: '💰' },
+  { id: 'ev46', type: 'advance', title: 'Velho Honesto Conta Histórias', description: 'Velho Honesto compartilha sabedoria da Cidade da Estupidez. Surpreendentemente, você aprende algo. Avance!', effect: { target: 'self', positions: 1 }, emoji: '👴' },
+  { id: 'ev47', type: 'boost', title: 'Mente-Fraca Inspira', description: 'Mesmo frágil, Mente-Fraca não desiste. Sua determinação inspira todos. Perseverança +1.', effect: { target: 'all', attribute: 'perseveranca', amount: 1 }, emoji: '💪' },
+  { id: 'ev48', type: 'stun', title: 'Volta-Atrás Capturado', description: 'Você vê Volta-Atrás sendo arrastado por demônios. O horror te paralisa por uma rodada.', effect: { target: 'self', stunTurns: 1 }, emoji: '😱' },
+  { id: 'ev49', type: 'challenge', title: 'Grande-Coração Mata o Gigante', description: 'Grande-Coração lidera ataque ao Castelo da Dúvida! Role 3+ para ajudar e avançar 4!', effect: { target: 'self', positions: 4 }, emoji: '🗡️' },
+  { id: 'ev50', type: 'safe', title: 'Pronto-para-Parar Caminha', description: 'Pronto-para-Parar caminha com muletas, mas não desiste. Se ele pode, você também pode. Fé +1.', effect: { target: 'self', attribute: 'fe', amount: 1 }, emoji: '🩼' },
 ];
 
 // Generate board: assign events to each position (fixed per room)
