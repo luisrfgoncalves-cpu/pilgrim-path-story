@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { ArrowLeft, Save, LogOut } from 'lucide-react';
+import { ArrowLeft, Save, LogOut, Bell, BellOff, Sun, Moon } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
+import { requestNotificationPermission, isNotificationsEnabled, toggleNotifications } from '@/lib/notifications';
 
 const AVATAR_STYLES = ['peregrino', 'monge', 'cavaleiro', 'eremita', 'profeta'];
 const JOURNEY_PREFS = ['contemplativa', 'aventureira', 'devocional', 'exploratória'];
