@@ -92,11 +92,12 @@ function isRecentlyActive(updatedAt: string): boolean {
 const CommunityPage: React.FC = () => {
   const { user } = useAuth();
   const { progress } = useStoryProgress();
+  const collectiveEvent = useCollectiveEvent();
   const [pilgrims, setPilgrims] = useState<PilgrimSummary[]>([]);
   const [messages, setMessages] = useState<PilgrimMessage[]>([]);
   const [supports, setSupports] = useState<SupportRecord[]>([]);
   const [myReceivedSupport, setMyReceivedSupport] = useState<SupportRecord[]>([]);
-  const [tab, setTab] = useState<'pilgrims' | 'feed' | 'messages'>('pilgrims');
+  const [tab, setTab] = useState<'pilgrims' | 'feed' | 'messages' | 'events'>('pilgrims');
   const [sending, setSending] = useState<string | null>(null);
   const [selectedPilgrim, setSelectedPilgrim] = useState<PilgrimSummary | null>(null);
 
