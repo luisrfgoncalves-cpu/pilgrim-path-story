@@ -94,9 +94,9 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
         <img
           src={postureAssets[posture]}
           alt={postureLabels[posture]}
-          className={`w-full h-full object-cover transition-all duration-700 ${visual.overlayClass}`}
+          className={`w-full h-full object-cover transition-all duration-700 ${visual.overlayClass} ${size === 'lg' ? 'scale-110' : ''}`}
           style={{
-            objectPosition: size === 'sm' ? 'center 15%' : 'center 20%',
+            objectPosition: size === 'sm' ? 'center 15%' : 'center 10%',
             ...(enableAnimations ? {
               animation: `pilgrimBreathe ${breatheDuration[posture]} ease-in-out infinite, pilgrimSway ${swayDuration[posture]} ease-in-out infinite`,
               transformOrigin: 'center bottom',
@@ -105,6 +105,16 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
           width={512}
           height={768}
         />
+
+        {/* Vignette: darkened edges to focus on character */}
+        {(size === 'lg' || size === 'md') && (
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'radial-gradient(ellipse 70% 60% at center 35%, transparent 40%, hsl(var(--background) / 0.7) 100%)',
+            }}
+          />
+        )}
 
         {/* Radiant glow pulse */}
         {posture === 'radiant' && (
