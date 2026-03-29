@@ -96,8 +96,40 @@ const sceneClasses: Record<PostureState, string> = {
 };
 
 /**
+ * Phase baseline: each story phase has a "gravity" that pulls the emotional state
+ * toward certain postures. The attribute average still modulates the final result.
+ */
+type PhaseBaseline = {
+  low: PostureState;   // when avg is below threshold
+  high: PostureState;  // when avg is above threshold
+  threshold: number;   // attribute avg divider
+};
+
+const phaseBaselines: Record<string, PhaseBaseline> = {
+  // Fase 1 — Cidade da Destruição (cena1–cena15): início, peso do fardo
+  fase1: { low: 'abatido', high: 'abatido', threshold: 99 },
+  // Fase 2 — Casa do Intérprete: aprendizado
+  fase2: { low: 'confuso', high: 'esperancoso', threshold: 5.5 },
+  // Fase 3 — Vale da Humilhação / Apolião: conflito
+  fase3: { low: 'em_conflito', high: 'determinado', threshold: 5 },
+  // Fase 4 — Feira da Vaidade: pressão social
+  fase4: { low: 'em_dificuldade', high: 'determinado', threshold: 5.5 },
+  // Fase 5 — Castelo da Dúvida / Gigante Desespero: queda
+  fase5: { low: 'abatido', high: 'em_dificuldade', threshold: 4.5 },
+  // Fase 6 — Final / Cidade Celestial
+  fase6: { low: 'esperancoso', high: 'vitoria_final', threshold: 7 },
+};
+
+function getPhaseFromChapter(chapterId: string): string {
+  // fase2-cena1 → fase2, fase3-cena5 → fase3, cena1–cena15 → fase1
+  if (chapterId.startsWith('fase')) {
+    return chapterId.split('-')[0];
+  }
+  return 'fase1'; // cena1–cena15 are all phase 1
+}
+
+/**
  * Recent decision trend: checks if last N choices were mostly positive or negative.
- * Returns a modifier: positive = trending up, negative = trending down.
  */
 function getDecisionTrend(recentEffects: Array<Record<string, number>>): number {
   if (recentEffects.length === 0) return 0;
@@ -132,38 +164,55 @@ export function resolveEmotionalState(
     }
   }
 
-  // 2. Resolve from attributes + trend
+  // 2. Phase baseline — the story phase sets gravitational pull
+  const phase = getPhaseFromChapter(chapterId);
+  const baseline = phaseBaselines[phase];
+
+  // 3. Resolve posture: phase baseline modulated by attributes + trend
   let posture: PostureState;
   let intensity: number;
 
-  if (avg >= 8.5 && trend >= 0) {
-    posture = 'vitoria_final';
-    intensity = Math.min((avg - 8) / 4, 1);
-  } else if (avg >= 7 && trend >= 0) {
-    posture = 'esperancoso';
-    intensity = Math.min((avg - 6.5) / 3.5, 1);
-  } else if (avg >= 5.5 && trend >= -0.5) {
-    posture = 'determinado';
-    intensity = 0.4 + (avg - 5.5) / 5;
-  } else if (avg >= 4 && trend < -1) {
-    // Declining despite decent attributes → conflict
-    posture = 'em_conflito';
-    intensity = Math.min(Math.abs(trend) / 3, 1);
-  } else if (avg >= 4 && trend >= 0) {
-    posture = 'recuperacao';
-    intensity = 0.4;
-  } else if (avg >= 3) {
-    // Individual attribute analysis
-    if (fe < 3 && coragem < 3) {
-      posture = 'em_dificuldade';
-      intensity = Math.min((4 - avg) / 4, 1);
+  if (baseline) {
+    // Use phase baseline as the anchor
+    const basePosture = avg >= baseline.threshold ? baseline.high : baseline.low;
+
+    // Allow strong attribute performance to override phase gravity upward
+    if (avg >= 8.5 && trend >= 0) {
+      posture = 'vitoria_final';
+      intensity = Math.min((avg - 8) / 4, 1);
+    } else if (avg >= 7 && trend >= 0 && phase !== 'fase1') {
+      posture = 'esperancoso';
+      intensity = Math.min((avg - 6.5) / 3.5, 1);
+    } else if (trend < -1.5 && avg < 5) {
+      // Sharp decline overrides phase → conflict or difficulty
+      posture = avg >= 4 ? 'em_conflito' : 'em_dificuldade';
+      intensity = Math.min(Math.abs(trend) / 3, 1);
     } else {
-      posture = 'confuso';
-      intensity = Math.min((4 - avg) / 3, 1);
+      // Default: follow phase baseline
+      posture = basePosture;
+      intensity = Math.abs(avg - baseline.threshold) / 5 + 0.3;
     }
   } else {
-    posture = 'abatido';
-    intensity = Math.min((3 - avg) / 3, 1);
+    // Fallback: pure attribute-based (shouldn't happen)
+    if (avg >= 8.5) {
+      posture = 'vitoria_final';
+      intensity = 1;
+    } else if (avg >= 7) {
+      posture = 'esperancoso';
+      intensity = 0.7;
+    } else if (avg >= 5.5) {
+      posture = 'determinado';
+      intensity = 0.5;
+    } else if (avg >= 4) {
+      posture = trend < -1 ? 'em_conflito' : 'recuperacao';
+      intensity = 0.4;
+    } else if (avg >= 3) {
+      posture = fe < 3 && coragem < 3 ? 'em_dificuldade' : 'confuso';
+      intensity = 0.5;
+    } else {
+      posture = 'abatido';
+      intensity = 0.7;
+    }
   }
 
   const lines = atmosphereLines[posture];
