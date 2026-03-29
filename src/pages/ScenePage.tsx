@@ -585,7 +585,7 @@ const ScenePage = () => {
                 </div>
               ) : (
                 <>
-                  <p className="text-[11px] uppercase tracking-widest text-muted-foreground mb-2 font-medium">Escolha seu caminho</p>
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3 font-display">Escolha seu caminho</p>
 
                   {chapter.interactionType === 'drag' && availableChoices.length >= 2 ? (
                     <DragToChoose
@@ -633,11 +633,11 @@ const ScenePage = () => {
                           onClick={() => handleChoice(dynamicEvents.alternateRoute!.nextChapterId, dynamicEvents.alternateRoute!.hint, {}, dynamicEvents.alternateRoute!.hint)}
                           className="choice-btn-medieval group"
                         >
-                          <p className="text-foreground font-body text-sm group-hover:text-primary transition-colors flex items-center gap-2">
-                            <Compass className="w-3.5 h-3.5 text-primary" />
+                          <p className="text-foreground font-body text-base group-hover:text-primary transition-colors flex items-center gap-2">
+                            <Compass className="w-5 h-5 text-primary" />
                             {dynamicEvents.alternateRoute.hint}
                           </p>
-                          <p className="text-[10px] text-primary/60 mt-1 uppercase tracking-wider">✦ Caminho alternativo</p>
+                          <p className="text-xs text-primary/60 mt-1.5 uppercase tracking-wider">✦ Caminho alternativo</p>
                         </button>
                       )}
 
@@ -648,12 +648,12 @@ const ScenePage = () => {
                           className="choice-btn-medieval group"
                           style={{ animationDelay: `${i * 0.08}s` }}
                         >
-                          <p className="text-foreground font-body text-sm group-hover:text-primary transition-colors">{choice.text}</p>
+                          <p className="text-foreground font-body text-base group-hover:text-primary transition-colors">{choice.text}</p>
                           {choice.requires && (
-                            <p className="text-[10px] text-primary mt-1.5 uppercase tracking-wider">★ Desbloqueada por atributos</p>
+                            <p className="text-xs text-primary mt-2 uppercase tracking-wider">★ Desbloqueada por atributos</p>
                           )}
                           {choice.item && (
-                            <p className="text-[10px] text-primary/70 mt-1">✦ Concede um item</p>
+                            <p className="text-xs text-primary/70 mt-1.5">✦ Concede um item</p>
                           )}
                         </button>
                       ))}
