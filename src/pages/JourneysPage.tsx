@@ -389,7 +389,7 @@ const JourneysPage = () => {
                         <button
                           onClick={() => handlePhaseReplay(phase.id)}
                           onClick={() => handlePhaseReplay(phase.id, 'part1')}
-                          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all active:scale-[0.98]"
+                         >
                           style={{
                             background: `${phase.color}20`,
                             border: `1.5px solid ${phase.color}50`,
