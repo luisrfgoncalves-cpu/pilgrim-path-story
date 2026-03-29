@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
-import { getChapter, storyChapters, ChoiceEffect } from '@/data/story';
+import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect } from '@/data/story';
 import { sceneImages } from '@/data/sceneImages';
 import { MapPin, Home, ScrollText, Lock } from 'lucide-react';
 
@@ -46,7 +46,7 @@ const ScenePage = () => {
     }
   }, [narrativeIndex, chapter, fullNarrative.length]);
 
-  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string) => {
+  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[]) => {
     if (consequence) {
       navigate('/resultado', {
         state: {
@@ -57,10 +57,11 @@ const ScenePage = () => {
           currentChapterId: chapter?.id,
           attributeChanges: effects,
           flag,
+          conditionalEffects,
         }
       });
     } else {
-      makeChoice(chapter!.id, nextChapterId, choiceText, effects, flag);
+      makeChoice(chapter!.id, nextChapterId, choiceText, effects, flag, conditionalEffects);
     }
   };
 
