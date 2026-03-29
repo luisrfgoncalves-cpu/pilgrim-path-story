@@ -974,11 +974,11 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'intro') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-5xl">{enemy.emoji}</div>
-        <h3 className="font-display text-xl text-primary">Duelo Espiritual</h3>
-        <p className="text-sm text-foreground/80">{config.intro}</p>
-        <div className="text-xs text-muted-foreground space-y-1">
+      <div className="game-card game-card-red text-center space-y-4 animate-scale-in">
+        <div className="text-6xl" style={{ filter: 'drop-shadow(0 0 15px hsl(0 60% 50% / 0.5))' }}>{enemy.emoji}</div>
+        <h3 className="game-title">Duelo Espiritual</h3>
+        <p className="game-subtitle">{config.intro}</p>
+        <div className="game-text-muted space-y-1">
           <p>⚔️ <strong>Atacar</strong> — dano alto, risco de contra-ataque</p>
           <p>🛡️ <strong>Defender</strong> — bloqueia dano inimigo</p>
           <p>🙏 <strong>Orar</strong> — cura + chance de dano espiritual</p>
@@ -992,16 +992,12 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'final') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-4xl">{success ? '🏆' : '😢'}</div>
-        <h3 className="font-display text-xl text-primary">
-          {success ? `${enemy.name} foi derrotado!` : `${enemy.name} prevaleceu...`}
-        </h3>
-        <p className="text-sm text-foreground/80">
-          Sua vida: {Math.max(0, playerHP)}/{maxHP} · {enemy.name}: {Math.max(0, enemyHP)}/{maxHP}
-        </p>
-        <div className="h-3 bg-secondary rounded-full overflow-hidden">
-          <div className={`h-full rounded-full transition-all duration-1000 ${success ? 'bg-primary' : 'bg-destructive'}`}
+      <div className="game-card text-center space-y-4 animate-scale-in">
+        <div className="text-6xl" style={{ filter: `drop-shadow(0 0 20px ${success ? 'hsl(40 70% 50% / 0.6)' : 'hsl(0 60% 50% / 0.4)'})` }}>{success ? '🏆' : '😢'}</div>
+        <h3 className="game-title">{success ? `${enemy.name} foi derrotado!` : `${enemy.name} prevaleceu...`}</h3>
+        <p className="game-subtitle">Sua vida: {Math.max(0, playerHP)}/{maxHP} · {enemy.name}: {Math.max(0, enemyHP)}/{maxHP}</p>
+        <div className="game-progress-bar">
+          <div className={success ? 'game-progress-fill-success' : 'game-progress-fill-fail'}
             style={{ width: `${finalScore}%` }} />
         </div>
       </div>
@@ -1255,11 +1251,11 @@ function TreasureHuntGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'intro') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-4xl">🔍</div>
-        <h3 className="font-display text-xl text-primary">Caça ao Tesouro</h3>
-        <p className="text-sm text-foreground/80">{config.intro}</p>
-        <p className="text-xs text-muted-foreground">Encontre os tesouros escondidos antes do tempo acabar! Fique atento às dicas ✨</p>
+      <div className="game-card text-center space-y-4 animate-scale-in">
+        <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 12px hsl(40 70% 50% / 0.5))' }}>🔍</div>
+        <h3 className="game-title">Caça ao Tesouro</h3>
+        <p className="game-subtitle">{config.intro}</p>
+        <p className="game-text-muted">Encontre os tesouros escondidos antes do tempo acabar! Fique atento às dicas ✨</p>
         <button onClick={() => { initItems(); setPhase('hunting'); }} className="btn-medieval w-full">
           Começar a busca!
         </button>
@@ -1269,21 +1265,17 @@ function TreasureHuntGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'result') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-4xl">{success ? '🎉' : '😞'}</div>
-        <h3 className="font-display text-xl text-primary">
-          {success ? 'Bela exploração!' : 'Tesouros ficaram para trás...'}
-        </h3>
-        <p className="text-sm text-foreground/80">
-          Encontrou {found} de {treasures.length} tesouros
-        </p>
-        <div className="flex justify-center gap-2 flex-wrap">
+      <div className="game-card text-center space-y-4 animate-scale-in">
+        <div className="text-5xl" style={{ filter: `drop-shadow(0 0 15px ${success ? 'hsl(40 70% 50% / 0.5)' : 'hsl(0 60% 50% / 0.4)'})` }}>{success ? '🎉' : '😞'}</div>
+        <h3 className="game-title">{success ? 'Bela exploração!' : 'Tesouros ficaram para trás...'}</h3>
+        <p className="game-subtitle">Encontrou {found} de {treasures.length} tesouros</p>
+        <div className="flex justify-center gap-3 flex-wrap">
           {items.map(i => (
-            <span key={i.id} className={`text-2xl ${i.found ? '' : 'opacity-20 grayscale'}`}>{i.emoji}</span>
+            <span key={i.id} className={`text-3xl ${i.found ? '' : 'opacity-20 grayscale'}`} style={i.found ? { filter: 'drop-shadow(0 0 6px hsl(40 70% 50% / 0.5))' } : {}}>{i.emoji}</span>
           ))}
         </div>
-        <div className="h-3 bg-secondary rounded-full overflow-hidden">
-          <div className={`h-full rounded-full transition-all duration-1000 ${success ? 'bg-primary' : 'bg-destructive'}`}
+        <div className="game-progress-bar">
+          <div className={success ? 'game-progress-fill-success' : 'game-progress-fill-fail'}
             style={{ width: `${finalScore}%` }} />
         </div>
       </div>
@@ -1291,13 +1283,16 @@ function TreasureHuntGame({ config, onComplete }: MiniGameProps) {
   }
 
   return (
-    <div className="relative bg-card/30 border-2 border-primary/20 rounded-2xl overflow-hidden" style={{ height: '280px' }}>
+    <div className="relative rounded-2xl overflow-hidden" style={{
+      height: '300px',
+      background: 'linear-gradient(180deg, hsl(30 25% 12%) 0%, hsl(30 20% 8%) 100%)',
+      border: '3px solid hsl(40 60% 45%)',
+      boxShadow: '0 0 20px hsl(40 60% 40% / 0.15)',
+    }}>
       {/* HUD */}
       <div className="absolute top-2 left-3 right-3 flex justify-between z-10">
-        <span className="text-xs font-display text-primary bg-card/80 px-2 py-1 rounded-lg">
-          🔍 {found}/{treasures.length}
-        </span>
-        <span className={`text-xs font-display bg-card/80 px-2 py-1 rounded-lg ${timeLeft <= 5 ? 'text-destructive animate-pulse' : 'text-muted-foreground'}`}>
+        <span className="game-hud-tag">🔍 {found}/{treasures.length}</span>
+        <span className="game-hud-tag" style={timeLeft <= 5 ? { borderColor: 'hsl(0 60% 50%)', color: 'hsl(0 70% 65%)', animation: 'pulse 0.5s infinite' } : {}}>
           ⏳ {timeLeft}s
         </span>
       </div>
@@ -1310,18 +1305,22 @@ function TreasureHuntGame({ config, onComplete }: MiniGameProps) {
           className={`absolute transition-all duration-300 ${item.hint ? 'scale-125' : 'scale-100'}`}
           style={{ left: `${item.x}%`, top: `${item.y}%` }}
         >
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-            item.hint
-              ? 'bg-primary/30 border-2 border-primary shadow-lg shadow-primary/30 animate-pulse'
-              : 'bg-card/20 border border-border/30 hover:bg-card/50'
-          }`}>
-            <span className={`text-lg ${item.hint ? 'opacity-80' : 'opacity-10'}`}>{item.emoji}</span>
+          <div className="w-12 h-12 rounded-full flex items-center justify-center transition-all" style={{
+            background: item.hint ? 'hsl(40 40% 22%)' : 'hsl(30 15% 14%)',
+            border: item.hint ? '3px solid hsl(40 70% 55%)' : '2px solid hsl(30 15% 22%)',
+            boxShadow: item.hint ? '0 0 15px hsl(40 70% 50% / 0.4)' : 'none',
+          }}>
+            <span className={`text-xl ${item.hint ? 'opacity-80' : 'opacity-10'}`}>{item.emoji}</span>
           </div>
         </button>
       ) : (
         <div key={item.id} className="absolute animate-fade-in" style={{ left: `${item.x}%`, top: `${item.y}%` }}>
-          <div className="w-10 h-10 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center">
-            <span className="text-lg">{item.emoji}</span>
+          <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{
+            background: 'hsl(40 40% 18%)',
+            border: '3px solid hsl(40 60% 50%)',
+            boxShadow: '0 0 12px hsl(40 60% 45% / 0.4)',
+          }}>
+            <span className="text-xl">{item.emoji}</span>
           </div>
         </div>
       ))}
@@ -1329,7 +1328,12 @@ function TreasureHuntGame({ config, onComplete }: MiniGameProps) {
       {/* Found toast */}
       {lastFound && (
         <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 animate-fade-in">
-          <span className="bg-card/90 border border-primary/30 px-3 py-2 rounded-xl text-sm font-display text-primary shadow-lg">
+          <span className="px-4 py-2 rounded-xl text-sm font-display font-bold" style={{
+            background: 'hsl(30 20% 12% / 0.95)',
+            border: '3px solid hsl(40 60% 50%)',
+            color: 'hsl(40 70% 65%)',
+            boxShadow: '0 0 15px hsl(40 60% 45% / 0.3)',
+          }}>
             ✨ {lastFound}!
           </span>
         </div>
@@ -1340,11 +1344,13 @@ function TreasureHuntGame({ config, onComplete }: MiniGameProps) {
         {[...Array(5)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 rounded-full bg-primary/30 animate-pulse"
+            className="absolute w-1.5 h-1.5 rounded-full animate-pulse"
             style={{
               left: `${20 + i * 15}%`,
               top: `${10 + (i * 17) % 80}%`,
               animationDelay: `${i * 0.5}s`,
+              background: 'hsl(40 60% 50%)',
+              boxShadow: '0 0 6px hsl(40 60% 50% / 0.4)',
             }}
           />
         ))}
@@ -1461,11 +1467,11 @@ function ReflexGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'intro') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-4xl">👼</div>
-        <h3 className="font-display text-xl text-primary">Reflexo Divino</h3>
-        <p className="text-sm text-foreground/80">{config.intro}</p>
-        <p className="text-xs text-muted-foreground">Observe a sequência de direções e repita! A cada rodada fica mais rápido.</p>
+      <div className="game-card game-card-blue text-center space-y-4 animate-scale-in">
+        <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 12px hsl(220 60% 50% / 0.5))' }}>👼</div>
+        <h3 className="game-title">Reflexo Divino</h3>
+        <p className="game-subtitle">{config.intro}</p>
+        <p className="game-text-muted">Observe a sequência de direções e repita! A cada rodada fica mais rápido.</p>
         <button onClick={() => { startRound(); }} className="btn-medieval w-full">
           Começar!
         </button>
@@ -1475,67 +1481,81 @@ function ReflexGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'result') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-4xl">{success ? '👼' : '😵‍💫'}</div>
-        <h3 className="font-display text-xl text-primary">
-          {success ? 'Reflexos abençoados!' : 'Precisa de mais prática...'}
-        </h3>
-        <p className="text-sm text-foreground/80">
-          Acertou {wins} de {maxRounds} rodadas ({finalScore}%)
-        </p>
-        <div className="h-3 bg-secondary rounded-full overflow-hidden">
-          <div className={`h-full rounded-full transition-all duration-1000 ${success ? 'bg-primary' : 'bg-destructive'}`}
+      <div className="game-card text-center space-y-4 animate-scale-in">
+        <div className="text-5xl" style={{ filter: `drop-shadow(0 0 15px ${success ? 'hsl(40 70% 50% / 0.5)' : 'hsl(0 60% 50% / 0.4)'})` }}>{success ? '👼' : '😵‍💫'}</div>
+        <h3 className="game-title">{success ? 'Reflexos abençoados!' : 'Precisa de mais prática...'}</h3>
+        <p className="game-subtitle">Acertou {wins} de {maxRounds} rodadas ({finalScore}%)</p>
+        <div className="game-progress-bar">
+          <div className={success ? 'game-progress-fill-success' : 'game-progress-fill-fail'}
             style={{ width: `${finalScore}%` }} />
         </div>
       </div>
     );
   }
 
-  const dirStyle = (dir: Direction) =>
-    `w-16 h-16 rounded-2xl border-2 flex items-center justify-center text-2xl transition-all duration-150 active:scale-90 ${
-      activeDir === dir
-        ? 'border-primary bg-primary/30 scale-110 shadow-lg shadow-primary/20'
-        : 'border-border bg-card hover:border-primary/30'
-    }`;
+  const dirBtnStyle = (dir: Direction): React.CSSProperties => ({
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.5rem',
+    transition: 'all 0.15s',
+    background: activeDir === dir
+      ? 'linear-gradient(180deg, hsl(40 50% 30%) 0%, hsl(40 45% 22%) 100%)'
+      : 'linear-gradient(180deg, hsl(30 20% 16%) 0%, hsl(30 18% 12%) 100%)',
+    border: activeDir === dir ? '3px solid hsl(40 70% 55%)' : '3px solid hsl(40 40% 30%)',
+    boxShadow: activeDir === dir
+      ? '0 0 15px hsl(40 70% 50% / 0.4), 0 3px 0 hsl(40 40% 15%)'
+      : '0 3px 0 hsl(30 15% 8%)',
+    transform: activeDir === dir ? 'scale(1.1)' : 'scale(1)',
+  });
 
   return (
-    <div className="bg-card/50 border-2 border-primary/20 rounded-2xl p-4 space-y-4">
-      <div className="flex justify-between text-xs font-display">
-        <span className="text-primary bg-card/80 px-2 py-1 rounded-lg">Rodada {round + 1}/{maxRounds}</span>
-        <span className="text-muted-foreground bg-card/80 px-2 py-1 rounded-lg">
+    <div className="game-card space-y-4">
+      <div className="flex justify-between">
+        <span className="game-hud-tag">Rodada {round + 1}/{maxRounds}</span>
+        <span className="game-hud-tag">
           {phase === 'showing' ? '👀 Observe...' : phase === 'input' ? '👆 Sua vez!' : ''}
         </span>
-        <span className="text-muted-foreground bg-card/80 px-2 py-1 rounded-lg">✓ {wins}</span>
+        <span className="game-hud-tag">✓ {wins}</span>
       </div>
 
       {/* Progress dots */}
       {phase === 'input' && (
-        <div className="flex justify-center gap-1">
+        <div className="flex justify-center gap-1.5">
           {sequence.map((_, i) => (
-            <div key={i} className={`w-3 h-3 rounded-full transition-all ${
-              i < playerInput.length ? 'bg-primary' : 'bg-secondary'
-            }`} />
+            <div key={i} className="w-4 h-4 rounded-full transition-all" style={{
+              background: i < playerInput.length ? 'hsl(40 60% 50%)' : 'hsl(30 15% 20%)',
+              border: i < playerInput.length ? '2px solid hsl(40 70% 60%)' : '2px solid hsl(30 15% 25%)',
+              boxShadow: i < playerInput.length ? '0 0 6px hsl(40 60% 50% / 0.4)' : 'none',
+            }} />
           ))}
         </div>
       )}
 
       {/* Direction pad */}
-      <div className="flex flex-col items-center gap-2">
-        <button onClick={() => handleInput('⬆️')} disabled={phase !== 'input'} className={dirStyle('⬆️')}>⬆️</button>
-        <div className="flex gap-2">
-          <button onClick={() => handleInput('⬅️')} disabled={phase !== 'input'} className={dirStyle('⬅️')}>⬅️</button>
-          <div className="w-16 h-16 rounded-2xl border-2 border-border/30 bg-card/30 flex items-center justify-center">
-            <span className="text-lg">{phase === 'showing' ? '👀' : '✋'}</span>
+      <div className="flex flex-col items-center gap-3">
+        <button onClick={() => handleInput('⬆️')} disabled={phase !== 'input'} style={dirBtnStyle('⬆️')}>⬆️</button>
+        <div className="flex gap-3">
+          <button onClick={() => handleInput('⬅️')} disabled={phase !== 'input'} style={dirBtnStyle('⬅️')}>⬅️</button>
+          <div className="flex items-center justify-center" style={{
+            width: 64, height: 64, borderRadius: 16,
+            background: 'hsl(30 15% 12%)',
+            border: '3px solid hsl(40 40% 25%)',
+          }}>
+            <span className="text-xl">{phase === 'showing' ? '👀' : '✋'}</span>
           </div>
-          <button onClick={() => handleInput('➡️')} disabled={phase !== 'input'} className={dirStyle('➡️')}>➡️</button>
+          <button onClick={() => handleInput('➡️')} disabled={phase !== 'input'} style={dirBtnStyle('➡️')}>➡️</button>
         </div>
-        <button onClick={() => handleInput('⬇️')} disabled={phase !== 'input'} className={dirStyle('⬇️')}>⬇️</button>
+        <button onClick={() => handleInput('⬇️')} disabled={phase !== 'input'} style={dirBtnStyle('⬇️')}>⬇️</button>
       </div>
 
       {/* Feedback */}
       {phase === 'feedback' && (
         <div className="text-center py-2 animate-scale-in">
-          <span className="text-xl font-display">{feedbackText}</span>
+          <span className="text-xl font-display font-bold" style={{ color: 'hsl(40 70% 65%)', textShadow: '0 0 10px hsl(40 60% 50% / 0.4)' }}>{feedbackText}</span>
         </div>
       )}
     </div>
