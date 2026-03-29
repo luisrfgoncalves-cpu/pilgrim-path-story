@@ -7,6 +7,7 @@ import casaInterprete from '@/assets/scenes/casa-interprete.jpg';
 import valeHumilhacao from '@/assets/scenes/vale-humilhacao.jpg';
 import feiraVaidade from '@/assets/scenes/feira-vaidade.jpg';
 import casteloDuvida from '@/assets/scenes/castelo-duvida.jpg';
+import cidadeCelestial from '@/assets/scenes/cidade-celestial.jpg';
 
 export const sceneImages: Record<string, string> = {
   'cena1': cidadeDestruicao,
@@ -65,4 +66,12 @@ export const sceneImages: Record<string, string> = {
   'fase5-cena8': casteloDuvida,
   'fase5-cena9': casteloDuvida,
   'fase5-cena10': casteloDuvida,
+  'fase6-cena1': cidadeCelestial,
+  'fase6-cena2': cidadeCelestial,
+  'fase6-cena3': cidadeCelestial,
+  'fase6-cena4': cidadeCelestial,
+  'fase6-cena5': cidadeCelestial,
+  'fase6-cena6': cidadeCelestial,
+  'fase6-cena7': cidadeCelestial,
+  'fase6-cena8': cidadeCelestial,
 };
