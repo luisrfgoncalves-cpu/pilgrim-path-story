@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { useProgressSync } from '@/hooks/useProgressSync';
 import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect, ToneNarrative, StoryChoice } from '@/data/story';
+import { getPart2Chapter } from '@/data/storyPart2';
 import { sceneImages } from '@/data/sceneImages';
 import { sceneVariations, VariationContext } from '@/data/sceneVariations';
 import { resolveEmotionalState, postureToLegacyTone } from '@/lib/emotionalState';
@@ -46,7 +47,7 @@ const ScenePage = () => {
     return (progress as any).decisions?.slice(-5)?.map((d: any) => d.effects || {}) || [];
   }, [progress]);
 
-  const chapter = getChapter(progress.currentChapterId);
+  const chapter = getChapter(progress.currentChapterId) || getPart2Chapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
   // Dynamic events system
