@@ -35,7 +35,6 @@ import crista from '@/assets/characters/crista.jpg';
 import valentePelaVerdade from '@/assets/characters/valente-pela-verdade.jpg';
 
 import sealImg from '@/assets/medieval-seal.png';
-import sealImg from '@/assets/medieval-seal.png';
 import logoImg from '@/assets/logo-peregrino.png';
 import pilgrimStanding from '@/assets/pilgrim-standing.png';
 
