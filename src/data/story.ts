@@ -1743,9 +1743,132 @@ export const storyChapters: Record<string, StoryChapter> = {
     ],
     choices: [
       {
-        text: "Caminhar em direção ao Rio",
-        nextChapterId: "fase6-cena1",
+        text: "Caminhar em direção ao próximo trecho",
+        nextChapterId: "fase5-cena11",
         effects: { perseveranca: 1, fe: 1 }
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════
+  // FASE 5B: LISONJEIRO, ATEÍSMO, TERRA ENCANTADA, BEULÁ
+  // Episódios reais entre as Montanhas e o Rio
+  // ═══════════════════════════════════════════
+
+  "fase5-cena11": {
+    id: "fase5-cena11",
+    title: "A Rede do Lisonjeiro",
+    location: "Caminho Estreito",
+    characters: ["cristao", "esperanca", "lisonjeiro"],
+    narrative: [
+      "Além das montanhas, o caminho se divide. Vocês hesitam. Um homem de pele escura, vestido com uma túnica branca brilhante, se aproxima sorrindo.",
+      "\"Amigos peregrinos! Vocês parecem perdidos. Eu conheço o caminho para a Cidade Celestial. Sigam-me.\"",
+      "Sua voz é doce, seu sorriso convincente. Ele os leva por um caminho lateral que parece seguro — até que uma rede cai sobre vocês, prendendo-os completamente."
+    ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 7, highText: "Algo no sorriso dele te incomoda. Os pastores alertaram sobre o Adulador. Este homem... será ele?", lowThreshold: 3, lowText: "O homem parece confiável. Sua túnica branca irradia autoridade. Por que duvidar?" }
+    ],
+    choices: [
+      {
+        text: "Perceber a armadilha e tentar se libertar",
+        nextChapterId: "fase5-cena12",
+        effects: { discernimento: 2, fe: 1 },
+        flag: "escapou_lisonjeiro",
+        conditionalEffects: [
+          { attr: "discernimento", threshold: 6, bonus: { coragem: 1 }, penalty: {} }
+        ]
+      },
+      {
+        text: "Confiar no homem — ele parece sincero",
+        nextChapterId: "fase5-cena12",
+        effects: { discernimento: -2, fe: -1 },
+        flag: "caiu_na_rede"
+      }
+    ]
+  },
+
+  "fase5-cena12": {
+    id: "fase5-cena12",
+    title: "O Resgate e o Ateísmo",
+    location: "Caminho Estreito",
+    characters: ["cristao", "esperanca", "ateismo"],
+    narrative: [
+      "Um Ser Resplandecente aparece com um chicote de cordas. Ele corta a rede e os liberta — mas não sem repreensão: \"Os pastores não os avisaram? O Lisonjeiro engana com palavras doces e aparência de luz.\"",
+      "Envergonhados mas livres, vocês retomam o caminho certo. Mas logo encontram outro obstáculo: um homem que ri alto, caminhando na direção oposta.",
+      "\"Vocês ainda buscam a Cidade Celestial?\", ele gargalha. \"Eu a busquei por vinte anos e nunca a encontrei! Ela não existe! Voltem para casa antes que desperdicem mais da vida de vocês.\""
+    ],
+    flagNarrative: [
+      { flag: "caiu_na_rede", text: "A vergonha da rede ainda arde. E agora este homem diz que a cidade nem existe? A dúvida é uma ferida aberta." },
+      { flag: "escapou_lisonjeiro", text: "Você escapou da rede porque desconfiou. Agora, desconfie também deste riso fácil demais." }
+    ],
+    choices: [
+      {
+        text: "\"Nós vimos a cidade da luneta dos pastores. Ela é real.\"",
+        nextChapterId: "fase5-cena13",
+        effects: { fe: 2, coragem: 1 }
+      },
+      {
+        text: "Sentir a dúvida crescer — e se ele tiver razão?",
+        nextChapterId: "fase5-cena13",
+        effects: { fe: -1, discernimento: -1 }
+      }
+    ]
+  },
+
+  "fase5-cena13": {
+    id: "fase5-cena13",
+    title: "A Terra Encantada",
+    location: "Terra Encantada",
+    characters: ["cristao", "esperanca"],
+    sceneEvent: { type: 'suspense', duration: 3000, message: 'O ar pesado te envolve...' },
+    narrative: [
+      "O caminho entra numa região estranha. O ar é pesado, perfumado, intoxicante. Cada passo exige mais esforço. As pálpebras pesam como chumbo.",
+      "A Terra Encantada — Bunyan a descreve como um lugar onde o próprio ar faz os peregrinos adormecerem para sempre. Quem dorme aqui, nunca mais acorda.",
+      "Esperança começa a cambalear: \"Cristão... estou tão cansado... apenas um momento de descanso...\""
+    ],
+    toneNarrative: [
+      { attr: "perseveranca", highThreshold: 7, highText: "Sua perseverança acumulada te mantém acordado. Cada passo do pântano, cada noite no castelo construiu resistência contra este sono.", lowThreshold: 3, lowText: "O sono é irresistível. As flores ao redor exalam um perfume que adormece a alma. Seus olhos se fecham..." },
+      { attr: "fe", highThreshold: 7, highText: "A promessa da cidade te puxa para frente como uma corrente. Você não veio tão longe para dormir à beira do destino.", lowThreshold: 3, lowText: "A cidade... tão longe... o chão parece tão confortável..." }
+    ],
+    choices: [
+      {
+        text: "Sacudir Esperança e forçar ambos a caminhar sem parar",
+        nextChapterId: "fase5-cena14",
+        effects: { perseveranca: 2, coragem: 1 },
+        flag: "venceu_terra_encantada"
+      },
+      {
+        text: "Sentar \"só um momento\" para descansar",
+        nextChapterId: "fase5-cena14",
+        effects: { perseveranca: -2, fe: -1 }
+      }
+    ]
+  },
+
+  "fase5-cena14": {
+    id: "fase5-cena14",
+    title: "O País de Beulá",
+    location: "País de Beulá",
+    characters: ["cristao", "esperanca"],
+    reflection: "r13",
+    narrative: [
+      "Além da Terra Encantada, tudo muda. O ar se torna doce — não intoxicante, mas revigorante. Flores de todas as cores cobrem os campos. Árvores carregadas de frutos dourados bordam o caminho.",
+      "Este é o País de Beulá — a terra onde o sol nunca se põe, onde os pássaros cantam sem cessar, e onde o perfume das flores vem do próprio jardim do Rei.",
+      "Bunyan escreveu que aqui os peregrinos ouviam continuamente vozes cantando: 'Dize à filha de Sião: Eis que vem o teu Salvador.' A Cidade Celestial brilha no horizonte, tão perto que seus portões são visíveis a olho nu."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "As lágrimas rolam livremente. Não de dor — de alegria absoluta. Tudo pelo que você lutou está diante de seus olhos. A fé virou quase visão.", lowThreshold: 4, lowText: "A beleza é avassaladora. Você não sabia que algo assim era possível. A dúvida se dissolve como névoa ao sol." }
+    ],
+    flagNarrative: [
+      { flag: "venceu_terra_encantada", text: "Você resistiu ao sono encantado. E a recompensa é esta: o País de Beulá, onde não há sono — apenas vida plena." },
+      { flag: "escapou_castelo_fe", text: "Do castelo da dúvida à terra da certeza. A chave da Promessa abriu mais do que portas de ferro — abriu seus olhos para ver o que sempre esteve lá." }
+    ],
+    choices: [
+      {
+        text: "Descansar em Beulá e seguir renovado para o Rio",
+        nextChapterId: "fase6-cena1",
+        effects: { fe: 2, perseveranca: 1, coragem: 1 },
+        item: "folhas_arvore_vida"
       }
     ]
   },
