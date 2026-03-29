@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
-import { BookOpen, ChevronRight, Sparkles, RotateCcw } from 'lucide-react';
-
+import PilgrimAvatar from '@/components/PilgrimAvatar';
+import { ChevronRight, Sparkles, RotateCcw } from 'lucide-react';
 const replayMessages = [
   "Escolhas diferentes levam a caminhos diferentes. Descubra o que mudaria.",
   "Você explorou apenas um lado da história. Há muito mais para descobrir.",
@@ -34,11 +34,15 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-5">
       <div className="max-w-sm w-full space-y-8 fade-in text-center">
-        {/* Logo */}
+        {/* Avatar + Title */}
         <div className="space-y-4">
-          <div className="mx-auto w-20 h-20 rounded-full bg-card border border-border flex items-center justify-center glow-gold">
-            <BookOpen className="w-9 h-9 text-gold" />
-          </div>
+          <PilgrimAvatar
+            attributes={hasProgress ? progress.attributes : { fe: 3, perseveranca: 3, discernimento: 3, coragem: 3 }}
+            tone={hasProgress ? undefined : 'heavy'}
+            size="lg"
+            showLabel
+            className="mx-auto"
+          />
           <h1 className="font-display text-3xl text-foreground">O Peregrino</h1>
           <p className="text-xs uppercase tracking-[0.3em] text-primary font-medium">Uma jornada interativa</p>
         </div>
