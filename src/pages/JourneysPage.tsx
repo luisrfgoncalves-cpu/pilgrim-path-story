@@ -59,7 +59,9 @@ const JourneysPage = () => {
     if (progress.visitedChapters.includes(chapterId)) {
       goToChapter(chapterId);
       startJourney();
-      navigate('/cena');
+      // Force re-render even if already on /cena by navigating away then back
+      navigate('/jornada', { replace: true });
+      setTimeout(() => navigate('/cena'), 50);
     }
   };
 
@@ -69,7 +71,8 @@ const JourneysPage = () => {
     if (firstVisited) {
       goToChapter(firstVisited);
       startJourney();
-      navigate('/cena');
+      navigate('/jornada', { replace: true });
+      setTimeout(() => navigate('/cena'), 50);
     }
   };
 
