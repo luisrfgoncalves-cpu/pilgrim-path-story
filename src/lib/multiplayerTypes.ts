@@ -127,6 +127,13 @@ export const boardEvents: BoardEvent[] = [
   { id: 'ev48', type: 'stun', title: 'Volta-Atrás Capturado', description: 'Você vê Volta-Atrás sendo arrastado por demônios. O horror te paralisa por uma rodada.', effect: { target: 'self', stunTurns: 1 }, emoji: '😱' },
   { id: 'ev49', type: 'challenge', title: 'Grande-Coração Mata o Gigante', description: 'Grande-Coração lidera ataque ao Castelo da Dúvida! Role 3+ para ajudar e avançar 4!', effect: { target: 'self', positions: 4 }, emoji: '🗡️' },
   { id: 'ev50', type: 'safe', title: 'Pronto-para-Parar Caminha', description: 'Pronto-para-Parar caminha com muletas, mas não desiste. Se ele pode, você também pode. Fé +1.', effect: { target: 'self', attribute: 'fe', amount: 1 }, emoji: '🩼' },
+
+  // ═══ Episódios faltantes da Parte I ═══
+  { id: 'ev51', type: 'challenge', title: 'Colina da Dificuldade', description: 'A colina é íngreme! Suba direto ou tente o atalho Perigo? Role 4+ para subir e avançar 2!', effect: { target: 'self', positions: 2 }, emoji: '⛰️' },
+  { id: 'ev52', type: 'stun', title: 'Sono no Caramanchão', description: 'Você adormeceu no caramanchão e perdeu o pergaminho! Perde uma rodada buscando-o.', effect: { target: 'self', stunTurns: 1 }, emoji: '😴' },
+  { id: 'ev53', type: 'challenge', title: 'Leões Acorrentados', description: 'Dois leões bloqueiam o caminho! Role 3+ para passar no centro — eles estão acorrentados!', effect: { target: 'self', positions: 2 }, emoji: '🦁' },
+  { id: 'ev54', type: 'retreat', title: 'Mina de Demas', description: 'Demas te convida a ver prata na mina! A ganância te desvia. Recue casas.', effect: { target: 'self', positions: -2 }, emoji: '💎' },
+  { id: 'ev55', type: 'boost', title: 'Porteiro Vigilante', description: 'Vigilante te encoraja: "Não tema! Os leões estão presos!" Coragem +2.', effect: { target: 'self', attribute: 'coragem', amount: 2 }, emoji: '👁️' },
 ];
 
 // Generate board: assign events to each position (fixed per room)
