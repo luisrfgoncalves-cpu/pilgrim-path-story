@@ -783,6 +783,38 @@
   50% { box-shadow: 0 0 30px hsl(var(--primary) / 0.5), 0 0 80px hsl(var(--primary) / 0.2); transform: scale(1.03); }
 }
 
+/* Splash glow breathing */
+@keyframes splashGlow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+/* Splash light rays */
+@keyframes splashRay {
+  0% { opacity: 0; transform: scaleY(0.3); }
+  30% { opacity: 0.4; transform: scaleY(1); }
+  70% { opacity: 0.2; transform: scaleY(1.2); }
+  100% { opacity: 0; transform: scaleY(0.3); }
+}
+
+/* Splash sparkles */
+@keyframes splashSparkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
+}
+
+/* Screen hero entrance */
+@keyframes screenHeroReveal {
+  0% { opacity: 0; transform: scale(0.7) translateY(40px); }
+  60% { opacity: 1; transform: scale(1.05) translateY(-8px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes screenHeroGlow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.1); }
+}
+
 /* ═══ Inline Consequence Overlay ═══ */
 @keyframes consequenceFadeIn {
   from { opacity: 0; }
