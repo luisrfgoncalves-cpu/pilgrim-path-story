@@ -19,6 +19,7 @@ export interface CloudProgress {
   emotional_state: string;
   playthrough: number;
   started: boolean;
+  campaign: 'part1' | 'part2';
 }
 
 /** Save progress to Supabase */
@@ -39,6 +40,7 @@ export async function saveProgressToCloud(
     emotional_state: emotionalState || 'neutro',
     playthrough: progress.playthrough,
     started: progress.started,
+    campaign: progress.campaign,
     updated_at: new Date().toISOString(),
   };
 
@@ -59,7 +61,7 @@ export async function loadProgressFromCloud(
     .eq('user_id', userId)
     .order('playthrough', { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   if (error || !data) {
     return { data: null, error: error as Error | null };

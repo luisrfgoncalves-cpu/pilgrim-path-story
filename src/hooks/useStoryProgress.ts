@@ -226,7 +226,10 @@ export const useStoryProgress = () => {
     ]);
 
     if (progressResult.data) {
-      setProgress(progressResult.data);
+      setProgress(prev => {
+        const hasLocalProgress = prev.started || prev.choicesMade > 0 || prev.visitedChapters.length > 1;
+        return hasLocalProgress ? prev : progressResult.data;
+      });
     }
     if (historyResult.data) {
       setHistory(historyResult.data);
