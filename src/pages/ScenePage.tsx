@@ -386,75 +386,61 @@ const ScenePage = () => {
                 </div>
               ) : (
                 <>
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2 font-medium">Escolha seu caminho</p>
-                  {availableChoices.map((choice, i) => (
-                    <p key={`label-${i}`} className="hidden">{/* spacer */}</p>
-                  ))}
+                  <p className="text-[11px] uppercase tracking-widest text-muted-foreground mb-2 font-medium">Escolha seu caminho</p>
+
                   {chapter.interactionType === 'drag' && availableChoices.length >= 2 ? (
                     <DragToChoose
-                      leftChoice={{ label: availableChoices[0].text, description: availableChoices[0].item ? '✦ Concede um item' : undefined }}
-                      rightChoice={{ label: availableChoices[1].text, description: availableChoices[1].item ? '✦ Concede um item' : undefined }}
+                      leftChoice={{ label: availableChoices[0].text, description: availableChoices[0].item ? '✦ Item' : undefined }}
+                      rightChoice={{ label: availableChoices[1].text, description: availableChoices[1].item ? '✦ Item' : undefined }}
                       onChoose={(side) => {
                         const choice = side === 'left' ? availableChoices[0] : availableChoices[1];
                         handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item);
                       }}
                     />
 
-                  /* TIMED interaction */
                   ) : chapter.interactionType === 'timed' ? (
                     <TimedChoice
                       timeLimit={chapter.timeLimit || 15}
                       onTimeout={() => {
                         const idx = chapter.timeoutChoiceIndex ?? 0;
                         const fallback = availableChoices[idx] || availableChoices[0];
-                        if (fallback) {
-                          handleChoice(fallback.nextChapterId, fallback.text, fallback.effects, fallback.consequence, fallback.flag, fallback.conditionalEffects, fallback.item);
-                        }
+                        if (fallback) handleChoice(fallback.nextChapterId, fallback.text, fallback.effects, fallback.consequence, fallback.flag, fallback.conditionalEffects, fallback.item);
                       }}
                     >
                       {availableChoices.map((choice, i) => (
-                        <HoldButton
-                          key={i}
-                          holdDuration={1.2}
-                          onConfirm={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
-                        >
+                        <HoldButton key={i} holdDuration={1.2} onConfirm={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}>
                           <p className="text-foreground font-body text-sm">{choice.text}</p>
-                          {choice.item && <p className="text-[10px] text-amber-400 mt-1 uppercase tracking-wider">✦ Concede um item</p>}
+                          {choice.item && <p className="text-[10px] text-primary/70 mt-1">✦ Concede um item</p>}
                         </HoldButton>
                       ))}
                     </TimedChoice>
 
-                  /* HOLD interaction */
                   ) : chapter.interactionType === 'hold' ? (
                     <div className="space-y-3">
                       {availableChoices.map((choice, i) => (
-                        <HoldButton
-                          key={i}
-                          holdDuration={2}
-                          onConfirm={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
-                        >
+                        <HoldButton key={i} holdDuration={2} onConfirm={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}>
                           <p className="text-foreground font-body text-sm">{choice.text}</p>
-                          {choice.requires && <p className="text-[10px] text-primary mt-1.5 uppercase tracking-wider">★ Desbloqueada por atributos</p>}
-                          {choice.item && <p className="text-[10px] text-amber-400 mt-1 uppercase tracking-wider">✦ Concede um item</p>}
+                          {choice.requires && <p className="text-[10px] text-primary mt-1">★ Desbloqueada</p>}
+                          {choice.item && <p className="text-[10px] text-primary/70 mt-1">✦ Concede um item</p>}
                         </HoldButton>
                       ))}
                     </div>
 
-                  /* DEFAULT — standard click choices */
                   ) : (
                     <>
                       {availableChoices.map((choice, i) => (
                         <button
                           key={i}
                           onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
-                          className="w-full text-left p-4 rounded-lg bg-card border border-border hover:border-primary/50 hover:glow-gold transition-all duration-300 group"
+                          className="choice-btn group"
+                          style={{ animationDelay: `${i * 0.08}s` }}
                         >
-                          <p className="text-foreground font-body text-sm group-hover:text-gold transition-colors">{choice.text}</p>
+                          <p className="text-foreground font-body text-sm group-hover:text-primary transition-colors">{choice.text}</p>
                           {choice.requires && (
-                            <p className="text-[10px] text-primary mt-1.5 uppercase tracking-wider">★ Escolha desbloqueada por seus atributos</p>
+                            <p className="text-[10px] text-primary mt-1.5 uppercase tracking-wider">★ Desbloqueada por atributos</p>
                           )}
                           {choice.item && (
-                            <p className="text-[10px] text-amber-400 mt-1 uppercase tracking-wider">✦ Concede um item</p>
+                            <p className="text-[10px] text-primary/70 mt-1">✦ Concede um item</p>
                           )}
                         </button>
                       ))}
@@ -462,15 +448,12 @@ const ScenePage = () => {
                   )}
 
                   {lockedChoices.map((choice, i) => (
-                    <div
-                      key={`locked-${i}`}
-                      className="w-full text-left p-4 rounded-lg bg-muted/30 border border-border opacity-60"
-                    >
+                    <div key={`locked-${i}`} className="w-full text-left p-4 rounded-lg bg-muted/20 border border-border/50 opacity-50">
                       <p className="text-muted-foreground font-body text-sm flex items-center gap-2">
-                        <Lock className="w-3.5 h-3.5 flex-shrink-0" />
+                        <Lock className="w-3 h-3 flex-shrink-0" />
                         {choice.text}
                       </p>
-                      <p className="text-[10px] text-muted-foreground mt-1.5">
+                      <p className="text-[10px] text-muted-foreground mt-1">
                         Requer: {Object.entries(choice.requires || {}).map(([k, v]) => {
                           const labels: Record<string, string> = { fe: 'Fé', perseveranca: 'Perseverança', discernimento: 'Discernimento', coragem: 'Coragem' };
                           return `${labels[k] || k} ${v}+`;
