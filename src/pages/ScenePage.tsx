@@ -5,6 +5,9 @@ import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect, ToneNarrati
 import { sceneImages } from '@/data/sceneImages';
 import { getEmotionalState, getEmotionalClasses } from '@/lib/emotionalIntensity';
 import { analyzePerformance } from '@/lib/performanceAnalysis';
+import { useVisualEffects } from '@/hooks/useVisualEffects';
+import PilgrimAvatar from '@/components/PilgrimAvatar';
+import AttributeBars from '@/components/AttributeBars';
 import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle } from 'lucide-react';
 
 const ScenePage = () => {
