@@ -257,7 +257,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Você vê dois caminhos: um fácil e outro estreito e difícil."
     ],
-    replayNarrative: [
+    interactionType: 'drag',
       "Você já conhece essa encruzilhada. Da última vez, fez uma escolha. Desta vez, pode fazer outra."
     ],
     toneNarrative: [
@@ -348,7 +348,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Pântano do Desânimo",
     characters: ["cristao"],
     reflection: "r5",
-    narrative: [
+    interactionType: 'hold',
       "O terreno começa a ficar instável. Você entra em uma área difícil de atravessar."
     ],
     toneNarrative: [
