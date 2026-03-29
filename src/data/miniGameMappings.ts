@@ -590,4 +590,369 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     successBonus: { fe: 2, coragem: 1 },
     failurePenalty: { fe: -1 },
   },
+
+  // ╔══════════════════════════════════════════════════════╗
+  // ║  PARTE II — A PEREGRINA (Cristã)                    ║
+  // ║  Mini-games exclusivos da jornada de Cristã          ║
+  // ╚══════════════════════════════════════════════════════╝
+
+  // ── FASE 1: A Partida de Cristã ──
+
+  // Cena 1 — O Sonho e a Carta: Memória (lembrar o sonho)
+  'p2-cena1': {
+    type: 'memory',
+    difficulty: 'easy',
+    intro: 'O sonho de Cristã revelou imagens do marido na Cidade Celestial. Memorize os símbolos do sonho!',
+    successBonus: { fe: 1, discernimento: 1 },
+    failurePenalty: { discernimento: -1 },
+    memorySymbols: ['👼', '✉️', '🌟', '🕊️', '👑', '💌', '🔔', '✨'],
+  },
+
+  // Cena 3 — O Pântano com Misericórdia: Stealth
+  'p2-cena3': {
+    type: 'stealth',
+    difficulty: 'easy',
+    intro: 'O Pântano do Desânimo ameaça engolir Misericórdia! Avance com cuidado pelas pedras de promessa.',
+    successBonus: { perseveranca: 1, fe: 1 },
+    failurePenalty: { perseveranca: -1 },
+  },
+
+  // Cena 4 — O Portão Estreito: QTE (bater insistentemente)
+  'p2-cena4': {
+    type: 'qte',
+    difficulty: 'easy',
+    intro: 'Bata no Portão Estreito com insistência! Não pare até que ele se abra!',
+    successBonus: { fe: 1, perseveranca: 1 },
+    failurePenalty: { fe: -1 },
+  },
+
+  // Cena 5 — Os Mal-Encarados: Swipe (desviar dos ataques)
+  'p2-cena5': {
+    type: 'swipe',
+    difficulty: 'easy',
+    intro: 'Os Mal-Encarados atacam logo após o portão! Desvie das ameaças e proteja os filhos!',
+    successBonus: { coragem: 1 },
+    failurePenalty: { coragem: -1 },
+    swipeItems: [
+      { text: 'Pedra atirada', emoji: '🪨', good: false },
+      { text: 'Ameaça verbal', emoji: '😡', good: false },
+      { text: 'Proteção do guardião', emoji: '🛡️', good: true },
+      { text: 'Insulto cruel', emoji: '🗣️', good: false },
+      { text: 'Oração de proteção', emoji: '🙏', good: true },
+      { text: 'Medo paralisante', emoji: '😨', good: false },
+      { text: 'Coragem maternal', emoji: '💪', good: true },
+      { text: 'Fé no guardião', emoji: '✨', good: true },
+    ],
+  },
+
+  // Cena 6 — O Banho e as Vestes: Reflexo Divino
+  'p2-cena6': {
+    type: 'reflex',
+    difficulty: 'easy',
+    intro: 'O Intérprete marca o selo do Rei em suas testas. Siga os sinais sagrados para receber a bênção!',
+    successBonus: { fe: 2 },
+    failurePenalty: { fe: -1 },
+  },
+
+  // ── FASE 2: Com Grande-Coração ──
+
+  // Cena 1 — Grande-Coração: Duelo de Dados (treinamento)
+  'p2-fase2-cena1': {
+    type: 'diceduel',
+    difficulty: 'easy',
+    intro: 'Grande-Coração testa suas habilidades com um treino de combate espiritual. Mostre sua coragem!',
+    successBonus: { coragem: 1 },
+    failurePenalty: {},
+    duelEnemy: { name: 'Grande-Coração', emoji: '⚔️', power: 3 },
+  },
+
+  // Cena 2 — A Cruz: Puzzle de Escritura
+  'p2-fase2-cena2': {
+    type: 'wordpuzzle',
+    difficulty: 'easy',
+    intro: 'Ao pé da Cruz, monte o versículo que libertou Cristão do seu fardo.',
+    successBonus: { fe: 2, discernimento: 1 },
+    failurePenalty: { fe: -1 },
+  },
+
+  // Cena 3 — Colina da Dificuldade: Stealth (subida cuidadosa)
+  'p2-fase2-cena3': {
+    type: 'stealth',
+    difficulty: 'normal',
+    intro: 'A Colina da Dificuldade exige cada gota de energia. Suba com cautela — os filhos dependem de você!',
+    successBonus: { perseveranca: 2 },
+    failurePenalty: { perseveranca: -1 },
+  },
+
+  // Cena 4 — Os Leões: QTE (passar pelos leões)
+  'p2-fase2-cena4': {
+    type: 'qte',
+    difficulty: 'normal',
+    intro: 'Os leões rugem! Grande-Coração abre caminho — corra pelo centro antes que avancem!',
+    successBonus: { coragem: 2 },
+    failurePenalty: { coragem: -1 },
+  },
+
+  // Cena 5 — Palácio Belo: Caça ao Tesouro
+  'p2-fase2-cena5': {
+    type: 'treasure',
+    difficulty: 'easy',
+    intro: 'O Palácio Belo guarda as relíquias que Cristão usou. Explore e descubra a herança dele!',
+    successBonus: { discernimento: 1 },
+    failurePenalty: {},
+    treasures: [
+      { emoji: '🗡️', label: 'Espada de Cristão', bonus: { coragem: 1 } },
+      { emoji: '🛡️', label: 'Escudo da Fé', bonus: { fe: 1 } },
+      { emoji: '📜', label: 'Pergaminho do marido', bonus: { discernimento: 1 } },
+      { emoji: '💊', label: 'Pílula de arrependimento', bonus: { perseveranca: 1 } },
+    ],
+  },
+
+  // ── FASE 3: Os Vales e Encontros ──
+
+  // Cena 1 — Vale da Humilhação: Caminho da Fé
+  'p2-fase3-cena1': {
+    type: 'pathchoice',
+    difficulty: 'easy',
+    intro: 'O Vale da Humilhação revela trilhas inesperadas. Sem Apolião, há paz — mas as escolhas importam.',
+    successBonus: { fe: 1, discernimento: 1 },
+    failurePenalty: { discernimento: -1 },
+  },
+
+  // Cena 2 — Vale da Sombra: Stealth (atravessar com o pilar de fogo)
+  'p2-fase3-cena2': {
+    type: 'stealth',
+    difficulty: 'hard',
+    intro: 'O Vale da Sombra da Morte é escuro. Siga o pilar de fogo e proteja as crianças dos sussurros!',
+    successBonus: { coragem: 1, perseveranca: 1 },
+    failurePenalty: { coragem: -1 },
+  },
+
+  // Cena 3 — Gigante Maul: Duelo de Dados
+  'p2-fase3-cena3': {
+    type: 'diceduel',
+    difficulty: 'normal',
+    intro: 'O Gigante Maul bloqueia o caminho! Grande-Coração precisa da sua fé para vencer!',
+    successBonus: { coragem: 2, fe: 1 },
+    failurePenalty: { coragem: -1 },
+    duelEnemy: { name: 'Gigante Maul', emoji: '👹', power: 5 },
+  },
+
+  // Cena 4 — Hospedaria de Gaio: Memória (ancestralidade de Cristão)
+  'p2-fase3-cena4': {
+    type: 'memory',
+    difficulty: 'easy',
+    intro: 'Gaio revela a linhagem espiritual de Cristão. Memorize os nomes dos ancestrais da fé!',
+    successBonus: { discernimento: 1, fe: 1 },
+    failurePenalty: { discernimento: -1 },
+    memorySymbols: ['👤', '📖', '⭐', '🕊️', '💒', '🔥', '👑', '✝️'],
+  },
+
+  // Cena 5 — Gigante Mata-Bons: Duelo de Dados
+  'p2-fase3-cena5': {
+    type: 'diceduel',
+    difficulty: 'hard',
+    intro: 'O Gigante Mata-Bons é brutal! Grande-Coração enfrenta o monstro — sua oração fortalece a espada!',
+    successBonus: { coragem: 2, perseveranca: 1 },
+    failurePenalty: { perseveranca: -1 },
+    duelEnemy: { name: 'Gigante Mata-Bons', emoji: '💀', power: 6 },
+  },
+
+  // Cena 6 — Feira da Vaidade (diferente): Swipe
+  'p2-fase3-cena6': {
+    type: 'swipe',
+    difficulty: 'normal',
+    intro: 'A Feira da Vaidade mudou desde Fiel, mas as tentações permanecem. Discerna o que aceitar!',
+    successBonus: { discernimento: 1, fe: 1 },
+    failurePenalty: { fe: -1 },
+    swipeItems: [
+      { text: 'Respeito fingido', emoji: '🎭', good: false },
+      { text: 'Paz aparente', emoji: '☮️', good: false },
+      { text: 'Mercadoria vã', emoji: '💰', good: false },
+      { text: 'Memória de Fiel', emoji: '✝️', good: true },
+      { text: 'Oração em grupo', emoji: '🙏', good: true },
+      { text: 'Entretenimento', emoji: '🎪', good: false },
+      { text: 'Palavra de Deus', emoji: '📖', good: true },
+      { text: 'Testemunho sincero', emoji: '💡', good: true },
+    ],
+  },
+
+  // ── FASE 4: Novos Companheiros ──
+
+  // Cena 1 — Pronto-para-Parar: Reflexo Divino
+  'p2-fase4-cena1': {
+    type: 'reflex',
+    difficulty: 'easy',
+    intro: 'Pronto-para-Parar ensina a perseverar mesmo com dor. Siga o ritmo dos seus passos corajosos!',
+    successBonus: { perseveranca: 1 },
+    failurePenalty: { perseveranca: -1 },
+  },
+
+  // Cena 2 — Mina de Demas: Swipe (resistir à ganância)
+  'p2-fase4-cena2': {
+    type: 'swipe',
+    difficulty: 'normal',
+    intro: 'A mina de Demas brilha com falsa riqueza. Ensine os filhos — rejeite a ganância!',
+    successBonus: { discernimento: 2 },
+    failurePenalty: { discernimento: -1 },
+    swipeItems: [
+      { text: 'Ouro brilhante', emoji: '✨', good: false },
+      { text: 'Prata fácil', emoji: '🪙', good: false },
+      { text: 'Promessa de riqueza', emoji: '💎', good: false },
+      { text: 'Contentamento', emoji: '😊', good: true },
+      { text: 'Fé verdadeira', emoji: '🔥', good: true },
+      { text: 'Tesouros eternos', emoji: '👑', good: true },
+      { text: 'Poder mundano', emoji: '💰', good: false },
+      { text: 'Gratidão simples', emoji: '🙏', good: true },
+    ],
+  },
+
+  // Cena 3 — Valente-pela-Verdade: Duelo de Dados
+  'p2-fase4-cena3': {
+    type: 'diceduel',
+    difficulty: 'normal',
+    intro: 'Valente-pela-Verdade acabou de lutar contra três bandidos! Ajude-o a derrotar o último!',
+    successBonus: { coragem: 2 },
+    failurePenalty: { coragem: -1 },
+    duelEnemy: { name: 'Coração-Fraco', emoji: '🗡️', power: 4 },
+  },
+
+  // Cena 4 — Prado Agradável: Caminho da Fé
+  'p2-fase4-cena4': {
+    type: 'pathchoice',
+    difficulty: 'normal',
+    intro: 'O Prado Agradável seduz com conforto. Cada trilha pode levar à armadilha — escolha sabiamente!',
+    successBonus: { discernimento: 1, perseveranca: 1 },
+    failurePenalty: { perseveranca: -1 },
+  },
+
+  // ── FASE 5: O Castelo Destruído ──
+
+  // Cena 1 — Portas do Castelo: QTE (arrombar portões)
+  'p2-fase5-cena1': {
+    type: 'qte',
+    difficulty: 'hard',
+    intro: 'Grande-Coração arromba os portões do Castelo da Dúvida! Ajude a derrubar cada barreira!',
+    successBonus: { coragem: 2 },
+    failurePenalty: { coragem: -1 },
+  },
+
+  // Cena 2 — Gigante Desespero: Duelo de Dados ÉPICO
+  'p2-fase5-cena2': {
+    type: 'diceduel',
+    difficulty: 'hard',
+    intro: 'O Gigante Desespero emerge! Grande-Coração e Valente-pela-Verdade atacam — sua fé é a arma decisiva!',
+    successBonus: { coragem: 2, fe: 2 },
+    failurePenalty: { coragem: -2, fe: -1 },
+    duelEnemy: { name: 'Gigante Desespero', emoji: '👹', power: 8 },
+  },
+
+  // Cena 3 — Masmorras: Caça ao Tesouro (libertar prisioneiros)
+  'p2-fase5-cena3': {
+    type: 'treasure',
+    difficulty: 'normal',
+    intro: 'As masmorras do castelo escondem prisioneiros e relíquias. Encontre-os antes que o castelo desabe!',
+    successBonus: { fe: 1, perseveranca: 1 },
+    failurePenalty: {},
+    treasures: [
+      { emoji: '🗝️', label: 'Chave da cela', bonus: { fe: 1 } },
+      { emoji: '🕯️', label: 'Luz na masmorra', bonus: { coragem: 1 } },
+      { emoji: '💊', label: 'Remédio para os feridos', bonus: { perseveranca: 1 } },
+      { emoji: '📖', label: 'Bíblia escondida', bonus: { discernimento: 1 } },
+      { emoji: '🔓', label: 'Correntes quebradas', bonus: { fe: 1 } },
+    ],
+  },
+
+  // Cena 4 — Demolição do Castelo: QTE (destruir muralhas)
+  'p2-fase5-cena4': {
+    type: 'qte',
+    difficulty: 'normal',
+    intro: 'Pedra por pedra, destrua o Castelo da Dúvida! Toque em cada ponto fraco para derrubá-lo!',
+    successBonus: { perseveranca: 1, coragem: 1 },
+    failurePenalty: { perseveranca: -1 },
+  },
+
+  // Cena 5 — Montanhas Deleitosas: Memória (avisos dos pastores)
+  'p2-fase5-cena5': {
+    type: 'memory',
+    difficulty: 'normal',
+    intro: 'Os pastores das Montanhas Deleitosas revelam segredos do caminho final. Memorize seus avisos!',
+    successBonus: { discernimento: 2, fe: 1 },
+    failurePenalty: { discernimento: -1 },
+    memorySymbols: ['⛰️', '🔭', '👁️', '🌊', '🏔️', '👑', '⚠️', '🌟'],
+  },
+
+  // ── FASE 6: A Terra Encantada e o Rio ──
+
+  // Cena 1 — Firme e Madame Bolha: Swipe (resistir tentações)
+  'p2-fase6-cena1': {
+    type: 'swipe',
+    difficulty: 'hard',
+    intro: 'Madame Bolha oferece ouro, prazer e conforto. Ajude Firme a resistir — rejeite cada tentação!',
+    successBonus: { fe: 2, discernimento: 1 },
+    failurePenalty: { fe: -1, discernimento: -1 },
+    swipeItems: [
+      { text: 'Bolsa de ouro', emoji: '💰', good: false },
+      { text: 'Cama de seda', emoji: '🛏️', good: false },
+      { text: 'Beleza sedutora', emoji: '💋', good: false },
+      { text: 'Conforto eterno', emoji: '🍷', good: false },
+      { text: 'Oração fervorosa', emoji: '🙏', good: true },
+      { text: 'Fé inabalável', emoji: '🔥', good: true },
+      { text: 'Palavra de Deus', emoji: '📖', good: true },
+      { text: 'Resistência santa', emoji: '🛡️', good: true },
+    ],
+  },
+
+  // Cena 2 — País de Beulá: Reflexo Divino (anjos guiando)
+  'p2-fase6-cena2': {
+    type: 'reflex',
+    difficulty: 'easy',
+    intro: 'No País de Beulá, anjos dançam em padrões de luz. Siga seus movimentos de pura alegria!',
+    successBonus: { fe: 1, perseveranca: 1 },
+    failurePenalty: {},
+  },
+
+  // Cena 3 — O Chamado Individual: Puzzle de Escritura
+  'p2-fase6-cena3': {
+    type: 'wordpuzzle',
+    difficulty: 'normal',
+    intro: 'A carta do Rei contém um versículo sagrado. Monte-o para aceitar o chamado final.',
+    successBonus: { fe: 2, discernimento: 1 },
+    failurePenalty: { fe: -1 },
+  },
+
+  // Cena 4 — As Despedidas: Memória (palavras dos companheiros)
+  'p2-fase6-cena4': {
+    type: 'memory',
+    difficulty: 'hard',
+    intro: 'Cada companheiro se despede com palavras eternas. Memorize suas últimas mensagens!',
+    successBonus: { fe: 1, coragem: 1, perseveranca: 1 },
+    failurePenalty: { fe: -1 },
+    memorySymbols: ['⚔️', '🙏', '💪', '🕊️', '👑', '🎵', '❤️', '✨'],
+  },
+
+  // Cena 5 — A Travessia de Cristã: QTE final (atravessar o rio)
+  'p2-fase6-cena5': {
+    type: 'qte',
+    difficulty: 'normal',
+    intro: 'O Rio da Morte se abre diante de Cristã. Cada passo firme a leva mais perto de Cristão!',
+    successBonus: { fe: 2, perseveranca: 1 },
+    failurePenalty: { fe: -1 },
+  },
+
+  // Cena 6 — Cidade Celestial: Caça ao Tesouro (recompensas eternas)
+  'p2-fase6-cena6': {
+    type: 'treasure',
+    difficulty: 'easy',
+    intro: 'A Cidade Celestial revela seus tesouros eternos! O reencontro com Cristão é a maior recompensa.',
+    successBonus: { fe: 2 },
+    failurePenalty: {},
+    treasures: [
+      { emoji: '👑', label: 'Coroa da Vida', bonus: { fe: 2 } },
+      { emoji: '🤝', label: 'Reencontro com Cristão', bonus: { perseveranca: 1 } },
+      { emoji: '🎵', label: 'Canção dos anjos', bonus: { coragem: 1 } },
+      { emoji: '✨', label: 'Veste de glória', bonus: { fe: 1 } },
+      { emoji: '🏠', label: 'Morada eterna', bonus: { discernimento: 1 } },
+    ],
+  },
 };
