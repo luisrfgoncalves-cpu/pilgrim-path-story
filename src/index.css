@@ -520,6 +520,121 @@
   animation: dramaticFade 1.2s ease-in-out;
 }
 
+/* ═══ NEW DRAMATIC VFX ═══ */
+
+/* Earthquake — intense shake */
+.vfx-earthquake {
+  animation: earthquake 0.8s ease-in-out;
+}
+@keyframes earthquake {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  10% { transform: translate(-4px, 2px) rotate(-0.5deg); }
+  20% { transform: translate(4px, -2px) rotate(0.5deg); }
+  30% { transform: translate(-3px, 3px) rotate(-0.3deg); }
+  40% { transform: translate(3px, -1px) rotate(0.3deg); }
+  50% { transform: translate(-2px, 2px) rotate(-0.2deg); }
+  60% { transform: translate(2px, -2px) rotate(0.2deg); }
+  70% { transform: translate(-3px, 1px) rotate(-0.3deg); }
+  80% { transform: translate(1px, -1px) rotate(0.1deg); }
+  90% { transform: translate(-1px, 1px) rotate(-0.1deg); }
+}
+
+/* Golden burst — divine moment */
+.vfx-golden-burst {
+  animation: goldenBurst 1.2s ease-out;
+}
+@keyframes goldenBurst {
+  0% { filter: brightness(1) saturate(1); box-shadow: none; }
+  20% { filter: brightness(1.8) saturate(1.5); box-shadow: inset 0 0 80px hsl(40 80% 60% / 0.4); }
+  50% { filter: brightness(1.4) saturate(1.3); box-shadow: inset 0 0 40px hsl(40 80% 60% / 0.2); }
+  100% { filter: brightness(1) saturate(1); box-shadow: none; }
+}
+
+/* Blood pulse — danger/damage */
+.vfx-blood-pulse {
+  animation: bloodPulse 0.8s ease-in-out;
+}
+@keyframes bloodPulse {
+  0% { box-shadow: none; }
+  25% { box-shadow: inset 0 0 60px hsl(0 70% 30% / 0.4); }
+  50% { box-shadow: inset 0 0 30px hsl(0 70% 30% / 0.2); }
+  75% { box-shadow: inset 0 0 50px hsl(0 70% 30% / 0.3); }
+  100% { box-shadow: none; }
+}
+
+/* Lightning flash — sudden bright */
+.vfx-lightning {
+  animation: lightningFlash 0.4s ease-out;
+}
+@keyframes lightningFlash {
+  0% { filter: brightness(1); }
+  10% { filter: brightness(3); }
+  20% { filter: brightness(1.2); }
+  30% { filter: brightness(2.5); }
+  50% { filter: brightness(1.1); }
+  100% { filter: brightness(1); }
+}
+
+/* Divine light — slow warm glow */
+.vfx-divine-light {
+  animation: divineLight 2s ease-in-out;
+}
+@keyframes divineLight {
+  0% { filter: brightness(1) saturate(1); }
+  30% { filter: brightness(1.3) saturate(1.4) hue-rotate(5deg); box-shadow: inset 0 0 100px hsl(40 70% 60% / 0.15); }
+  70% { filter: brightness(1.2) saturate(1.2); box-shadow: inset 0 0 50px hsl(40 70% 60% / 0.1); }
+  100% { filter: brightness(1) saturate(1); box-shadow: none; }
+}
+
+/* Screen crack — impact */
+.vfx-impact {
+  animation: impactCrack 0.6s ease-out;
+}
+@keyframes impactCrack {
+  0% { transform: scale(1); filter: brightness(1); }
+  15% { transform: scale(1.02); filter: brightness(0.5); }
+  30% { transform: scale(0.99); filter: brightness(1.3); }
+  50% { transform: scale(1.005); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+/* Fade to black — dramatic transition */
+.vfx-fade-black {
+  animation: fadeToBlack 1.5s ease-in-out;
+}
+@keyframes fadeToBlack {
+  0% { filter: brightness(1); }
+  40% { filter: brightness(0); }
+  60% { filter: brightness(0); }
+  100% { filter: brightness(1); }
+}
+
+/* Heartbeat pulse — emotional */
+.vfx-heartbeat {
+  animation: heartbeat 1s ease-in-out;
+}
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.03); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.05); }
+  56% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+/* Spiritual tremor — subtle persistent */
+.vfx-tremor {
+  animation: tremor 2s ease-in-out;
+}
+@keyframes tremor {
+  0%, 100% { transform: translate(0, 0); }
+  5% { transform: translate(-1px, 0.5px); }
+  10% { transform: translate(1px, -0.5px); }
+  15% { transform: translate(-0.5px, 1px); }
+  20% { transform: translate(0.5px, -0.5px); }
+  30% { transform: translate(0, 0); }
+}
+
 @keyframes flashLight {
   0% { filter: brightness(1); }
   30% { filter: brightness(1.6); }
