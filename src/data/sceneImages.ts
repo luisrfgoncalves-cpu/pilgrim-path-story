@@ -14,6 +14,9 @@ import valeSombra from '@/assets/scenes/vale-sombra.jpg';
 import fielEncontro from '@/assets/scenes/fiel-encontro.jpg';
 import palacioBelo from '@/assets/scenes/palacio-belo.jpg';
 import esperancaEncontro from '@/assets/scenes/esperanca-encontro.jpg';
+import montanhasDeleitosas from '@/assets/scenes/montanhas-deleitosas.jpg';
+import pradoAgradavel from '@/assets/scenes/prado-agradavel.jpg';
+import rioFinal from '@/assets/scenes/rio-final.jpg';
 
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
@@ -42,8 +45,8 @@ export const sceneImages: Record<string, string> = {
   'fase2-cena6': casaInterprete,
   'fase2-cena7': palacioBelo,
   'fase2-cena8': casaInterprete,
-  'fase2-cena9': casaInterprete,
-  'fase2-cena10': casaInterprete,
+  'fase2-cena9': palacioBelo,
+  'fase2-cena10': palacioBelo,
   'fase2-cena11': colinaDificuldade,
 
   // FASE 3: Vale da Humilhação e Apolião
@@ -71,23 +74,23 @@ export const sceneImages: Record<string, string> = {
   'fase4-cena10': esperancaEncontro,
 
   // FASE 5: Castelo da Dúvida
-  'fase5-cena1': colinaDificuldade,
-  'fase5-cena2': casteloDuvida,
+  'fase5-cena1': pradoAgradavel,
+  'fase5-cena2': pradoAgradavel,
   'fase5-cena3': casteloDuvida,
   'fase5-cena4': casteloDuvida,
   'fase5-cena5': casteloDuvida,
   'fase5-cena6': casteloDuvida,
   'fase5-cena7': casteloDuvida,
   'fase5-cena8': casteloDuvida,
-  'fase5-cena9': esperancaEncontro,
-  'fase5-cena10': colinaDificuldade,
+  'fase5-cena9': montanhasDeleitosas,
+  'fase5-cena10': montanhasDeleitosas,
 
   // FASE 6: Rio e Cidade Celestial
-  'fase6-cena1': cidadeCelestial,
-  'fase6-cena2': cidadeCelestial,
-  'fase6-cena4': cidadeCelestial,
+  'fase6-cena1': rioFinal,
+  'fase6-cena2': rioFinal,
+  'fase6-cena4': rioFinal,
   'fase6-cena5': cidadeCelestial,
-  'fase6-cena6': cidadeCelestial,
+  'fase6-cena6': rioFinal,
   'fase6-cena7': cidadeCelestial,
   'fase6-cena8': cidadeCelestial,
 };

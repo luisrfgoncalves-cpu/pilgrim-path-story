@@ -12,8 +12,58 @@ export const eventPools: Record<string, PhaseEventPool> = {
   // ═══════════════════════════════════════
   fase1: {
     phaseId: 'fase1',
-    variableCount: 2,
+    variableCount: 3,
     events: [
+      // ── Personagem: Obstinado ──
+      {
+        id: 'f1-obstinado-reencontro',
+        type: 'variable',
+        narrative: [
+          'Obstinado surge no caminho, ofegante. "Eu vim te buscar! Sua família implora que volte."',
+          '"A cidade está em festa. Ninguém mais se preocupa com esse livro ridículo. Só você."',
+        ],
+        choices: [
+          {
+            text: '"Não posso voltar. Vi a verdade com meus próprios olhos."',
+            effects: { fe: 2, coragem: 1 },
+            consequence: 'Obstinado cospe no chão e vai embora, resmungando. Sua resolução se fortalece.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Hesitar e considerar voltar por um momento',
+            effects: { fe: -1, coragem: -1 },
+            consequence: 'A hesitação é breve, mas Obstinado percebe a fraqueza e insiste com mais força.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.6,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
+      },
+      // ── Personagem: Flexível retornando ──
+      {
+        id: 'f1-flexivel-retorno',
+        type: 'variable',
+        narrative: [
+          'Flexível aparece molhado e sujo, vindo da direção do pântano.',
+          '"Eu tentei... mas é impossível. Voltei para a cidade. Você deveria fazer o mesmo."',
+        ],
+        requiresFlag: 'convidou_flexivel',
+        choices: [
+          {
+            text: '"O pântano não é o fim. É só o começo."',
+            effects: { fe: 1, perseveranca: 1 },
+            consequence: 'Flexível balança a cabeça e vai embora. Sua fé superficial não suportou o teste.',
+            consequenceKey: 'mostrou_misericordia',
+          },
+          {
+            text: 'Sentir inveja da decisão dele de voltar ao conforto',
+            effects: { fe: -1 },
+            consequence: 'A inveja é passageira, mas revela uma raiz que precisa ser arrancada.',
+          },
+        ],
+        weight: 2,
+      },
       // Variable: random encounters on the road
       {
         id: 'f1-viajante-misterioso',
@@ -139,8 +189,58 @@ export const eventPools: Record<string, PhaseEventPool> = {
   // ═══════════════════════════════════════
   fase2: {
     phaseId: 'fase2',
-    variableCount: 3,
+    variableCount: 4,
     events: [
+      // ── Personagem: Formalista e Hipocrisia ──
+      {
+        id: 'f2-formalista-hipocrisia',
+        type: 'variable',
+        narrative: [
+          'No caminho, dois homens pulam o muro e caem na estrada ao seu lado. "Sou Formalista", diz um. "E eu, Hipocrisia", diz o outro.',
+          '"Entramos pelo atalho — mais rápido que sua Porta Estreita. O resultado é o mesmo, não?"',
+        ],
+        choices: [
+          {
+            text: '"O Senhor do caminho disse para entrar pela porta. Não há atalhos."',
+            effects: { discernimento: 2, fe: 1 },
+            consequence: 'Eles riem e seguem adiante. Mais tarde, você os vê desaparecer em caminhos falsos.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Caminhar com eles por um tempo — parecem inofensivos',
+            effects: { discernimento: -1 },
+            consequence: 'A companhia deles o distrai. Quando olha de novo, o caminho estreito quase se perdeu.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.7,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 1,
+      },
+      // ── Personagem: Donzelas do Palácio Belo ──
+      {
+        id: 'f2-donzelas-palacio',
+        type: 'variable',
+        narrative: [
+          'No Palácio Belo, quatro donzelas o recebem: Discrição, Prudência, Piedade e Caridade.',
+          'Discrição o examina: "De onde vem e para onde vai?" Prudência pergunta: "O que te motiva?" Piedade descreve as maravilhas da Cidade Celestial. Caridade pergunta: "E sua família?"',
+        ],
+        choices: [
+          {
+            text: 'Responder com sinceridade a todas as perguntas',
+            effects: { fe: 1, discernimento: 2, perseveranca: 1 },
+            consequence: 'As donzelas sorriem. "Você é um peregrino verdadeiro." Elas lhe servem uma refeição e armadura para o vale.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Responder superficialmente, com pressa de seguir',
+            effects: { perseveranca: 1 },
+            consequence: 'Elas se calam. A refeição é simples. A armadura, básica. Pressa nem sempre é virtude.',
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
+      },
       {
         id: 'f2-visao-fogo',
         type: 'variable',
@@ -270,8 +370,57 @@ export const eventPools: Record<string, PhaseEventPool> = {
   // ═══════════════════════════════════════
   fase3: {
     phaseId: 'fase3',
-    variableCount: 2,
+    variableCount: 3,
     events: [
+      // ── Personagem: Apolião provocação ──
+      {
+        id: 'f3-apoliao-provocacao',
+        type: 'variable',
+        narrative: [
+          'Uma risada gutural ecoa pelo vale. "Eu conheço cada pecado que você cometeu, Cristão."',
+          '"Cada dúvida. Cada momento que quase voltou para mim. Você é meu — sempre foi."',
+        ],
+        choices: [
+          {
+            text: '"Fui seu. Mas fui comprado por sangue mais precioso que o seu."',
+            effects: { fe: 2, coragem: 2 },
+            consequence: 'A declaração ressoa pelo vale. Por um instante, o silêncio de Apolião é sua vitória.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Tremer em silêncio, incapaz de responder',
+            effects: { coragem: -1, fe: -1 },
+            consequence: 'O silêncio alimenta a arrogância de Apolião. Mas até o silêncio pode ser resistência.',
+            consequenceKey: 'fugiu_do_conflito',
+            appearance: 0.6,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 3,
+      },
+      // ── Personagem: Fiel no vale ──
+      {
+        id: 'f3-fiel-relato',
+        type: 'variable',
+        narrative: [
+          'Fiel, que você encontrará adiante, passou por aqui antes de você. Marcas na pedra contam sua história.',
+          'Gravado na rocha: "Adão Primeiro me tentou com prazeres. Moisés me bateu. Mas a graça me curou."',
+        ],
+        choices: [
+          {
+            text: 'Ler todas as inscrições de Fiel com atenção',
+            effects: { discernimento: 2, fe: 1 },
+            consequence: 'Cada marca na pedra é um lembrete: outros passaram por aqui e sobreviveram.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Seguir em frente — suas próprias marcas o esperam',
+            effects: { coragem: 1 },
+            consequence: 'Há sabedoria em aprender com outros. Mas também em forjar seu próprio caminho.',
+          },
+        ],
+        weight: 2,
+      },
       {
         id: 'f3-emboscada',
         type: 'variable',
@@ -381,8 +530,60 @@ export const eventPools: Record<string, PhaseEventPool> = {
   // ═══════════════════════════════════════
   fase4: {
     phaseId: 'fase4',
-    variableCount: 3,
+    variableCount: 4,
     events: [
+      // ── Personagem: Falador ──
+      {
+        id: 'f4-falador-encontro',
+        type: 'variable',
+        narrative: [
+          'Um homem eloquente se junta a vocês: "Que bela jornada! Conheço toda a doutrina — justificação, santificação, regeneração..."',
+          'Fiel sussurra: "Cuidado. Ele fala como um anjo, mas vive como um demônio. Na cidade dele, dizem que é pior em casa."',
+        ],
+        choices: [
+          {
+            text: 'Perguntar a Falador: "A graça transformou sua vida prática?"',
+            effects: { discernimento: 2, fe: 1 },
+            consequence: 'Falador gagueja e muda de assunto. As perguntas certas desarmam mais que espadas.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Ouvir seus discursos impressionantes',
+            effects: { discernimento: -1 },
+            consequence: 'As palavras são bonitas. Mas sem frutos, são apenas barulho.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.5,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
+      },
+      // ── Personagem: Amor ao Dinheiro ──
+      {
+        id: 'f4-amor-dinheiro',
+        type: 'variable',
+        narrative: [
+          'Um cavalheiro bem-vestido se aproxima: "Sou Amor ao Dinheiro, de Vanity Fair. Posso mostrar-lhes como servir a Deus E enriquecer."',
+          '"Os maiores homens de fé tinham riquezas — Abraão, Salomão. Por que não vocês?"',
+        ],
+        choices: [
+          {
+            text: '"Ninguém pode servir a dois senhores"',
+            effects: { fe: 2, discernimento: 1 },
+            consequence: 'Amor ao Dinheiro se afasta irritado. A verdade sempre incomoda quem vive na mentira.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Considerar o argumento — faz algum sentido',
+            effects: { fe: -1, discernimento: -1 },
+            consequence: 'O argumento é sedutor. Mas no fundo, você sabe que está trocando ouro eterno por cobre temporal.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.6,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
+      },
       {
         id: 'f4-mercador-honras',
         type: 'variable',
@@ -490,8 +691,60 @@ export const eventPools: Record<string, PhaseEventPool> = {
   // ═══════════════════════════════════════
   fase5: {
     phaseId: 'fase5',
-    variableCount: 2,
+    variableCount: 3,
     events: [
+      // ── Personagem: Gigante Desespero e Desconfiança ──
+      {
+        id: 'f5-desconfianca-conselho',
+        type: 'variable',
+        narrative: [
+          'Através das paredes da masmorra, ouve-se a voz de Desconfiança, esposa do Gigante:',
+          '"Faça-os passar fome. Depois, diga que a morte é a única saída. Eles são fracos — todos são."',
+        ],
+        choices: [
+          {
+            text: 'Sussurrar para Esperança: "Eles querem que desistamos. Isso prova que podemos escapar."',
+            effects: { discernimento: 2, coragem: 1 },
+            consequence: 'Se não houvesse saída, o gigante não precisaria convencê-los a desistir.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Deixar as palavras de Desconfiança corroer sua esperança',
+            effects: { fe: -1, perseveranca: -1 },
+            consequence: 'O veneno das palavras se espalha. Desconfiança sabia exatamente onde acertar.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.5,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 3,
+      },
+      // ── Personagem: Ignorância ──
+      {
+        id: 'f5-ignorancia-encontro',
+        type: 'variable',
+        narrative: [
+          'No caminho, encontram um jovem chamado Ignorância, da terra da Presunção.',
+          '"Eu também vou para a Cidade Celestial!", diz ele alegremente. "Meu coração é bom. Não preciso de porta estreita ou cruz."',
+        ],
+        choices: [
+          {
+            text: '"Amigo, sem passar pela porta e pela cruz, os portões não se abrirão"',
+            effects: { discernimento: 2, fe: 1 },
+            consequence: 'Ignorância ri: "Vocês pensam demais. Deus aceita pessoas boas." Ele segue sozinho, sorrindo.',
+            consequenceKey: 'mostrou_misericordia',
+          },
+          {
+            text: 'Deixá-lo seguir seu próprio caminho sem avisar',
+            effects: { discernimento: -1 },
+            consequence: 'Você se perguntará depois se deveria ter insistido mais.',
+            consequenceKey: 'abandonou_companheiro',
+            appearance: 0.7,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
+      },
       {
         id: 'f5-sonho-perturbador',
         type: 'variable',
@@ -588,8 +841,56 @@ export const eventPools: Record<string, PhaseEventPool> = {
   // ═══════════════════════════════════════
   fase6: {
     phaseId: 'fase6',
-    variableCount: 2,
+    variableCount: 3,
     events: [
+      // ── Personagem: Evangelista reaparece ──
+      {
+        id: 'f6-evangelista-final',
+        type: 'variable',
+        narrative: [
+          'Evangelista aparece mais uma vez — o mesmo que apontou a Porta Estreita no início.',
+          '"Peregrino, você obedeceu. O caminho foi duro, mas veja: a Cidade está ali. Eu sabia que chegaria."',
+        ],
+        choices: [
+          {
+            text: 'Abraçar Evangelista com lágrimas de gratidão',
+            effects: { fe: 2, perseveranca: 1 },
+            consequence: '"Não me agradeça", diz ele. "Agradeça Àquele que preparou o caminho." Ele desaparece com um sorriso.',
+            consequenceKey: 'mostrou_misericordia',
+          },
+          {
+            text: '"Sem você, eu nunca teria encontrado a porta"',
+            effects: { fe: 1, discernimento: 1 },
+            consequence: 'Evangelista acena: "A porta sempre esteve ali. Eu apenas apontei."',
+          },
+        ],
+        weight: 4,
+        emotionalWeight: 3,
+      },
+      // ── Personagem: Ignorância no rio ──
+      {
+        id: 'f6-ignorancia-destino',
+        type: 'variable',
+        narrative: [
+          'Ignorância chega ao rio por outro caminho. Ele encontra um barqueiro chamado Vã Esperança que o leva ao outro lado sem sofrer.',
+          'Nos portões, ele entrega suas próprias credenciais — não o pergaminho da Porta Estreita. Os portões não se abrem. Anjos o levam embora.',
+        ],
+        choices: [
+          {
+            text: 'Lamentar profundamente por Ignorância',
+            effects: { fe: 1, discernimento: 2 },
+            consequence: 'Bunyan encerra com essa cena: até do portão do Céu há caminho para o inferno. A lição gela o sangue.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Sentir alívio por ter passado pela Porta Estreita',
+            effects: { fe: 1 },
+            consequence: 'O alívio vem misturado com tristeza. A graça não é mérito — é presente aceito.',
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 3,
+      },
       {
         id: 'f6-rio-final',
         type: 'variable',

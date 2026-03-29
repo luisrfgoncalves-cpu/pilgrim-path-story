@@ -101,6 +101,15 @@ export const characters: Character[] = [
   { id: "gigante_desespero", name: "Gigante Desespero", description: "O dono do Castelo da Dúvida, que aprisiona peregrinos que se desviam do caminho e tenta convencê-los a desistir da vida.", role: "Antagonista", unlockedAtChapter: "fase5-cena2" },
   { id: "desconfianca", name: "Desconfiança", description: "A esposa do Gigante Desespero, que sussurra conselhos cruéis ao marido sobre como torturar os prisioneiros.", role: "Antagonista", unlockedAtChapter: "fase5-cena3" },
   { id: "pastores", name: "Os Pastores das Montanhas", description: "Conhecimento, Experiência, Vigilante e Sincero — os quatro pastores das Montanhas Deleitosas que mostram aos peregrinos uma visão distante da Cidade Celestial.", role: "Guias", unlockedAtChapter: "fase5-cena9" },
+  { id: "formalista", name: "Formalista", description: "Um homem que pula o muro do caminho em vez de entrar pela Porta Estreita. Acredita que seguir rituais externos basta, sem transformação interior.", role: "Opositor", unlockedAtChapter: "cena7" },
+  { id: "hipocrisia", name: "Hipocrisia", description: "Companheiro de Formalista, que também pula o muro. Representa aqueles que fingem piedade sem verdadeira conversão.", role: "Opositor", unlockedAtChapter: "cena7" },
+  { id: "falador", name: "Falador", description: "Um homem de palavras bonitas mas sem frutos. Conhece toda a doutrina, mas não a vive. Fiel o desmascarou na estrada.", role: "Opositor", unlockedAtChapter: "fase3-cena10" },
+  { id: "amor_dinheiro", name: "Amor ao Dinheiro", description: "Um cavalheiro de Vanity Fair que tenta convencer os peregrinos de que servir a Deus e buscar riquezas são compatíveis.", role: "Tentador", unlockedAtChapter: "fase4-cena3" },
+  { id: "discricao", name: "Discrição", description: "Uma das donzelas do Palácio Belo que examina o peregrino antes de lhe dar entrada, testando a sinceridade de sua fé.", role: "Guia", unlockedAtChapter: "fase2-cena7" },
+  { id: "prudencia", name: "Prudência", description: "Donzela do Palácio Belo que questiona Cristão sobre suas motivações e o ajuda a examinar seu próprio coração.", role: "Guia", unlockedAtChapter: "fase2-cena9" },
+  { id: "piedade", name: "Piedade", description: "Donzela do Palácio Belo que conversa com Cristão sobre as maravilhas do país para onde caminha, fortalecendo sua esperança.", role: "Guia", unlockedAtChapter: "fase2-cena9" },
+  { id: "caridade", name: "Caridade", description: "Donzela do Palácio Belo que pergunta a Cristão sobre sua família e o encoraja a ter compaixão, mesmo pelos que ficaram para trás.", role: "Guia", unlockedAtChapter: "fase2-cena9" },
+  { id: "ignorancia", name: "Ignorância", description: "Um jovem da terra da Presunção que segue o caminho sem nunca ter passado pela Porta Estreita. Acredita que seu coração bom é suficiente. No final, é rejeitado nos portões da Cidade Celestial.", role: "Contraste", unlockedAtChapter: "fase5-cena10" },
 ];
 
 export const reflections: Reflection[] = [
@@ -121,6 +130,12 @@ export const chapterOrder = [
   "fase2-cena11",
   "fase3-cena1", "fase3-cena2", "fase3-cena3", "fase3-cena4", "fase3-cena5",
   "fase3-cena6", "fase3-cena7", "fase3-cena8", "fase3-cena9", "fase3-cena10",
+  "fase4-cena1", "fase4-cena2", "fase4-cena3", "fase4-cena4", "fase4-cena5",
+  "fase4-cena6", "fase4-cena7", "fase4-cena8", "fase4-cena9", "fase4-cena10",
+  "fase5-cena1", "fase5-cena2", "fase5-cena3", "fase5-cena4", "fase5-cena5",
+  "fase5-cena6", "fase5-cena7", "fase5-cena8", "fase5-cena9", "fase5-cena10",
+  "fase6-cena1", "fase6-cena2", "fase6-cena4", "fase6-cena5",
+  "fase6-cena6", "fase6-cena7", "fase6-cena8",
 ];
 
 export const storyChapters: Record<string, StoryChapter> = {
@@ -166,7 +181,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena2",
     title: "Obstinado e Flexível",
     location: "Cidade da Destruição",
-    characters: ["cristao"],
+    characters: ["cristao", "obstinado", "flexivel"],
     reflection: "r2",
     narrative: [
       "Você tenta esquecer, mas o fardo não diminui. Seus vizinhos — Obstinado e Flexível — percebem sua angústia.",
@@ -344,7 +359,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena8",
     title: "O Conselho de Prudência Mundana",
     location: "Caminho Largo",
-    characters: ["cristao"],
+    characters: ["cristao", "prudencia_mundana"],
     narrative: [
       "No caminho largo, você encontra um homem chamado Prudência Mundana. Ele é bem-vestido e fala com autoridade.",
       "\"Esse fardo nas suas costas? Conheço um vilarejo chamado Moralidade. Lá, um homem chamado Legalidade pode removê-lo. Não precisa dessa jornada perigosa.\"",
@@ -448,7 +463,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena12",
     title: "Os Degraus Ocultos",
     location: "Pântano do Desânimo",
-    characters: ["cristao"],
+    characters: ["cristao", "auxilio"],
     narrative: [
       "Com paciência, seus pés encontram pedras firmes sob a lama. São os degraus que o Rei colocou ali — promessas de misericórdia e perdão para quem persevera.",
       "O progresso é lento. O fardo ainda pesa. Mas a cada degrau encontrado, o pântano parece menos profundo.",
@@ -501,7 +516,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena14",
     title: "A Mão de Auxílio",
     location: "Margem do Pântano",
-    characters: ["cristao"],
+    characters: ["cristao", "auxilio"],
     narrative: [
       "Auxílio te puxa com força para fora da lama. No solo firme, você cai de joelhos, ofegante, coberto de lodo.",
       "\"Por que não usou os degraus?\", pergunta Auxílio gentilmente. \"O Rei os colocou ali por uma razão.\"",
@@ -1047,7 +1062,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase3-cena8",
     title: "Fiel, o Companheiro",
     location: "Além do Vale",
-    characters: ["cristao"],
+    characters: ["cristao", "fiel"],
     narrative: [
       "Do outro lado do vale, uma surpresa: outro peregrino. Seu nome é Fiel. Ele também veio da Cidade da Destruição, por um caminho diferente.",
       "\"Eu também carreguei o fardo\", diz Fiel. \"Eu também passei pela cruz. O meu caminho foi diferente do seu, mas chegamos ao mesmo ponto.\"",
@@ -1099,7 +1114,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase3-cena10",
     title: "Rumo à Feira",
     location: "Estrada para a Feira da Vaidade",
-    characters: ["cristao"],
+    characters: ["cristao", "fiel"],
     narrative: [
       "Com Fiel ao seu lado, a estrada parece menos solitária. Vocês conversam sobre o vale, sobre Apolião, sobre as lições do Intérprete.",
       "\"A Feira da Vaidade fica adiante\", diz Fiel com seriedade. \"Lá, tudo tem um preço. Tudo está à venda. Menos uma coisa: a Verdade.\"",
@@ -1126,7 +1141,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase4-cena1",
     title: "A Feira da Vaidade",
     location: "Feira da Vaidade",
-    characters: ["cristao"],
+    characters: ["cristao", "fiel"],
     narrative: [
       "O barulho atinge você antes de ver a feira. Gritos de vendedores, música, gargalhadas. A Feira da Vaidade existe há séculos — fundada por Belzebu, Apolião e Legião quando descobriram que o caminho dos peregrinos passava por esta cidade.",
       "Aqui, tudo está à venda: casas, terras, honras, títulos, reinos, prazeres, esposas, maridos, corpos, almas. As barracas se estendem até onde a vista alcança.",
@@ -1331,7 +1346,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase4-cena8",
     title: "Esperança, o Novo Companheiro",
     location: "Saída da Feira",
-    characters: ["cristao"],
+    characters: ["cristao", "esperanca"],
     narrative: [
       "Na saída da feira, alguém te alcança. Seu nome é Esperança. Ele viu tudo — o julgamento, o martírio de Fiel, sua coragem (ou falta dela).",
       "\"O sacrifício de Fiel me convenceu\", diz Esperança. \"Quero seguir o mesmo caminho. Posso ir com você?\"",
@@ -1417,7 +1432,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase5-cena1",
     title: "O Desvio Fatal",
     location: "Prado Agradável",
-    characters: ["cristao"],
+    characters: ["cristao", "esperanca"],
     narrative: [
       "O caminho se torna pedregoso e doloroso para os pés. Ao lado da estrada, um prado verde e macio corre paralelo — o Prado Agradável. Uma cerca baixa é a única separação.",
       "\"Olhe\", diz Esperança. \"O prado segue na mesma direção. Podemos caminhar na grama e voltar ao caminho depois.\"",
@@ -1452,7 +1467,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase5-cena2",
     title: "Perdidos no Prado",
     location: "Prado Agradável",
-    characters: ["cristao"],
+    characters: ["cristao", "esperanca", "gigante_desespero"],
     narrative: [
       "A noite cai. A chuva começa. Trovões rasgam o céu. O prado se transforma em lamaçal. Vocês tentam voltar ao caminho, mas a cerca desapareceu na escuridão.",
       "Perdidos e encharcados, vocês tropeçam até que o sono vence. Deitam-se no chão encharcado.",
@@ -1659,7 +1674,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase5-cena9",
     title: "As Montanhas Deleitosas",
     location: "Montanhas Deleitosas",
-    characters: ["cristao"],
+    characters: ["cristao", "esperanca", "pastores"],
     narrative: [
       "Além do castelo, montanhas verdes se erguem — as Montanhas Deleitosas, propriedade do Rei Emanuel. Pastores chamados Conhecimento, Experiência, Vigilante e Sincero os recebem.",
       "Dali, com uma luneta, eles mostram ao longe os portões da Cidade Celestial, brilhando como ouro no horizonte.",
@@ -1709,7 +1724,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase6-cena1",
     title: "O Rio sem Ponte",
     location: "Margem do Rio",
-    characters: ["cristao"],
+    characters: ["cristao", "esperanca"],
     narrative: [
       "A Cidade Celestial brilha do outro lado de um rio largo e profundo. Não há ponte. Não há barco. Bunyan nos diz que cada peregrino deve atravessá-lo a pé — e a profundidade varia conforme a fé de cada um.",
       "Esperança olha para a água escura: \"Temos que passar por isso?\"",
@@ -1745,7 +1760,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase6-cena2",
     title: "A Travessia",
     location: "No Rio",
-    characters: ["cristao"],
+    characters: ["cristao", "esperanca"],
     narrative: [
       "A água sobe rápido. Até a cintura, até o peito. A correnteza puxa. A cidade brilha à frente, mas a água escura enche seus olhos.",
       "No livro de Bunyan, Cristão começa a afundar. O terror dos pecados passados volta com força — cada erro, cada desvio, cada momento de dúvida. As águas representam a morte, e na morte, todas as fraquezas retornam.",
