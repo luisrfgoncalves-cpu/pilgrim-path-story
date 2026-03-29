@@ -24,6 +24,8 @@ import { ParticleEffects, getParticleTypeForScene } from '@/components/ParticleE
 import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
 import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
+import { MiniGame, MiniGameResult } from '@/components/MiniGames';
+import { miniGameMappings } from '@/data/miniGameMappings';
 import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, Zap, Star, Shield, Flame } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
 
@@ -65,6 +67,10 @@ const ScenePage = () => {
   const [streak, setStreak] = useState(0);
   const [lastStreakEffect, setLastStreakEffect] = useState<'positive' | 'negative' | null>(null);
   const [showStreakBurst, setShowStreakBurst] = useState(false);
+  // Mini-game state
+  const [miniGameDone, setMiniGameDone] = useState(false);
+  const [miniGameResult, setMiniGameResult] = useState<MiniGameResult | null>(null);
+  const [showMiniGameResult, setShowMiniGameResult] = useState(false);
   const { triggerChoiceEffect } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
@@ -160,6 +166,9 @@ const ScenePage = () => {
     setSceneEventDone(false);
     setSuspenseActive(false);
     setPendingChoice(null);
+    setMiniGameDone(false);
+    setMiniGameResult(null);
+    setShowMiniGameResult(false);
     const t = setTimeout(() => setTransitioning(false), 100);
     return () => clearTimeout(t);
   }, [progress.currentChapterId]);
@@ -534,6 +543,53 @@ const ScenePage = () => {
             </>
           )}
 
+          {/* ═══ MINI-GAME ═══ */}
+          {showChoices && !miniGameDone && miniGameMappings[chapter.id] && (
+            <div className="mb-5 animate-scale-in">
+              <MiniGame
+                config={miniGameMappings[chapter.id]}
+                onComplete={(result) => {
+                  setMiniGameResult(result);
+                  setMiniGameDone(true);
+                  setShowMiniGameResult(true);
+                  // Apply effects from mini-game
+                  if (result.effects) {
+                    triggerChoiceEffect(result.effects as Record<string, number>);
+                    sfxForChoice(result.effects as Record<string, number>);
+                  }
+                  setTimeout(() => setShowMiniGameResult(false), 3000);
+                }}
+              />
+            </div>
+          )}
+
+          {/* Mini-game result toast */}
+          {showMiniGameResult && miniGameResult && (
+            <div className="mb-4 animate-fade-in">
+              <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 ${
+                miniGameResult.success
+                  ? 'bg-primary/10 border-primary/30 text-primary'
+                  : 'bg-destructive/10 border-destructive/30 text-destructive'
+              }`}>
+                <span className="text-xl">{miniGameResult.success ? '🏆' : '💔'}</span>
+                <div className="flex-1">
+                  <p className="text-sm font-display">
+                    {miniGameResult.success ? 'Desafio superado!' : 'Desafio falhou...'}
+                  </p>
+                  <p className="text-xs opacity-80">
+                    {Object.entries(miniGameResult.effects)
+                      .filter(([, v]) => v !== 0)
+                      .map(([k, v]) => {
+                        const labels: Record<string, string> = { fe: 'Fé', perseveranca: 'Perseverança', discernimento: 'Discernimento', coragem: 'Coragem' };
+                        return `${labels[k] || k} ${(v as number) > 0 ? '+' : ''}${v}`;
+                      })
+                      .join(', ')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Suspense overlay */}
           {suspenseActive && pendingChoice && (
             <SuspenseDelay
@@ -546,7 +602,7 @@ const ScenePage = () => {
             />
           )}
 
-          {showChoices && !suspenseActive && (
+          {showChoices && !suspenseActive && (!miniGameMappings[chapter.id] || miniGameDone) && (
             <div className="space-y-3 slide-up pb-6">
               {chapter.isEnding && (chapter.endingType === 'final_good' || chapter.endingType === 'final_bad') ? (() => {
                 const analysis = analyzePerformance(
