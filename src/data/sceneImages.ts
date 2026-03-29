@@ -26,6 +26,11 @@ import julgamentoFeira from '@/assets/scenes/julgamento-feira.jpg';
 import colinaDificuldadeSubida from '@/assets/scenes/colina-dificuldade-subida.jpg';
 import leoesPalacio from '@/assets/scenes/leoes-palacio.jpg';
 import minaDemas from '@/assets/scenes/mina-demas.jpg';
+import hospedariaGaio from '@/assets/scenes/hospedaria-gaio.jpg';
+import giganteMataBons from '@/assets/scenes/gigante-mata-bons.jpg';
+import casteloDestruido from '@/assets/scenes/castelo-destruido.jpg';
+import chamadoRio from '@/assets/scenes/chamado-rio.jpg';
+import valenteEncontro from '@/assets/scenes/valente-encontro.jpg';
 
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
@@ -129,23 +134,23 @@ export const sceneImages: Record<string, string> = {
   'p2-fase2-cena5': palacioBelo,
   'p2-fase3-cena1': valeHumilhacao,
   'p2-fase3-cena2': valeSombra,
-  'p2-fase3-cena3': valeSombra,
-  'p2-fase3-cena4': fielEncontro,
-  'p2-fase3-cena5': fielEncontro,
+  'p2-fase3-cena3': giganteMataBons,
+  'p2-fase3-cena4': hospedariaGaio,
+  'p2-fase3-cena5': giganteMataBons,
   'p2-fase3-cena6': feiraVaidade,
   'p2-fase4-cena1': esperancaEncontro,
   'p2-fase4-cena2': minaDemas,
-  'p2-fase4-cena3': esperancaEncontro,
+  'p2-fase4-cena3': valenteEncontro,
   'p2-fase4-cena4': pradoAgradavel,
   'p2-fase5-cena1': casteloDuvida,
   'p2-fase5-cena2': casteloDuvida,
   'p2-fase5-cena3': casteloDuvida,
-  'p2-fase5-cena4': casteloDuvida,
+  'p2-fase5-cena4': casteloDestruido,
   'p2-fase5-cena5': montanhasDeleitosas,
   'p2-fase6-cena1': terraEncantada,
   'p2-fase6-cena2': paisBeula,
-  'p2-fase6-cena3': rioFinal,
-  'p2-fase6-cena4': rioFinal,
+  'p2-fase6-cena3': chamadoRio,
+  'p2-fase6-cena4': chamadoRio,
   'p2-fase6-cena5': rioFinal,
   'p2-fase6-cena6': cidadeCelestial,
 };
