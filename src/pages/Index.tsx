@@ -3,11 +3,12 @@ import { useMemo, useState, useEffect } from 'react';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { useCloudSync } from '@/hooks/useCloudSync';
 import { getChapter, storyChapters, chapterOrder } from '@/data/story';
+import { getPart2Chapter, part2Chapters, part2ChapterOrder } from '@/data/storyPart2';
 import { getReplayIncentive, getUnlockableHints } from '@/data/sceneVariations';
 import { useAuth } from '@/contexts/AuthContext';
 import { getStreak, getDashboardMessage, getMilestones } from '@/lib/gameLoop';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, KeyRound, Flame, Star, Swords } from 'lucide-react';
+import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, KeyRound, Flame, Star, Swords, BookOpen } from 'lucide-react';
 
 const getPlayerState = (attrs: { fe: number; coragem: number; perseveranca: number; discernimento: number }) => {
   const avg = (attrs.fe + attrs.coragem + attrs.perseveranca + attrs.discernimento) / 4;
@@ -41,14 +42,15 @@ const Index = () => {
     navigate('/cena');
   };
 
-  const handleNewJourney = () => {
-    resetProgress();
+  const handleNewJourney = (campaign: 'part1' | 'part2' = 'part1') => {
+    resetProgress(campaign);
     startJourney();
     navigate('/cena');
   };
 
-  const currentChapter = getChapter(progress.currentChapterId);
-  const totalChapters = Object.keys(storyChapters).length;
+  const isPart2 = progress.campaign === 'part2';
+  const currentChapter = isPart2 ? getPart2Chapter(progress.currentChapterId) : getChapter(progress.currentChapterId);
+  const totalChapters = isPart2 ? Object.keys(part2Chapters).length : Object.keys(storyChapters).length;
   const progressPercent = Math.round((progress.visitedChapters.length / totalChapters) * 100);
   const playerState = getPlayerState(progress.attributes);
 
