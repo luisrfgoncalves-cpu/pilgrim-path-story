@@ -33,6 +33,8 @@ const ScenePage = () => {
   const [suspenseActive, setSuspenseActive] = useState(false);
   const [pendingChoice, setPendingChoice] = useState<(() => void) | null>(null);
   const [transitioning, setTransitioning] = useState(false);
+  const [surprise, setSurprise] = useState<Surprise | null>(null);
+  const [surpriseShown, setSurpriseShown] = useState(false);
   const { triggerChoiceEffect } = useVisualEffects();
   const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
   // Recent decision effects for trend analysis
