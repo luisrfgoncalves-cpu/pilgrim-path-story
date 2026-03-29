@@ -167,10 +167,12 @@ export const chapterOrder = [
   "fase3-cena6", "fase3-cena7", "fase3-cena8", "fase3-cena9", "fase3-cena10",
   "fase4-cena1", "fase4-cena2", "fase4-cena3", "fase4-cena4", "fase4-cena5",
   "fase4-cena6", "fase4-cena7", "fase4-cena8", "fase4-cena9", "fase4-cena10",
+  "fase4-cena11", "fase4-cena12",
   "fase5-cena1", "fase5-cena2", "fase5-cena3", "fase5-cena4", "fase5-cena5",
   "fase5-cena6", "fase5-cena7", "fase5-cena8", "fase5-cena9", "fase5-cena10",
-  "fase6-cena1", "fase6-cena2", "fase6-cena4", "fase6-cena5",
-  "fase6-cena6", "fase6-cena7", "fase6-cena8",
+  "fase5-cena11", "fase5-cena12", "fase5-cena13", "fase5-cena14",
+  "fase6-cena1", "fase6-cena2", "fase6-cena3", "fase6-cena4", "fase6-cena5",
+  "fase6-cena6", "fase6-cena7", "fase6-cena8", "fase6-cena9",
 ];
 
 export const storyChapters: Record<string, StoryChapter> = {
@@ -1452,8 +1454,65 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Seguir para o próximo trecho da jornada",
-        nextChapterId: "fase5-cena1",
+        nextChapterId: "fase4-cena11",
         effects: { fe: 1, perseveranca: 1 }
+      }
+    ]
+  },
+
+  "fase4-cena11": {
+    id: "fase4-cena11",
+    title: "Interesses, o Companheiro Conveniente",
+    location: "Estrada além da Feira",
+    characters: ["cristao", "esperanca", "interesses"],
+    narrative: [
+      "Na estrada, um homem bem-vestido se junta a vocês. Seu nome é Interesses, da cidade de Bom-Discurso. Ele é primo do Sr. Volta-Suave e sobrinho do Sr. Duas-Línguas.",
+      "\"Também sou peregrino!\", diz ele sorrindo. \"Mas confesso que prefiro seguir a religião quando ela caminha com chinelos de prata — sob o sol, com aplausos do povo.\"",
+      "Esperança te cutuca: \"Pergunte a ele se seguiria a religião descalço, na chuva, sem plateia.\""
+    ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 7, highText: "Você reconhece o tipo. Interesses ama a religião como ornamento, não como sacrifício. Sua fé é uma roupa para dias de sol.", lowThreshold: 3, lowText: "O homem parece razoável. Por que sofrer quando se pode servir a Deus com conforto?" }
+    ],
+    choices: [
+      {
+        text: "\"A fé que não custa nada não vale nada. Adeus, Interesses.\"",
+        nextChapterId: "fase4-cena12",
+        effects: { fe: 2, discernimento: 1 },
+        flag: "rejeitou_interesses"
+      },
+      {
+        text: "Deixar Interesses caminhar junto — companhia é companhia",
+        nextChapterId: "fase4-cena12",
+        effects: { discernimento: -1, fe: -1 }
+      }
+    ]
+  },
+
+  "fase4-cena12": {
+    id: "fase4-cena12",
+    title: "Pequena-Fé Assaltado",
+    location: "Caminho Estreito",
+    characters: ["cristao", "esperanca", "pequena_fe"],
+    narrative: [
+      "Na estrada, encontram um homem esfarrapado sentado numa pedra, chorando. Seu nome é Pequena-Fé, da cidade de Sinceridade.",
+      "\"Três ladrões me atacaram\", soluça ele. \"Coração-Fraco, Desconfiança e Culpa. Roubaram todo o meu dinheiro. Quase levaram meu pergaminho — mas o esconderam-se quando ouviram uma voz de Grande-Graça ao longe.\"",
+      "Esperança sussurra: \"Ele ainda tem o pergaminho. Ainda pode entrar na cidade. Mas caminha como um mendigo quando poderia caminhar como um príncipe.\""
+    ],
+    flagNarrative: [
+      { flag: "rejeitou_interesses", text: "Interesses teria rido de Pequena-Fé. Você fez bem em se separar dele." },
+      { flag: "escapou_castelo_fe", text: "Pequena-Fé nunca encontrou a chave da Promessa. Ela teria mudado tudo para ele." }
+    ],
+    choices: [
+      {
+        text: "Encorajar Pequena-Fé: \"O pergaminho é o que importa. Levante-se.\"",
+        nextChapterId: "fase5-cena1",
+        effects: { fe: 1, perseveranca: 1 },
+        flag: "mostrou_misericordia"
+      },
+      {
+        text: "Julgar Pequena-Fé: \"Deveria ter lutado mais\"",
+        nextChapterId: "fase5-cena1",
+        effects: { coragem: 1, fe: -1 }
       }
     ]
   },
@@ -1743,9 +1802,132 @@ export const storyChapters: Record<string, StoryChapter> = {
     ],
     choices: [
       {
-        text: "Caminhar em direção ao Rio",
-        nextChapterId: "fase6-cena1",
+        text: "Caminhar em direção ao próximo trecho",
+        nextChapterId: "fase5-cena11",
         effects: { perseveranca: 1, fe: 1 }
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════
+  // FASE 5B: LISONJEIRO, ATEÍSMO, TERRA ENCANTADA, BEULÁ
+  // Episódios reais entre as Montanhas e o Rio
+  // ═══════════════════════════════════════════
+
+  "fase5-cena11": {
+    id: "fase5-cena11",
+    title: "A Rede do Lisonjeiro",
+    location: "Caminho Estreito",
+    characters: ["cristao", "esperanca", "lisonjeiro"],
+    narrative: [
+      "Além das montanhas, o caminho se divide. Vocês hesitam. Um homem de pele escura, vestido com uma túnica branca brilhante, se aproxima sorrindo.",
+      "\"Amigos peregrinos! Vocês parecem perdidos. Eu conheço o caminho para a Cidade Celestial. Sigam-me.\"",
+      "Sua voz é doce, seu sorriso convincente. Ele os leva por um caminho lateral que parece seguro — até que uma rede cai sobre vocês, prendendo-os completamente."
+    ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 7, highText: "Algo no sorriso dele te incomoda. Os pastores alertaram sobre o Adulador. Este homem... será ele?", lowThreshold: 3, lowText: "O homem parece confiável. Sua túnica branca irradia autoridade. Por que duvidar?" }
+    ],
+    choices: [
+      {
+        text: "Perceber a armadilha e tentar se libertar",
+        nextChapterId: "fase5-cena12",
+        effects: { discernimento: 2, fe: 1 },
+        flag: "escapou_lisonjeiro",
+        conditionalEffects: [
+          { attr: "discernimento", threshold: 6, bonus: { coragem: 1 }, penalty: {} }
+        ]
+      },
+      {
+        text: "Confiar no homem — ele parece sincero",
+        nextChapterId: "fase5-cena12",
+        effects: { discernimento: -2, fe: -1 },
+        flag: "caiu_na_rede"
+      }
+    ]
+  },
+
+  "fase5-cena12": {
+    id: "fase5-cena12",
+    title: "O Resgate e o Ateísmo",
+    location: "Caminho Estreito",
+    characters: ["cristao", "esperanca", "ateismo"],
+    narrative: [
+      "Um Ser Resplandecente aparece com um chicote de cordas. Ele corta a rede e os liberta — mas não sem repreensão: \"Os pastores não os avisaram? O Lisonjeiro engana com palavras doces e aparência de luz.\"",
+      "Envergonhados mas livres, vocês retomam o caminho certo. Mas logo encontram outro obstáculo: um homem que ri alto, caminhando na direção oposta.",
+      "\"Vocês ainda buscam a Cidade Celestial?\", ele gargalha. \"Eu a busquei por vinte anos e nunca a encontrei! Ela não existe! Voltem para casa antes que desperdicem mais da vida de vocês.\""
+    ],
+    flagNarrative: [
+      { flag: "caiu_na_rede", text: "A vergonha da rede ainda arde. E agora este homem diz que a cidade nem existe? A dúvida é uma ferida aberta." },
+      { flag: "escapou_lisonjeiro", text: "Você escapou da rede porque desconfiou. Agora, desconfie também deste riso fácil demais." }
+    ],
+    choices: [
+      {
+        text: "\"Nós vimos a cidade da luneta dos pastores. Ela é real.\"",
+        nextChapterId: "fase5-cena13",
+        effects: { fe: 2, coragem: 1 }
+      },
+      {
+        text: "Sentir a dúvida crescer — e se ele tiver razão?",
+        nextChapterId: "fase5-cena13",
+        effects: { fe: -1, discernimento: -1 }
+      }
+    ]
+  },
+
+  "fase5-cena13": {
+    id: "fase5-cena13",
+    title: "A Terra Encantada",
+    location: "Terra Encantada",
+    characters: ["cristao", "esperanca"],
+    sceneEvent: { type: 'suspense', duration: 3000, message: 'O ar pesado te envolve...' },
+    narrative: [
+      "O caminho entra numa região estranha. O ar é pesado, perfumado, intoxicante. Cada passo exige mais esforço. As pálpebras pesam como chumbo.",
+      "A Terra Encantada — Bunyan a descreve como um lugar onde o próprio ar faz os peregrinos adormecerem para sempre. Quem dorme aqui, nunca mais acorda.",
+      "Esperança começa a cambalear: \"Cristão... estou tão cansado... apenas um momento de descanso...\""
+    ],
+    toneNarrative: [
+      { attr: "perseveranca", highThreshold: 7, highText: "Sua perseverança acumulada te mantém acordado. Cada passo do pântano, cada noite no castelo construiu resistência contra este sono.", lowThreshold: 3, lowText: "O sono é irresistível. As flores ao redor exalam um perfume que adormece a alma. Seus olhos se fecham..." },
+      { attr: "fe", highThreshold: 7, highText: "A promessa da cidade te puxa para frente como uma corrente. Você não veio tão longe para dormir à beira do destino.", lowThreshold: 3, lowText: "A cidade... tão longe... o chão parece tão confortável..." }
+    ],
+    choices: [
+      {
+        text: "Sacudir Esperança e forçar ambos a caminhar sem parar",
+        nextChapterId: "fase5-cena14",
+        effects: { perseveranca: 2, coragem: 1 },
+        flag: "venceu_terra_encantada"
+      },
+      {
+        text: "Sentar \"só um momento\" para descansar",
+        nextChapterId: "fase5-cena14",
+        effects: { perseveranca: -2, fe: -1 }
+      }
+    ]
+  },
+
+  "fase5-cena14": {
+    id: "fase5-cena14",
+    title: "O País de Beulá",
+    location: "País de Beulá",
+    characters: ["cristao", "esperanca"],
+    reflection: "r13",
+    narrative: [
+      "Além da Terra Encantada, tudo muda. O ar se torna doce — não intoxicante, mas revigorante. Flores de todas as cores cobrem os campos. Árvores carregadas de frutos dourados bordam o caminho.",
+      "Este é o País de Beulá — a terra onde o sol nunca se põe, onde os pássaros cantam sem cessar, e onde o perfume das flores vem do próprio jardim do Rei.",
+      "Bunyan escreveu que aqui os peregrinos ouviam continuamente vozes cantando: 'Dize à filha de Sião: Eis que vem o teu Salvador.' A Cidade Celestial brilha no horizonte, tão perto que seus portões são visíveis a olho nu."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "As lágrimas rolam livremente. Não de dor — de alegria absoluta. Tudo pelo que você lutou está diante de seus olhos. A fé virou quase visão.", lowThreshold: 4, lowText: "A beleza é avassaladora. Você não sabia que algo assim era possível. A dúvida se dissolve como névoa ao sol." }
+    ],
+    flagNarrative: [
+      { flag: "venceu_terra_encantada", text: "Você resistiu ao sono encantado. E a recompensa é esta: o País de Beulá, onde não há sono — apenas vida plena." },
+      { flag: "escapou_castelo_fe", text: "Do castelo da dúvida à terra da certeza. A chave da Promessa abriu mais do que portas de ferro — abriu seus olhos para ver o que sempre esteve lá." }
+    ],
+    choices: [
+      {
+        text: "Descansar em Beulá e seguir renovado para o Rio",
+        nextChapterId: "fase6-cena1",
+        effects: { fe: 2, perseveranca: 1, coragem: 1 },
+        item: "folhas_arvore_vida"
       }
     ]
   },
@@ -1824,6 +2006,36 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "O pânico domina — a água é demais",
         nextChapterId: "fase6-cena4",
         effects: { fe: -2 }
+      }
+    ]
+  },
+
+  "fase6-cena3": {
+    id: "fase6-cena3",
+    title: "Recordações à Beira do Rio",
+    location: "Margem do Rio",
+    characters: ["cristao", "esperanca"],
+    narrative: [
+      "Antes de entrar nas águas, Esperança e você sentam-se na margem. O País de Beulá perfuma o ar atrás de vocês. O rio corre à frente, escuro e profundo.",
+      "\"Lembra-se de Fiel?\", pergunta Esperança. \"Ele não precisou atravessar o rio. A carruagem celestial o levou direto. Mas nós... nós temos que passar por aqui.\"",
+      "Vocês relembram toda a jornada: o fardo, o pântano, o vale, a feira, o castelo. Cada memória é uma pedra no alicerce da fé que os sustentará nas águas."
+    ],
+    flagNarrative: [
+      { flag: "permaneceu_diferente", text: "\"Você defendeu Fiel na feira\", diz Esperança. \"Essa coragem veio de algum lugar. Ela te carregará pelo rio também.\"" },
+      { flag: "entrou_casa_interprete", text: "As visões do Intérprete — poeira e graça, fogo eterno, gaiola de ferro — cada uma foi um degrau que te trouxe até esta margem." },
+      { flag: "venceu_terra_encantada", text: "Você venceu o sono da Terra Encantada. O rio é a última prova. Depois dele, não há mais sono — apenas vida." }
+    ],
+    choices: [
+      {
+        text: "Orar juntos e entrar no rio com fé",
+        nextChapterId: "fase6-cena2",
+        effects: { fe: 1, perseveranca: 1 },
+        flag: "orou_antes_rio"
+      },
+      {
+        text: "Entrar no rio sem mais delongas",
+        nextChapterId: "fase6-cena2",
+        effects: { coragem: 1 }
       }
     ]
   },
@@ -1936,6 +2148,35 @@ export const storyChapters: Record<string, StoryChapter> = {
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "A certeza que começou como uma inquietação na Cidade da Destruição agora é visão. Você vê o que antes apenas cria. A fé se transformou em vista.", lowThreshold: 4, lowText: "O caminho foi tortuoso, cheio de dúvidas e desvios. Mas você chegou. E no final, é isso que importa." }
+    ],
+    choices: [
+      {
+        text: "Olhar para trás uma última vez",
+        nextChapterId: "fase6-cena9",
+        effects: {}
+      }
+    ]
+  },
+
+  "fase6-cena9": {
+    id: "fase6-cena9",
+    title: "A Rejeição de Ignorância",
+    location: "Portões da Cidade Celestial",
+    characters: ["cristao", "ignorancia"],
+    reflection: "r15",
+    narrative: [
+      "Antes que os portões se fechem, Bunyan mostra uma última cena — a mais solene de todo o livro.",
+      "Ignorância chega aos portões. Ele também fez a jornada — mas nunca passou pela Porta Estreita. Nunca carregou o fardo à cruz. Nunca recebeu o pergaminho selado.",
+      "\"Boas obras são meu passaporte\", diz ele confiante. Mas quando buscam seu nome no livro, ele não está lá. Os portões não se abrem. Dois Seres Resplandecentes o tomam pelos braços e o levam embora — não para a Cidade, mas para uma porta lateral no monte que leva ao abismo.",
+      "Bunyan termina com uma frase que ecoa pelos séculos: \"Então vi que havia um caminho para o inferno, mesmo dos portões do Céu.\"",
+      "A jornada terminou. A graça triunfou — não por suas forças, mas pela fidelidade de Quem prometeu."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 8, highText: "A cena de Ignorância te faz estremecer mesmo na glória. A graça não é merecida — é recebida. E você a recebeu.", lowThreshold: 4, lowText: "O destino de Ignorância é um aviso final: boas intenções não bastam. A porta estreita existe por uma razão." }
+    ],
+    flagNarrative: [
+      { flag: "entrou_casa_interprete", text: "O Intérprete te mostrou a diferença entre a vassoura e a água, entre a Lei e a Graça. Ignorância confiou na vassoura até o fim." },
+      { flag: "confiou_rio", text: "Você confiou nas águas escuras. Ignorância confiou em si mesmo. A diferença é eterna." }
     ],
     choices: [],
     isEnding: true,

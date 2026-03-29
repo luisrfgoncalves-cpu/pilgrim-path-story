@@ -17,6 +17,11 @@ import esperancaEncontro from '@/assets/scenes/esperanca-encontro.jpg';
 import montanhasDeleitosas from '@/assets/scenes/montanhas-deleitosas.jpg';
 import pradoAgradavel from '@/assets/scenes/prado-agradavel.jpg';
 import rioFinal from '@/assets/scenes/rio-final.jpg';
+import terraEncantada from '@/assets/scenes/terra-encantada.jpg';
+import paisBeula from '@/assets/scenes/pais-beula.jpg';
+import redeLisonjeiro from '@/assets/scenes/rede-lisonjeiro.jpg';
+import tresDorminhocoes from '@/assets/scenes/tres-dorminhocoes.jpg';
+import julgamentoFeira from '@/assets/scenes/julgamento-feira.jpg';
 
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
@@ -25,7 +30,7 @@ export const sceneImages: Record<string, string> = {
   'cena3': cidadeDestruicao,
   'cena4': cidadeDestruicao,
   'cena5': sabedoriaMundana,
-  'cena6': colinaDificuldade,
+  'cena6': tresDorminhocoes,
   'cena7': portaoEstreito,
   'cena8': sabedoriaMundana,
   'cena9': portaoEstreito,
@@ -65,13 +70,15 @@ export const sceneImages: Record<string, string> = {
   'fase4-cena1': feiraVaidade,
   'fase4-cena2': feiraVaidade,
   'fase4-cena3': feiraVaidade,
-  'fase4-cena4': feiraVaidade,
+  'fase4-cena4': julgamentoFeira,
   'fase4-cena5': feiraVaidade,
-  'fase4-cena6': feiraVaidade,
+  'fase4-cena6': julgamentoFeira,
   'fase4-cena7': feiraVaidade,
   'fase4-cena8': esperancaEncontro,
   'fase4-cena9': feiraVaidade,
   'fase4-cena10': esperancaEncontro,
+  'fase4-cena11': esperancaEncontro,
+  'fase4-cena12': fielEncontro,
 
   // FASE 5: Castelo da Dúvida
   'fase5-cena1': pradoAgradavel,
@@ -84,13 +91,19 @@ export const sceneImages: Record<string, string> = {
   'fase5-cena8': casteloDuvida,
   'fase5-cena9': montanhasDeleitosas,
   'fase5-cena10': montanhasDeleitosas,
+  'fase5-cena11': redeLisonjeiro,
+  'fase5-cena12': redeLisonjeiro,
+  'fase5-cena13': terraEncantada,
+  'fase5-cena14': paisBeula,
 
   // FASE 6: Rio e Cidade Celestial
   'fase6-cena1': rioFinal,
   'fase6-cena2': rioFinal,
+  'fase6-cena3': paisBeula,
   'fase6-cena4': rioFinal,
   'fase6-cena5': cidadeCelestial,
   'fase6-cena6': rioFinal,
   'fase6-cena7': cidadeCelestial,
   'fase6-cena8': cidadeCelestial,
+  'fase6-cena9': cidadeCelestial,
 };
