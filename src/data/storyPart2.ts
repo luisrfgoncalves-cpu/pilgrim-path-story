@@ -45,6 +45,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     location: "Cidade da Destruição",
     characters: ["crista"],
     reflection: "p2r1",
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 3000, message: 'Um sonho... uma carta...' },
     narrative: [
       "Anos se passaram desde que Cristão partiu da Cidade da Destruição. Sua esposa, Cristã, ficou para trás com quatro filhos — Mateus, Tiago, Samuel e José.",
       "Uma noite, ela tem um sonho: vê o marido na Cidade Celestial, vestido de branco, entre anjos, olhando para ela com saudade e amor.",
@@ -108,6 +109,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Pântano — Outra Vez",
     location: "Pântano do Desânimo",
     characters: ["crista", "misericordia"],
+    sceneEvent: { type: 'sinking', duration: 4000, message: 'A lama puxa para baixo...', intensity: 0.6 },
     narrative: [
       "O mesmo pântano que quase engoliu Cristão ainda está ali. As pedras de promessa que o Rei ordenou colocar estão parcialmente submersas — negligência dos zeladores.",
       "Os filhos de Cristã pisam nas pedras com cuidado. Misericórdia escorrega e quase cai na lama escura.",
@@ -134,6 +136,8 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Portão Estreito — Batendo e Esperando",
     location: "Portão Estreito",
     characters: ["crista", "misericordia"],
+    interactionType: 'hold',
+    sceneEvent: { type: 'tension', duration: 5000, message: 'O cachorro late furiosamente!', intensity: 0.7 },
     narrative: [
       "Cristã chega ao Portão Estreito e bate. Ninguém responde de imediato. Ela bate de novo. E de novo.",
       "Um cachorro enorme late do outro lado, aterrorizado. Misericórdia, que ficou um pouco atrás, desmaia de medo ao ouvir os latidos.",
@@ -164,6 +168,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "Os Mal-Encarados",
     location: "Próximo ao Portão",
     characters: ["crista", "misericordia"],
+    sceneEvent: { type: 'tension', duration: 4000, message: 'Servos de Belzebu atacam!', intensity: 0.8 },
     narrative: [
       "Mal passam pelo portão, dois homens de aparência terrível atacam o grupo. São os Mal-Encarados — servos de Belzebu que tentam impedir peregrinos de prosseguir.",
       "O guardião do portão intervém e os afugenta, mas não antes de Cristã e Misericórdia sentirem o terror de um ataque real.",
@@ -246,6 +251,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "A Cruz — O Mesmo Lugar",
     location: "A Cruz",
     characters: ["crista", "misericordia", "grande_coracao"],
+    sceneEvent: { type: 'suspense', delay: 2000, duration: 5000, message: 'O lugar onde o fardo caiu...' },
     narrative: [
       "O grupo chega ao pé da Cruz — o mesmo lugar onde o fardo de Cristão caiu e rolou para dentro do sepulcro.",
       "Cristã cai de joelhos. Lágrimas escorrem. \"Aqui\", sussurra. \"Foi aqui que ele foi livre.\"",
@@ -271,6 +277,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "A Colina da Dificuldade",
     location: "Colina da Dificuldade",
     characters: ["crista", "misericordia", "grande_coracao"],
+    sceneEvent: { type: 'sinking', duration: 4000, message: 'A subida é íngreme...', intensity: 0.5 },
     narrative: [
       "A mesma colina íngreme que exauriu Cristão aparece diante do grupo. Grande-Coração caminha na frente, abrindo o caminho.",
       "Os filhos de Cristã tropeçam nas pedras. Misericórdia ajuda os menores. Cristã puxa os maiores. A subida é lenta e dolorosa.",
@@ -297,6 +304,9 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "Os Leões e Grande-Coração",
     location: "Caminho dos Leões",
     characters: ["crista", "grande_coracao"],
+    sceneEvent: { type: 'tension', duration: 4000, message: 'Os leões rugem!', intensity: 0.9 },
+    interactionType: 'timed',
+    timeLimit: 12,
     narrative: [
       "Os leões acorrentados ainda estão ali. Cristã recua de medo, mas Grande-Coração ergue a espada e avança.",
       "Os leões rugem. Grande-Coração não hesita. Ele bate no chão com a espada e os leões recuam, revelando que suas correntes são curtas — como Vigilante revelou a Cristão.",
@@ -381,6 +391,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Vale da Sombra da Morte",
     location: "Vale da Sombra da Morte",
     characters: ["crista", "grande_coracao"],
+    sceneEvent: { type: 'tension', duration: 6000, message: 'Os sussurros do abismo ecoam...', intensity: 0.8 },
     narrative: [
       "O vale é tão escuro quanto foi para Cristão. Mas desta vez, um pilar de fogo aparece adiante, iluminando o caminho.",
       "Grande-Coração explica: \"Quando Cristão passou, o vale era pura escuridão. Para vocês, o Senhor enviou luz. Talvez porque desta vez haja crianças.\"",
@@ -406,6 +417,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Gigante Maul",
     location: "Saída do Vale",
     characters: ["crista", "grande_coracao"],
+    sceneEvent: { type: 'tension', duration: 5000, message: 'A terra treme!', intensity: 0.9 },
     narrative: [
       "Na saída do vale, um gigante chamado Maul bloqueia o caminho. Ele é menor que Desespero, mas feroz: \"Mulheres peregrinas? Fácil demais!\"",
       "Grande-Coração avança. A luta é intensa — espada contra clava. O gigante é forte, mas Grande-Coração é habilidoso.",
@@ -457,6 +469,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Gigante Mata-Bons",
     location: "Caminho após a Hospedaria",
     characters: ["crista", "grande_coracao", "mente_fraca"],
+    sceneEvent: { type: 'tension', duration: 5000, message: 'Combate brutal!', intensity: 1.0 },
     narrative: [
       "No caminho, encontram o Gigante Mata-Bons arrastando um homem pálido e fraco: Mente-Fraca.",
       "Grande-Coração desafia o gigante: \"Solta esse homem, monstro! Tua hora chegou.\"",
@@ -629,6 +642,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "Às Portas do Castelo da Dúvida",
     location: "Castelo da Dúvida",
     characters: ["crista", "grande_coracao", "valente_pela_verdade"],
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 4000, message: 'O Castelo da Dúvida...' },
     narrative: [
       "Grande-Coração para diante do Castelo da Dúvida. Não para fugir — para atacar.",
       "\"Este castelo aprisiona peregrinos há anos demais\", declara. \"O Gigante Desespero ainda vive ali dentro. Hoje, nós o destruímos.\"",
@@ -655,6 +669,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "A Batalha contra o Gigante Desespero",
     location: "Castelo da Dúvida",
     characters: ["crista", "grande_coracao", "valente_pela_verdade", "gigante_desespero"],
+    sceneEvent: { type: 'tension', duration: 6000, message: 'O Gigante Desespero ataca!', intensity: 1.0 },
     narrative: [
       "Grande-Coração arromba os portões. O Gigante Desespero emerge, rugindo. Desconfiança, sua esposa, grita do alto da torre.",
       "A luta é épica. Grande-Coração e Valente-pela-Verdade atacam em conjunto. O gigante é poderoso, mas os dois guerreiros são implacáveis.",
@@ -704,6 +719,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     location: "Castelo da Dúvida",
     characters: ["crista", "grande_coracao"],
     reflection: "p2r4",
+    interactionType: 'hold',
     narrative: [
       "Grande-Coração não se contenta em matar o gigante. Ele ordena a destruição completa do Castelo da Dúvida.",
       "Pedra por pedra, o grupo destrói as muralhas. O castelo que aterrorizou peregrinos por gerações é reduzido a ruínas.",
@@ -770,6 +786,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     location: "Terra Encantada",
     characters: ["crista", "grande_coracao", "firme", "madame_bolha"],
     reflection: "p2r5",
+    sceneEvent: { type: 'suspense', delay: 2000, duration: 5000, message: 'O ar da Terra Encantada é pesado...' },
     narrative: [
       "Na Terra Encantada — onde o ar faz os viajantes dormirem — o grupo encontra um homem ajoelhado em oração, tremendo.",
       "É Firme. Ao lado dele, uma mulher alta e elegante tenta seduzi-lo: Madame Bolha. Ela oferece sua bolsa de ouro, seu corpo e sua cama.",
@@ -823,6 +840,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Chamado Individual",
     location: "Margem do Rio",
     characters: ["crista", "misericordia", "grande_coracao", "valente_pela_verdade"],
+    sceneEvent: { type: 'suspense', delay: 2000, duration: 4000, message: 'Um mensageiro do Rei...' },
     narrative: [
       "O rio aparece. Mas na Parte II, Bunyan faz algo diferente: cada peregrino recebe um chamado individual do Rei.",
       "Um mensageiro chega a Cristã com uma carta: \"O Mestre te convida a estar em Sua presença dentro de dez dias.\"",
@@ -877,6 +895,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     location: "No Rio",
     characters: ["crista"],
     reflection: "p2r6",
+    sceneEvent: { type: 'suspense', delay: 3000, duration: 6000, message: 'As águas recebem Cristã...' },
     narrative: [
       "Cristã entra no rio. As águas que quase afogaram Cristão são, para ela, surpreendentemente calmas.",
       "Bunyan escreve: \"Suas últimas palavras foram: 'Venho, Senhor, para estar Contigo e Te bendizer.'\"",
