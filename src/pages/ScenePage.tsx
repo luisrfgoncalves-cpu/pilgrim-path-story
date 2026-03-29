@@ -5,7 +5,7 @@ import { useProgressSync } from '@/hooks/useProgressSync';
 import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect, ToneNarrative, StoryChoice } from '@/data/story';
 import { sceneImages } from '@/data/sceneImages';
 import { sceneVariations, VariationContext } from '@/data/sceneVariations';
-import { getEmotionalState, getEmotionalClasses } from '@/lib/emotionalIntensity';
+import { resolveEmotionalState, postureToLegacyTone } from '@/lib/emotionalState';
 import { analyzePerformance } from '@/lib/performanceAnalysis';
 import { useVisualEffects } from '@/hooks/useVisualEffects';
 import { useAudioEngine } from '@/hooks/useAudioEngine';
@@ -32,7 +32,10 @@ const ScenePage = () => {
   const [transitioning, setTransitioning] = useState(false);
   const { triggerChoiceEffect } = useVisualEffects();
   const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
-  const atmosphere = useAtmosphere(progress.attributes);
+  // Recent decision effects for trend analysis
+  const recentEffects = useMemo(() => {
+    return (progress as any).decisions?.slice(-5)?.map((d: any) => d.effects || {}) || [];
+  }, [progress]);
 
   const chapter = getChapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
