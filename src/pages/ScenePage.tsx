@@ -252,8 +252,8 @@ const ScenePage = () => {
     if (s) {
       setSurprise(s);
       setSurpriseShown(true);
-      const t = setTimeout(() => setSurpriseShown(false), 4000);
-      return () => clearTimeout(t);
+      // No auto-timeout — GameNotification handles it
+      return;
     } else {
       setSurprise(null);
       setSurpriseShown(false);
@@ -264,8 +264,7 @@ const ScenePage = () => {
   useEffect(() => {
     if (newSupportCount > 0 && !supportToastShown) {
       setSupportToastShown(true);
-      const timer = setTimeout(() => setSupportToastShown(false), 4000);
-      return () => clearTimeout(timer);
+      // GameNotification handles auto-dismiss
     }
   }, [newSupportCount, supportToastShown]);
 
@@ -315,7 +314,7 @@ const ScenePage = () => {
       setLastStreakEffect('positive');
       if (newStreak >= 3) {
         setShowStreakBurst(true);
-        setTimeout(() => setShowStreakBurst(false), 2000);
+        // GameNotification handles auto-dismiss
       }
     } else if (total < 0) {
       setStreak(lastStreakEffect === 'negative' ? streak + 1 : 1);
