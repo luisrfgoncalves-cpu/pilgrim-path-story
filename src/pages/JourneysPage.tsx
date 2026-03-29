@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { storyChapters, chapterOrder } from '@/data/story';
-import { ArrowLeft, Lock, CheckCircle2, MapPin, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Lock, CheckCircle2, MapPin, ChevronDown, ChevronUp, RotateCcw, Compass } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import ScreenHero from '@/components/ScreenHero';
 
 import mapFase1 from '@/assets/map-fase1.jpg';
 import mapFase2 from '@/assets/map-fase2.jpg';
