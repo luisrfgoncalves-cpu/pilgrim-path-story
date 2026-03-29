@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMultiplayer } from '@/hooks/useMultiplayer';
 import { useAuth } from '@/contexts/AuthContext';
-import DiceRoller from '@/components/DiceRoller';
-import { BOARD_SIZE, boardEvents, PLAYER_COLORS } from '@/lib/multiplayerTypes';
-import { ArrowLeft, Copy, Crown, Users, MapPin, Trophy, LogIn, Share2, Swords, Loader2 } from 'lucide-react';
+import PremiumDice from '@/components/multiplayer/PremiumDice';
+import PremiumBoard from '@/components/multiplayer/PremiumBoard';
+import EventReveal from '@/components/multiplayer/EventReveal';
+import { BOARD_SIZE, boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
+import { playMove, playVictory } from '@/components/multiplayer/BoardSounds';
+import { ArrowLeft, Copy, Crown, Users, MapPin, Trophy, LogIn, Share2, Swords, Loader2, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 
 const MultiplayerPage = () => {
@@ -19,6 +22,8 @@ const MultiplayerPage = () => {
 
   const [joinCode, setJoinCode] = useState('');
   const [view, setView] = useState<'menu' | 'lobby' | 'game'>('menu');
+  const [revealEvent, setRevealEvent] = useState<{ event: BoardEvent; playerName: string; dice: number; challengeResult?: 'win' | 'fail' | null } | null>(null);
+  const [selectedTile, setSelectedTile] = useState<{ pos: number; event: BoardEvent | undefined } | null>(null);
 
   // Auto-join via link
   useEffect(() => {
@@ -28,21 +33,67 @@ const MultiplayerPage = () => {
     }
   }, [searchParams, user]);
 
-  // Auto-detect view from room state
   const currentView = room
     ? room.status === 'playing' || room.status === 'finished' ? 'game' : 'lobby'
     : view === 'menu' ? 'menu' : 'menu';
 
+  const handleDiceRoll = useCallback(async (value?: number) => {
+    if (!room || !myPlayer) return;
+
+    const diceValue = value || (Math.floor(Math.random() * 6) + 1);
+    let newPosition = Math.min(myPlayer.position + diceValue, BOARD_SIZE - 1);
+    const boardEventId = (room as any).board_events?.[newPosition];
+    const event = boardEvents.find(e => e.id === boardEventId);
+
+    playMove();
+
+    // Show event reveal if there's an event
+    if (event) {
+      let challengeResult: 'win' | 'fail' | null = null;
+      if (event.type === 'challenge') {
+        const challengeRoll = Math.floor(Math.random() * 6) + 1;
+        challengeResult = challengeRoll >= 4 ? 'win' : 'fail';
+      }
+
+      setRevealEvent({
+        event,
+        playerName: myPlayer.display_name,
+        dice: diceValue,
+        challengeResult,
+      });
+    }
+
+    // Check victory
+    if (newPosition >= BOARD_SIZE - 1) {
+      setTimeout(playVictory, 500);
+    }
+
+    // Execute the actual roll
+    await rollDice(diceValue);
+  }, [room, myPlayer, rollDice]);
+
+  const handleTileClick = (pos: number, event: BoardEvent | undefined) => {
+    setSelectedTile({ pos, event });
+    setTimeout(() => setSelectedTile(null), 3000);
+  };
+
   if (!user) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4 px-5">
-        <LogIn className="w-10 h-10 text-primary" />
-        <p className="text-foreground font-display text-lg">Faça login para jogar</p>
-        <p className="text-sm text-muted-foreground text-center">O modo multiplayer requer uma conta para sincronizar com outros jogadores.</p>
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6 px-5">
+        <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center" style={{
+          boxShadow: '0 0 40px hsl(40 60% 55% / 0.1)',
+        }}>
+          <Swords className="w-10 h-10 text-primary" />
+        </div>
+        <div className="text-center space-y-2">
+          <h1 className="text-xl font-display text-foreground">RPG de Tabuleiro</h1>
+          <p className="text-sm text-muted-foreground">Faça login para jogar com amigos</p>
+        </div>
         <button
           onClick={() => navigate('/auth')}
-          className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium"
+          className="px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-display text-sm glow-gold"
         >
+          <LogIn className="w-4 h-4 inline mr-2" />
           Entrar / Criar Conta
         </button>
       </div>
@@ -62,27 +113,42 @@ const MultiplayerPage = () => {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col items-center justify-center px-5 gap-6 max-w-sm mx-auto w-full">
-          <div className="text-center space-y-2">
-            <Swords className="w-12 h-12 text-primary mx-auto" />
-            <h2 className="font-display text-xl text-foreground">RPG de Tabuleiro</h2>
-            <p className="text-sm text-muted-foreground">Corra até a Cidade Celestial com seus amigos! 2-8 jogadores.</p>
+        <main className="flex-1 flex flex-col items-center justify-center px-5 gap-8 max-w-sm mx-auto w-full">
+          {/* Hero */}
+          <div className="text-center space-y-3">
+            <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mx-auto" style={{
+              boxShadow: '0 0 60px hsl(40 60% 55% / 0.12), inset 0 0 20px hsl(40 60% 55% / 0.05)',
+              border: '1px solid hsl(40 60% 55% / 0.2)',
+            }}>
+              <Swords className="w-12 h-12 text-primary" />
+            </div>
+            <h2 className="font-display text-2xl text-foreground">RPG de Tabuleiro</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Corra até a Cidade Celestial com seus amigos!<br />
+              <span className="text-primary">2–8 jogadores</span> · 30 casas · 65 eventos
+            </p>
           </div>
 
+          {/* Create room */}
           <button
             onClick={async () => {
               const r = await createRoom();
               if (r) setView('lobby');
             }}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 glow-gold"
+            className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 glow-gold transition-opacity"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Crown className="w-5 h-5" />}
             Criar Sala
           </button>
 
-          <div className="w-full space-y-2">
-            <p className="text-xs text-muted-foreground text-center">ou entre com código</p>
+          {/* Join room */}
+          <div className="w-full space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="flex-1 h-px bg-border/30" />
+              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">ou entre com código</span>
+              <div className="flex-1 h-px bg-border/30" />
+            </div>
             <div className="flex gap-2">
               <input
                 type="text"
@@ -90,7 +156,7 @@ const MultiplayerPage = () => {
                 onChange={e => setJoinCode(e.target.value.toUpperCase())}
                 placeholder="CÓDIGO"
                 maxLength={5}
-                className="flex-1 h-12 rounded-xl bg-card border border-border text-center text-lg font-mono text-foreground tracking-widest uppercase"
+                className="flex-1 h-14 rounded-xl bg-card border border-border text-center text-xl font-mono text-foreground tracking-[0.3em] uppercase focus:border-primary/40 focus:ring-1 focus:ring-primary/20 outline-none transition-all"
               />
               <button
                 onClick={async () => {
@@ -98,14 +164,16 @@ const MultiplayerPage = () => {
                   if (ok) setView('lobby');
                 }}
                 disabled={loading || joinCode.length < 5}
-                className="px-5 h-12 rounded-xl bg-primary text-primary-foreground font-medium disabled:opacity-50"
+                className="px-6 h-14 rounded-xl bg-primary text-primary-foreground font-display disabled:opacity-50 transition-opacity"
               >
                 Entrar
               </button>
             </div>
           </div>
 
-          {error && <p className="text-xs text-destructive">{error}</p>}
+          {error && (
+            <p className="text-xs text-destructive bg-destructive/10 px-4 py-2 rounded-lg">{error}</p>
+          )}
         </main>
       </div>
     );
@@ -127,17 +195,23 @@ const MultiplayerPage = () => {
         </header>
 
         <main className="flex-1 max-w-lg mx-auto w-full px-5 py-6 space-y-6">
-          {/* Room code */}
-          <div className="text-center space-y-3">
-            <p className="text-xs text-muted-foreground uppercase tracking-widest">Código da Sala</p>
-            <div className="flex items-center justify-center gap-3">
-              <span className="text-4xl font-mono font-bold text-primary tracking-[0.3em]">{room?.code}</span>
+          {/* Room code — premium display */}
+          <div className="text-center space-y-4">
+            <p className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground/60">Código da Sala</p>
+            <div className="inline-flex items-center gap-4 px-6 py-4 rounded-2xl bg-card/60 border border-primary/20" style={{
+              boxShadow: '0 0 40px hsl(40 60% 55% / 0.06)',
+            }}>
+              <span className="text-4xl font-mono font-bold text-primary tracking-[0.4em]" style={{
+                textShadow: '0 0 20px hsl(40 60% 55% / 0.3)',
+              }}>
+                {room?.code}
+              </span>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(room?.code || '');
                   toast.success('Código copiado!');
                 }}
-                className="p-2 rounded-lg bg-card border border-border hover:border-primary/40"
+                className="p-2.5 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors"
               >
                 <Copy className="w-4 h-4 text-muted-foreground" />
               </button>
@@ -154,41 +228,53 @@ const MultiplayerPage = () => {
           </div>
 
           {/* Players list */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">{players.length}/{room?.max_players} jogadores</span>
+              <span className="text-xs text-muted-foreground">{players.length}/{room?.max_players} peregrinos</span>
             </div>
 
-            {players.map((p, i) => (
-              <div key={p.id} className="flex items-center gap-3 p-3 rounded-lg bg-card border border-border">
-                <div className="w-8 h-8 rounded-full" style={{ backgroundColor: p.color }} />
+            {players.map((p) => (
+              <div key={p.id} className="flex items-center gap-3 p-3.5 rounded-xl bg-card/60 border border-border hover:border-primary/20 transition-colors">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold"
+                  style={{
+                    backgroundColor: p.color + '20',
+                    border: `2px solid ${p.color}60`,
+                    color: p.color,
+                  }}
+                >
+                  {p.display_name.charAt(0).toUpperCase()}
+                </div>
                 <div className="flex-1">
                   <p className="text-sm text-foreground font-medium">{p.display_name}</p>
                   {p.user_id === room?.host_id && (
-                    <p className="text-[10px] text-primary flex items-center gap-1"><Crown className="w-3 h-3" /> Anfitrião</p>
+                    <p className="text-[10px] text-primary flex items-center gap-1">
+                      <Crown className="w-3 h-3" /> Anfitrião
+                    </p>
                   )}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Start button (host only) */}
-          {isHost && (
+          {/* Start / waiting */}
+          {isHost ? (
             <button
               onClick={startGame}
               disabled={players.length < 2}
-              className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 glow-gold disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 glow-gold disabled:opacity-50 transition-all"
             >
               <Swords className="w-5 h-5" />
-              Iniciar Partida ({players.length} jogadores)
+              Iniciar Partida ({players.length} peregrinos)
             </button>
-          )}
-
-          {!isHost && (
-            <p className="text-center text-sm text-muted-foreground animate-pulse">
-              Aguardando o anfitrião iniciar...
-            </p>
+          ) : (
+            <div className="text-center space-y-2">
+              <div className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-card/60 border border-border">
+                <Loader2 className="w-4 h-4 text-primary animate-spin" />
+                <span className="text-sm text-muted-foreground">Aguardando o anfitrião iniciar...</span>
+              </div>
+            </div>
           )}
         </main>
       </div>
@@ -202,134 +288,193 @@ const MultiplayerPage = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Event reveal overlay */}
+      {revealEvent && (
+        <EventReveal
+          event={revealEvent.event}
+          playerName={revealEvent.playerName}
+          diceValue={revealEvent.dice}
+          challengeResult={revealEvent.challengeResult}
+          onClose={() => setRevealEvent(null)}
+        />
+      )}
+
+      {/* Header */}
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-3">
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={async () => { await leaveRoom(); setView('menu'); }} className="text-muted-foreground hover:text-foreground">
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <h1 className="font-display text-sm text-foreground">
-              {isGameOver ? '🏆 Fim de Jogo' : `Vez de ${currentTurnPlayer?.display_name || '...'}`}
-            </h1>
+            <div>
+              <h1 className="font-display text-sm text-foreground">
+                {isGameOver ? '🏆 Fim de Jogo' : `Vez de ${currentTurnPlayer?.display_name || '...'}`}
+              </h1>
+              {!isGameOver && currentTurnPlayer && (
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: currentTurnPlayer.color }} />
+                  <span className="text-[9px] text-muted-foreground">
+                    Casa {currentTurnPlayer.position + 1}/{BOARD_SIZE}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
-          <span className="text-[10px] text-muted-foreground font-mono">{room?.code}</span>
+          <span className="text-[10px] text-muted-foreground font-mono bg-card px-2 py-1 rounded-md border border-border">
+            {room?.code}
+          </span>
         </div>
       </header>
 
       <main className="flex-1 max-w-lg mx-auto w-full px-4 py-4 space-y-4 overflow-y-auto">
-        {/* Board visualization — linear path */}
-        <div className="relative">
-          <div className="flex flex-wrap gap-1 justify-center">
-            {Array.from({ length: BOARD_SIZE }).map((_, i) => {
-              const playersHere = players.filter(p => p.position === i && !p.finished);
-              const eventId = (room as any)?.board_events?.[i];
-              const event = boardEvents.find(e => e.id === eventId);
-              const isStart = i === 0;
-              const isEnd = i === BOARD_SIZE - 1;
+        {/* Premium Board */}
+        <PremiumBoard
+          room={room!}
+          players={players}
+          myPlayerId={user?.id}
+          onTileClick={handleTileClick}
+        />
 
-              return (
-                <div
-                  key={i}
-                  className={`relative w-8 h-8 rounded-md flex items-center justify-center text-[10px] border transition-all
-                    ${isStart ? 'bg-primary/20 border-primary' : ''}
-                    ${isEnd ? 'bg-primary/30 border-primary' : ''}
-                    ${!isStart && !isEnd ? 'bg-card border-border' : ''}
-                    ${playersHere.length > 0 ? 'ring-2 ring-primary/40' : ''}
-                  `}
-                  title={event?.title || `Casa ${i + 1}`}
-                >
-                  {isEnd ? '🏰' : isStart ? '🏠' : event?.emoji || (i + 1)}
-
-                  {/* Player tokens */}
-                  {playersHere.length > 0 && (
-                    <div className="absolute -top-1 -right-1 flex -space-x-1">
-                      {playersHere.map(p => (
-                        <div
-                          key={p.id}
-                          className="w-3 h-3 rounded-full border border-background"
-                          style={{ backgroundColor: p.color }}
-                          title={p.display_name}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Player cards */}
-        <div className="space-y-2">
-          {players.map(p => (
-            <div
-              key={p.id}
-              className={`flex items-center gap-3 p-2.5 rounded-lg border transition-all ${
-                p.user_id === room?.current_turn_player_id
-                  ? 'bg-primary/10 border-primary/40'
-                  : p.finished
-                  ? 'bg-card/50 border-border opacity-70'
-                  : 'bg-card border-border'
-              }`}
-            >
-              <div className="w-6 h-6 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="text-xs font-medium text-foreground truncate">{p.display_name}</p>
-                  {p.user_id === room?.current_turn_player_id && !p.finished && (
-                    <span className="text-[9px] text-primary">◀ jogando</span>
-                  )}
-                  {p.finished && (
-                    <span className="text-[9px] text-primary flex items-center gap-0.5">
-                      <Trophy className="w-3 h-3" /> {p.finish_order}º
-                    </span>
-                  )}
-                  {p.is_stunned && !p.finished && (
-                    <span className="text-[9px] text-destructive">😵 paralisado</span>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 text-[9px] text-muted-foreground">
-                  <span><MapPin className="w-2.5 h-2.5 inline" /> {p.position}/{BOARD_SIZE - 1}</span>
-                  {p.last_dice_roll && <span>🎲 {p.last_dice_roll}</span>}
-                  {p.last_event && <span className="truncate max-w-[100px]">{p.last_event}</span>}
-                </div>
-              </div>
-              <div className="text-[8px] text-muted-foreground text-right">
-                <div>🔥{p.attributes.fe} ⛰️{p.attributes.perseveranca}</div>
-                <div>👁️{p.attributes.discernimento} 🛡️{p.attributes.coragem}</div>
+        {/* Tile info popup */}
+        {selectedTile && selectedTile.event && (
+          <div className="p-3 rounded-xl bg-card/80 border border-border space-y-1 animate-fade-in">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">{selectedTile.event.emoji}</span>
+              <div>
+                <p className="text-xs font-display text-foreground">{selectedTile.event.title}</p>
+                <p className="text-[10px] text-muted-foreground">{selectedTile.event.description}</p>
               </div>
             </div>
-          ))}
+          </div>
+        )}
+
+        {/* Player cards — compact */}
+        <div className="grid grid-cols-2 gap-2">
+          {players.map(p => {
+            const isTurn = p.user_id === room?.current_turn_player_id;
+            return (
+              <div
+                key={p.id}
+                className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${
+                  isTurn
+                    ? 'bg-primary/8 border-primary/30'
+                    : p.finished
+                    ? 'bg-card/30 border-border/50 opacity-60'
+                    : 'bg-card/50 border-border'
+                }`}
+              >
+                <div
+                  className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-xs font-bold"
+                  style={{
+                    backgroundColor: p.color + '25',
+                    border: `1.5px solid ${p.color}50`,
+                    color: p.color,
+                  }}
+                >
+                  {p.display_name.charAt(0)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1">
+                    <p className="text-[11px] font-medium text-foreground truncate">{p.display_name}</p>
+                    {isTurn && !p.finished && (
+                      <span className="text-[8px] text-primary">◀</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[8px] text-muted-foreground">
+                    {p.finished ? (
+                      <span className="text-primary flex items-center gap-0.5">
+                        <Trophy className="w-2.5 h-2.5" /> {p.finish_order}º
+                      </span>
+                    ) : p.is_stunned ? (
+                      <span className="text-destructive">😵 paralisado</span>
+                    ) : (
+                      <>
+                        <span>{p.position + 1}/{BOARD_SIZE}</span>
+                        {p.last_dice_roll && <span>🎲{p.last_dice_roll}</span>}
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="text-[7px] text-muted-foreground/60 text-right leading-relaxed">
+                  <div>🔥{p.attributes.fe} 🛡{p.attributes.coragem}</div>
+                  <div>⛰{p.attributes.perseveranca} 👁{p.attributes.discernimento}</div>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Dice & action */}
         {!isGameOver && (
           <div className="py-4">
-            <DiceRoller
-              onRoll={(val) => rollDice(val)}
-              disabled={!isMyTurn || (myPlayer?.finished || false)}
+            <PremiumDice
+              onRoll={handleDiceRoll}
+              disabled={!isMyTurn || (myPlayer?.finished || false) || (myPlayer?.is_stunned || false)}
               isMyTurn={isMyTurn}
             />
           </div>
         )}
 
+        {/* Stun message */}
+        {isMyTurn && myPlayer?.is_stunned && (
+          <div className="text-center p-3 rounded-xl bg-destructive/10 border border-destructive/20">
+            <p className="text-sm text-destructive font-display">😵 Você está paralisado!</p>
+            <p className="text-[10px] text-muted-foreground mt-1">
+              {myPlayer.stun_turns > 0 ? `Faltam ${myPlayer.stun_turns} rodada(s)` : 'Última rodada de paralisia'}
+            </p>
+            <button
+              onClick={() => rollDice()}
+              className="mt-2 px-4 py-2 rounded-lg bg-card border border-border text-xs text-foreground hover:border-primary/30 transition-colors"
+            >
+              Passar a vez
+            </button>
+          </div>
+        )}
+
         {/* Game over ranking */}
         {isGameOver && (
-          <div className="space-y-3 py-4">
-            <h2 className="font-display text-lg text-foreground text-center">Resultado Final</h2>
+          <div className="space-y-4 py-4 animate-fade-in">
+            <div className="text-center space-y-2">
+              <h2 className="font-display text-2xl text-foreground">🏆 Resultado Final</h2>
+              <p className="text-xs text-muted-foreground">A jornada chegou ao fim!</p>
+            </div>
+
             {finishedPlayers.map((p, i) => (
-              <div key={p.id} className="flex items-center gap-3 p-3 rounded-lg bg-card border border-border">
-                <span className="text-xl">{i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}º`}</span>
-                <div className="w-6 h-6 rounded-full" style={{ backgroundColor: p.color }} />
-                <p className="text-sm font-medium text-foreground flex-1">{p.display_name}</p>
-                <div className="text-[9px] text-muted-foreground">
-                  🔥{p.attributes.fe} ⛰️{p.attributes.perseveranca} 👁️{p.attributes.discernimento} 🛡️{p.attributes.coragem}
+              <div
+                key={p.id}
+                className="flex items-center gap-4 p-4 rounded-xl border transition-all"
+                style={{
+                  background: i === 0
+                    ? 'linear-gradient(135deg, hsl(40 50% 15%), hsl(30 20% 12%))'
+                    : 'hsl(var(--card))',
+                  borderColor: i === 0
+                    ? 'hsl(40 60% 55% / 0.4)'
+                    : 'hsl(var(--border))',
+                  boxShadow: i === 0 ? '0 0 30px hsl(40 60% 55% / 0.1)' : undefined,
+                }}
+              >
+                <span className="text-3xl">{i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}º`}</span>
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold"
+                  style={{ backgroundColor: p.color + '25', border: `2px solid ${p.color}`, color: p.color }}
+                >
+                  {p.display_name.charAt(0)}
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-display text-foreground">{p.display_name}</p>
+                  <div className="flex gap-2 text-[9px] text-muted-foreground mt-0.5">
+                    <span>🔥{p.attributes.fe}</span>
+                    <span>⛰{p.attributes.perseveranca}</span>
+                    <span>👁{p.attributes.discernimento}</span>
+                    <span>🛡{p.attributes.coragem}</span>
+                  </div>
                 </div>
               </div>
             ))}
+
             <button
               onClick={async () => { await leaveRoom(); setView('menu'); }}
-              className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-display text-sm"
+              className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm glow-gold"
             >
               Jogar Novamente
             </button>
