@@ -11,6 +11,7 @@ interface ResultState {
   effects: ChoiceEffect;
   currentChapterId: string;
   attributeChanges: ChoiceEffect;
+  flag?: string;
 }
 
 const attrLabels: Record<string, { label: string; emoji: string }> = {
@@ -35,7 +36,7 @@ const ResultPage = () => {
     }
     const t1 = setTimeout(() => setShow(true), 100);
     const t2 = setTimeout(() => {
-      makeChoice(state.currentChapterId, state.nextChapterId, state.choiceText, state.effects);
+      makeChoice(state.currentChapterId, state.nextChapterId, state.choiceText, state.effects, state.flag);
       navigate('/cena', { replace: true });
     }, 2000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
