@@ -24,6 +24,8 @@ import { ParticleEffects, getParticleTypeForScene } from '@/components/ParticleE
 import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
 import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
+import { MiniGame, MiniGameResult } from '@/components/MiniGames';
+import { miniGameMappings } from '@/data/miniGameMappings';
 import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, Zap, Star, Shield, Flame } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
 
