@@ -12,8 +12,58 @@ export const eventPools: Record<string, PhaseEventPool> = {
   // ═══════════════════════════════════════
   fase1: {
     phaseId: 'fase1',
-    variableCount: 2,
+    variableCount: 3,
     events: [
+      // ── Personagem: Obstinado ──
+      {
+        id: 'f1-obstinado-reencontro',
+        type: 'variable',
+        narrative: [
+          'Obstinado surge no caminho, ofegante. "Eu vim te buscar! Sua família implora que volte."',
+          '"A cidade está em festa. Ninguém mais se preocupa com esse livro ridículo. Só você."',
+        ],
+        choices: [
+          {
+            text: '"Não posso voltar. Vi a verdade com meus próprios olhos."',
+            effects: { fe: 2, coragem: 1 },
+            consequence: 'Obstinado cospe no chão e vai embora, resmungando. Sua resolução se fortalece.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Hesitar e considerar voltar por um momento',
+            effects: { fe: -1, coragem: -1 },
+            consequence: 'A hesitação é breve, mas Obstinado percebe a fraqueza e insiste com mais força.',
+            consequenceKey: 'cedeu_tentacao',
+            appearance: 0.6,
+          },
+        ],
+        weight: 3,
+        emotionalWeight: 2,
+      },
+      // ── Personagem: Flexível retornando ──
+      {
+        id: 'f1-flexivel-retorno',
+        type: 'variable',
+        narrative: [
+          'Flexível aparece molhado e sujo, vindo da direção do pântano.',
+          '"Eu tentei... mas é impossível. Voltei para a cidade. Você deveria fazer o mesmo."',
+        ],
+        requiresFlag: 'convidou_flexivel',
+        choices: [
+          {
+            text: '"O pântano não é o fim. É só o começo."',
+            effects: { fe: 1, perseveranca: 1 },
+            consequence: 'Flexível balança a cabeça e vai embora. Sua fé superficial não suportou o teste.',
+            consequenceKey: 'mostrou_misericordia',
+          },
+          {
+            text: 'Sentir inveja da decisão dele de voltar ao conforto',
+            effects: { fe: -1 },
+            consequence: 'A inveja é passageira, mas revela uma raiz que precisa ser arrancada.',
+          },
+        ],
+        weight: 2,
+      },
       // Variable: random encounters on the road
       {
         id: 'f1-viajante-misterioso',

@@ -101,6 +101,15 @@ export const characters: Character[] = [
   { id: "gigante_desespero", name: "Gigante Desespero", description: "O dono do Castelo da Dúvida, que aprisiona peregrinos que se desviam do caminho e tenta convencê-los a desistir da vida.", role: "Antagonista", unlockedAtChapter: "fase5-cena2" },
   { id: "desconfianca", name: "Desconfiança", description: "A esposa do Gigante Desespero, que sussurra conselhos cruéis ao marido sobre como torturar os prisioneiros.", role: "Antagonista", unlockedAtChapter: "fase5-cena3" },
   { id: "pastores", name: "Os Pastores das Montanhas", description: "Conhecimento, Experiência, Vigilante e Sincero — os quatro pastores das Montanhas Deleitosas que mostram aos peregrinos uma visão distante da Cidade Celestial.", role: "Guias", unlockedAtChapter: "fase5-cena9" },
+  { id: "formalista", name: "Formalista", description: "Um homem que pula o muro do caminho em vez de entrar pela Porta Estreita. Acredita que seguir rituais externos basta, sem transformação interior.", role: "Opositor", unlockedAtChapter: "cena7" },
+  { id: "hipocrisia", name: "Hipocrisia", description: "Companheiro de Formalista, que também pula o muro. Representa aqueles que fingem piedade sem verdadeira conversão.", role: "Opositor", unlockedAtChapter: "cena7" },
+  { id: "falador", name: "Falador", description: "Um homem de palavras bonitas mas sem frutos. Conhece toda a doutrina, mas não a vive. Fiel o desmascarou na estrada.", role: "Opositor", unlockedAtChapter: "fase3-cena10" },
+  { id: "amor_dinheiro", name: "Amor ao Dinheiro", description: "Um cavalheiro de Vanity Fair que tenta convencer os peregrinos de que servir a Deus e buscar riquezas são compatíveis.", role: "Tentador", unlockedAtChapter: "fase4-cena3" },
+  { id: "discricao", name: "Discrição", description: "Uma das donzelas do Palácio Belo que examina o peregrino antes de lhe dar entrada, testando a sinceridade de sua fé.", role: "Guia", unlockedAtChapter: "fase2-cena7" },
+  { id: "prudencia", name: "Prudência", description: "Donzela do Palácio Belo que questiona Cristão sobre suas motivações e o ajuda a examinar seu próprio coração.", role: "Guia", unlockedAtChapter: "fase2-cena9" },
+  { id: "piedade", name: "Piedade", description: "Donzela do Palácio Belo que conversa com Cristão sobre as maravilhas do país para onde caminha, fortalecendo sua esperança.", role: "Guia", unlockedAtChapter: "fase2-cena9" },
+  { id: "caridade", name: "Caridade", description: "Donzela do Palácio Belo que pergunta a Cristão sobre sua família e o encoraja a ter compaixão, mesmo pelos que ficaram para trás.", role: "Guia", unlockedAtChapter: "fase2-cena9" },
+  { id: "ignorancia", name: "Ignorância", description: "Um jovem da terra da Presunção que segue o caminho sem nunca ter passado pela Porta Estreita. Acredita que seu coração bom é suficiente. No final, é rejeitado nos portões da Cidade Celestial.", role: "Contraste", unlockedAtChapter: "fase5-cena10" },
 ];
 
 export const reflections: Reflection[] = [
