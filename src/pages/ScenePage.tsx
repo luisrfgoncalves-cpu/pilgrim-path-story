@@ -29,6 +29,7 @@ const ScenePage = () => {
   const [sceneEventDone, setSceneEventDone] = useState(false);
   const [suspenseActive, setSuspenseActive] = useState(false);
   const [pendingChoice, setPendingChoice] = useState<(() => void) | null>(null);
+  const [transitioning, setTransitioning] = useState(false);
   const { triggerChoiceEffect } = useVisualEffects();
   const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
   const atmosphere = useAtmosphere(progress.attributes);
