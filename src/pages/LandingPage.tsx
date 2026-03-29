@@ -386,21 +386,33 @@ const CtaButton = ({ children, onClick, variant = 'primary', className = '' }: {
     onClick={onClick}
     className={`
       relative font-display text-base tracking-wide rounded-xl transition-all duration-300
-      flex items-center justify-center gap-2 min-h-[56px] px-8
-      hover:scale-[1.03] active:scale-[0.97]
+      flex items-center justify-center gap-2.5 min-h-[58px] px-8
+      hover:scale-[1.05] active:scale-[0.97]
       ${variant === 'primary'
-        ? 'bg-gradient-to-b from-primary to-primary/80 text-primary-foreground border-2 border-primary/60'
+        ? 'text-primary-foreground border-2 border-primary/70 cta-neon-pulse'
         : 'bg-card/80 text-foreground border-2 border-primary/40 hover:border-primary/70'
       }
       ${className}
     `}
     style={{
-      boxShadow: variant === 'primary'
-        ? '0 0 30px hsl(40 70% 50% / 0.6), 0 0 60px hsl(40 70% 50% / 0.25), 0 0 100px hsl(40 70% 50% / 0.1), 0 8px 20px rgba(0,0,0,0.5), inset 0 2px 0 hsl(40 80% 75% / 0.4), inset 0 -2px 4px hsl(40 50% 20% / 0.5)'
-        : '0 0 20px hsl(40 70% 50% / 0.2), 0 0 40px hsl(40 70% 50% / 0.08), 0 6px 16px rgba(0,0,0,0.4), inset 0 1px 0 hsl(40 80% 75% / 0.15), inset 0 -1px 3px hsl(40 50% 20% / 0.3)',
-      textShadow: variant === 'primary' ? '0 0 12px hsl(40 70% 50% / 0.6)' : 'none',
+      background: variant === 'primary'
+        ? 'linear-gradient(180deg, hsl(40 85% 55%) 0%, hsl(40 75% 42%) 50%, hsl(40 65% 30%) 100%)'
+        : 'linear-gradient(180deg, hsl(40 20% 15%), hsl(40 15% 10%))',
+      textShadow: variant === 'primary'
+        ? '0 0 12px hsl(40 90% 60% / 0.8), 0 1px 2px rgba(0,0,0,0.6)'
+        : 'none',
+      ...(variant !== 'primary' ? {
+        boxShadow: '0 0 20px hsl(40 70% 50% / 0.15), 0 6px 16px rgba(0,0,0,0.4), inset 0 1px 0 hsl(40 80% 75% / 0.1), inset 0 -1px 3px hsl(40 50% 20% / 0.3)',
+      } : {}),
     }}
   >
+    {/* Neon edge line top */}
+    {variant === 'primary' && (
+      <span
+        className="absolute top-0 left-[10%] right-[10%] h-[1px] rounded-full pointer-events-none"
+        style={{ background: 'linear-gradient(90deg, transparent, hsl(40 100% 80% / 0.7), transparent)' }}
+      />
+    )}
     {children}
   </button>
 );
