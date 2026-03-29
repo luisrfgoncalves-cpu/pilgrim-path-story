@@ -154,9 +154,11 @@ const ScenePage = () => {
   }, [narrativeIndex, chapter, fullNarrative.length]);
 
   const executeChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
+    // Apply adaptive intensity based on replay history
+    const intensityAdjusted = applyIntensityToEffects(effects, dynamicEvents.intensity);
     // Roll the invisible dice — modifies effects based on attributes + luck
     const diceOutcome = rollInvisibleDice(progress.attributes);
-    const modifiedEffects = applyDiceToEffects(effects, diceOutcome);
+    const modifiedEffects = applyDiceToEffects(intensityAdjusted, diceOutcome);
     const diceHint = getDiceNarrativeHint(diceOutcome);
 
     triggerChoiceEffect(modifiedEffects as Record<string, number>);
