@@ -27,7 +27,7 @@ import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEve
 import { MiniGame, MiniGameResult } from '@/components/MiniGames';
 import { FullscreenMiniGame, FULLSCREEN_GAMES } from '@/components/FullscreenMiniGame';
 import { miniGameMappings } from '@/data/miniGameMappings';
-import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, Zap, Star, Shield, Flame } from 'lucide-react';
+import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, ArrowLeft, Zap, Star, Shield, Flame } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
@@ -428,7 +428,7 @@ const ScenePage = () => {
       <main className={`flex-1 max-w-lg mx-auto w-full ${transitioning ? 'opacity-0' : 'scene-transition-enter'}`}>
         {/* Scene image with preloading */}
         {bgImage && (
-          <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px' }}>
+          <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px', minHeight: '180px', background: 'hsl(25 20% 12%)' }}>
             <img
               src={bgImage}
               alt={chapter.title}
@@ -436,12 +436,15 @@ const ScenePage = () => {
               height={576}
               loading="eager"
               decoding="async"
+              fetchPriority="high"
               onLoad={() => setImageLoaded(true)}
-              className={`w-full h-auto object-cover transition-all duration-500 scene-image scene-image-alive ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`w-full h-auto object-cover transition-opacity duration-500 scene-image scene-image-alive ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               style={atmosphere.imageStyle}
             />
             {!imageLoaded && (
-              <div className="absolute inset-0 bg-card animate-pulse" />
+              <div className="absolute inset-0 bg-card flex items-center justify-center">
+                <div className="w-8 h-8 border-2 border-primary/40 border-t-primary rounded-full animate-spin" />
+              </div>
             )}
             {/* Particle effects overlay */}
             {imageLoaded && (() => {
@@ -569,9 +572,18 @@ const ScenePage = () => {
 
           {/* ═══ MINI-GAME TRIGGER BUTTON ═══ */}
           {showChoices && !miniGameDone && miniGameMappings[chapter.id] && !miniGameReady && (
-            <div className="mb-5 animate-scale-in">
+            <div className="mb-5 animate-scale-in" id="minigame-trigger">
               <button
-                onClick={() => { setMiniGameReady(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                onClick={() => {
+                  setMiniGameReady(true);
+                  // Scroll to the mini-game area, not top of page
+                  setTimeout(() => {
+                    const el = document.getElementById('minigame-area');
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }, 100);
+                }}
                 className="btn-medieval w-full flex items-center justify-center gap-3"
               >
                 <Zap className="w-5 h-5" />
@@ -586,7 +598,7 @@ const ScenePage = () => {
 
           {/* ═══ MINI-GAME (inline for minor games) ═══ */}
           {showChoices && !miniGameDone && miniGameReady && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
-            <div className="mb-5 animate-scale-in space-y-4">
+            <div id="minigame-area" className="mb-5 animate-scale-in space-y-4">
               {scenePortraits.length > 0 && (
                 <div className="flex items-center justify-center gap-3 overflow-x-auto pb-1">
                   {scenePortraits.slice(0, 3).map((p, idx) => (
@@ -627,6 +639,7 @@ const ScenePage = () => {
 
           {/* ═══ FULLSCREEN MINI-GAME (major games) ═══ */}
           {showChoices && !miniGameDone && miniGameReady && miniGameMappings[chapter.id] && FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
+            <div id="minigame-area" />
             <FullscreenMiniGame
               config={miniGameMappings[chapter.id]}
               chapterId={chapter.id}
