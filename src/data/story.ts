@@ -500,6 +500,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Quando água é lançada, a poeira se assenta. Você percebe que esforço sozinho não resolve tudo."
     ],
+    flagNarrative: [
+      { flag: "pediu_ajuda_pantano", text: "Você se lembra do pântano. Lá também precisou de ajuda. A lição se repete." },
+      { flag: "escolheu_caminho_facil", text: "Você pensa no caminho fácil que escolheu antes. Talvez essa seja a diferença: entender, não apenas seguir." }
+    ],
     choices: [
       {
         text: "Refletir sobre isso",
