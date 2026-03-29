@@ -201,11 +201,12 @@ export const useStoryProgress = () => {
     }
   }, []);
 
-  const resetProgress = useCallback(() => {
+  const resetProgress = useCallback((campaign: CampaignId = 'part1') => {
     const hist = getPlayHistory();
+    const firstChapter = campaign === 'part2' ? PART2_FIRST_CHAPTER_ID : FIRST_CHAPTER_ID;
     setProgress({
-      currentChapterId: FIRST_CHAPTER_ID,
-      visitedChapters: [FIRST_CHAPTER_ID],
+      currentChapterId: firstChapter,
+      visitedChapters: [firstChapter],
       choicesMade: 0,
       attributes: defaultAttributes,
       decisions: [],
@@ -213,6 +214,7 @@ export const useStoryProgress = () => {
       items: [],
       started: false,
       playthrough: hist.totalPlaythroughs + 1,
+      campaign,
     });
   }, []);
 
