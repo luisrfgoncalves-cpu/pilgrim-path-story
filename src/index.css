@@ -142,7 +142,19 @@
 
 /* =========================
    Emotional state atmosphere
+   All transitions are gradual (2s ease) to avoid abrupt changes.
    ========================= */
+
+/* Base transition for all emotional states */
+[class*="emotional-"] .scene-image {
+  transition: filter 2s ease;
+}
+[class*="emotional-"] .narrative-text {
+  transition: color 2s ease, opacity 2s ease;
+}
+[class*="emotional-"] .scene-overlay {
+  transition: background 2s ease, opacity 2s ease;
+}
 
 /* Abatido — dark, desaturated, oppressive */
 .emotional-abatido .scene-image {

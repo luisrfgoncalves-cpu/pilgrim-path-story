@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { PlayerAttributes } from '@/hooks/useStoryProgress';
 import { EmotionalTone } from '@/lib/emotionalIntensity';
 
