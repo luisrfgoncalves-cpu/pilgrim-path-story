@@ -66,35 +66,55 @@ export const PLAYER_COLORS = [
 // ─── Board Events Pool ───
 
 export const boardEvents: BoardEvent[] = [
-  // Positive
+  // ═══ Positivos ═══
   { id: 'ev1', type: 'advance', title: 'Vento Favorável', description: 'O Espírito sopra a seu favor! Avance casas extras.', effect: { target: 'self', positions: 2 }, emoji: '🌬️' },
   { id: 'ev2', type: 'boost', title: 'Pergaminho da Fé', description: 'Você encontra um pergaminho antigo. Sua fé aumenta!', effect: { target: 'self', attribute: 'fe', amount: 2 }, emoji: '📜' },
-  { id: 'ev3', type: 'advance', title: 'Atalho Secreto', description: 'Evangelista revela um caminho mais curto!', effect: { target: 'self', positions: 3 }, emoji: '🗺️' },
-  { id: 'ev4', type: 'shield', title: 'Armadura de Deus', description: 'Você está protegido do próximo evento negativo.', effect: { target: 'self' }, emoji: '🛡️' },
-  { id: 'ev5', type: 'boost', title: 'Auxílio Aparece', description: 'Uma mão amiga te levanta! Coragem aumenta.', effect: { target: 'self', attribute: 'coragem', amount: 2 }, emoji: '🤝' },
+  { id: 'ev3', type: 'advance', title: 'Evangelista Aponta o Caminho', description: 'Evangelista aparece e revela um atalho seguro!', effect: { target: 'self', positions: 3 }, emoji: '🗺️' },
+  { id: 'ev4', type: 'shield', title: 'Armadura de Deus', description: 'Você veste a armadura completa de Efésios 6. Protegido do próximo evento negativo!', effect: { target: 'self' }, emoji: '🛡️' },
+  { id: 'ev5', type: 'boost', title: 'Auxílio no Pântano', description: 'Auxílio estende a mão e te levanta! Coragem aumenta.', effect: { target: 'self', attribute: 'coragem', amount: 2 }, emoji: '🤝' },
+  { id: 'ev21', type: 'advance', title: 'Cruz do Calvário', description: 'Seu fardo cai ao pé da Cruz! Três Seres Resplandecentes te dão vestes novas. Avance!', effect: { target: 'self', positions: 3 }, emoji: '✝️' },
+  { id: 'ev22', type: 'boost', title: 'Espada do Espírito', description: 'Você encontra a Espada do Espírito — a Palavra de Deus. Sua fé e coragem aumentam!', effect: { target: 'self', attribute: 'fe', amount: 1 }, emoji: '⚔️' },
+  { id: 'ev23', type: 'boost', title: 'Hospedaria de Gaio', description: 'Gaio te recebe com pão e vinho. Perseverança restaurada!', effect: { target: 'self', attribute: 'perseveranca', amount: 2 }, emoji: '🍷' },
+  { id: 'ev24', type: 'advance', title: 'Grande-Coração Escolta', description: 'O valente Grande-Coração te escolta pelo trecho perigoso! Avance com segurança.', effect: { target: 'self', positions: 2 }, emoji: '⚔️' },
+  { id: 'ev25', type: 'boost', title: 'Chave da Promessa', description: 'Você encontra a Chave da Promessa no seu peito! Discernimento aumenta.', effect: { target: 'self', attribute: 'discernimento', amount: 2 }, emoji: '🗝️' },
 
-  // Negative
-  { id: 'ev6', type: 'retreat', title: 'Pântano do Desânimo', description: 'Você afunda no pântano! Recue casas.', effect: { target: 'self', positions: -3 }, emoji: '🌊' },
-  { id: 'ev7', type: 'stun', title: 'Gigante Desespero', description: 'O Gigante te captura! Perde uma rodada.', effect: { target: 'self', stunTurns: 1 }, emoji: '👹' },
-  { id: 'ev8', type: 'retreat', title: 'Sabedoria Mundana', description: 'Prudência Mundana te desvia do caminho!', effect: { target: 'self', positions: -2 }, emoji: '🐍' },
-  { id: 'ev9', type: 'stun', title: 'Feira da Vaidade', description: 'As tentações da feira te paralisam! Perde uma rodada.', effect: { target: 'self', stunTurns: 1 }, emoji: '🎪' },
-  { id: 'ev10', type: 'boost', title: 'Apolião Ataca', description: 'Apolião fere sua coragem!', effect: { target: 'self', attribute: 'coragem', amount: -2 }, emoji: '🐉' },
+  // ═══ Negativos ═══
+  { id: 'ev6', type: 'retreat', title: 'Pântano do Desânimo', description: 'Você afunda no pântano onde pecadores perdem a esperança! Recue casas.', effect: { target: 'self', positions: -3 }, emoji: '🌊' },
+  { id: 'ev7', type: 'stun', title: 'Gigante Desespero', description: 'O Gigante Desespero te tranca no Castelo da Dúvida! Perde uma rodada.', effect: { target: 'self', stunTurns: 1 }, emoji: '👹' },
+  { id: 'ev8', type: 'retreat', title: 'Prudência Mundana', description: 'O Sr. Prudência Mundana te desvia para o vilarejo da Moralidade!', effect: { target: 'self', positions: -2 }, emoji: '🐍' },
+  { id: 'ev9', type: 'stun', title: 'Feira da Vaidade', description: 'As tentações da Feira da Vaidade te paralisam! Perde uma rodada.', effect: { target: 'self', stunTurns: 1 }, emoji: '🎪' },
+  { id: 'ev10', type: 'boost', title: 'Apolião Ataca', description: 'O terrível Apolião te ataca no Vale da Humilhação! Coragem diminui.', effect: { target: 'self', attribute: 'coragem', amount: -2 }, emoji: '🐉' },
+  { id: 'ev26', type: 'retreat', title: 'Rede do Lisonjeiro', description: 'O Lisonjeiro te engana com palavras doces e te prende numa rede! Recue casas.', effect: { target: 'self', positions: -3 }, emoji: '🕸️' },
+  { id: 'ev27', type: 'stun', title: 'Terra Encantada', description: 'O ar da Terra Encantada te faz adormecer! Perde uma rodada.', effect: { target: 'self', stunTurns: 1 }, emoji: '😴' },
+  { id: 'ev28', type: 'boost', title: 'Pequena-Fé Assaltado', description: 'Ladrões te atacam como fizeram com Pequena-Fé! Fé diminui.', effect: { target: 'self', attribute: 'fe', amount: -2 }, emoji: '🔪' },
+  { id: 'ev29', type: 'stun', title: 'Presunção, Preguiça e Simples', description: 'Você adormece à beira do caminho como os três tolos! Perde uma rodada.', effect: { target: 'self', stunTurns: 1 }, emoji: '💤' },
+  { id: 'ev30', type: 'boost', title: 'Vergonha Confronta', description: 'Vergonha te ataca dizendo que religião é coisa de fracos! Perseverança diminui.', effect: { target: 'self', attribute: 'perseveranca', amount: -2 }, emoji: '😤' },
+  { id: 'ev31', type: 'retreat', title: 'Atalho do Prado Agradável', description: 'Você sai do caminho estreito para o Prado Agradável — o Castelo da Dúvida te espera!', effect: { target: 'self', positions: -4 }, emoji: '🌿' },
 
-  // Affect others
-  { id: 'ev11', type: 'retreat', title: 'Terremoto no Caminho', description: 'A terra treme! Todos os outros jogadores recuam.', effect: { target: 'others', positions: -2 }, emoji: '🌋' },
-  { id: 'ev12', type: 'stun', title: 'Neblina do Vale', description: 'Uma neblina densa confunde outro jogador! Escolha quem perde a vez.', effect: { target: 'choose', stunTurns: 1 }, emoji: '🌫️' },
+  // ═══ Afetam outros ═══
+  { id: 'ev11', type: 'retreat', title: 'Vale da Sombra da Morte', description: 'As trevas do Vale envolvem todos! Os outros jogadores recuam.', effect: { target: 'others', positions: -2 }, emoji: '💀' },
+  { id: 'ev12', type: 'stun', title: 'Neblina do Vale', description: 'Neblina densa confunde outro jogador! Escolha quem perde a vez.', effect: { target: 'choose', stunTurns: 1 }, emoji: '🌫️' },
   { id: 'ev13', type: 'swap', title: 'Troca de Caminhos', description: 'Uma encruzilhada mística troca sua posição com outro jogador!', effect: { target: 'choose' }, emoji: '🔄' },
-  { id: 'ev14', type: 'steal', title: 'Falador Engana', description: 'Falador rouba pontos de fé de outro jogador!', effect: { target: 'choose', attribute: 'fe', amount: 2 }, emoji: '🗣️' },
-  { id: 'ev15', type: 'advance', title: 'Bênção Compartilhada', description: 'Todos recebem uma bênção! Todos avançam 1 casa.', effect: { target: 'all', positions: 1 }, emoji: '✨' },
+  { id: 'ev14', type: 'steal', title: 'Falador Rouba', description: 'Falador ilude outro jogador com palavras vazias e rouba sua fé!', effect: { target: 'choose', attribute: 'fe', amount: 2 }, emoji: '🗣️' },
+  { id: 'ev15', type: 'advance', title: 'Bênção Compartilhada', description: 'As donzelas do Palácio Belo abençoam todos! Todos avançam 1 casa.', effect: { target: 'all', positions: 1 }, emoji: '✨' },
+  { id: 'ev32', type: 'steal', title: 'Interesses Manipula', description: 'Interesses convence outro jogador a seguir um desvio! Rouba perseverança.', effect: { target: 'choose', attribute: 'perseveranca', amount: 2 }, emoji: '💰' },
+  { id: 'ev33', type: 'stun', title: 'Madame Bolha Seduz', description: 'Madame Bolha tenta seduzir outro jogador com ouro e prazeres! Escolha quem perde a vez.', effect: { target: 'choose', stunTurns: 1 }, emoji: '💋' },
+  { id: 'ev34', type: 'retreat', title: 'Julgamento na Feira', description: 'O Juiz Ódio-ao-Bem persegue a todos! Todos os outros recuam 1 casa.', effect: { target: 'others', positions: -1 }, emoji: '⚖️' },
 
-  // Challenge (mini-game moments)
-  { id: 'ev16', type: 'challenge', title: 'Desafio da Colina', description: 'Role o dado novamente: 4+ avança 3 casas, senão recua 1.', effect: { target: 'self', positions: 3 }, emoji: '⛰️' },
-  { id: 'ev17', type: 'challenge', title: 'Porta Estreita', description: 'Role o dado: precisa tirar 3+ para passar. Senão espera uma rodada.', effect: { target: 'self', stunTurns: 1 }, emoji: '🚪' },
+  // ═══ Desafios ═══
+  { id: 'ev16', type: 'challenge', title: 'Colina da Dificuldade', description: 'Subir direto ou pegar os atalhos Perigo/Destruição? Role 4+ para subir e avançar 3!', effect: { target: 'self', positions: 3 }, emoji: '⛰️' },
+  { id: 'ev17', type: 'challenge', title: 'Porta Estreita', description: 'Boa-Vontade abre a porta — mas você precisa tirar 3+ para entrar!', effect: { target: 'self', stunTurns: 1 }, emoji: '🚪' },
+  { id: 'ev35', type: 'challenge', title: 'Batalha com Apolião', description: 'Apolião bloqueia o caminho! Role 4+ para vencê-lo com a Espada do Espírito e avançar 4!', effect: { target: 'self', positions: 4 }, emoji: '🐉' },
+  { id: 'ev36', type: 'challenge', title: 'Travessia do Rio da Morte', description: 'O Rio Final está diante de você! Role 3+ para atravessar com fé. Senão, perde uma rodada.', effect: { target: 'self', stunTurns: 1 }, emoji: '🌊' },
+  { id: 'ev37', type: 'challenge', title: 'Fuga do Castelo da Dúvida', description: 'Lembra da Chave da Promessa? Role 3+ para escapar e avançar 3!', effect: { target: 'self', positions: 3 }, emoji: '🗝️' },
 
-  // Safe
-  { id: 'ev18', type: 'safe', title: 'Palácio Belo', description: 'Você descansa no Palácio Belo. Nada acontece, mas está seguro.', effect: { target: 'self' }, emoji: '🏰' },
-  { id: 'ev19', type: 'safe', title: 'Montanhas Deleitosas', description: 'Os Pastores te mostram a vista. Paz e descanso.', effect: { target: 'self' }, emoji: '⛰️' },
-  { id: 'ev20', type: 'safe', title: 'Casa do Intérprete', description: 'O Intérprete te ensina uma lição. Discernimento +1.', effect: { target: 'self', attribute: 'discernimento', amount: 1 }, emoji: '📖' },
+  // ═══ Seguros ═══
+  { id: 'ev18', type: 'safe', title: 'Palácio Belo', description: 'Discrição, Prudência, Piedade e Caridade te recebem. Descanse em paz.', effect: { target: 'self' }, emoji: '🏰' },
+  { id: 'ev19', type: 'safe', title: 'Montanhas Deleitosas', description: 'Os Pastores Conhecimento, Experiência, Vigilante e Sincero te mostram a Cidade Celestial ao longe.', effect: { target: 'self' }, emoji: '🏔️' },
+  { id: 'ev20', type: 'safe', title: 'Casa do Intérprete', description: 'O Intérprete te mostra visões de verdades espirituais. Discernimento +1.', effect: { target: 'self', attribute: 'discernimento', amount: 1 }, emoji: '📖' },
+  { id: 'ev38', type: 'safe', title: 'País de Beulá', description: 'Você chega à terra de paz e abundância, às portas da Cidade Celestial. O ar é doce e as flores perfumam.', effect: { target: 'self', attribute: 'fe', amount: 1 }, emoji: '🌸' },
+  { id: 'ev39', type: 'safe', title: 'Folhas da Árvore da Vida', description: 'Você encontra folhas curativas e restaura suas forças. Perseverança +1.', effect: { target: 'self', attribute: 'perseveranca', amount: 1 }, emoji: '🌿' },
+  { id: 'ev40', type: 'safe', title: 'Companhia de Fiel', description: 'Fiel caminha ao seu lado e compartilha seu testemunho. Coragem +1.', effect: { target: 'self', attribute: 'coragem', amount: 1 }, emoji: '🤝' },
 ];
 
 // Generate board: assign events to each position (fixed per room)
