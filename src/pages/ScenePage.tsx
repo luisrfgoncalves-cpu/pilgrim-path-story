@@ -226,28 +226,52 @@ const ScenePage = () => {
       addItem(item);
     }
 
+    // Track streak
+    const total = Object.values(modifiedEffects).reduce((a: number, b) => a + ((b as number) || 0), 0);
+    if (total > 0) {
+      const newStreak = lastStreakEffect === 'positive' ? streak + 1 : 1;
+      setStreak(newStreak);
+      setLastStreakEffect('positive');
+      if (newStreak >= 3) {
+        setShowStreakBurst(true);
+        setTimeout(() => setShowStreakBurst(false), 2000);
+      }
+    } else if (total < 0) {
+      setStreak(lastStreakEffect === 'negative' ? streak + 1 : 1);
+      setLastStreakEffect('negative');
+    } else {
+      setLastStreakEffect(null);
+    }
+
     // Enrich consequence text with dice narrative hint
     const enrichedConsequence = consequence && diceHint
       ? `${consequence}\n\n${diceHint}`
       : consequence;
 
     if (enrichedConsequence) {
-      navigate('/resultado', {
-        state: {
-          consequence: enrichedConsequence,
-          nextChapterId,
-          choiceText,
-          effects: modifiedEffects,
-          currentChapterId: chapter?.id,
-          attributeChanges: modifiedEffects,
-          flag,
-          conditionalEffects,
-          item,
-        }
+      // INLINE consequence — no navigation!
+      setInlineConsequence({
+        text: enrichedConsequence,
+        effects: modifiedEffects,
+        nextChapterId,
+        choiceText,
+        flag,
+        conditionalEffects,
       });
+      setConsequencePhase('enter');
+      setTimeout(() => setConsequencePhase('attrs'), 600);
+      setTimeout(() => setConsequencePhase('ready'), 1400);
     } else {
       makeChoice(chapter!.id, nextChapterId, choiceText, modifiedEffects, flag, conditionalEffects);
     }
+  };
+
+  const advanceFromConsequence = () => {
+    if (!inlineConsequence) return;
+    const { nextChapterId, choiceText, effects, flag, conditionalEffects } = inlineConsequence;
+    setInlineConsequence(null);
+    setConsequencePhase('enter');
+    makeChoice(chapter!.id, nextChapterId, choiceText, effects, flag, conditionalEffects);
   };
 
   // Wrap choice execution with optional suspense delay
