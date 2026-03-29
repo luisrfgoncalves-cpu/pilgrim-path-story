@@ -195,11 +195,11 @@ const ScenePage = () => {
     setMiniGameDone(false);
     setMiniGameResult(null);
     setShowMiniGameResult(false);
-    setMiniGameReady(false);
     setCharReveal(null);
+    setCharRevealDone(false);
+    setPersistentChar(null);
     const t = setTimeout(() => {
       setTransitioning(false);
-      // Auto-trigger dramatic VFX on scene entry
       triggerSceneEntryVFX(progress.currentChapterId);
     }, 100);
     return () => clearTimeout(t);
