@@ -1115,31 +1115,34 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
       {phase === 'choose' && (
         <div className="grid grid-cols-3 gap-3">
           <button onClick={() => rollDice('attack')}
-            className="py-5 rounded-xl transition-all active:scale-90 text-center" style={{
+            className="py-4 rounded-xl transition-all active:scale-90 text-center" style={{
               background: 'linear-gradient(180deg, hsl(0 40% 25%) 0%, hsl(0 35% 18%) 100%)',
               border: '3px solid hsl(0 50% 45%)',
               boxShadow: '0 4px 0 0 hsl(0 40% 15%), 0 0 12px hsl(0 50% 40% / 0.3)',
             }}>
             <span className="text-3xl block">⚔️</span>
             <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(0 60% 70%)' }}>Atacar</span>
+            <span className="text-[9px] block mt-0.5" style={{ color: 'hsl(0 30% 55%)' }}>Dano alto</span>
           </button>
           <button onClick={() => rollDice('defend')}
-            className="py-5 rounded-xl transition-all active:scale-90 text-center" style={{
+            className="py-4 rounded-xl transition-all active:scale-90 text-center" style={{
               background: 'linear-gradient(180deg, hsl(220 40% 25%) 0%, hsl(220 35% 18%) 100%)',
               border: '3px solid hsl(220 50% 50%)',
               boxShadow: '0 4px 0 0 hsl(220 40% 15%), 0 0 12px hsl(220 50% 45% / 0.3)',
             }}>
             <span className="text-3xl block">🛡️</span>
             <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(220 60% 70%)' }}>Defender</span>
+            <span className="text-[9px] block mt-0.5" style={{ color: 'hsl(220 30% 55%)' }}>Bloqueia</span>
           </button>
           <button onClick={() => rollDice('pray')}
-            className="py-5 rounded-xl transition-all active:scale-90 text-center" style={{
+            className="py-4 rounded-xl transition-all active:scale-90 text-center" style={{
               background: 'linear-gradient(180deg, hsl(40 40% 25%) 0%, hsl(40 35% 18%) 100%)',
               border: '3px solid hsl(40 60% 50%)',
               boxShadow: '0 4px 0 0 hsl(40 40% 15%), 0 0 12px hsl(40 60% 45% / 0.3)',
             }}>
             <span className="text-3xl block">🙏</span>
             <span className="text-xs font-display font-bold block mt-1" style={{ color: 'hsl(40 70% 70%)' }}>Orar</span>
+            <span className="text-[9px] block mt-0.5" style={{ color: 'hsl(40 30% 55%)' }}>Cura + dano</span>
           </button>
         </div>
       )}
