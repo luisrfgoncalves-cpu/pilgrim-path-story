@@ -72,6 +72,13 @@ const ScenePage = () => {
     setPlaythroughRecorded(false);
   }, [progress.currentChapterId]);
 
+  // Audio: set ambience when scene or emotional state changes
+  useEffect(() => {
+    if (chapter && emotional) {
+      setAmbienceForScene(chapter.id, emotional.tone);
+    }
+  }, [chapter?.id, emotional?.tone, setAmbienceForScene]);
+
   useEffect(() => {
     if (!chapter) return;
     if (narrativeIndex < fullNarrative.length - 1) {
@@ -85,6 +92,7 @@ const ScenePage = () => {
 
   const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
     triggerChoiceEffect(effects as Record<string, number>);
+    sfxForChoice(effects as Record<string, number>);
 
     if (item) {
       addItem(item);
