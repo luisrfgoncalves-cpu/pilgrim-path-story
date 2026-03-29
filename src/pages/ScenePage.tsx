@@ -528,66 +528,56 @@ const ScenePage = () => {
           </div>
         )}
 
-        {/* Character portraits — always show protagonist + scene characters */}
-        {(() => {
-          const allChars = [...characters, ...part2Characters];
-          const isPart2 = progress.campaign === 'part2';
-          const protagonistId = isPart2 ? 'crista' : 'cristao';
-          
-          // Build character list: always include protagonist + scene characters
-          const sceneCharIds = chapter.characters || [];
-          const charIds = sceneCharIds.includes(protagonistId) 
-            ? sceneCharIds 
-            : [protagonistId, ...sceneCharIds];
-          
-          const sceneChars = charIds
-            .map(id => ({ id, char: allChars.find(c => c.id === id), img: characterImages[id] }))
-            .filter(c => c.img);
-          
-          if (sceneChars.length === 0) return null;
-          
-          return (
-            <div className="px-4 py-4">
-              <div className="flex items-start gap-3 overflow-x-auto pb-1">
-                {sceneChars.map(({ id, char, img }, i) => {
-                  const isProtagonist = id === protagonistId;
-                  return (
-                    <button
-                      key={id}
-                      onClick={() => navigate('/personagens')}
-                      className={`flex-shrink-0 flex flex-col items-center gap-2 rounded-xl transition-all active:scale-95 ${
-                        isProtagonist 
-                          ? 'bg-card border-2 border-primary/40 px-4 py-3 shadow-lg shadow-primary/10' 
-                          : 'bg-card border-2 border-border px-3 py-2.5'
-                      }`}
-                      style={{ animationDelay: `${i * 0.1}s` }}
-                    >
-                      <img
-                        src={img}
-                        alt={char?.name || id}
-                        className={`rounded-full object-cover border-2 ${
-                          isProtagonist 
-                            ? 'w-16 h-16 border-primary/50 shadow-md' 
-                            : 'w-14 h-14 border-primary/30'
-                        }`}
-                      />
-                      <div className="text-center">
-                        <p className={`font-display leading-tight ${
-                          isProtagonist ? 'text-sm text-primary' : 'text-xs text-foreground'
-                        }`}>{char?.name || id}</p>
-                        {char?.role && (
-                          <p className={`text-muted-foreground mt-0.5 ${
-                            isProtagonist ? 'text-[10px]' : 'text-[9px]'
-                          }`}>{char.role}</p>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
+        {/* Character portraits — protagonist with user name + persistent NPC */}
+        <div className="px-4 py-3">
+          <div className="flex items-center gap-4">
+            {/* Protagonist — always visible */}
+            {(() => {
+              const isPart2 = progress.campaign === 'part2';
+              const protagonistId = isPart2 ? 'crista' : 'cristao';
+              const protImg = characterImages[protagonistId];
+              const protChar = [...characters, ...part2Characters].find(c => c.id === protagonistId);
+              const userName = profile?.display_name || protChar?.name || 'Peregrino';
+              if (!protImg) return null;
+              return (
+                <button onClick={() => navigate('/personagens')} className="flex items-center gap-3 flex-shrink-0 active:scale-95 transition-transform">
+                  <img
+                    src={protImg}
+                    alt={userName}
+                    className="w-14 h-14 rounded-2xl object-cover"
+                    style={{
+                      border: '2px solid hsl(40 60% 50%)',
+                      boxShadow: '0 4px 16px hsl(0 0% 0% / 0.4), 0 0 12px hsl(40 50% 45% / 0.3)',
+                    }}
+                  />
+                  <div className="text-left">
+                    <p className="font-display text-sm font-bold text-primary leading-tight">{userName}</p>
+                    <p className="text-[10px] text-muted-foreground">Protagonista</p>
+                  </div>
+                </button>
+              );
+            })()}
+
+            {/* Persistent NPC portrait — appears after reveal animation finishes */}
+            {persistentChar && charRevealDone && (
+              <div className="flex items-center gap-3 flex-shrink-0 animate-fade-in ml-auto">
+                <div className="text-right">
+                  <p className="font-display text-sm font-bold leading-tight" style={{ color: 'hsl(35 50% 65%)' }}>{persistentChar.name}</p>
+                  <p className="text-[10px] text-muted-foreground">{persistentChar.role || 'Personagem'}</p>
+                </div>
+                <img
+                  src={persistentChar.img}
+                  alt={persistentChar.name}
+                  className="w-14 h-14 rounded-2xl object-cover"
+                  style={{
+                    border: '2px solid hsl(35 40% 40%)',
+                    boxShadow: '0 4px 16px hsl(0 0% 0% / 0.4), 0 0 10px hsl(35 40% 40% / 0.25)',
+                  }}
+                />
               </div>
-            </div>
-          );
-        })()}
+            )}
+          </div>
+        </div>
 
         <div className="px-5 py-5">
           <h1 className="font-display text-2xl md:text-3xl text-foreground mb-4 fade-in leading-tight">{chapter.title}</h1>
