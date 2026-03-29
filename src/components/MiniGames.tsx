@@ -562,11 +562,11 @@ function MemoryGame({ config, onComplete }: MiniGameProps) {
 
   if (phase === 'intro') {
     return (
-      <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-center space-y-4 animate-scale-in">
-        <div className="text-4xl">🧠</div>
-        <h3 className="font-display text-xl text-primary">Sequência de Memória</h3>
-        <p className="text-sm text-foreground/80">{config.intro}</p>
-        <p className="text-xs text-muted-foreground">Memorize a sequência de símbolos e repita na ordem correta!</p>
+      <div className="game-card text-center space-y-4 animate-scale-in">
+        <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 12px hsl(280 60% 50% / 0.5))' }}>🧠</div>
+        <h3 className="game-title">Sequência de Memória</h3>
+        <p className="game-subtitle">{config.intro}</p>
+        <p className="game-text-muted">Memorize a sequência de símbolos e repita na ordem correta!</p>
         <button onClick={() => { setPhase('showing'); startRound(); }} className="btn-medieval w-full">
           Começar!
         </button>
