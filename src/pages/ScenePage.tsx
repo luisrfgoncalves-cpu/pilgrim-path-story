@@ -90,6 +90,7 @@ const ScenePage = () => {
   }, [chapter, playthroughRecorded]);
 
   useEffect(() => {
+    setTransitioning(true);
     setNarrativeIndex(0);
     setShowChoices(false);
     setImageLoaded(false);
@@ -97,6 +98,8 @@ const ScenePage = () => {
     setSceneEventDone(false);
     setSuspenseActive(false);
     setPendingChoice(null);
+    const t = setTimeout(() => setTransitioning(false), 100);
+    return () => clearTimeout(t);
   }, [progress.currentChapterId]);
 
   // Audio: set ambience when scene or emotional state changes
@@ -172,7 +175,7 @@ const ScenePage = () => {
   const lockedChoices = chapter.choices.filter(c => !meetsRequirements(c.requires) && !c.requiresFlag && !c.excludesFlag);
 
   return (
-    <div id="scene-container" className={`min-h-screen bg-background flex flex-col transition-all duration-1000 ${emotionalClass} ${atmosphere.wobbleClass}`} style={atmosphere.containerStyle}>
+    <div id="scene-container" className={`min-h-screen bg-background flex flex-col transition-all duration-700 ${emotionalClass} ${atmosphere.wobbleClass}`} style={atmosphere.containerStyle}>
       {/* Atmosphere overlays */}
       <div className="atmo-vignette" style={{ '--vignette-opacity': atmosphere.vignetteOpacity, opacity: atmosphere.vignetteOpacity > 0.02 ? 1 : 0 } as React.CSSProperties} />
       <div className="atmo-glow" style={{ '--glow-opacity': atmosphere.glowOpacity, opacity: atmosphere.glowOpacity > 0.02 ? 1 : 0 } as React.CSSProperties} />
@@ -213,44 +216,39 @@ const ScenePage = () => {
         )}
       </header>
 
-      <main className="flex-1 max-w-lg mx-auto w-full">
+      <main className={`flex-1 max-w-lg mx-auto w-full ${transitioning ? 'opacity-0' : 'scene-transition-enter'}`}>
         {/* Scene image */}
         {bgImage && (
-          <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px' }}>
+          <div className="relative w-full overflow-hidden" style={{ maxHeight: '260px' }}>
             <img
               src={bgImage}
               alt={chapter.title}
               width={1024}
               height={576}
               onLoad={() => setImageLoaded(true)}
-              className={`w-full h-auto object-cover transition-all duration-700 scene-image ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`w-full h-auto object-cover transition-all duration-500 scene-image ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               style={atmosphere.imageStyle}
             />
-            {/* Gradient overlay for text readability */}
             <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background via-background/40 to-transparent" />
-            {/* Location badge on image */}
-            <div className="absolute bottom-4 left-5 flex items-center gap-2">
-              <MapPin className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs uppercase tracking-widest text-primary font-medium drop-shadow-lg">{chapter.location}</span>
+            <div className="absolute bottom-3 left-4 flex items-center gap-2">
+              <MapPin className="w-3 h-3 text-primary" />
+              <span className="text-[11px] uppercase tracking-widest text-primary font-medium drop-shadow-lg">{chapter.location}</span>
             </div>
           </div>
         )}
 
         <div className="px-5 py-5">
-          {/* Title */}
-          <h1 className="font-display text-2xl md:text-3xl text-foreground mb-5 fade-in leading-tight">{chapter.title}</h1>
+          <h1 className="font-display text-xl md:text-2xl text-foreground mb-4 fade-in leading-tight">{chapter.title}</h1>
 
-          {/* Divider */}
-          <div className="flex items-center gap-3 mb-5">
+          <div className="flex items-center gap-3 mb-4">
             <div className="h-px flex-1 bg-primary/20" />
-            <span className="text-primary text-xs">✦</span>
+            <span className="text-primary text-[10px]">✦</span>
             <div className="h-px flex-1 bg-primary/20" />
           </div>
 
-          {/* Narrative */}
-          <div className="space-y-4 mb-7" style={atmosphere.textStyle}>
+          <div className="space-y-3 mb-6" style={atmosphere.textStyle}>
             {fullNarrative.slice(0, narrativeIndex + 1).map((paragraph, i) => (
-              <p key={i} className="narrative-text text-foreground/90 text-base fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
+              <p key={i} className="narrative-text text-foreground/90 text-[15px] fade-in" style={{ animationDelay: `${i * 0.08}s` }}>
                 {paragraph}
               </p>
             ))}
