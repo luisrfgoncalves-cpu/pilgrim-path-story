@@ -27,6 +27,11 @@ const Index = () => {
     sessionStorage.setItem('splash_seen', '1');
   }, []);
 
+  const handleBackToSplash = useCallback(() => {
+    sessionStorage.removeItem('splash_seen');
+    setShowSplash(true);
+  }, []);
+
   const streak = useMemo(() => getStreak(), []);
   const [streakShown, setStreakShown] = useState(false);
 
