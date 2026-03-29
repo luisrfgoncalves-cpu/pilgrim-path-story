@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 
 const MultiplayerPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const {
     room, players, myPlayer, loading, error,
