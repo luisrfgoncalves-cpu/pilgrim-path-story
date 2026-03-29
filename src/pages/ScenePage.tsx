@@ -24,6 +24,7 @@ import { ParticleEffects, getParticleTypeForScene } from '@/components/ParticleE
 import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
 import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
+import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
 
 const ScenePage = () => {
