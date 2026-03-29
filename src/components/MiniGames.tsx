@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ChoiceEffect } from '@/data/story';
+import { Dice3D } from '@/components/Dice3D';
 
 /**
  * 4 Active Gameplay Mechanics:
@@ -13,7 +14,7 @@ import { ChoiceEffect } from '@/data/story';
 // Shared types
 // ═══════════════════════════════════════════
 
-export type MiniGameType = 'qte' | 'swipe' | 'memory' | 'stealth' | 'diceduel' | 'treasure' | 'reflex';
+export type MiniGameType = 'qte' | 'swipe' | 'memory' | 'stealth' | 'diceduel' | 'treasure' | 'reflex' | 'wordpuzzle' | 'pathchoice';
 
 export interface MiniGameConfig {
   type: MiniGameType;
@@ -812,15 +813,19 @@ interface DiceState {
 function DiceDuelGame({ config, onComplete }: MiniGameProps) {
   const enemy = config.duelEnemy || { name: 'Inimigo', emoji: '👹', power: 5 };
   const diff = config.difficulty || 'normal';
-  const totalRounds = diff === 'easy' ? 3 : diff === 'hard' ? 5 : 4;
+  const totalRounds = diff === 'easy' ? 5 : diff === 'hard' ? 8 : 6;
+  const maxHP = diff === 'easy' ? 12 : diff === 'hard' ? 8 : 10;
 
   const [phase, setPhase] = useState<'intro' | 'choose' | 'rolling' | 'result' | 'final'>('intro');
   const [round, setRound] = useState(0);
-  const [playerHP, setPlayerHP] = useState(10);
-  const [enemyHP, setEnemyHP] = useState(10);
+  const [playerHP, setPlayerHP] = useState(maxHP);
+  const [enemyHP, setEnemyHP] = useState(maxHP);
   const [dice, setDice] = useState<DiceState>({ player: 1, enemy: 1, rolling: false });
   const [action, setAction] = useState<'attack' | 'defend' | 'pray' | null>(null);
   const [roundLog, setRoundLog] = useState('');
+  const [combo, setCombo] = useState(0);
+  const [lastAction, setLastAction] = useState<string | null>(null);
+  const [criticalHit, setCriticalHit] = useState(false);
   const rollInterval = useRef<ReturnType<typeof setInterval>>();
 
   const rollDice = (chosenAction: 'attack' | 'defend' | 'pray') => {
@@ -852,37 +857,59 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
     let pDmg = 0;
     let eDmg = 0;
     let log = '';
+    let isCrit = false;
+
+    // Combo bonus: same action 2+ times in a row
+    const comboMultiplier = (lastAction === act) ? 1 + combo * 0.15 : 1;
+    if (lastAction === act) {
+      setCombo(c => c + 1);
+    } else {
+      setCombo(0);
+    }
+    setLastAction(act);
 
     if (act === 'attack') {
-      // Attack: player deals damage if roll > enemy
       if (pRoll >= eRoll) {
-        eDmg = pRoll;
-        log = `⚔️ Ataque certeiro! ${pRoll} de dano no inimigo!`;
+        eDmg = Math.ceil(pRoll * comboMultiplier);
+        isCrit = pRoll === 6;
+        if (isCrit) {
+          eDmg = Math.ceil(eDmg * 1.5);
+          log = `🌟 CRÍTICO! Ataque devastador! ${eDmg} de dano!`;
+        } else {
+          log = `⚔️ Ataque certeiro! ${eDmg} de dano no inimigo!`;
+        }
       } else {
         pDmg = Math.ceil(eRoll / 2);
         log = `💥 Contra-ataque! Você sofreu ${pDmg} de dano.`;
       }
     } else if (act === 'defend') {
-      // Defend: reduce incoming damage
       const incoming = eRoll;
-      const blocked = Math.min(incoming, pRoll);
+      const blocked = Math.min(incoming, Math.ceil(pRoll * comboMultiplier));
       pDmg = Math.max(0, incoming - blocked);
       if (pDmg === 0) {
         log = `🛡️ Defesa perfeita! Bloqueou todo o dano!`;
+        if (pRoll === 6) {
+          eDmg = 2;
+          log += ` Ripostou ${eDmg}!`;
+          isCrit = true;
+        }
       } else {
         log = `🛡️ Bloqueou ${blocked}, mas sofreu ${pDmg}.`;
       }
     } else {
-      // Pray: heal + chance to deal spiritual damage
-      const heal = Math.ceil(pRoll / 2);
-      setPlayerHP(h => Math.min(10, h + heal));
+      const heal = Math.ceil(pRoll * comboMultiplier / 2);
+      setPlayerHP(h => Math.min(maxHP, h + heal));
       if (pRoll >= 5) {
-        eDmg = pRoll - 2;
+        eDmg = Math.ceil((pRoll - 2) * comboMultiplier);
+        isCrit = pRoll === 6;
         log = `🙏 Oração poderosa! Curou ${heal} e causou ${eDmg} de dano espiritual!`;
       } else {
         log = `🙏 Oração suave. Curou ${heal} pontos.`;
       }
     }
+
+    setCriticalHit(isCrit);
+    if (combo >= 2) log += ` 🔥Combo x${combo + 1}!`;
 
     setPlayerHP(h => Math.max(0, h - pDmg));
     setEnemyHP(h => Math.max(0, h - eDmg));
@@ -890,9 +917,10 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
     setRound(r => r + 1);
 
     setTimeout(() => {
+      setCriticalHit(false);
       setPhase(round + 1 >= totalRounds || playerHP - pDmg <= 0 || enemyHP - eDmg <= 0 ? 'final' : 'choose');
       setAction(null);
-    }, 2000);
+    }, 2500);
   };
 
   useEffect(() => {
