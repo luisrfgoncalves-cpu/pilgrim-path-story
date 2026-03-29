@@ -4,7 +4,6 @@ import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { useCloudSync } from '@/hooks/useCloudSync';
 import { getChapter, storyChapters } from '@/data/story';
 import { getPart2Chapter, part2Chapters } from '@/data/storyPart2';
-import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getStreak, getDashboardMessage } from '@/lib/gameLoop';
 // progressBackup removed — auto-save handles persistence
@@ -12,14 +11,13 @@ import PilgrimAvatar from '@/components/PilgrimAvatar';
 import SplashScreen from '@/components/SplashScreen';
 import Onboarding from '@/components/Onboarding';
 import GameNotification from '@/components/GameNotification';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen, Home, Sun, Moon } from 'lucide-react';
+import { ChevronRight, Sparkles, RotateCcw, Map, Users, Flame, Swords, BookOpen, Home, Sun, Moon } from 'lucide-react';
 import { Smartphone, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Index = () => {
   const navigate = useNavigate();
   const { hasProgress, startJourney, resetProgress, progress, history, isReplay, loadFromCloud } = useStoryProgress();
-  const { user, profile } = useAuth();
   const { theme, toggleTheme } = useTheme();
   useCloudSync(loadFromCloud);
 
