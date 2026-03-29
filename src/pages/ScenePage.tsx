@@ -80,6 +80,9 @@ const ScenePage = () => {
   }, [narrativeIndex, chapter, fullNarrative.length]);
 
   const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[]) => {
+    // Trigger visual effect based on choice impact
+    triggerChoiceEffect(effects as Record<string, number>);
+
     if (consequence) {
       navigate('/resultado', {
         state: {
