@@ -83,6 +83,23 @@ const ScenePage = () => {
   }, [progress]);
 
   const chapter = getChapter(progress.currentChapterId) || getPart2Chapter(progress.currentChapterId);
+
+  // Build character portraits for mini-games
+  const scenePortraits = useMemo(() => {
+    if (!chapter) return [];
+    const allChars = [...characters, ...part2Characters];
+    const isPart2 = progress.campaign === 'part2';
+    const protagonistId = isPart2 ? 'crista' : 'cristao';
+    const sceneCharIds = chapter.characters || [];
+    const charIds = sceneCharIds.includes(protagonistId) ? sceneCharIds : [protagonistId, ...sceneCharIds];
+    return charIds
+      .map(id => {
+        const char = allChars.find(c => c.id === id);
+        const img = characterImages[id];
+        return img ? { id, name: char?.name || id, img } : null;
+      })
+      .filter(Boolean) as { id: string; name: string; img: string }[];
+  }, [chapter, progress.campaign]);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
   // Preload next scene images for instant loading
