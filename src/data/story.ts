@@ -269,7 +269,8 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Caminho estreito",
         nextChapterId: "cena9",
         effects: { fe: 2 },
-        flag: "escolheu_caminho_estreito"
+        flag: "escolheu_caminho_estreito",
+        item: "pergaminho_verdade"
       }
     ]
   },
