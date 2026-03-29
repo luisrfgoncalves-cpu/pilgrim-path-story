@@ -40,12 +40,14 @@ const ScenePage = () => {
   const chapter = getChapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
-  // Emotional intensity system
+  // Emotional state system (9 postures)
   const emotional = useMemo(() => 
-    chapter ? getEmotionalState(progress.attributes, chapter.id) : null
-  , [progress.attributes, chapter?.id]);
+    chapter ? resolveEmotionalState(progress.attributes, chapter.id, progress.flags, recentEffects) : null
+  , [progress.attributes, chapter?.id, progress.flags, recentEffects]);
 
-  const emotionalClass = emotional ? getEmotionalClasses(emotional.tone) : '';
+  const emotionalClass = emotional?.sceneClass || '';
+  const legacyTone = emotional ? postureToLegacyTone(emotional.posture) : 'neutral' as const;
+  const atmosphere = useAtmosphere(progress.attributes, emotional?.posture);
 
   // Build variation context for history-aware scene text
   const variationCtx: VariationContext = useMemo(() => ({
