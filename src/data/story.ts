@@ -23,7 +23,7 @@ export interface StoryChapter {
   adaptiveNarrative?: { minAttr: keyof ChoiceEffect; minValue: number; text: string }[];
   choices: StoryChoice[];
   isEnding?: boolean;
-  endingType?: 'glorioso' | 'humilde' | 'sofrido' | 'default';
+  endingType?: 'glorioso' | 'humilde' | 'sofrido' | 'desvio' | 'default';
   reflection?: string;
   characters?: string[];
 }
@@ -77,7 +77,8 @@ export const chapterOrder = [
   "pantano-orgulho", "portao-estreito", "casa-interprete", "cruz-fardo",
   "vale-sombra", "fiel-encontro", "feira-inevitavel", "feira-vaidade",
   "esperanca-encontro", "castelo-duvida",
-  "cidade-celestial-glorioso", "cidade-celestial-humilde", "cidade-celestial-sofrido", "cidade-celestial",
+  "cidade-celestial-glorioso", "cidade-celestial-humilde", "cidade-celestial-sofrido",
+  "cidade-celestial-desvio", "cidade-celestial",
 ];
 
 export const storyChapters: Record<string, StoryChapter> = {
@@ -544,6 +545,25 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [],
     isEnding: true,
     endingType: "sofrido"
+  },
+
+  "cidade-celestial-desvio": {
+    id: "cidade-celestial-desvio",
+    title: "Final do Peregrino Desviado",
+    location: "Às Margens do Rio",
+    characters: ["cristao"],
+    reflection: "r12",
+    narrative: [
+      "Cristão chegou ao Rio da Morte, mas seus passos eram incertos. Tantos atalhos, tantas hesitações.",
+      "As águas pareciam profundas demais. O pergaminho em suas mãos estava manchado de dúvidas.",
+      "Ele entrou no rio com dificuldade. As ondas o puxavam, e por um momento pensou em desistir.",
+      "Mas algo dentro dele — talvez uma última fagulha de fé — o empurrou adiante.",
+      "Chegou ao outro lado exausto, quase destruído. Os portões se abriram, mas estreitamente.",
+      "O Rei o recebeu em silêncio: \"Você chegou. Quase não chegou. Mas chegou.\""
+    ],
+    choices: [],
+    isEnding: true,
+    endingType: "desvio"
   }
 };
 
@@ -566,6 +586,8 @@ export const getEndingChapterId = (attrs: ChoiceEffect): string => {
   if (discernimento >= 25 && discernimento >= coragem) return "cidade-celestial-humilde";
   // Sofrido: perseverança dominant but lower overall
   if (perseveranca >= 20 && total < 100) return "cidade-celestial-sofrido";
+  // Desvio: very low total — player took shortcuts, avoided growth
+  if (total < 50) return "cidade-celestial-desvio";
   
   return "cidade-celestial";
 };
