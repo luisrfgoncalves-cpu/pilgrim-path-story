@@ -605,6 +605,14 @@ export const part2Chapters: Record<string, StoryChapter> = {
         text: "Olhar para o prado com saudade mas obedecer a Grande-Coração",
         nextChapterId: "p2-fase5-cena1",
         effects: { perseveranca: 1 }
+      },
+      {
+        text: "Sentar no prado para descansar — os filhos estão exaustos",
+        nextChapterId: "p2-final-desistencia",
+        effects: { fe: -2, perseveranca: -2 },
+        requires: { fe: -99 },
+        flag: "desistiu_prado_p2",
+        consequence: "O prado é confortável. Perigosamente confortável. Os olhos pesam..."
       }
     ]
   },
@@ -737,6 +745,14 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase6-cena1",
         effects: { discernimento: 2, fe: 1 },
         flag: "pediu_conselho_pastores_p2"
+      },
+      {
+        text: "Deitar na grama macia das montanhas... os olhos pesam...",
+        nextChapterId: "p2-final-terra-encantada",
+        effects: { fe: -3 },
+        requires: { perseveranca: -99 },
+        flag: "dormiu_montanhas_p2",
+        consequence: "O sono das Montanhas é doce. Doce demais."
       }
     ]
   },
