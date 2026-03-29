@@ -7,6 +7,7 @@ import { getEmotionalState, getEmotionalClasses } from '@/lib/emotionalIntensity
 import { analyzePerformance } from '@/lib/performanceAnalysis';
 import { useVisualEffects } from '@/hooks/useVisualEffects';
 import { useAudioEngine } from '@/hooks/useAudioEngine';
+import { useAtmosphere } from '@/hooks/useAtmosphere';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
