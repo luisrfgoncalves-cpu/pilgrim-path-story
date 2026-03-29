@@ -46,7 +46,7 @@ const ScenePage = () => {
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
   // Dynamic events system
-  const dynamicEvents = useDynamicEvents(progress, progress.currentChapterId);
+  const dynamicEvents = useDynamicEvents(progress, progress.currentChapterId, history);
 
   // Emotional state system (9 postures)
   const emotional = useMemo(() => 
