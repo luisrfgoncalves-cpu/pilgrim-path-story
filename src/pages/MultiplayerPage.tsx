@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMultiplayer } from '@/hooks/useMultiplayer';
-import { useAuth } from '@/contexts/AuthContext';
-import { Loader2 as PageLoader } from 'lucide-react';
 import PremiumDice from '@/components/multiplayer/PremiumDice';
 import PremiumBoard from '@/components/multiplayer/PremiumBoard';
 import EventReveal from '@/components/multiplayer/EventReveal';
@@ -10,15 +8,15 @@ import GameNotification from '@/components/GameNotification';
 import { BOARD_SIZE, boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
 import { playMove, playVictory, playTurnStart } from '@/components/multiplayer/BoardSounds';
 import { playGameSfx } from '@/lib/gameSfx';
-import { ArrowLeft, Copy, Crown, Users, MapPin, Trophy, LogIn, Share2, Swords, Loader2, Eye, Flame, Shield, Star, Zap } from 'lucide-react';
+import { ArrowLeft, Copy, Crown, Users, Trophy, Share2, Swords, Loader2, Flame, Shield, Star, Zap, Sparkles, User } from 'lucide-react';
 import { toast } from 'sonner';
 
 const MultiplayerPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user, loading: authLoading } = useAuth();
   const {
     room, players, myPlayer, loading, error,
+    guestName, setGuestName, guestId,
     createRoom, joinRoom, startGame, rollDice, leaveRoom,
     isMyTurn, isHost,
   } = useMultiplayer();
@@ -33,10 +31,10 @@ const MultiplayerPage = () => {
   // Auto-join via link
   useEffect(() => {
     const codeFromUrl = searchParams.get('code');
-    if (codeFromUrl && user && !room) {
+    if (codeFromUrl && guestName && !room) {
       joinRoom(codeFromUrl);
     }
-  }, [searchParams, user]);
+  }, [searchParams, guestName]);
 
   // Turn announcement with sound
   useEffect(() => {
@@ -47,16 +45,15 @@ const MultiplayerPage = () => {
       const turnPlayer = players.find(p => p.user_id === turnId);
       if (turnPlayer) {
         playTurnStart();
-        if (turnId === user?.id) {
+        if (turnId === guestId) {
           playGameSfx('suspense');
           setTurnAnnounce('Sua vez!');
         } else {
           setTurnAnnounce(`Vez de ${turnPlayer.display_name}`);
         }
-        // GameNotification handles dismiss
       }
     }
-  }, [room?.current_turn_player_id, players, user?.id]);
+  }, [room?.current_turn_player_id, players, guestId]);
 
   const currentView = room
     ? room.status === 'playing' || room.status === 'finished' ? 'game' : 'lobby'
@@ -72,14 +69,12 @@ const MultiplayerPage = () => {
 
     playMove();
 
-    // Show event reveal if there's an event
     if (event) {
       let challengeResult: 'win' | 'fail' | null = null;
       if (event.type === 'challenge') {
         const challengeRoll = Math.floor(Math.random() * 6) + 1;
         challengeResult = challengeRoll >= 4 ? 'win' : 'fail';
       }
-
       setRevealEvent({
         event,
         playerName: myPlayer.display_name,
@@ -88,50 +83,17 @@ const MultiplayerPage = () => {
       });
     }
 
-    // Check victory
     if (newPosition >= BOARD_SIZE - 1) {
       setTimeout(playVictory, 500);
     }
 
-    // Execute the actual roll
-    await rollDice(diceValue);
+    rollDice(diceValue);
   }, [room, myPlayer, rollDice]);
 
   const handleTileClick = (pos: number, event: BoardEvent | undefined) => {
     setSelectedTile({ pos, event });
     setTimeout(() => setSelectedTile(null), 3000);
   };
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <PageLoader className="w-8 h-8 text-primary animate-spin" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6 px-5">
-        <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center" style={{
-          boxShadow: '0 0 40px hsl(40 60% 55% / 0.1)',
-        }}>
-          <Swords className="w-10 h-10 text-primary" />
-        </div>
-        <div className="text-center space-y-2">
-          <h1 className="text-xl font-display text-foreground">RPG de Tabuleiro</h1>
-          <p className="text-sm text-muted-foreground">Faça login para jogar com amigos</p>
-        </div>
-        <button
-          onClick={() => navigate('/auth')}
-          className="px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-display text-sm glow-gold"
-        >
-          <LogIn className="w-4 h-4 inline mr-2" />
-          Entrar / Criar Conta
-        </button>
-      </div>
-    );
-  }
 
   // ─── MENU ───
   if (currentView === 'menu') {
@@ -146,7 +108,7 @@ const MultiplayerPage = () => {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col items-center justify-center px-5 gap-8 max-w-sm mx-auto w-full">
+        <main className="flex-1 flex flex-col items-center justify-center px-5 gap-6 max-w-sm mx-auto w-full">
           {/* Hero */}
           <div className="text-center space-y-3">
             <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mx-auto" style={{
@@ -162,14 +124,32 @@ const MultiplayerPage = () => {
             </p>
           </div>
 
+          {/* Guest name input */}
+          <div className="w-full space-y-2">
+            <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 block text-center">Seu nome de peregrino</label>
+            <div className="flex items-center gap-2 p-1 rounded-xl bg-card border border-border">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <User className="w-5 h-5 text-primary" />
+              </div>
+              <input
+                type="text"
+                value={guestName}
+                onChange={e => setGuestName(e.target.value)}
+                placeholder="Ex: Cristão, Fiel, Valente..."
+                maxLength={20}
+                className="flex-1 bg-transparent border-none text-sm text-foreground font-display outline-none placeholder:text-muted-foreground/40"
+              />
+            </div>
+          </div>
+
           {/* Create room */}
           <button
             onClick={async () => {
               const r = await createRoom();
               if (r) setView('lobby');
             }}
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 glow-gold transition-opacity"
+            disabled={loading || !guestName.trim()}
+            className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 glow-gold transition-opacity disabled:opacity-50"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Crown className="w-5 h-5" />}
             Criar Sala
@@ -196,7 +176,7 @@ const MultiplayerPage = () => {
                   const ok = await joinRoom(joinCode);
                   if (ok) setView('lobby');
                 }}
-                disabled={loading || joinCode.length < 5}
+                disabled={loading || joinCode.length < 5 || !guestName.trim()}
                 className="px-6 h-14 rounded-xl bg-primary text-primary-foreground font-display disabled:opacity-50 transition-opacity"
               >
                 Entrar
@@ -239,7 +219,7 @@ const MultiplayerPage = () => {
       <div className="min-h-screen bg-background flex flex-col">
         <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-3">
           <div className="max-w-lg mx-auto flex items-center gap-3">
-            <button onClick={async () => { await leaveRoom(); setView('menu'); }} className="text-muted-foreground hover:text-foreground">
+            <button onClick={() => { leaveRoom(); setView('menu'); }} className="text-muted-foreground hover:text-foreground">
               <ArrowLeft className="w-5 h-5" />
             </button>
             <h1 className="font-display text-lg text-foreground">Sala de Jogo</h1>
@@ -306,6 +286,9 @@ const MultiplayerPage = () => {
                     </p>
                   )}
                 </div>
+                {p.user_id === guestId && (
+                  <span className="text-[9px] text-muted-foreground bg-card px-2 py-1 rounded-md">Você</span>
+                )}
               </div>
             ))}
           </div>
@@ -375,7 +358,7 @@ const MultiplayerPage = () => {
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-3">
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={async () => { await leaveRoom(); setView('menu'); }} className="text-muted-foreground hover:text-foreground">
+            <button onClick={() => { leaveRoom(); setView('menu'); }} className="text-muted-foreground hover:text-foreground">
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
@@ -403,7 +386,7 @@ const MultiplayerPage = () => {
         <PremiumBoard
           room={room!}
           players={players}
-          myPlayerId={user?.id}
+          myPlayerId={guestId}
           onTileClick={handleTileClick}
         />
 
@@ -562,7 +545,7 @@ const MultiplayerPage = () => {
             ))}
 
             <button
-              onClick={async () => { await leaveRoom(); setView('menu'); }}
+              onClick={() => { leaveRoom(); setView('menu'); }}
               className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm glow-gold"
             >
               Jogar Novamente
