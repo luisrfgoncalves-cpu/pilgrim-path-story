@@ -1067,7 +1067,7 @@ const LandingPage = () => {
             Dashboard, cenas narrativas, duelos de dados, mini-games, tabuleiro multiplayer e mapa da jornada — tudo que você terá acesso
           </p>
 
-          <PhoneMockupTour />
+          <PhoneMockupTour onBuy={handleBuy} />
         </div>
       </section>
 
