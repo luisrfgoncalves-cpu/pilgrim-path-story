@@ -104,7 +104,7 @@ const Index = () => {
               </p>
             )}
             <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground font-medium">
-              {hasProgress ? `Fase ${currentPhase.num} · ${currentPhase.name}` : 'O Peregrino'}
+              {hasProgress ? `${isPart2 ? 'Parte II · ' : ''}Fase ${currentPhase.num} · ${currentPhase.name}` : 'O Peregrino'}
             </p>
           </div>
 
