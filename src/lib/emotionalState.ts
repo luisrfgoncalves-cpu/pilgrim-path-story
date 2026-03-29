@@ -166,15 +166,52 @@ function getDecisionTrend(recentEffects: Array<Record<string, number>>): number 
 }
 
 /**
- * Convert trend magnitude into ladder steps:
- * strong positive → +2, mild positive → +1
- * strong negative → -2, mild negative → -1
+ * Convert trend magnitude into ladder steps.
+ * GROWTH BIAS: positive shifts are stronger than negative ones.
+ * - strong positive → +2, mild positive → +1, neutral → +0
+ * - mild negative → -1 (capped), strong negative → -1 (capped, NOT -2)
+ * This ensures the player always trends upward over time.
  */
 function trendToSteps(trend: number): number {
   if (trend >= 2) return 2;
   if (trend >= 0.5) return 1;
-  if (trend <= -2) return -2;
-  if (trend <= -0.5) return -1;
+  if (trend <= -0.5) return -1; // capped at -1, never -2
+  return 0;
+}
+
+/**
+ * Journey progress bonus: the further into the story, the higher the
+ * emotional "floor" — the player cannot stay stuck in the lowest states.
+ * Returns minimum ladder index based on phase.
+ */
+function getPhaseFloor(phase: string): number {
+  switch (phase) {
+    case 'fase1': return 0; // abatido allowed
+    case 'fase2': return 1; // minimum: em_dificuldade
+    case 'fase3': return 2; // minimum: confuso
+    case 'fase4': return 2; // minimum: confuso
+    case 'fase5': return 1; // queda — floor drops, but not to 0
+    case 'fase6': return 4; // minimum: recuperacao
+    default: return 0;
+  }
+}
+
+/**
+ * Growth momentum: adds a passive +1 step when the player has been
+ * in the bottom half of the ladder for too long (based on low avg
+ * relative to phase progress). Prevents eternal negative loops.
+ */
+function getGrowthMomentum(phase: string, avg: number, trend: number): number {
+  const phaseNum = parseInt(phase.replace('fase', '')) || 1;
+  // Expected minimum avg grows with phase: fase1→2, fase2→3, fase3→3.5...
+  const expectedMinAvg = 1.5 + phaseNum * 0.5;
+
+  // If player is below expected AND trend is not already very negative,
+  // give a compassionate upward nudge
+  if (avg < expectedMinAvg && trend >= -1) {
+    return 1; // gentle push upward
+  }
+  // If player is doing well relative to phase, no extra push needed
   return 0;
 }
 
@@ -215,7 +252,6 @@ export function resolveEmotionalState(
   if (baseline) {
     basePosture = avg >= baseline.threshold ? baseline.high : baseline.low;
   } else {
-    // Pure attribute fallback
     if (avg >= 7) basePosture = 'esperancoso';
     else if (avg >= 5.5) basePosture = 'determinado';
     else if (avg >= 4) basePosture = 'recuperacao';
@@ -223,8 +259,18 @@ export function resolveEmotionalState(
     else basePosture = 'abatido';
   }
 
-  // 4. Apply decision trend: shift up/down the ladder
-  const posture = shiftPosture(basePosture, trendSteps);
+  // 4. Apply decision trend + growth momentum
+  const momentum = getGrowthMomentum(phase, avg, trend);
+  const totalShift = trendSteps + momentum;
+  let posture = shiftPosture(basePosture, totalShift);
+
+  // 5. Enforce phase floor — prevent eternal negative loops
+  const floor = getPhaseFloor(phase);
+  const postureIdx = ladderIndex(posture);
+  if (postureIdx < floor) {
+    posture = POSTURE_LADDER[floor];
+  }
+
   const intensity = Math.max(0.2, Math.min(1, 0.3 + Math.abs(avg - 5) / 5 + Math.abs(trend) / 4));
 
   const lines = atmosphereLines[posture];
