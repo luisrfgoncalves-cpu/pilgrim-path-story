@@ -16,6 +16,8 @@ const ScenePage = () => {
   const [narrativeIndex, setNarrativeIndex] = useState(0);
   const [showChoices, setShowChoices] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [showStats, setShowStats] = useState(false);
+  const { triggerChoiceEffect } = useVisualEffects();
 
   const chapter = getChapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
