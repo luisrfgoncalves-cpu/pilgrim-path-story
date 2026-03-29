@@ -7,20 +7,12 @@ import { scheduleReminder } from "./lib/notifications";
 startSession();
 scheduleReminder();
 
-// Guard: never register service worker in iframes or preview hosts
-const isInIframe = (() => {
-  try {
-    return window.self !== window.top;
-  } catch (e) {
-    return true;
-  }
-})();
-
+// Guard: never keep service worker active on Lovable preview hosts
 const isPreviewHost =
   window.location.hostname.includes("id-preview--") ||
   window.location.hostname.includes("lovableproject.com");
 
-if (isPreviewHost || isInIframe) {
+if (isPreviewHost) {
   navigator.serviceWorker?.getRegistrations().then((registrations) => {
     registrations.forEach((r) => r.unregister());
   });
