@@ -710,7 +710,9 @@ const LandingPage = () => {
             </button>
           </div>
         </div>
-      )
+      )}
+
+      {/* ══════════ HERO ══════════ */}
       <section className="relative min-h-[95vh] flex flex-col items-center justify-center px-5 py-16 text-center overflow-hidden">
         <div className="absolute inset-0">
           <img src={cidadeDestruicao} alt="Cidade da Destruição" className="w-full h-full object-cover opacity-50" />
