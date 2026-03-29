@@ -657,6 +657,120 @@ export const eventPools: Record<string, PhaseEventPool> = {
 };
 
 /**
+ * Replay-exclusive events: only appear on 2nd+ playthroughs.
+ * Import these and merge into pools when playthrough > 1.
+ */
+export const replayExclusiveEvents: Record<string, PhaseEventPool> = {
+  fase1: {
+    phaseId: 'fase1',
+    variableCount: 1,
+    events: [
+      {
+        id: 'f1-replay-deja-vu',
+        type: 'variable',
+        narrative: [
+          'O caminho parece estranhamente familiar. Cada pedra, cada curva — você já esteve aqui.',
+          'Mas desta vez, há algo diferente. Uma trilha lateral que você não notou antes.',
+        ],
+        choices: [
+          {
+            text: 'Seguir a trilha desconhecida',
+            effects: { discernimento: 2, coragem: 1 },
+            consequence: 'O desvio revela uma vista que redefine tudo que você pensava saber sobre o caminho.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Manter o caminho que conhece',
+            effects: { perseveranca: 1 },
+            consequence: 'A familiaridade é reconfortante. Mas uma parte de você se pergunta o que havia na trilha.',
+          },
+        ],
+        weight: 4,
+      },
+      {
+        id: 'f1-replay-fantasma',
+        type: 'variable',
+        narrative: [
+          'Por um instante, você vê sua própria silhueta no caminho à frente — o fantasma de sua jornada anterior.',
+          'Ele se move como você se movia antes. Comete os mesmos erros. Faz as mesmas escolhas.',
+        ],
+        choices: [
+          {
+            text: 'Seguir um caminho diferente do fantasma',
+            effects: { coragem: 2, discernimento: 1 },
+            consequence: 'O fantasma desaparece. Você não é mais quem era.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Seguir os passos do fantasma — deu certo antes',
+            effects: { perseveranca: 1, fe: 1 },
+            consequence: 'Os mesmos passos levam a um lugar sutilmente diferente. O caminho mudou, mesmo que você não tenha.',
+          },
+        ],
+        weight: 3,
+      },
+    ],
+  },
+  fase3: {
+    phaseId: 'fase3',
+    variableCount: 1,
+    events: [
+      {
+        id: 'f3-replay-apoliao-lembra',
+        type: 'variable',
+        narrative: [
+          'Apolião sorri ao vê-lo: "Eu me lembro de você, peregrino."',
+          '"Da última vez, encontrei suas fraquezas. Desta vez, trouxe algo novo."',
+        ],
+        choices: [
+          {
+            text: '"E eu trouxe algo novo também"',
+            effects: { coragem: 3, fe: 1 },
+            consequence: 'A confiança o surpreende. Por um instante, o monstro recua.',
+            consequenceKey: 'foi_corajoso',
+          },
+          {
+            text: 'Preparar-se silenciosamente',
+            effects: { discernimento: 2, perseveranca: 1 },
+            consequence: 'O silêncio é sua armadura. Apolião não sabe o que esperar.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+        ],
+        weight: 5,
+      },
+    ],
+  },
+  fase5: {
+    phaseId: 'fase5',
+    variableCount: 1,
+    events: [
+      {
+        id: 'f5-replay-masmorra-secreta',
+        type: 'variable',
+        narrative: [
+          'Na parede da masmorra, você nota marcas que não viu antes — inscrições de outros prisioneiros.',
+          '"A saída não é pela porta", lê a inscrição mais antiga. "É por dentro."',
+        ],
+        choices: [
+          {
+            text: 'Meditar sobre o significado',
+            effects: { fe: 2, discernimento: 2 },
+            consequence: 'Uma paz sobrenatural invade a cela. As correntes parecem mais leves.',
+            consequenceKey: 'buscou_sabedoria',
+          },
+          {
+            text: 'Procurar uma passagem secreta na parede',
+            effects: { coragem: 1, discernimento: 1 },
+            consequence: 'Não há passagem física. Mas a busca em si ensina algo.',
+          },
+        ],
+        weight: 4,
+      },
+    ],
+  },
+};
+
+/**
  * Route variants: alternate paths within phases based on player state.
  */
 export const routeVariants: Record<string, Array<{
@@ -686,6 +800,28 @@ export const routeVariants: Record<string, Array<{
       condition: (ctx) => !!ctx.flags['chave_promessa'],
       nextChapterId: 'fase5-cena5',
       hint: 'A Chave da Promessa brilha no seu bolso. Você sabe o que fazer.',
+    },
+  ],
+  // Replay-exclusive routes
+  'fase2-cena1': [
+    {
+      condition: (ctx) => ctx.playthrough >= 2 && ctx.attributes.discernimento >= 7,
+      nextChapterId: 'fase2-cena3',
+      hint: 'O Intérprete reconhece sua sabedoria: "Venha, há salas que não mostro a todos."',
+    },
+  ],
+  'fase4-cena1': [
+    {
+      condition: (ctx) => ctx.playthrough >= 3 && ctx.attributes.fe >= 8,
+      nextChapterId: 'fase4-cena4',
+      hint: 'Sua fé é um escudo. A feira perde seu poder sobre você.',
+    },
+  ],
+  'fase6-cena1': [
+    {
+      condition: (ctx) => ctx.playthrough >= 2 && ctx.attributes.coragem >= 8 && ctx.attributes.fe >= 8,
+      nextChapterId: 'fase6-cena3',
+      hint: 'O rio se abre diante de você. Sua jornada anterior abriu este caminho.',
     },
   ],
 };
