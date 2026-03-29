@@ -17,6 +17,7 @@ import AuthPage from "./pages/AuthPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
 import CommunityPage from "./pages/CommunityPage.tsx";
 import MultiplayerPage from "./pages/MultiplayerPage.tsx";
+import PresentialMultiplayer from "./pages/PresentialMultiplayer.tsx";
 import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
             <Route path="/perfil" element={<ProfilePage />} />
             <Route path="/comunidade" element={<CommunityPage />} />
             <Route path="/multiplayer" element={<MultiplayerPage />} />
+            <Route path="/multiplayer/presencial" element={<PresentialMultiplayer />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
