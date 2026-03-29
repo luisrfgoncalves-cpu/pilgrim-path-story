@@ -14,11 +14,13 @@ const JOURNEY_PREFS = ['contemplativa', 'aventureira', 'devocional', 'explorató
 const ProfilePage: React.FC = () => {
   const { profile, updateProfile, signOut, user } = useAuth();
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
   const [displayName, setDisplayName] = useState(profile?.display_name || '');
   const [bio, setBio] = useState(profile?.bio || '');
   const [avatarStyle, setAvatarStyle] = useState(profile?.avatar_style || 'peregrino');
   const [journeyPref, setJourneyPref] = useState(profile?.journey_preference || 'contemplativa');
   const [saving, setSaving] = useState(false);
+  const [notifEnabled, setNotifEnabled] = useState(isNotificationsEnabled());
 
   const handleSave = async () => {
     setSaving(true);
