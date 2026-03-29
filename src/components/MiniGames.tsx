@@ -860,6 +860,8 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
     setAction(chosenAction);
     setPhase('rolling');
     setDice({ player: 1, enemy: 1, rolling: true });
+    playGameSfx('diceRoll');
+    playGameSfx(chosenAction);
 
     // Animate dice
     let ticks = 0;
