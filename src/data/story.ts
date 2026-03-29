@@ -1453,8 +1453,65 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Seguir para o próximo trecho da jornada",
-        nextChapterId: "fase5-cena1",
+        nextChapterId: "fase4-cena11",
         effects: { fe: 1, perseveranca: 1 }
+      }
+    ]
+  },
+
+  "fase4-cena11": {
+    id: "fase4-cena11",
+    title: "Interesses, o Companheiro Conveniente",
+    location: "Estrada além da Feira",
+    characters: ["cristao", "esperanca", "interesses"],
+    narrative: [
+      "Na estrada, um homem bem-vestido se junta a vocês. Seu nome é Interesses, da cidade de Bom-Discurso. Ele é primo do Sr. Volta-Suave e sobrinho do Sr. Duas-Línguas.",
+      "\"Também sou peregrino!\", diz ele sorrindo. \"Mas confesso que prefiro seguir a religião quando ela caminha com chinelos de prata — sob o sol, com aplausos do povo.\"",
+      "Esperança te cutuca: \"Pergunte a ele se seguiria a religião descalço, na chuva, sem plateia.\""
+    ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 7, highText: "Você reconhece o tipo. Interesses ama a religião como ornamento, não como sacrifício. Sua fé é uma roupa para dias de sol.", lowThreshold: 3, lowText: "O homem parece razoável. Por que sofrer quando se pode servir a Deus com conforto?" }
+    ],
+    choices: [
+      {
+        text: "\"A fé que não custa nada não vale nada. Adeus, Interesses.\"",
+        nextChapterId: "fase4-cena12",
+        effects: { fe: 2, discernimento: 1 },
+        flag: "rejeitou_interesses"
+      },
+      {
+        text: "Deixar Interesses caminhar junto — companhia é companhia",
+        nextChapterId: "fase4-cena12",
+        effects: { discernimento: -1, fe: -1 }
+      }
+    ]
+  },
+
+  "fase4-cena12": {
+    id: "fase4-cena12",
+    title: "Pequena-Fé Assaltado",
+    location: "Caminho Estreito",
+    characters: ["cristao", "esperanca", "pequena_fe"],
+    narrative: [
+      "Na estrada, encontram um homem esfarrapado sentado numa pedra, chorando. Seu nome é Pequena-Fé, da cidade de Sinceridade.",
+      "\"Três ladrões me atacaram\", soluça ele. \"Coração-Fraco, Desconfiança e Culpa. Roubaram todo o meu dinheiro. Quase levaram meu pergaminho — mas o esconderam-se quando ouviram uma voz de Grande-Graça ao longe.\"",
+      "Esperança sussurra: \"Ele ainda tem o pergaminho. Ainda pode entrar na cidade. Mas caminha como um mendigo quando poderia caminhar como um príncipe.\""
+    ],
+    flagNarrative: [
+      { flag: "rejeitou_interesses", text: "Interesses teria rido de Pequena-Fé. Você fez bem em se separar dele." },
+      { flag: "escapou_castelo_fe", text: "Pequena-Fé nunca encontrou a chave da Promessa. Ela teria mudado tudo para ele." }
+    ],
+    choices: [
+      {
+        text: "Encorajar Pequena-Fé: \"O pergaminho é o que importa. Levante-se.\"",
+        nextChapterId: "fase5-cena1",
+        effects: { fe: 1, perseveranca: 1 },
+        flag: "mostrou_misericordia"
+      },
+      {
+        text: "Julgar Pequena-Fé: \"Deveria ter lutado mais\"",
+        nextChapterId: "fase5-cena1",
+        effects: { coragem: 1, fe: -1 }
       }
     ]
   },
