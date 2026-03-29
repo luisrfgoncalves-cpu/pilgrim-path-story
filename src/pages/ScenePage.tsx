@@ -24,8 +24,24 @@ import { ParticleEffects, getParticleTypeForScene } from '@/components/ParticleE
 import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
 import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
-import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart } from 'lucide-react';
+import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, Zap, Star, Shield, Flame } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
+
+const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
+  fe: { label: 'Fé', emoji: '🔥', icon: Flame },
+  perseveranca: { label: 'Perseverança', emoji: '⛰️', icon: Shield },
+  discernimento: { label: 'Discernimento', emoji: '👁️', icon: Star },
+  coragem: { label: 'Coragem', emoji: '🛡️', icon: Zap },
+};
+
+interface InlineConsequence {
+  text: string;
+  effects: ChoiceEffect;
+  nextChapterId: string;
+  choiceText: string;
+  flag?: string;
+  conditionalEffects?: ConditionalEffect[];
+}
 
 const ScenePage = () => {
   const navigate = useNavigate();
@@ -42,6 +58,13 @@ const ScenePage = () => {
   const [transitioning, setTransitioning] = useState(false);
   const [surprise, setSurprise] = useState<Surprise | null>(null);
   const [surpriseShown, setSurpriseShown] = useState(false);
+  // Inline consequence overlay state
+  const [inlineConsequence, setInlineConsequence] = useState<InlineConsequence | null>(null);
+  const [consequencePhase, setConsequencePhase] = useState<'enter' | 'attrs' | 'ready'>('enter');
+  // Streak/combo counter
+  const [streak, setStreak] = useState(0);
+  const [lastStreakEffect, setLastStreakEffect] = useState<'positive' | 'negative' | null>(null);
+  const [showStreakBurst, setShowStreakBurst] = useState(false);
   const { triggerChoiceEffect } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
@@ -203,28 +226,52 @@ const ScenePage = () => {
       addItem(item);
     }
 
+    // Track streak
+    const total = Object.values(modifiedEffects).reduce((a: number, b) => a + ((b as number) || 0), 0);
+    if (total > 0) {
+      const newStreak = lastStreakEffect === 'positive' ? streak + 1 : 1;
+      setStreak(newStreak);
+      setLastStreakEffect('positive');
+      if (newStreak >= 3) {
+        setShowStreakBurst(true);
+        setTimeout(() => setShowStreakBurst(false), 2000);
+      }
+    } else if (total < 0) {
+      setStreak(lastStreakEffect === 'negative' ? streak + 1 : 1);
+      setLastStreakEffect('negative');
+    } else {
+      setLastStreakEffect(null);
+    }
+
     // Enrich consequence text with dice narrative hint
     const enrichedConsequence = consequence && diceHint
       ? `${consequence}\n\n${diceHint}`
       : consequence;
 
     if (enrichedConsequence) {
-      navigate('/resultado', {
-        state: {
-          consequence: enrichedConsequence,
-          nextChapterId,
-          choiceText,
-          effects: modifiedEffects,
-          currentChapterId: chapter?.id,
-          attributeChanges: modifiedEffects,
-          flag,
-          conditionalEffects,
-          item,
-        }
+      // INLINE consequence — no navigation!
+      setInlineConsequence({
+        text: enrichedConsequence,
+        effects: modifiedEffects,
+        nextChapterId,
+        choiceText,
+        flag,
+        conditionalEffects,
       });
+      setConsequencePhase('enter');
+      setTimeout(() => setConsequencePhase('attrs'), 600);
+      setTimeout(() => setConsequencePhase('ready'), 1400);
     } else {
       makeChoice(chapter!.id, nextChapterId, choiceText, modifiedEffects, flag, conditionalEffects);
     }
+  };
+
+  const advanceFromConsequence = () => {
+    if (!inlineConsequence) return;
+    const { nextChapterId, choiceText, effects, flag, conditionalEffects } = inlineConsequence;
+    setInlineConsequence(null);
+    setConsequencePhase('enter');
+    makeChoice(chapter!.id, nextChapterId, choiceText, effects, flag, conditionalEffects);
   };
 
   // Wrap choice execution with optional suspense delay
@@ -686,6 +733,112 @@ const ScenePage = () => {
           )}
         </div>
       </main>
+
+      {/* ═══ INLINE CONSEQUENCE OVERLAY ═══ */}
+      {inlineConsequence && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ animation: 'consequenceFadeIn 0.5s ease-out' }}>
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-background/90 backdrop-blur-sm" onClick={() => {}} />
+          
+          <div className="relative z-10 max-w-sm mx-6 w-full">
+            {/* Consequence text */}
+            <div className={`text-center transition-all duration-700 ${consequencePhase !== 'enter' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              style={{ animationDelay: '0.2s' }}>
+              
+              <ScrollText className="w-8 h-8 text-primary mx-auto mb-4" />
+              
+              {inlineConsequence.text.split('\n\n').filter(Boolean).map((part, i) => (
+                <p key={i} className={`narrative-text italic leading-relaxed mb-3 ${i === 0 ? 'text-lg text-foreground' : 'text-sm text-primary/70'}`}>
+                  {part}
+                </p>
+              ))}
+            </div>
+
+            {/* Attribute changes — animated bars */}
+            {(() => {
+              const positiveChanges = Object.entries(inlineConsequence.effects).filter(([, v]) => v && (v as number) > 0);
+              const negativeChanges = Object.entries(inlineConsequence.effects).filter(([, v]) => v && (v as number) < 0);
+              const hasChanges = positiveChanges.length > 0 || negativeChanges.length > 0;
+
+              if (!hasChanges) return null;
+
+              return (
+                <div className={`mt-5 space-y-3 transition-all duration-700 ${consequencePhase === 'enter' ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
+                  {positiveChanges.map(([key, val], i) => {
+                    const info = attrLabels[key];
+                    if (!info) return null;
+                    return (
+                      <div key={key} className="flex items-center gap-3 bg-card/60 border border-primary/20 rounded-xl px-4 py-3"
+                        style={{ animation: `attrSlideIn 0.4s ease-out ${0.1 * i}s both` }}>
+                        <span className="text-xl">{info.emoji}</span>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-display text-foreground">{info.label}</span>
+                            <span className="text-sm font-display text-primary">+{val as number}</span>
+                          </div>
+                          <div className="h-1.5 bg-secondary rounded-full mt-1 overflow-hidden">
+                            <div className="h-full bg-primary rounded-full transition-all duration-1000"
+                              style={{ width: `${Math.min(100, ((progress.attributes[key as keyof typeof progress.attributes] || 0) + (val as number)) * 5)}%`, animation: 'barGrow 0.8s ease-out' }} />
+                          </div>
+                        </div>
+                        <TrendingUp className="w-4 h-4 text-primary" />
+                      </div>
+                    );
+                  })}
+                  {negativeChanges.map(([key, val], i) => {
+                    const info = attrLabels[key];
+                    if (!info) return null;
+                    return (
+                      <div key={key} className="flex items-center gap-3 bg-card/60 border border-destructive/20 rounded-xl px-4 py-3"
+                        style={{ animation: `attrSlideIn 0.4s ease-out ${0.1 * (i + positiveChanges.length)}s both` }}>
+                        <span className="text-xl">{info.emoji}</span>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-display text-foreground">{info.label}</span>
+                            <span className="text-sm font-display text-destructive">{val as number}</span>
+                          </div>
+                          <div className="h-1.5 bg-secondary rounded-full mt-1 overflow-hidden">
+                            <div className="h-full bg-destructive/60 rounded-full"
+                              style={{ width: `${Math.min(100, Math.max(0, (progress.attributes[key as keyof typeof progress.attributes] || 0) + (val as number)) * 5)}%` }} />
+                          </div>
+                        </div>
+                        <TrendingDown className="w-4 h-4 text-destructive/70" />
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+
+            {/* Continue button */}
+            <button
+              onClick={advanceFromConsequence}
+              className={`btn-medieval mt-6 w-full flex items-center justify-center gap-3 transition-all duration-500 ${
+                consequencePhase === 'ready' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+              }`}
+            >
+              Continuar a Jornada <ArrowRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ STREAK BURST ═══ */}
+      {showStreakBurst && streak >= 3 && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[60] pointer-events-none"
+          style={{ animation: 'streakBurst 2s ease-out forwards' }}>
+          <div className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-primary/90 text-primary-foreground shadow-xl">
+            <Zap className="w-5 h-5" />
+            <span className="font-display text-lg">
+              {streak}x Combo!
+            </span>
+            <span className="text-sm opacity-80">
+              {lastStreakEffect === 'positive' ? '🔥 Em chamas!' : '💔 Sequência sombria'}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -599,3 +599,26 @@
   80% { opacity: 0.3; }
   100% { opacity: 0; transform: translateY(-30px) translateX(8px); }
 }
+
+/* ═══ Inline Consequence Overlay ═══ */
+@keyframes consequenceFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes attrSlideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes barGrow {
+  from { width: 0%; }
+}
+
+@keyframes streakBurst {
+  0% { opacity: 0; transform: translate(-50%, -20px) scale(0.8); }
+  15% { opacity: 1; transform: translate(-50%, 0) scale(1.1); }
+  30% { transform: translate(-50%, 0) scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -30px) scale(0.9); }
+}
