@@ -138,6 +138,15 @@ const ScenePage = () => {
     }
   }, [chapter?.id]);
 
+  // Show support bonus toast
+  useEffect(() => {
+    if (newSupportCount > 0 && !supportToastShown) {
+      setSupportToastShown(true);
+      const timer = setTimeout(() => setSupportToastShown(false), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [newSupportCount, supportToastShown]);
+
   // Audio: set ambience when scene or emotional state changes
   useEffect(() => {
     if (chapter && emotional) {
