@@ -160,14 +160,32 @@ export function PathOfFaith({ config, onComplete }: PathOfFaithProps) {
         <div className="text-5xl">🗺️</div>
         <h3 className="font-display text-xl text-primary">Caminho da Fé</h3>
         <p className="text-sm text-foreground/80">{config.intro}</p>
-        <div className="text-xs text-muted-foreground space-y-1">
-          <p>A cada encruzilhada, escolha seu caminho com sabedoria.</p>
-          <p>Cada decisão afeta sua <strong>vida</strong> e sua <strong>fé</strong>.</p>
-          <p className="flex items-center justify-center gap-3 pt-1">
+        <div className="space-y-3 text-left bg-card/50 border-2 border-primary/20 rounded-xl p-3">
+          <p className="text-xs text-center font-display font-bold text-primary">📜 Como jogar</p>
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="text-base">🗺️</span>
+              <p className="text-[11px] text-foreground/70">A cada encruzilhada, você verá <strong>2-3 caminhos</strong> possíveis</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-base">❤️</span>
+              <p className="text-[11px] text-foreground/70">Cada caminho afeta sua <strong>vida</strong> (HP) e <strong>fé</strong></p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-base">⚠️</span>
+              <p className="text-[11px] text-foreground/70">Caminhos perigosos dão <strong>mais fé</strong>, mas podem custar sua vida!</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-base">💀</span>
+              <p className="text-[11px] text-foreground/70">Se seu HP chegar a <strong>zero</strong>, a jornada acaba</p>
+            </div>
+          </div>
+          <p className="flex items-center justify-center gap-3 pt-1 text-[11px]">
             <span style={{ color: RISK_COLORS.safe.text }}>🟢 Seguro</span>
             <span style={{ color: RISK_COLORS.moderate.text }}>🟡 Moderado</span>
             <span style={{ color: RISK_COLORS.dangerous.text }}>🔴 Perigoso</span>
           </p>
+          <p className="text-[10px] text-center text-muted-foreground">💡 Equilibre risco e recompensa para sobreviver!</p>
         </div>
         <button onClick={() => setPhase('choose')} className="btn-medieval w-full">
           Iniciar Jornada

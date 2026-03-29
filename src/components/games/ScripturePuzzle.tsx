@@ -157,10 +157,27 @@ export function ScripturePuzzle({ config, onComplete }: ScripturePuzzleProps) {
         <div className="text-5xl">📖</div>
         <h3 className="font-display text-xl text-primary">Puzzle das Escrituras</h3>
         <p className="text-sm text-foreground/80">{config.intro}</p>
-        <div className="text-xs text-muted-foreground space-y-1">
-          <p>Monte o versículo na ordem correta!</p>
-          <p>Toque nas palavras para colocá-las em ordem.</p>
-          <p className="text-primary/60">⏰ {timePerRound}s por versículo · {totalRounds} versículos</p>
+        <div className="space-y-3 text-left bg-card/50 border-2 border-primary/20 rounded-xl p-3">
+          <p className="text-xs text-center font-display font-bold text-primary">📜 Como jogar</p>
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="text-base">📖</span>
+              <p className="text-[11px] text-foreground/70">Um versículo bíblico aparecerá com as palavras <strong>embaralhadas</strong></p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-base">👆</span>
+              <p className="text-[11px] text-foreground/70">Toque nas palavras na <strong>ordem correta</strong> para montar o versículo</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-base">⏳</span>
+              <p className="text-[11px] text-foreground/70">Você tem <strong>{timePerRound}s</strong> por versículo — são <strong>{totalRounds}</strong> versículos no total</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-base">🔥</span>
+              <p className="text-[11px] text-foreground/70">Acerte versículos seguidos para ganhar <strong>combo</strong>!</p>
+            </div>
+          </div>
+          <p className="text-[10px] text-center text-muted-foreground">💡 A referência bíblica aparece como dica no topo!</p>
         </div>
         <button onClick={startRound} className="btn-medieval w-full">
           Começar!

@@ -144,7 +144,29 @@ function QTEGame({ config, onComplete }: MiniGameProps) {
         <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 12px hsl(40 60% 50% / 0.5))' }}>⚔️</div>
         <h3 className="game-title">Reflexos de Batalha</h3>
         <p className="game-subtitle">{config.intro}</p>
-        <p className="game-text-muted">Toque nos alvos antes que desapareçam!</p>
+        <div className="space-y-3 text-left" style={{
+          background: 'hsl(0 0% 8% / 0.5)',
+          border: '2px solid hsl(40 50% 30%)',
+          borderRadius: '12px',
+          padding: '12px 16px',
+        }}>
+          <p className="game-text-muted text-center font-bold" style={{ color: 'hsl(40 70% 65%)', fontSize: '13px' }}>📜 Como jogar</p>
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="text-lg">👆</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Alvos com símbolos aparecerão na tela em posições aleatórias</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">⚡</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Toque em cada alvo <strong>antes que desapareça</strong></p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">🎯</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Acerte pelo menos 50% dos alvos para vencer</p>
+            </div>
+          </div>
+          <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>💡 Quanto mais rápido tocar, mais pontos ganha!</p>
+        </div>
         <button onClick={() => { playGameSfx('gameStart'); setPhase('playing'); }} className="btn-medieval w-full">
           Começar!
         </button>
@@ -346,9 +368,28 @@ function SwipeDodgeGame({ config, onComplete }: MiniGameProps) {
         <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 12px hsl(220 60% 50% / 0.5))' }}>🌪️</div>
         <h3 className="game-title">Esquiva de Tentações</h3>
         <p className="game-subtitle">{config.intro}</p>
-        <div className="game-text-muted space-y-1">
-          <p>⬆️ Deslize para <strong>CIMA</strong> para <strong>esquivar</strong> tentações</p>
-          <p>⬇️ Deslize para <strong>BAIXO</strong> para <strong>aceitar</strong> bênçãos</p>
+        <div className="space-y-3 text-left" style={{
+          background: 'hsl(0 0% 8% / 0.5)',
+          border: '2px solid hsl(40 50% 30%)',
+          borderRadius: '12px',
+          padding: '12px 16px',
+        }}>
+          <p className="game-text-muted text-center font-bold" style={{ color: 'hsl(40 70% 65%)', fontSize: '13px' }}>📜 Como jogar</p>
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="text-lg">⬆️</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Deslize/clique <strong>CIMA</strong> para <strong>esquivar</strong> de tentações (itens vermelhos)</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">⬇️</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Deslize/clique <strong>BAIXO</strong> para <strong>aceitar</strong> bênçãos (itens verdes)</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">⚡</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Decida rápido antes que o item <strong>desapareça</strong>!</p>
+            </div>
+          </div>
+          <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>💡 Tentações têm borda vermelha, bênçãos têm borda verde!</p>
         </div>
         <button onClick={() => { playGameSfx('gameStart'); setPhase('playing'); }} className="btn-medieval w-full">
           Começar!
@@ -574,7 +615,29 @@ function MemoryGame({ config, onComplete }: MiniGameProps) {
         <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 12px hsl(280 60% 50% / 0.5))' }}>🧠</div>
         <h3 className="game-title">Sequência de Memória</h3>
         <p className="game-subtitle">{config.intro}</p>
-        <p className="game-text-muted">Memorize a sequência de símbolos e repita na ordem correta!</p>
+        <div className="space-y-3 text-left" style={{
+          background: 'hsl(0 0% 8% / 0.5)',
+          border: '2px solid hsl(40 50% 30%)',
+          borderRadius: '12px',
+          padding: '12px 16px',
+        }}>
+          <p className="game-text-muted text-center font-bold" style={{ color: 'hsl(40 70% 65%)', fontSize: '13px' }}>📜 Como jogar</p>
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="text-lg">👀</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Observe a sequência de símbolos que aparecerá na tela</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">🧠</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Memorize a <strong>ordem exata</strong> dos símbolos mostrados</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">👆</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Quando for sua vez, toque nos símbolos na <strong>mesma ordem</strong></p>
+            </div>
+          </div>
+          <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>💡 A cada rodada a sequência fica maior!</p>
+        </div>
         <button onClick={() => { playGameSfx('gameStart'); setPhase('showing'); startRound(); }} className="btn-medieval w-full">
           Começar!
         </button>
@@ -762,7 +825,29 @@ function StealthGame({ config, onComplete }: MiniGameProps) {
         <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 12px hsl(270 60% 50% / 0.5))' }}>🤫</div>
         <h3 className="game-title">Furtividade</h3>
         <p className="game-subtitle">{config.intro}</p>
-        <p className="game-text-muted">Toque quando o indicador estiver na zona segura (verde)!</p>
+        <div className="space-y-3 text-left" style={{
+          background: 'hsl(0 0% 8% / 0.5)',
+          border: '2px solid hsl(40 50% 30%)',
+          borderRadius: '12px',
+          padding: '12px 16px',
+        }}>
+          <p className="game-text-muted text-center font-bold" style={{ color: 'hsl(40 70% 65%)', fontSize: '13px' }}>📜 Como jogar</p>
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="text-lg">📊</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Uma barra com um <strong>indicador dourado</strong> vai se mover da esquerda para a direita</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">🟢</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Toque no botão quando o indicador estiver na <strong>zona verde</strong> (segura)</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">🚨</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Se tocar na zona vermelha, você será <strong>detectado</strong>!</p>
+            </div>
+          </div>
+          <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>💡 A zona segura muda de posição a cada tentativa!</p>
+        </div>
         <button onClick={() => { playGameSfx('gameStart'); setPhase('playing'); }} className="btn-medieval w-full">
           Começar!
         </button>
@@ -1433,7 +1518,29 @@ function TreasureHuntGame({ config, onComplete }: MiniGameProps) {
         <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 12px hsl(40 70% 50% / 0.5))' }}>🔍</div>
         <h3 className="game-title">Caça ao Tesouro</h3>
         <p className="game-subtitle">{config.intro}</p>
-        <p className="game-text-muted">Encontre os tesouros escondidos antes do tempo acabar! Fique atento às dicas ✨</p>
+        <div className="space-y-3 text-left" style={{
+          background: 'hsl(0 0% 8% / 0.5)',
+          border: '2px solid hsl(40 50% 30%)',
+          borderRadius: '12px',
+          padding: '12px 16px',
+        }}>
+          <p className="game-text-muted text-center font-bold" style={{ color: 'hsl(40 70% 65%)', fontSize: '13px' }}>📜 Como jogar</p>
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="text-lg">🔍</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Tesouros estão <strong>escondidos</strong> na tela — quase invisíveis!</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">✨</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>A cada poucos segundos, uma <strong>dica brilhante</strong> revela a posição de um tesouro</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">⏳</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Encontre o máximo possível antes do <strong>tempo acabar</strong>!</p>
+            </div>
+          </div>
+          <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>💡 Toque nos círculos para revelar os tesouros!</p>
+        </div>
         <button onClick={() => { playGameSfx('gameStart'); initItems(); setPhase('hunting'); }} className="btn-medieval w-full">
           Começar a busca!
         </button>
@@ -1649,7 +1756,29 @@ function ReflexGame({ config, onComplete }: MiniGameProps) {
         <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 12px hsl(220 60% 50% / 0.5))' }}>👼</div>
         <h3 className="game-title">Reflexo Divino</h3>
         <p className="game-subtitle">{config.intro}</p>
-        <p className="game-text-muted">Observe a sequência de direções e repita! A cada rodada fica mais rápido.</p>
+        <div className="space-y-3 text-left" style={{
+          background: 'hsl(0 0% 8% / 0.5)',
+          border: '2px solid hsl(40 50% 30%)',
+          borderRadius: '12px',
+          padding: '12px 16px',
+        }}>
+          <p className="game-text-muted text-center font-bold" style={{ color: 'hsl(40 70% 65%)', fontSize: '13px' }}>📜 Como jogar</p>
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="text-lg">👀</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Observe a sequência de <strong>setas direcionais</strong> (⬆️⬇️⬅️➡️) que acende</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">👆</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Quando for sua vez, toque nas setas na <strong>mesma ordem</strong></p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">🔥</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>A cada rodada a sequência fica <strong>mais longa e mais rápida</strong>!</p>
+            </div>
+          </div>
+          <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>💡 Foque na memória visual — observe o padrão!</p>
+        </div>
         <button onClick={() => { playGameSfx('gameStart'); startRound(); }} className="btn-medieval w-full">
           Começar!
         </button>

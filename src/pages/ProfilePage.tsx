@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { ArrowLeft, Save, LogOut, Bell, BellOff, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, Save, LogOut, Bell, BellOff, Sun, Moon, BookOpen } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { requestNotificationPermission, isNotificationsEnabled, toggleNotifications } from '@/lib/notifications';
 
@@ -130,6 +130,22 @@ const ProfilePage: React.FC = () => {
                 className="px-3 py-1.5 rounded-md text-xs bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
               >
                 {theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-2 text-sm text-foreground/80">
+                <BookOpen className="w-4 h-4" />
+                Tutorial
+              </div>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('peregrino-onboarding-done');
+                  toast.success('Tutorial será exibido ao voltar à tela inicial!');
+                }}
+                className="px-3 py-1.5 rounded-md text-xs bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
+              >
+                Rever Tutorial
               </button>
             </div>
 
