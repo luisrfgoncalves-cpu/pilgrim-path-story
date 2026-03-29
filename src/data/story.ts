@@ -731,12 +731,18 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Enfrentar",
         nextChapterId: "fase3-cena4",
         effects: { coragem: 2 },
-        flag: "enfrentou_presenca"
+        flag: "enfrentou_presenca",
+        conditionalEffects: [
+          { attr: "fe", threshold: 8, bonus: { coragem: 1 }, penalty: { coragem: -1 } }
+        ]
       },
       {
         text: "Evitar confronto",
         nextChapterId: "fase3-cena5",
-        effects: { discernimento: -1 }
+        effects: { discernimento: -1 },
+        conditionalEffects: [
+          { attr: "coragem", threshold: 6, bonus: { fe: 1 }, penalty: { fe: -1 } }
+        ]
       }
     ]
   },
@@ -749,11 +755,21 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Você decide enfrentar. A resistência é forte, mas você não recua."
     ],
+    adaptiveNarrative: [
+      { minAttr: "perseveranca", minValue: 8, text: "Sua perseverança acumulada sustenta cada passo. A resistência parece menor." },
+      { minAttr: "coragem", minValue: 3, text: "" }
+    ],
+    noFlagNarrative: [
+      { flag: "escolheu_caminho_estreito", text: "Sem a experiência do caminho difícil, a resistência parece esmagadora." }
+    ],
     choices: [
       {
         text: "Persistir",
         nextChapterId: "fase3-cena6",
-        effects: { perseveranca: 2 }
+        effects: { perseveranca: 2 },
+        conditionalEffects: [
+          { attr: "perseveranca", threshold: 8, bonus: { perseveranca: 2, fe: 1 }, penalty: { perseveranca: -1 } }
+        ]
       },
       {
         text: "Recuar",
