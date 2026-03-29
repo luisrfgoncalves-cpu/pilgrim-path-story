@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import ScrollToTop from "@/components/ScrollToTop";
+import PreviewPaywall from "@/components/PreviewPaywall";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import JourneysPage from "./pages/JourneysPage.tsx";
@@ -22,7 +23,11 @@ import PresentialMultiplayer from "./pages/PresentialMultiplayer.tsx";
 import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
 import TermsPage from "./pages/TermsPage.tsx";
 import LandingPage from "./pages/LandingPage.tsx";
+
 const queryClient = new QueryClient();
+
+// Check if app is in preview mode (embedded in landing page)
+const isPreviewMode = new URLSearchParams(window.location.search).get('preview') === 'landing';
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -37,18 +42,20 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/vendas" element={<LandingPage />} />
             <Route path="/landing" element={<LandingPage />} />
+            {/* Browsable in preview — strategic showcase routes */}
             <Route path="/jornada" element={<JourneysPage />} />
-            <Route path="/cena" element={<ScenePage />} />
-            <Route path="/resultado" element={<ResultPage />} />
-            <Route path="/progresso" element={<ProgressPage />} />
             <Route path="/personagens" element={<CharactersPage />} />
             <Route path="/reflexoes" element={<ReflectionsPage />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
-            <Route path="/perfil" element={<ProfilePage />} />
             <Route path="/comunidade" element={<CommunityPage />} />
-            <Route path="/multiplayer" element={<MultiplayerPage />} />
-            <Route path="/multiplayer/presencial" element={<PresentialMultiplayer />} />
+            <Route path="/progresso" element={<ProgressPage />} />
+            <Route path="/multiplayer" element={isPreviewMode ? <PreviewPaywall /> : <MultiplayerPage />} />
+            {/* Blocked in preview — game routes */}
+            <Route path="/cena" element={isPreviewMode ? <PreviewPaywall /> : <ScenePage />} />
+            <Route path="/resultado" element={isPreviewMode ? <PreviewPaywall /> : <ResultPage />} />
+            <Route path="/auth" element={isPreviewMode ? <PreviewPaywall /> : <AuthPage />} />
+            <Route path="/reset-password" element={isPreviewMode ? <PreviewPaywall /> : <ResetPasswordPage />} />
+            <Route path="/perfil" element={isPreviewMode ? <PreviewPaywall /> : <ProfilePage />} />
+            <Route path="/multiplayer/presencial" element={isPreviewMode ? <PreviewPaywall /> : <PresentialMultiplayer />} />
             <Route path="/termos" element={<TermsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
