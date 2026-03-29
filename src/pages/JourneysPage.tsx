@@ -151,6 +151,16 @@ const JourneysPage = () => {
       </header>
 
       {/* Scrollable vertical map */}
+      <div className="max-w-lg mx-auto">
+        <ScreenHero
+          icon={<Compass className="w-full h-full" />}
+          name="Mapa do Peregrino"
+          subtitle={`${Math.round((totalVisited / total) * 100)}% explorado`}
+          sfx="gameStart"
+          size="md"
+        />
+      </div>
+
       <main className="max-w-lg mx-auto pb-12">
         {/* Map title */}
         <div className="text-center py-6 px-4">
