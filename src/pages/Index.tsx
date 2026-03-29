@@ -80,6 +80,10 @@ const Index = () => {
     return <SplashScreen onFinish={handleSplashDone} />;
   }
 
+  if (showOnboarding && !hasProgress) {
+    return <Onboarding onComplete={() => setShowOnboarding(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Streak toast */}
