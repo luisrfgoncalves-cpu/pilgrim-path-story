@@ -368,9 +368,28 @@ function SwipeDodgeGame({ config, onComplete }: MiniGameProps) {
         <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 12px hsl(220 60% 50% / 0.5))' }}>🌪️</div>
         <h3 className="game-title">Esquiva de Tentações</h3>
         <p className="game-subtitle">{config.intro}</p>
-        <div className="game-text-muted space-y-1">
-          <p>⬆️ Deslize para <strong>CIMA</strong> para <strong>esquivar</strong> tentações</p>
-          <p>⬇️ Deslize para <strong>BAIXO</strong> para <strong>aceitar</strong> bênçãos</p>
+        <div className="space-y-3 text-left" style={{
+          background: 'hsl(0 0% 8% / 0.5)',
+          border: '2px solid hsl(40 50% 30%)',
+          borderRadius: '12px',
+          padding: '12px 16px',
+        }}>
+          <p className="game-text-muted text-center font-bold" style={{ color: 'hsl(40 70% 65%)', fontSize: '13px' }}>📜 Como jogar</p>
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="text-lg">⬆️</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Deslize/clique <strong>CIMA</strong> para <strong>esquivar</strong> de tentações (itens vermelhos)</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">⬇️</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Deslize/clique <strong>BAIXO</strong> para <strong>aceitar</strong> bênçãos (itens verdes)</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg">⚡</span>
+              <p className="text-[11px]" style={{ color: 'hsl(30 20% 60%)' }}>Decida rápido antes que o item <strong>desapareça</strong>!</p>
+            </div>
+          </div>
+          <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>💡 Tentações têm borda vermelha, bênçãos têm borda verde!</p>
         </div>
         <button onClick={() => { playGameSfx('gameStart'); setPhase('playing'); }} className="btn-medieval w-full">
           Começar!
