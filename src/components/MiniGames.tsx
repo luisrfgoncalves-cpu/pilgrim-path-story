@@ -1026,7 +1026,7 @@ function DiceDuelGame({ config, onComplete }: MiniGameProps) {
           <p className="text-[10px] text-center" style={{ color: 'hsl(40 40% 50%)' }}>💡 Repetir a mesma ação gera combo (+15% por vez)</p>
         </div>
 
-        <button onClick={() => setPhase('choose')} className="btn-medieval w-full">
+        <button onClick={() => { playGameSfx('gameStart'); setPhase('choose'); }} className="btn-medieval w-full">
           Enfrentar {enemy.name}!
         </button>
       </div>
