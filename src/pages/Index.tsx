@@ -5,12 +5,14 @@ import { useCloudSync } from '@/hooks/useCloudSync';
 import { getChapter, storyChapters } from '@/data/story';
 import { getPart2Chapter, part2Chapters } from '@/data/storyPart2';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { getStreak, getDashboardMessage } from '@/lib/gameLoop';
 import { downloadBackup, importBackup } from '@/lib/progressBackup';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import SplashScreen from '@/components/SplashScreen';
+import Onboarding from '@/components/Onboarding';
 import GameNotification from '@/components/GameNotification';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen, Home, Download, Upload } from 'lucide-react';
+import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen, Home, Download, Upload, Sun, Moon } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Index = () => {
