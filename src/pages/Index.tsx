@@ -175,12 +175,10 @@ const Index = () => {
         )}
 
         {/* Part II */}
-        {!hasProgress && (
-          <button onClick={() => handleNewJourney('part2')} className="btn-medieval-secondary w-full flex items-center justify-center gap-3">
-            <BookOpen className="w-6 h-6 text-primary" />
-            Parte II — A Peregrina
-          </button>
-        )}
+        <button onClick={() => handleNewJourney('part2')} className="btn-medieval-secondary w-full flex items-center justify-center gap-3">
+          <BookOpen className="w-6 h-6 text-primary" />
+          Parte II — A Peregrina
+        </button>
 
         {/* Nav grid */}
         <div className="grid grid-cols-5 gap-2">
