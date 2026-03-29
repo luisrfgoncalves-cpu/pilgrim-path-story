@@ -60,6 +60,9 @@ export const chapterOrder = [
   "cena1", "cena2", "cena3", "cena4", "cena5",
   "cena6", "cena7", "cena8", "cena9", "cena10",
   "cena11", "cena12", "cena13", "cena14", "cena15",
+  "fase2-cena1", "fase2-cena2", "fase2-cena3", "fase2-cena4", "fase2-cena5",
+  "fase2-cena6", "fase2-cena7", "fase2-cena8", "fase2-cena9", "fase2-cena10",
+  "fase2-cena11",
 ];
 
 export const storyChapters: Record<string, StoryChapter> = {
@@ -374,6 +377,245 @@ export const storyChapters: Record<string, StoryChapter> = {
     reflection: "r6",
     narrative: [
       "Você saiu da Cidade da Destruição. A jornada começou."
+    ],
+    choices: [
+      {
+        text: "Continuar jornada",
+        nextChapterId: "fase2-cena1",
+        effects: { fe: 1 }
+      }
+    ]
+  },
+
+  // === FASE 2: CASA DO INTÉRPRETE ===
+
+  "fase2-cena1": {
+    id: "fase2-cena1",
+    title: "Uma Casa Diferente",
+    location: "Casa do Intérprete",
+    characters: ["cristao", "interprete"],
+    narrative: [
+      "Após avançar no caminho, você encontra uma casa diferente. Há algo especial naquele lugar."
+    ],
+    choices: [
+      {
+        text: "Entrar",
+        nextChapterId: "fase2-cena2",
+        effects: { fe: 1 }
+      },
+      {
+        text: "Ignorar e seguir",
+        nextChapterId: "fase2-cena3",
+        effects: { discernimento: -1 }
+      }
+    ]
+  },
+
+  "fase2-cena2": {
+    id: "fase2-cena2",
+    title: "O Anfitrião",
+    location: "Casa do Intérprete",
+    characters: ["cristao", "interprete"],
+    narrative: [
+      "Um homem te recebe e diz que ali você verá coisas importantes para sua jornada."
+    ],
+    choices: [
+      {
+        text: "Ouvir com atenção",
+        nextChapterId: "fase2-cena4",
+        effects: { discernimento: 1 }
+      },
+      {
+        text: "Duvidar do que vê",
+        nextChapterId: "fase2-cena3",
+        effects: { fe: -1 }
+      }
+    ]
+  },
+
+  "fase2-cena3": {
+    id: "fase2-cena3",
+    title: "Seguir Sem Entender",
+    location: "Caminho Estreito",
+    characters: ["cristao"],
+    narrative: [
+      "Você decide não entrar. Segue o caminho, mas sente que perdeu algo importante."
+    ],
+    choices: [
+      {
+        text: "Voltar e entrar",
+        nextChapterId: "fase2-cena2",
+        effects: { discernimento: 1 }
+      },
+      {
+        text: "Continuar sem entender",
+        nextChapterId: "fase2-cena6",
+        effects: { fe: -1 }
+      }
+    ]
+  },
+
+  "fase2-cena4": {
+    id: "fase2-cena4",
+    title: "A Sala da Poeira",
+    location: "Casa do Intérprete",
+    characters: ["cristao", "interprete"],
+    narrative: [
+      "Ele te leva a uma sala onde alguém tenta limpar o chão, mas a poeira só aumenta."
+    ],
+    choices: [
+      {
+        text: "Observar",
+        nextChapterId: "fase2-cena5",
+        effects: { discernimento: 1 }
+      },
+      {
+        text: "Tentar ajudar",
+        nextChapterId: "fase2-cena5",
+        effects: { perseveranca: 1 }
+      }
+    ]
+  },
+
+  "fase2-cena5": {
+    id: "fase2-cena5",
+    title: "A Lição da Água",
+    location: "Casa do Intérprete",
+    characters: ["cristao", "interprete"],
+    narrative: [
+      "Quando água é lançada, a poeira se assenta. Você percebe que esforço sozinho não resolve tudo."
+    ],
+    choices: [
+      {
+        text: "Refletir sobre isso",
+        nextChapterId: "fase2-cena6",
+        effects: { discernimento: 2 }
+      },
+      {
+        text: "Ignorar a lição",
+        nextChapterId: "fase2-cena6",
+        effects: { discernimento: -1 }
+      }
+    ]
+  },
+
+  "fase2-cena6": {
+    id: "fase2-cena6",
+    title: "O Fogo que Não Apaga",
+    location: "Casa do Intérprete",
+    characters: ["cristao", "interprete"],
+    narrative: [
+      "Em outra sala, você vê um fogo sendo apagado, mas ele continua queimando."
+    ],
+    choices: [
+      {
+        text: "Investigar",
+        nextChapterId: "fase2-cena7",
+        effects: { discernimento: 1 }
+      },
+      {
+        text: "Apenas observar",
+        nextChapterId: "fase2-cena7",
+        effects: {}
+      }
+    ]
+  },
+
+  "fase2-cena7": {
+    id: "fase2-cena7",
+    title: "O Segredo do Fogo",
+    location: "Casa do Intérprete",
+    characters: ["cristao", "interprete"],
+    narrative: [
+      "Você descobre que há alguém alimentando o fogo por trás."
+    ],
+    choices: [
+      {
+        text: "Entender o significado",
+        nextChapterId: "fase2-cena8",
+        effects: { discernimento: 2 }
+      },
+      {
+        text: "Não se aprofundar",
+        nextChapterId: "fase2-cena8",
+        effects: { discernimento: -1 }
+      }
+    ]
+  },
+
+  "fase2-cena8": {
+    id: "fase2-cena8",
+    title: "A Base Frágil",
+    location: "Casa do Intérprete",
+    characters: ["cristao", "interprete"],
+    narrative: [
+      "Em outra sala, alguém tenta construir algo, mas a base não é firme."
+    ],
+    choices: [
+      {
+        text: "Avisar sobre a base",
+        nextChapterId: "fase2-cena9",
+        effects: { discernimento: 1 }
+      },
+      {
+        text: "Deixar como está",
+        nextChapterId: "fase2-cena9",
+        effects: {}
+      }
+    ]
+  },
+
+  "fase2-cena9": {
+    id: "fase2-cena9",
+    title: "Fundamentos",
+    location: "Casa do Intérprete",
+    characters: ["cristao", "interprete"],
+    narrative: [
+      "Você percebe que sem uma base correta, tudo desmorona."
+    ],
+    choices: [
+      {
+        text: "Aplicar isso à sua jornada",
+        nextChapterId: "fase2-cena10",
+        effects: { fe: 1 }
+      },
+      {
+        text: "Ignorar",
+        nextChapterId: "fase2-cena10",
+        effects: {}
+      }
+    ]
+  },
+
+  "fase2-cena10": {
+    id: "fase2-cena10",
+    title: "Palavras Finais",
+    location: "Casa do Intérprete",
+    characters: ["cristao", "interprete"],
+    narrative: [
+      "O homem te diz que entender essas coisas é essencial para continuar."
+    ],
+    choices: [
+      {
+        text: "Agradecer",
+        nextChapterId: "fase2-cena11",
+        effects: { fe: 1 }
+      },
+      {
+        text: "Permanecer indiferente",
+        nextChapterId: "fase2-cena11",
+        effects: {}
+      }
+    ]
+  },
+
+  "fase2-cena11": {
+    id: "fase2-cena11",
+    title: "Nova Compreensão",
+    location: "Saída da Casa",
+    characters: ["cristao"],
+    narrative: [
+      "Você sai da casa com uma nova compreensão. Sua jornada continua."
     ],
     choices: [],
     isEnding: true,
