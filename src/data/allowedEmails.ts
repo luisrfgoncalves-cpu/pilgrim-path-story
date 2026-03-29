@@ -1,16 +1,31 @@
-// Lista de emails de acesso autorizados para o app O Peregrino
-// Cada email é único e deve ser vendido para apenas uma pessoa
-// Supabase Auth impede que dois usuários usem o mesmo email
+import { supabase } from '@/lib/supabase';
 
-const allowedEmails: string[] = [];
+/**
+ * Verifica se o email está na lista de acessos autorizados no Supabase
+ * e se ainda não foi usado por outro usuário.
+ */
+export const isEmailAllowed = async (email: string): Promise<{ allowed: boolean; reason?: string }> => {
+  const normalizedEmail = email.toLowerCase().trim();
+  
+  const { data, error } = await supabase
+    .from('allowed_emails')
+    .select('id, used')
+    .eq('email', normalizedEmail)
+    .maybeSingle();
 
-for (let i = 1; i <= 100; i++) {
-  const num = String(i).padStart(4, '0');
-  allowedEmails.push(`peregrino${num}@centrobiblico.online`);
-}
+  if (error) {
+    console.error('Erro ao verificar email:', error);
+    // Fallback: permitir (para não bloquear em caso de erro de rede)
+    return { allowed: true };
+  }
 
-export const ALLOWED_EMAILS = allowedEmails;
+  if (!data) {
+    return { allowed: false, reason: 'Este email não possui acesso autorizado. Adquira seu acesso em nossa página de vendas.' };
+  }
 
-export const isEmailAllowed = (email: string): boolean => {
-  return ALLOWED_EMAILS.includes(email.toLowerCase().trim());
+  if (data.used) {
+    return { allowed: false, reason: 'Este acesso já foi utilizado por outro usuário.' };
+  }
+
+  return { allowed: true };
 };
