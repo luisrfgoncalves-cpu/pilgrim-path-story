@@ -32,44 +32,56 @@ const Index = () => {
   const alreadyInstalled = isStandalone || localStorage.getItem('pwa_installed') === '1';
 
   useEffect(() => {
-    // Mark as installed if opened in standalone mode
+    const onBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setInstallPrompt(e as any);
+      if (!alreadyInstalled) setShowInstallBanner(true);
+    };
+
+    const onAppInstalled = () => {
+      localStorage.setItem('pwa_installed', '1');
+      setShowInstallBanner(false);
+      setInstallPrompt(null);
+      sessionStorage.setItem('install_banner_dismissed', '1');
+    };
+
+    window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt);
+    window.addEventListener('appinstalled', onAppInstalled);
+
     if (isStandalone) {
       localStorage.setItem('pwa_installed', '1');
-      return;
-    }
-    if (alreadyInstalled) return;
-    const dismissed = sessionStorage.getItem('install_banner_dismissed');
-    if (dismissed) return;
-
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setInstallPrompt(e);
-      setShowInstallBanner(true);
-    };
-    window.addEventListener('beforeinstallprompt', handler);
-
-    if (isMobile && !alreadyInstalled) {
-      const timeout = setTimeout(() => {
-        setShowInstallBanner(prev => prev ? prev : true);
+    } else if (!alreadyInstalled && !sessionStorage.getItem('install_banner_dismissed')) {
+      const timeout = window.setTimeout(() => {
+        if (isIOS) setShowInstallBanner(true);
       }, 3000);
-      return () => { clearTimeout(timeout); window.removeEventListener('beforeinstallprompt', handler); };
+
+      return () => {
+        clearTimeout(timeout);
+        window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt);
+        window.removeEventListener('appinstalled', onAppInstalled);
+      };
     }
 
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', onAppInstalled);
+    };
+  }, [alreadyInstalled, isIOS, isStandalone]);
 
   const handleInstall = async () => {
     if (installPrompt) {
       installPrompt.prompt();
-      const result = await installPrompt.userChoice;
-      if (result.outcome === 'accepted') {
-        setShowInstallBanner(false);
-        localStorage.setItem('pwa_installed', '1');
-      }
+      await installPrompt.userChoice;
       setInstallPrompt(null);
-    } else {
-      setShowInstallInstructions(true);
+      return;
     }
+
+    if (isIOS) {
+      setShowInstallInstructions(true);
+      return;
+    }
+
+    toast.info('Para instalar de verdade no Android, use o Chrome e toque em "Instalar aplicativo".');
   };
 
   const dismissInstallBanner = () => {
@@ -180,8 +192,8 @@ const Index = () => {
               <div className="space-y-3 text-sm text-foreground/80">
                 <p className="font-display text-primary text-xs uppercase tracking-wider">No Android:</p>
                 <div className="flex items-start gap-3"><span className="text-primary font-bold">1.</span><p>Toque no menu <strong className="text-foreground">⋮</strong> (três pontos) no Chrome</p></div>
-                <div className="flex items-start gap-3"><span className="text-primary font-bold">2.</span><p>Toque em <strong className="text-foreground">"Instalar aplicativo"</strong></p></div>
-                <div className="flex items-start gap-3"><span className="text-primary font-bold">3.</span><p>Confirme tocando em <strong className="text-foreground">"Instalar"</strong></p></div>
+                <div className="flex items-start gap-3"><span className="text-primary font-bold">2.</span><p>Toque em <strong className="text-foreground">"Instalar aplicativo"</strong> (não use “Adicionar à tela inicial”)</p></div>
+                <div className="flex items-start gap-3"><span className="text-primary font-bold">3.</span><p>Se não aparecer “Instalar aplicativo”, abra no <strong className="text-foreground">Google Chrome</strong> e tente novamente</p></div>
               </div>
             )}
             <button onClick={() => setShowInstallInstructions(false)} className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-display font-bold text-sm">Entendi!</button>

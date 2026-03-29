@@ -22,14 +22,18 @@ export default defineConfig(({ mode }) => ({
         enabled: false,
       },
       manifest: {
+        id: "/?source=pwa",
         name: "O Peregrino - Jornada Interativa",
         short_name: "O Peregrino",
         description: "Viva a jornada do Peregrino em uma experiência interativa e imersiva baseada na obra clássica de John Bunyan.",
         start_url: "/",
+        scope: "/",
         display: "standalone",
-        background_color: "#1a1207",
-        theme_color: "#b8860b",
+        display_override: ["standalone", "minimal-ui"],
+        background_color: "#000000",
+        theme_color: "#000000",
         orientation: "portrait",
+        prefer_related_applications: false,
         icons: [
           {
             src: "/icons/icon-192.png",
@@ -44,13 +48,13 @@ export default defineConfig(({ mode }) => ({
             purpose: "any",
           },
           {
-            src: "/icons/icon-192.png",
+            src: "/icons/icon-maskable-192.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "maskable",
           },
           {
-            src: "/icons/icon-512.png",
+            src: "/icons/icon-maskable-512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "maskable",
