@@ -78,6 +78,8 @@ const ScenePage = () => {
   const [miniGameReady, setMiniGameReady] = useState(false);
   // Character entrance reveal
   const [charReveal, setCharReveal] = useState<{ name: string; img: string; role?: string } | null>(null);
+  const [charRevealDone, setCharRevealDone] = useState(false); // After reveal, show persistent portrait
+  const [persistentChar, setPersistentChar] = useState<{ name: string; img: string; role?: string } | null>(null);
   const { triggerChoiceEffect, triggerSceneEntryVFX } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
