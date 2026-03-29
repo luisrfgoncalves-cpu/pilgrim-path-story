@@ -13,6 +13,7 @@ import { useAtmosphere } from '@/hooks/useAtmosphere';
 import { useDynamicEvents } from '@/hooks/useDynamicEvents';
 import { rollInvisibleDice, applyDiceToEffects, getDiceNarrativeHint } from '@/lib/invisibleDice';
 import { rollForSurprise, Surprise } from '@/lib/gameLoop';
+import { applyIntensityToEffects } from '@/lib/replayEngine';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import AttributeBars from '@/components/AttributeBars';
 import Inventory from '@/components/Inventory';
@@ -46,7 +47,7 @@ const ScenePage = () => {
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
   // Dynamic events system
-  const dynamicEvents = useDynamicEvents(progress, progress.currentChapterId);
+  const dynamicEvents = useDynamicEvents(progress, progress.currentChapterId, history);
 
   // Emotional state system (9 postures)
   const emotional = useMemo(() => 
@@ -153,9 +154,11 @@ const ScenePage = () => {
   }, [narrativeIndex, chapter, fullNarrative.length]);
 
   const executeChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
+    // Apply adaptive intensity based on replay history
+    const intensityAdjusted = applyIntensityToEffects(effects, dynamicEvents.intensity);
     // Roll the invisible dice — modifies effects based on attributes + luck
     const diceOutcome = rollInvisibleDice(progress.attributes);
-    const modifiedEffects = applyDiceToEffects(effects, diceOutcome);
+    const modifiedEffects = applyDiceToEffects(intensityAdjusted, diceOutcome);
     const diceHint = getDiceNarrativeHint(diceOutcome);
 
     triggerChoiceEffect(modifiedEffects as Record<string, number>);
