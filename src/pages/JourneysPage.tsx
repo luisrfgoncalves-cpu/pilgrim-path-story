@@ -96,12 +96,9 @@ const JourneysPage = () => {
   const { progress, goToChapter, startJourney, resetProgress } = useStoryProgress();
   const [expandedPhase, setExpandedPhase] = useState<string | null>(null);
 
-  const isPart2 = progress.campaign === 'part2';
-  const PHASES = isPart2 ? PHASES_PART2 : PHASES_PART1;
-  const activeChapters = isPart2 ? part2Chapters : storyChapters;
-  const activeChapterOrder = isPart2 ? part2ChapterOrder : chapterOrder;
+  const currentCampaign = progress.campaign || 'part1';
 
-  const handleChapterClick = (chapterId: string) => {
+  const handleChapterClick = (chapterId: string, campaign: 'part1' | 'part2') => {
     if (progress.visitedChapters.includes(chapterId)) {
       goToChapter(chapterId);
       startJourney();
@@ -110,8 +107,8 @@ const JourneysPage = () => {
     }
   };
 
-  const handlePhaseReplay = (phaseId: string) => {
-    const phaseChapters = getPhaseChapterIds(phaseId);
+  const handlePhaseReplay = (phaseId: string, campaign: 'part1' | 'part2') => {
+    const phaseChapters = getPhaseChapterIds(phaseId, campaign);
     const firstVisited = phaseChapters.find(id => progress.visitedChapters.includes(id));
     if (firstVisited) {
       goToChapter(firstVisited);
@@ -121,12 +118,12 @@ const JourneysPage = () => {
     }
   };
 
-  const getPhaseChapterIds = (phaseId: string) => {
-    if (isPart2) {
+  const getPhaseChapterIds = (phaseId: string, campaign: 'part1' | 'part2' = 'part1') => {
+    if (campaign === 'part2' || phaseId.startsWith('p2-')) {
       if (phaseId === 'p2-fase1') {
-        return activeChapterOrder.filter(id => /^p2-cena\d+$/.test(id));
+        return part2ChapterOrder.filter(id => /^p2-cena\d+$/.test(id));
       }
-      return activeChapterOrder.filter(id => id.startsWith(phaseId.replace('p2-fase', 'p2-fase') + '-'));
+      return part2ChapterOrder.filter(id => id.startsWith(phaseId.replace('p2-fase', 'p2-fase') + '-'));
     }
     if (phaseId === 'fase1') {
       return chapterOrder.filter(id => /^cena\d+$/.test(id));
@@ -134,23 +131,36 @@ const JourneysPage = () => {
     return chapterOrder.filter(id => id.startsWith(phaseId + '-'));
   };
 
-  const groupedChapters = useMemo(() => {
-    return PHASES.map(phase => ({
+  const groupedChaptersPart1 = useMemo(() => {
+    return PHASES_PART1.map(phase => ({
       ...phase,
-      chapters: getPhaseChapterIds(phase.id)
-        .map(id => ({ id, chapter: activeChapters[id] }))
+      campaign: 'part1' as const,
+      chapters: getPhaseChapterIds(phase.id, 'part1')
+        .map(id => ({ id, chapter: storyChapters[id] }))
         .filter(c => c.chapter),
     }));
-  }, [isPart2, progress.visitedChapters]);
+  }, [progress.visitedChapters]);
 
-  const totalVisited = progress.visitedChapters.length;
-  const total = activeChapterOrder.length;
+  const groupedChaptersPart2 = useMemo(() => {
+    return PHASES_PART2.map(phase => ({
+      ...phase,
+      campaign: 'part2' as const,
+      chapters: getPhaseChapterIds(phase.id, 'part2')
+        .map(id => ({ id, chapter: part2Chapters[id] }))
+        .filter(c => c.chapter),
+    }));
+  }, [progress.visitedChapters]);
 
-  const isPhaseVisited = (phaseId: string) =>
-    getPhaseChapterIds(phaseId).some(id => progress.visitedChapters.includes(id));
+  const totalVisitedPart1 = chapterOrder.filter(id => progress.visitedChapters.includes(id)).length;
+  const totalVisitedPart2 = part2ChapterOrder.filter(id => progress.visitedChapters.includes(id)).length;
+  const totalVisited = totalVisitedPart1 + totalVisitedPart2;
+  const total = chapterOrder.length + part2ChapterOrder.length;
 
-  const isPhaseComplete = (phaseId: string) => {
-    const phaseChapters = getPhaseChapterIds(phaseId);
+  const isPhaseVisited = (phaseId: string, campaign: 'part1' | 'part2') =>
+    getPhaseChapterIds(phaseId, campaign).some(id => progress.visitedChapters.includes(id));
+
+  const isPhaseComplete = (phaseId: string, campaign: 'part1' | 'part2') => {
+    const phaseChapters = getPhaseChapterIds(phaseId, campaign);
     return phaseChapters.length > 0 && phaseChapters.every(id => progress.visitedChapters.includes(id));
   };
 
@@ -180,7 +190,7 @@ const JourneysPage = () => {
           </button>
           <div className="flex-1">
             <h1 className="font-display text-lg" style={{ color: 'hsl(40 60% 70%)' }}>
-              📜 {isPart2 ? 'Mapa da Peregrina' : 'Mapa do Peregrino'}
+              📜 Mapa da Jornada
             </h1>
             <div className="flex items-center gap-2">
               <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'hsl(30 20% 15%)', border: '1px solid hsl(40 30% 25% / 0.4)' }}>
@@ -203,7 +213,7 @@ const JourneysPage = () => {
       <div className="max-w-lg mx-auto">
         <ScreenHero
           icon={<Compass className="w-full h-full" />}
-          name={isPart2 ? 'Mapa da Peregrina' : 'Mapa do Peregrino'}
+          name="Mapa da Jornada"
           subtitle={`${Math.round((totalVisited / total) * 100)}% explorado`}
           sfx="gameStart"
           size="md"
@@ -218,18 +228,14 @@ const JourneysPage = () => {
             <span style={{ color: 'hsl(40 60% 55%)' }}>⚜️</span>
             <div className="h-px w-10" style={{ background: 'hsl(40 50% 45% / 0.4)' }} />
           </div>
-          <h2 className="font-display text-xl" style={{ color: 'hsl(38 50% 72%)', textShadow: '0 2px 8px hsl(0 0% 0% / 0.6)' }}>
-            {isPart2 ? 'A Jornada da Peregrina' : 'O Progresso do Peregrino'}
-          </h2>
-          <p className="text-xs italic font-body mt-1" style={{ color: 'hsl(35 25% 50%)' }}>
-            {isPart2 ? 'A caminhada de Cristã e seus companheiros' : 'Da Cidade da Destruição à Cidade Celestial'}
-          </p>
+          <h2 className="font-display text-xl" style={{ color: 'hsl(38 50% 72%)', textShadow: '0 2px 8px hsl(0 0% 0% / 0.6)' }}>Parte I — O Peregrino</h2>
+          <p className="text-xs italic font-body mt-1" style={{ color: 'hsl(35 25% 50%)' }}>Da Cidade da Destruição à Cidade Celestial</p>
         </div>
 
         {/* Phases */}
-        {groupedChapters.map((phase, phaseIdx) => {
-          const visited = isPhaseVisited(phase.id);
-          const complete = isPhaseComplete(phase.id);
+        {groupedChaptersPart1.map((phase, phaseIdx) => {
+          const visited = isPhaseVisited(phase.id, 'part1');
+          const complete = isPhaseComplete(phase.id, 'part1');
           const current = isCurrentPhase(phase.id);
           const expanded = expandedPhase === phase.id;
           const visitedCount = phase.chapters.filter(c => progress.visitedChapters.includes(c.id)).length;
@@ -241,7 +247,7 @@ const JourneysPage = () => {
                 <div className="flex justify-center">
                   <div className="w-0.5 h-8" style={{
                     background: visited
-                      ? `linear-gradient(180deg, ${PHASES[phaseIdx - 1].color}80, ${phase.color}80)`
+                      ? `linear-gradient(180deg, ${PHASES_PART1[phaseIdx - 1].color}80, ${phase.color}80)`
                       : 'hsl(30 15% 20%)',
                   }} />
                 </div>
@@ -382,6 +388,7 @@ const JourneysPage = () => {
                         {/* Replay phase button */}
                         <button
                           onClick={() => handlePhaseReplay(phase.id)}
+                          onClick={() => handlePhaseReplay(phase.id, 'part1')}
                           className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all active:scale-[0.98]"
                           style={{
                             background: `${phase.color}20`,
@@ -420,7 +427,7 @@ const JourneysPage = () => {
                             return (
                               <button
                                 key={item.id}
-                                onClick={() => handleChapterClick(item.id)}
+                                onClick={() => handleChapterClick(item.id, 'part1')}
                                 disabled={!unlocked}
                                 className="w-full text-left transition-all active:scale-[0.98]"
                               >
