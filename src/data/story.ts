@@ -350,6 +350,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     reflection: "r5",
     interactionType: 'hold',
+    narrative: [
       "O terreno começa a ficar instável. Você entra em uma área difícil de atravessar."
     ],
     toneNarrative: [
