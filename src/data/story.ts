@@ -30,6 +30,15 @@ export interface StoryChoice {
   conditionalEffects?: ConditionalEffect[];
 }
 
+/** Tone variation: shows different text based on whether an attribute is high or low */
+export interface ToneNarrative {
+  attr: keyof ChoiceEffect;
+  highThreshold: number;
+  highText: string;
+  lowThreshold: number;
+  lowText: string;
+}
+
 export interface StoryChapter {
   id: string;
   title: string;
@@ -40,6 +49,8 @@ export interface StoryChapter {
   flagNarrative?: { flag: string; text: string }[];
   /** Narrative segments shown only if the player does NOT have a flag */
   noFlagNarrative?: { flag: string; text: string }[];
+  /** Tone-based narrative: shows confident or insecure text based on attributes */
+  toneNarrative?: ToneNarrative[];
   choices: StoryChoice[];
   isEnding?: boolean;
   endingType?: 'parte1';
@@ -97,6 +108,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     reflection: "r1",
     narrative: [
       "Você vive na Cidade da Destruição. Tudo parece normal, mas algo dentro de você está inquieto."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "Mesmo assim, há uma certeza silenciosa dentro de você. Você sabe que precisa agir.", lowThreshold: 3, lowText: "A dúvida te consome. Será que esse sentimento é real ou apenas medo?" }
     ],
     choices: [
       {
@@ -234,6 +248,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Você vê dois caminhos: um fácil e outro estreito e difícil."
     ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 6, highText: "Seu discernimento te permite ver além das aparências. O caminho fácil esconde armadilhas.", lowThreshold: 3, lowText: "Os dois parecem iguais. Você não consegue distinguir qual é melhor." },
+      { attr: "coragem", highThreshold: 6, highText: "Algo dentro de você se inclina para o desafio. O difícil não te assusta.", lowThreshold: 3, lowText: "O medo te puxa para o caminho mais seguro. Será que vale arriscar?" }
+    ],
     choices: [
       {
         text: "Caminho fácil",
@@ -319,6 +337,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     reflection: "r5",
     narrative: [
       "O terreno começa a ficar instável. Você entra em uma área difícil de atravessar."
+    ],
+    toneNarrative: [
+      { attr: "perseveranca", highThreshold: 6, highText: "Você já superou desafios antes. Seus pés encontram apoio onde outros escorregariam.", lowThreshold: 3, lowText: "Cada passo é um esforço enorme. Você se pergunta se deveria ter vindo até aqui." }
     ],
     choices: [
       {
@@ -446,6 +467,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "interprete"],
     narrative: [
       "Um homem te recebe e diz que ali você verá coisas importantes para sua jornada."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "Você sente que esse encontro não é por acaso. Sua fé te diz: ouça com atenção.", lowThreshold: 3, lowText: "Você desconfia. Será que esse homem realmente pode te ajudar?" },
+      { attr: "discernimento", highThreshold: 6, highText: "Seus olhos percebem detalhes que outros não veriam. Há sabedoria neste lugar.", lowThreshold: 3, lowText: "Tudo parece confuso. Você mal consegue prestar atenção nas palavras dele." }
     ],
     choices: [
       {
@@ -704,6 +729,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "O silêncio do vale é perturbador. Você sente que está sendo observado."
     ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 7, highText: "Mas o silêncio não te intimida. Você já enfrentou coisas piores.", lowThreshold: 3, lowText: "Seu coração dispara. O silêncio parece gritar que você não deveria estar aqui." },
+      { attr: "fe", highThreshold: 7, highText: "Uma paz inexplicável te acompanha, mesmo na escuridão.", lowThreshold: 3, lowText: "Você se sente completamente sozinho. Será que alguém sabe que você está aqui?" }
+    ],
     choices: [
       {
         text: "Permanecer firme",
@@ -725,6 +754,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     narrative: [
       "Uma presença surge à sua frente. Algo tenta te impedir de continuar."
+    ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 8, highText: "Você ergue a cabeça. Seja o que for, não vai te parar.", lowThreshold: 3, lowText: "Suas pernas tremem. Tudo dentro de você grita para fugir." }
     ],
     choices: [
       {
@@ -938,6 +970,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     flagNarrative: [
       { flag: "enfrentou_vale", text: "Depois do vale escuro, a luz e o barulho da feira são quase um alívio — mas algo parece errado." }
     ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 7, highText: "Com olhos atentos, você percebe que cada oferta aqui tem um preço oculto.", lowThreshold: 3, lowText: "Tudo parece fascinante. É difícil não se deixar levar pela energia do lugar." },
+      { attr: "fe", highThreshold: 7, highText: "Sua fé te mantém centrado. Você sabe por que está aqui.", lowThreshold: 3, lowText: "Você se questiona: será que o que busca realmente vale mais que tudo isso?" }
+    ],
     noFlagNarrative: [
       { flag: "enfrentou_vale", text: "O contraste com o caminho anterior é impressionante. A feira pulsa com vida e energia." }
     ],
@@ -1045,6 +1081,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     narrative: [
       "A pressão aumenta. Pessoas começam a notar que você não pertence àquele lugar."
+    ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 7, highText: "Você sustenta o olhar deles. Não vai se esconder.", lowThreshold: 3, lowText: "Você abaixa a cabeça. A vontade de desaparecer é quase insuportável." }
     ],
     noFlagNarrative: [
       { flag: "observou_feira", text: "Sem ter observado com cuidado antes, é difícil entender o que está acontecendo ao redor." }
