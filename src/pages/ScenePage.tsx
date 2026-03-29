@@ -5,14 +5,20 @@ import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect, ToneNarrati
 import { sceneImages } from '@/data/sceneImages';
 import { getEmotionalState, getEmotionalClasses } from '@/lib/emotionalIntensity';
 import { analyzePerformance } from '@/lib/performanceAnalysis';
+import { useVisualEffects } from '@/hooks/useVisualEffects';
+import PilgrimAvatar from '@/components/PilgrimAvatar';
+import AttributeBars from '@/components/AttributeBars';
+import Inventory from '@/components/Inventory';
 import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle } from 'lucide-react';
 
 const ScenePage = () => {
   const navigate = useNavigate();
-  const { progress, makeChoice, meetsRequirements, hasFlag, isReplay, completePlaythrough, hadFlagBefore } = useStoryProgress();
+  const { progress, makeChoice, meetsRequirements, hasFlag, isReplay, completePlaythrough, hadFlagBefore, addItem } = useStoryProgress();
   const [narrativeIndex, setNarrativeIndex] = useState(0);
   const [showChoices, setShowChoices] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [showStats, setShowStats] = useState(false);
+  const { triggerChoiceEffect } = useVisualEffects();
 
   const chapter = getChapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
@@ -74,7 +80,13 @@ const ScenePage = () => {
     }
   }, [narrativeIndex, chapter, fullNarrative.length]);
 
-  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[]) => {
+  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
+    triggerChoiceEffect(effects as Record<string, number>);
+
+    if (item) {
+      addItem(item);
+    }
+
     if (consequence) {
       navigate('/resultado', {
         state: {
@@ -86,6 +98,7 @@ const ScenePage = () => {
           attributeChanges: effects,
           flag,
           conditionalEffects,
+          item,
         }
       });
     } else {
@@ -109,18 +122,33 @@ const ScenePage = () => {
   const lockedChoices = chapter.choices.filter(c => !meetsRequirements(c.requires) && !c.requiresFlag && !c.excludesFlag);
 
   return (
-    <div className={`min-h-screen bg-background flex flex-col transition-all duration-1000 ${emotionalClass}`}>
-      {/* Header */}
+    <div id="scene-container" className={`min-h-screen bg-background flex flex-col transition-all duration-1000 ${emotionalClass}`}>
+      {/* Header with avatar */}
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
-        <div className="flex items-center justify-between max-w-lg mx-auto">
-          <button onClick={() => navigate('/')} className="text-muted-foreground hover:text-foreground transition-colors text-xs">
+        <div className="flex items-center gap-3 max-w-lg mx-auto">
+          <button onClick={() => setShowStats(s => !s)} className="flex-shrink-0">
+            <PilgrimAvatar attributes={progress.attributes} tone={emotional?.tone} size="sm" />
+          </button>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <div className="h-0.5 flex-1 bg-secondary rounded-full overflow-hidden">
+                <div className="h-full bg-primary transition-all duration-700 rounded-full" style={{ width: `${progressPercent}%` }} />
+              </div>
+              <span className="text-[10px] text-muted-foreground flex-shrink-0">{progressPercent}%</span>
+            </div>
+          </div>
+          <button onClick={() => navigate('/')} className="text-muted-foreground hover:text-foreground transition-colors text-xs flex-shrink-0">
             ← Início
           </button>
-          <div className="h-0.5 flex-1 mx-4 bg-secondary rounded-full overflow-hidden">
-            <div className="h-full bg-primary transition-all duration-700 rounded-full" style={{ width: `${progressPercent}%` }} />
-          </div>
-          <span className="text-[10px] text-muted-foreground">{progressPercent}%</span>
         </div>
+
+        {/* Expandable attribute bars */}
+        {showStats && (
+          <div className="max-w-lg mx-auto pt-3 pb-1 animate-fade-in space-y-3">
+            <AttributeBars attributes={progress.attributes} compact />
+            {progress.items.length > 0 && <Inventory items={progress.items} compact />}
+          </div>
+        )}
       </header>
 
       <main className="flex-1 max-w-lg mx-auto w-full">
@@ -262,12 +290,15 @@ const ScenePage = () => {
                   {availableChoices.map((choice, i) => (
                     <button
                       key={i}
-                      onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects)}
+                      onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
                       className="w-full text-left p-4 rounded-lg bg-card border border-border hover:border-primary/50 hover:glow-gold transition-all duration-300 group"
                     >
                       <p className="text-foreground font-body text-sm group-hover:text-gold transition-colors">{choice.text}</p>
                       {choice.requires && (
                         <p className="text-[10px] text-primary mt-1.5 uppercase tracking-wider">★ Escolha desbloqueada por seus atributos</p>
+                      )}
+                      {choice.item && (
+                        <p className="text-[10px] text-amber-400 mt-1 uppercase tracking-wider">✦ Concede um item</p>
                       )}
                     </button>
                   ))}

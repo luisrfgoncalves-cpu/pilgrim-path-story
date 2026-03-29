@@ -39,6 +39,7 @@ export interface StoryProgress {
   attributes: PlayerAttributes;
   decisions: DecisionRecord[];
   flags: Record<string, boolean>;
+  items: string[];
   started: boolean;
   playthrough: number;
 }
@@ -68,6 +69,7 @@ const getInitialProgress = (): StoryProgress => {
         attributes: parsed.attributes || defaultAttributes,
         decisions: parsed.decisions || [],
         flags: parsed.flags || {},
+        items: parsed.items || [],
         started: parsed.started ?? false,
         playthrough: parsed.playthrough ?? 1,
       };
@@ -81,6 +83,7 @@ const getInitialProgress = (): StoryProgress => {
     attributes: defaultAttributes,
     decisions: [],
     flags: {},
+    items: [],
     started: false,
     playthrough: history.totalPlaythroughs + 1,
   };
@@ -188,6 +191,7 @@ export const useStoryProgress = () => {
       attributes: defaultAttributes,
       decisions: [],
       flags: {},
+      items: [],
       started: false,
       playthrough: hist.totalPlaythroughs + 1,
     });
@@ -213,9 +217,20 @@ export const useStoryProgress = () => {
     return history.playthroughs.some(p => p.flags.includes(flag));
   }, [history.playthroughs]);
 
+  const addItem = useCallback((itemId: string) => {
+    setProgress(prev => {
+      if (prev.items.includes(itemId)) return prev;
+      return { ...prev, items: [...prev.items, itemId] };
+    });
+  }, []);
+
+  const hasItem = useCallback((itemId: string): boolean => {
+    return progress.items.includes(itemId);
+  }, [progress.items]);
+
   return {
     progress, makeChoice, goToChapter, resetProgress, startJourney,
     hasProgress, hasFlag, meetsRequirements, history, isReplay,
-    completePlaythrough, hadFlagBefore,
+    completePlaythrough, hadFlagBefore, addItem, hasItem,
   };
 };

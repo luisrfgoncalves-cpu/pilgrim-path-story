@@ -26,8 +26,9 @@ export interface StoryChoice {
   flag?: string;
   requiresFlag?: string;
   excludesFlag?: string;
-  /** Delayed consequences: bonus/penalty based on current attributes */
   conditionalEffects?: ConditionalEffect[];
+  /** Item granted when this choice is made */
+  item?: string;
 }
 
 /** Tone variation: shows different text based on whether an attribute is high or low */
@@ -268,7 +269,8 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Caminho estreito",
         nextChapterId: "cena9",
         effects: { fe: 2 },
-        flag: "escolheu_caminho_estreito"
+        flag: "escolheu_caminho_estreito",
+        item: "pergaminho_verdade"
       }
     ]
   },
@@ -458,7 +460,8 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Entrar",
         nextChapterId: "fase2-cena2",
         effects: { fe: 1 },
-        flag: "entrou_casa_interprete"
+        flag: "entrou_casa_interprete",
+        item: "lampada_discernimento"
       },
       {
         text: "Ignorar e seguir",
@@ -722,7 +725,8 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Continuar mesmo assim",
         nextChapterId: "fase3-cena2",
         effects: { coragem: 1 },
-        flag: "enfrentou_vale"
+        flag: "enfrentou_vale",
+        item: "armadura_fe"
       },
       {
         text: "Hesitar",
@@ -775,6 +779,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         nextChapterId: "fase3-cena4",
         effects: { coragem: 2 },
         flag: "enfrentou_presenca",
+        item: "manto_coragem",
         conditionalEffects: [
           { attr: "fe", threshold: 8, bonus: { coragem: 1 }, penalty: { coragem: -1 } }
         ]
@@ -1113,6 +1118,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         nextChapterId: "fase4-cena6",
         effects: { coragem: 2 },
         flag: "permaneceu_diferente",
+        item: "pedra_memorial",
         conditionalEffects: [
           { attr: "coragem", threshold: 6, bonus: { perseveranca: 1 }, penalty: {} }
         ]
@@ -1468,6 +1474,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         nextChapterId: "fase5-cena9",
         effects: { fe: 2 },
         flag: "escapou_castelo_fe",
+        item: "chave_promessa",
         conditionalEffects: [
           { attr: "fe", threshold: 6, bonus: { perseveranca: 2 }, penalty: {} }
         ]
@@ -1608,6 +1615,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         nextChapterId: "fase6-cena5",
         effects: { fe: 2 },
         flag: "confiou_rio",
+        item: "selo_peregrino",
         conditionalEffects: [
           { attr: "fe", threshold: 7, bonus: { perseveranca: 2, coragem: 1 }, penalty: {} }
         ]
