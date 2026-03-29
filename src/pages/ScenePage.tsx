@@ -27,8 +27,10 @@ import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEve
 import { MiniGame, MiniGameResult } from '@/components/MiniGames';
 import { FullscreenMiniGame, FULLSCREEN_GAMES } from '@/components/FullscreenMiniGame';
 import { miniGameMappings } from '@/data/miniGameMappings';
+import { playGameSfx } from '@/lib/gameSfx';
 import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, ArrowLeft, Zap, Star, Shield, Flame } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
+import { useAuth } from '@/contexts/AuthContext';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
   fe: { label: 'Fé', emoji: '🔥', icon: Flame },
