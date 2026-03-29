@@ -53,6 +53,12 @@ const AuthPage: React.FC = () => {
         setSubmitting(false);
         return;
       }
+      // Verificar se o email está na lista de acessos autorizados
+      if (!isEmailAllowed(email)) {
+        toast.error('Este email não possui acesso autorizado. Adquira seu acesso em nossa página de vendas.');
+        setSubmitting(false);
+        return;
+      }
       const { error } = await signUp(email, password, displayName);
       if (error) {
         toast.error(error.message);
