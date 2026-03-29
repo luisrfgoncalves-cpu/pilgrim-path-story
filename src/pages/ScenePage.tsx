@@ -48,7 +48,7 @@ interface InlineConsequence {
 
 const ScenePage = () => {
   const navigate = useNavigate();
-  const { progress, makeChoice, meetsRequirements, hasFlag, isReplay, completePlaythrough, hadFlagBefore, addItem, history } = useStoryProgress();
+  const { progress, makeChoice, goToChapter, meetsRequirements, hasFlag, isReplay, completePlaythrough, hadFlagBefore, addItem, history } = useStoryProgress();
   useProgressSync(progress);
   const [narrativeIndex, setNarrativeIndex] = useState(0);
   const [showChoices, setShowChoices] = useState(false);
@@ -402,7 +402,24 @@ const ScenePage = () => {
               <span className="text-xs text-muted-foreground flex-shrink-0 font-display">{progressPercent}%</span>
             </div>
           </div>
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Back to previous scene */}
+            {progress.visitedChapters.length > 1 && (
+              <button
+                onClick={() => {
+                  const visited = progress.visitedChapters;
+                  const currentIdx = visited.indexOf(progress.currentChapterId);
+                  const prevId = currentIdx > 0 ? visited[currentIdx - 1] : visited[visited.length - 2];
+                  if (prevId && prevId !== progress.currentChapterId) {
+                    goToChapter(prevId);
+                  }
+                }}
+                className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95"
+                aria-label="Cena anterior"
+              >
+                <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+              </button>
+            )}
             <button
               onClick={() => { const next = !audioOn; setAudioOn(next); toggleAudio(next); }}
               className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95"

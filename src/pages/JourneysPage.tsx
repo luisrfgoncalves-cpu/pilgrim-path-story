@@ -63,6 +63,16 @@ const JourneysPage = () => {
     }
   };
 
+  const handlePhaseReplay = (phaseId: string) => {
+    const phaseChapters = getPhaseChapterIds(phaseId);
+    const firstVisited = phaseChapters.find(id => progress.visitedChapters.includes(id));
+    if (firstVisited) {
+      goToChapter(firstVisited);
+      startJourney();
+      navigate('/cena');
+    }
+  };
+
   const getPhaseChapterIds = (phaseId: string) => {
     if (phaseId === 'fase1') {
       // Fase 1 chapters use "cena1"-"cena15" (no prefix)
