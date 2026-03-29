@@ -217,9 +217,20 @@ export const useStoryProgress = () => {
     return history.playthroughs.some(p => p.flags.includes(flag));
   }, [history.playthroughs]);
 
+  const addItem = useCallback((itemId: string) => {
+    setProgress(prev => {
+      if (prev.items.includes(itemId)) return prev;
+      return { ...prev, items: [...prev.items, itemId] };
+    });
+  }, []);
+
+  const hasItem = useCallback((itemId: string): boolean => {
+    return progress.items.includes(itemId);
+  }, [progress.items]);
+
   return {
     progress, makeChoice, goToChapter, resetProgress, startJourney,
     hasProgress, hasFlag, meetsRequirements, history, isReplay,
-    completePlaythrough, hadFlagBefore,
+    completePlaythrough, hadFlagBefore, addItem, hasItem,
   };
 };
