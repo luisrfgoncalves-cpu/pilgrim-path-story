@@ -538,6 +538,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Sala da Poeira",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+    interactionType: 'hold',
     narrative: [
       "Ele te leva a uma sala onde alguém tenta limpar o chão, mas a poeira só aumenta."
     ],
