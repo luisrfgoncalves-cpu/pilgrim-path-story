@@ -79,9 +79,12 @@ const ScenePage = () => {
     }
   }, [narrativeIndex, chapter, fullNarrative.length]);
 
-  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[]) => {
-    // Trigger visual effect based on choice impact
+  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
     triggerChoiceEffect(effects as Record<string, number>);
+
+    if (item) {
+      addItem(item);
+    }
 
     if (consequence) {
       navigate('/resultado', {
@@ -94,6 +97,7 @@ const ScenePage = () => {
           attributeChanges: effects,
           flag,
           conditionalEffects,
+          item,
         }
       });
     } else {
