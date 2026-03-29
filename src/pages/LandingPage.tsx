@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Sparkles, ChevronRight, ChevronDown, BookOpen, Users, Star, Shield, Flame, Zap,
   Share2, Smartphone, Clock, Check, X, CreditCard, QrCode,
   Swords, Gamepad2, Brain, Eye, Heart, Crown, Map, Trophy, Lock,
-  Play, Award, Timer, Target, Compass, ArrowRight, MessageCircle, Gift
+  Play, Award, Timer, Target, Compass, ArrowRight, MessageCircle, Gift,
+  Bell
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -39,25 +40,39 @@ import sealImg from '@/assets/medieval-seal.png';
 import logoImg from '@/assets/logo-peregrino.png';
 import pilgrimStanding from '@/assets/pilgrim-standing.png';
 
-const SALE_URL = 'https://ocapelao-app.centrobiblico.online/venda';
+const SALE_URL = 'https://pay.kiwify.com.br/TZv1sS9';
 
 /* ═══════════════════════════════════════════════════════════
-   COUNTDOWN TIMER
+   SMART COUNTDOWN TIMER — persists per visitor (localStorage)
+   Each visitor gets their own 24h deadline from first visit.
+   If it expires, a new 2h window starts to keep urgency.
    ═══════════════════════════════════════════════════════════ */
-const CountdownTimer = ({ compact = false }: { compact?: boolean }) => {
-  const getTarget = () => {
-    const now = new Date();
-    const target = new Date(now);
-    target.setHours(23, 59, 59, 999);
-    return target.getTime();
-  };
+const TIMER_KEY = 'peregrino_offer_deadline';
 
-  const [target] = useState(getTarget);
+function getSmartDeadline(): number {
+  const stored = localStorage.getItem(TIMER_KEY);
+  if (stored) {
+    const deadline = parseInt(stored, 10);
+    // If deadline is still in the future, use it
+    if (deadline > Date.now()) return deadline;
+    // Expired — set a new 2-hour window (re-urgency)
+    const newDeadline = Date.now() + 2 * 60 * 60 * 1000;
+    localStorage.setItem(TIMER_KEY, String(newDeadline));
+    return newDeadline;
+  }
+  // First visit: 24h from now
+  const deadline = Date.now() + 24 * 60 * 60 * 1000;
+  localStorage.setItem(TIMER_KEY, String(deadline));
+  return deadline;
+}
+
+const CountdownTimer = ({ compact = false }: { compact?: boolean }) => {
+  const [deadline] = useState(() => getSmartDeadline());
   const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0 });
 
   useEffect(() => {
     const tick = () => {
-      const diff = Math.max(0, target - Date.now());
+      const diff = Math.max(0, deadline - Date.now());
       setTimeLeft({
         h: Math.floor(diff / 3600000),
         m: Math.floor((diff % 3600000) / 60000),
@@ -67,7 +82,7 @@ const CountdownTimer = ({ compact = false }: { compact?: boolean }) => {
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [target]);
+  }, [deadline]);
 
   const pad = (n: number) => String(n).padStart(2, '0');
 
@@ -101,6 +116,111 @@ const CountdownTimer = ({ compact = false }: { compact?: boolean }) => {
 };
 
 /* ═══════════════════════════════════════════════════════════
+   SOCIAL PROOF POPUP — fake buyer notifications
+   ═══════════════════════════════════════════════════════════ */
+const BUYER_NAMES = [
+  'Lucas M.', 'Ana Paula S.', 'Rafael T.', 'Débora L.', 'Pedro H.', 'Camila R.',
+  'Marcos A.', 'Priscila F.', 'Gabriel O.', 'Juliana B.', 'Tiago N.', 'Raquel V.',
+  'Daniel C.', 'Fernanda K.', 'André M.', 'Beatriz S.', 'Matheus P.', 'Larissa G.',
+  'João V.', 'Amanda R.', 'Felipe D.', 'Patrícia L.', 'Gustavo H.', 'Mariana E.',
+  'Rodrigo F.', 'Isabela C.', 'Bruno S.', 'Carolina T.', 'Vinícius A.', 'Letícia M.',
+  'Thiago B.', 'Natália P.', 'Diego R.', 'Aline F.', 'Eduardo G.', 'Vanessa L.',
+  'Ricardo N.', 'Bruna D.', 'Samuel C.', 'Jéssica O.', 'Leonardo K.', 'Renata S.',
+  'Caio M.', 'Viviane T.', 'Henrique A.', 'Talita B.', 'Fábio R.', 'Elaine P.',
+  'William G.', 'Adriana F.', 'Alexandre C.', 'Michele V.', 'Roberto L.', 'Simone H.',
+  'Paulo E.', 'Luciana S.', 'Jorge D.', 'Sandra M.', 'Cláudio R.', 'Kelly A.',
+  'Pastor Ricardo', 'Líder Ana', 'Prof. Marcos', 'Diác. Joana', 'Pr. Josué',
+];
+
+const BUYER_CITIES = [
+  'São Paulo, SP', 'Rio de Janeiro, RJ', 'Belo Horizonte, MG', 'Curitiba, PR',
+  'Salvador, BA', 'Fortaleza, CE', 'Brasília, DF', 'Recife, PE', 'Manaus, AM',
+  'Porto Alegre, RS', 'Goiânia, GO', 'Belém, PA', 'Campinas, SP', 'Vitória, ES',
+  'Natal, RN', 'João Pessoa, PB', 'Florianópolis, SC', 'Maceió, AL', 'Teresina, PI',
+  'Campo Grande, MS', 'Uberlândia, MG', 'Londrina, PR', 'Joinville, SC', 'Santos, SP',
+];
+
+const BUYER_TIMES = [
+  'agora mesmo', 'há 2 minutos', 'há 5 minutos', 'há 8 minutos', 'há 12 minutos',
+  'há 15 minutos', 'há 20 minutos', 'há 30 minutos', 'há 1 hora',
+];
+
+const SocialProofPopup = () => {
+  const [visible, setVisible] = useState(false);
+  const [buyer, setBuyer] = useState({ name: '', city: '', time: '' });
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const indexRef = useRef(0);
+
+  const showNext = useCallback(() => {
+    const nameIdx = Math.floor(Math.random() * BUYER_NAMES.length);
+    const cityIdx = Math.floor(Math.random() * BUYER_CITIES.length);
+    const timeIdx = Math.min(indexRef.current, BUYER_TIMES.length - 1);
+    setBuyer({
+      name: BUYER_NAMES[nameIdx],
+      city: BUYER_CITIES[cityIdx],
+      time: BUYER_TIMES[timeIdx],
+    });
+    setVisible(true);
+    indexRef.current++;
+
+    // Hide after 4s
+    timeoutRef.current = setTimeout(() => {
+      setVisible(false);
+      // Show next in 15-40s
+      const next = 15000 + Math.random() * 25000;
+      timeoutRef.current = setTimeout(showNext, next);
+    }, 4000);
+  }, []);
+
+  useEffect(() => {
+    // First popup after 8-15s
+    const initial = 8000 + Math.random() * 7000;
+    timeoutRef.current = setTimeout(showNext, initial);
+    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
+  }, [showNext]);
+
+  return (
+    <div
+      className={`fixed bottom-4 left-4 z-[60] max-w-[300px] transition-all duration-500 ${
+        visible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0 pointer-events-none'
+      }`}
+    >
+      <div
+        className="flex items-start gap-3 rounded-xl border border-primary/30 p-3"
+        style={{
+          background: 'linear-gradient(135deg, hsl(40 20% 10%), hsl(40 15% 7%))',
+          boxShadow: '0 0 20px hsl(40 70% 50% / 0.2), 0 8px 30px rgba(0,0,0,0.6)',
+        }}
+      >
+        <div
+          className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center bg-primary/20 border border-primary/40"
+          style={{ boxShadow: '0 0 10px hsl(40 70% 50% / 0.3)' }}
+        >
+          <Check className="w-4 h-4 text-primary" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs text-foreground font-display font-bold truncate">
+            {buyer.name}
+          </p>
+          <p className="text-[10px] text-primary font-display">
+            acabou de adquirir o acesso! 🎉
+          </p>
+          <p className="text-[9px] text-muted-foreground mt-0.5">
+            {buyer.city} · {buyer.time}
+          </p>
+        </div>
+        <button
+          onClick={() => setVisible(false)}
+          className="flex-shrink-0 p-0.5 text-muted-foreground hover:text-foreground"
+        >
+          <X className="w-3 h-3" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
    PHONE MOCKUP — REAL APP PREVIEW
    ═══════════════════════════════════════════════════════════ */
 
@@ -108,12 +228,10 @@ const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
   const [showPaywall, setShowPaywall] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  // Routes the user can browse freely (strategic showcase)
   const allowedPaths = ['/', '/jornada', '/personagens', '/comunidade', '/multiplayer', '/reflexoes', '/progresso'];
 
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
-      // Listen for navigation attempts from the iframe
       if (e.data?.type === 'navigation' && e.data?.path) {
         const path = e.data.path;
         const isAllowed = allowedPaths.some(p => path === p || path.startsWith(p));
@@ -126,17 +244,8 @@ const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
-  // Show paywall overlay after user explores for a bit
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      // After 45s of browsing, show a gentle CTA
-    }, 45000);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <div className="flex flex-col items-center gap-5">
-      {/* Phone frame with REAL app inside */}
       <div
         className="relative"
         style={{
@@ -153,22 +262,18 @@ const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
             boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 0 40px hsl(40 70% 50% / 0.2), 0 40px 100px rgba(0,0,0,0.8), -20px 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
           }}
         >
-          {/* Side buttons */}
           <div className="absolute -left-[3px] top-[100px] w-[3px] h-8 rounded-l-sm" style={{ background: '#333' }} />
           <div className="absolute -left-[3px] top-[145px] w-[3px] h-12 rounded-l-sm" style={{ background: '#333' }} />
           <div className="absolute -left-[3px] top-[170px] w-[3px] h-12 rounded-l-sm" style={{ background: '#333' }} />
           <div className="absolute -right-[3px] top-[130px] w-[3px] h-16 rounded-r-sm" style={{ background: '#333' }} />
 
-          {/* Screen with real app iframe */}
           <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-[#0c0a14]">
-            {/* Dynamic Island */}
             <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-[22px] bg-black rounded-full z-30" style={{ boxShadow: 'inset 0 0 4px rgba(0,0,0,0.8)' }}>
               <div className="absolute right-[18px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full" style={{ background: 'radial-gradient(circle, #1a3a5c, #0a1a2c)' }} />
             </div>
 
-            {/* Real app iframe — renders at 375px and scales down */}
             {(() => {
-              const phoneInnerWidth = 264; // ~280 - 2*8px padding
+              const phoneInnerWidth = 264;
               const virtualWidth = 375;
               const scale = phoneInnerWidth / virtualWidth;
               return (
@@ -190,7 +295,6 @@ const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
               );
             })()}
 
-            {/* Paywall overlay */}
             {showPaywall && (
               <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm px-4">
                 <div className="text-center space-y-3">
@@ -211,7 +315,7 @@ const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
                     }}
                   >
                     <Crown className="w-3.5 h-3.5 inline mr-1.5" />
-                    Adquirir — R$147/ano
+                    Garantir por R$67/ano
                   </button>
                   <button
                     onClick={() => setShowPaywall(false)}
@@ -224,22 +328,18 @@ const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
               </div>
             )}
 
-            {/* Home indicator */}
             <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-28 h-[4px] bg-white/30 rounded-full z-30" />
           </div>
         </div>
 
-        {/* Phone reflection */}
         <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-10 rounded-full" style={{ background: 'radial-gradient(ellipse, hsl(40 70% 50% / 0.12), transparent)' }} />
       </div>
 
-      {/* Label */}
       <div className="text-center space-y-2">
         <p className="font-display text-sm text-foreground font-bold">Explore o app por dentro</p>
         <p className="text-xs text-muted-foreground">Navegue livremente pelo app — toque, role, explore!</p>
       </div>
 
-      {/* CTA below mockup */}
       <button
         onClick={onBuy}
         className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-display text-sm font-bold text-primary-foreground"
@@ -250,7 +350,7 @@ const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
         }}
       >
         <Crown className="w-4 h-4" />
-        Quero o Acesso Completo
+        Quero o Acesso Completo — R$67/ano
       </button>
     </div>
   );
@@ -267,9 +367,10 @@ const faqData = [
   { q: 'Quantas vezes posso jogar?', a: 'Infinitas! O jogo foi projetado para rejogabilidade. Com eventos aleatórios, escolhas ramificadas e múltiplos finais, cada jogada é uma experiência diferente.' },
   { q: 'É adequado para crianças e adolescentes?', a: 'Sim! O conteúdo é 100% baseado na obra clássica de John Bunyan. É ideal para jovens, grupos de jovens, escolas dominicais e famílias. Classificação livre.' },
   { q: 'Posso jogar com meu grupo de jovens da igreja?', a: 'Absolutamente! O modo presencial foi feito exatamente para isso. Reúna até 6 pessoas, cada um com seu personagem, e vivam a jornada juntos como um RPG de tabuleiro digital.' },
-  { q: 'Quais formas de pagamento são aceitas?', a: 'Aceitamos PIX, cartão de crédito (até 12x), cartão de débito, e pagamento híbrido (PIX + cartão). Processamento 100% seguro.' },
+  { q: 'Quais formas de pagamento são aceitas?', a: 'Aceitamos PIX, cartão de crédito (até 12x), cartão de débito, e pagamento híbrido (PIX + cartão). Processamento 100% seguro pela Kiwify.' },
   { q: 'Funciona em qual dispositivo?', a: 'Funciona em qualquer celular, tablet ou computador com navegador moderno. Android, iPhone, iPad, Windows, Mac — tudo funciona.' },
   { q: 'O app é atualizado?', a: 'Sim! Estamos constantemente adicionando novos capítulos, desafios e funcionalidades. Todas as atualizações são inclusas no plano anual.' },
+  { q: 'O preço de lançamento vai subir?', a: 'Sim! O valor de R$67/ano é exclusivo do lançamento. O preço normal será R$97/ano. Garanta agora antes que o valor aumente.' },
 ];
 
 /* ═══════════════════════════════════════════════════════════
@@ -385,7 +486,6 @@ const CinematicImage = ({ src, alt, caption, subcaption, rotate = 0 }: {
   </div>
 );
 
-/* Character portrait for the gallery */
 const CharacterPortrait = ({ src, name, role }: { src: string; name: string; role: string }) => (
   <div className="flex flex-col items-center gap-2">
     <div
@@ -402,6 +502,86 @@ const CharacterPortrait = ({ src, name, role }: { src: string; name: string; rol
 );
 
 /* ═══════════════════════════════════════════════════════════
+   PRICE CARD COMPONENT
+   ═══════════════════════════════════════════════════════════ */
+const PriceCard = ({ onBuy }: { onBuy: () => void }) => (
+  <MedievalCard glow className="max-w-sm mx-auto text-center relative overflow-hidden">
+    <div className="absolute top-2 left-2 text-primary/15 text-lg">⚜</div>
+    <div className="absolute top-2 right-2 text-primary/15 text-lg">⚜</div>
+    <div className="absolute bottom-2 left-2 text-primary/15 text-lg">⚜</div>
+    <div className="absolute bottom-2 right-2 text-primary/15 text-lg">⚜</div>
+
+    {/* Launch badge */}
+    <div className="inline-block px-3 py-1 rounded-full border border-destructive/40 bg-destructive/10 mb-3">
+      <span className="text-[10px] uppercase tracking-[0.2em] text-destructive font-display font-bold flex items-center gap-1.5">
+        <Flame className="w-3 h-3" /> Preço de Lançamento
+      </span>
+    </div>
+
+    <p className="text-xs uppercase tracking-[0.2em] text-primary font-display mb-1">Acesso completo por apenas</p>
+
+    {/* Anchor price */}
+    <p className="text-sm text-muted-foreground line-through mb-0">
+      De <span className="text-foreground/50">R$ 197</span>/ano
+    </p>
+    <p className="text-xs text-muted-foreground line-through mb-1">
+      Preço normal: <span className="text-foreground/40">R$ 97</span>/ano
+    </p>
+
+    <div className="flex items-baseline justify-center gap-1 mb-1">
+      <span className="text-sm text-muted-foreground">R$</span>
+      <span
+        className="font-display text-5xl md:text-6xl font-bold text-primary"
+        style={{ textShadow: '0 0 30px hsl(40 70% 50% / 0.5)' }}
+      >
+        67
+      </span>
+      <span className="text-sm text-muted-foreground">/ano</span>
+    </div>
+
+    <p className="text-xs text-muted-foreground mb-1">
+      Equivale a apenas <strong className="text-primary">R$ 0,18/dia</strong> — menos que uma bala
+    </p>
+
+    <div
+      className="inline-block px-3 py-1 rounded-full bg-primary/10 border border-primary/30 mb-4"
+    >
+      <span className="text-[10px] text-primary font-display font-bold">
+        🔥 Economize R$130 no lançamento!
+      </span>
+    </div>
+
+    <div className="space-y-2 text-left mb-6">
+      {[
+        'Acesso a todos os 30+ capítulos',
+        'Parte I (O Peregrino) e Parte II (A Peregrina)',
+        'Todos os 9 tipos de mini-games',
+        'Modo multiplayer online e presencial',
+        'Múltiplos finais e eventos aleatórios',
+        '40+ personagens com arte original',
+        'Funciona 100% offline',
+        'Atualizações futuras inclusas',
+        'Instale em quantos dispositivos quiser',
+      ].map((item, i) => (
+        <div key={i} className="flex items-center gap-2 text-sm text-foreground/80 font-body">
+          <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+          {item}
+        </div>
+      ))}
+    </div>
+
+    <CtaButton onClick={onBuy} variant="primary" className="w-full">
+      <Crown className="w-5 h-5" />
+      Quero Começar Minha Jornada
+    </CtaButton>
+
+    <p className="text-[10px] text-muted-foreground mt-3 flex items-center justify-center gap-1">
+      <Shield className="w-3 h-3" /> 7 dias de garantia · Pagamento seguro pela Kiwify
+    </p>
+  </MedievalCard>
+);
+
+/* ═══════════════════════════════════════════════════════════
    MAIN LANDING PAGE
    ═══════════════════════════════════════════════════════════ */
 const LandingPage = () => {
@@ -411,7 +591,6 @@ const LandingPage = () => {
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [showInstallInstructions, setShowInstallInstructions] = useState(false);
 
-  // Detect mobile + not already installed as standalone
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true;
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -476,6 +655,9 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
+
+      {/* Social Proof Popup */}
+      <SocialProofPopup />
 
       {/* ══════════ STICKY TOP BAR — URGENCY ══════════ */}
       <div
@@ -569,11 +751,11 @@ const LandingPage = () => {
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="text-primary font-bold">2.</span>
-                  <p>Toque em <strong className="text-foreground">"Instalar aplicativo"</strong> (não use “Adicionar à tela inicial”)</p>
+                  <p>Toque em <strong className="text-foreground">"Instalar aplicativo"</strong> (não use "Adicionar à tela inicial")</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="text-primary font-bold">3.</span>
-                  <p>Se não aparecer “Instalar aplicativo”, abra no <strong className="text-foreground">Google Chrome</strong> e tente novamente</p>
+                  <p>Se não aparecer "Instalar aplicativo", abra no <strong className="text-foreground">Google Chrome</strong> e tente novamente</p>
                 </div>
               </div>
             )}
@@ -627,11 +809,15 @@ const LandingPage = () => {
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
             <CtaButton onClick={handleBuy} variant="primary">
               <Crown className="w-5 h-5" />
-              Adquirir — R$147/ano
+              Garantir por R$67/ano
             </CtaButton>
           </div>
 
-          <div className="flex items-center justify-center gap-4 pt-2 text-xs text-foreground/70 flex-wrap" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+          <p className="text-xs text-destructive font-display font-bold animate-pulse">
+            ⚠️ Preço de lançamento! De <span className="line-through">R$197</span> por apenas R$67/ano
+          </p>
+
+          <div className="flex items-center justify-center gap-4 pt-1 text-xs text-foreground/70 flex-wrap" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
             <span className="flex items-center gap-1"><Shield className="w-3.5 h-3.5" /> Garantia 7 dias</span>
             <span>•</span>
             <span className="flex items-center gap-1"><Smartphone className="w-3.5 h-3.5" /> Instale no celular</span>
@@ -657,6 +843,83 @@ const LandingPage = () => {
           <MedievalOrnament size="lg" />
         </div>
       </section>
+
+      {/* ══════════ PAIN POINTS — moved up for emotional hook ══════════ */}
+      <section className="px-5 py-16 bg-card/30">
+        <div className="max-w-2xl mx-auto text-center space-y-8">
+          <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Você já sentiu isso?</p>
+          <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
+            A fé esfriando... Os desafios pesando...<br />
+            <span className="text-primary">E a sensação de estar sozinho na caminhada</span>
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+            {[
+              'Sente que devocional virou rotina e não toca mais o coração?',
+              'Quer ensinar valores bíblicos mas os jovens não se engajam?',
+              'Procura algo diferente para seu grupo de jovens e não encontra?',
+              'Deseja uma experiência bíblica profunda mas acessível e moderna?',
+              'Sente que está espiritualmente estagnado e precisa de algo novo?',
+              'Quer algo que una diversão e edificação espiritual ao mesmo tempo?',
+              'Cansou de conteúdos cristãos superficiais que não transformam?',
+              'Gostaria de algo que fizesse sua família ou grupo crescer na fé juntos?',
+            ].map((pain, i) => (
+              <MedievalCard key={i} className="flex items-start gap-3 p-4">
+                <X className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-foreground/80 font-body">{pain}</p>
+              </MedievalCard>
+            ))}
+          </div>
+
+          <p className="text-base text-foreground/70 font-body italic">
+            Você não está sozinho. Milhares de cristãos sentem o mesmo vazio.
+            Mas existe uma solução que transforma isso em uma <strong className="text-primary">jornada épica de fé</strong>.
+          </p>
+
+          {/* CTA after pain */}
+          <CtaButton onClick={handleBuy} variant="primary" className="w-full max-w-md mx-auto">
+            <Crown className="w-5 h-5" />
+            Quero a Solução — R$67/ano
+          </CtaButton>
+        </div>
+      </section>
+
+      <SectionDivider />
+
+      {/* ══════════ SOLUTION ══════════ */}
+      <section className="px-5 py-16">
+        <div className="max-w-2xl mx-auto text-center space-y-8">
+          <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">A Solução</p>
+          <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
+            Apresentamos <span className="text-primary">O Peregrino</span><br />
+            — A Jornada Interativa
+          </h2>
+
+          <p className="text-base text-foreground/70 font-body max-w-lg mx-auto">
+            Não é apenas um jogo. É uma <strong className="text-primary">experiência narrativa completa</strong> que transforma
+            a maior alegoria cristã de todos os tempos em algo que você <em>vive, sente e nunca esquece</em>.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              { icon: <BookOpen className="w-6 h-6" />, stat: '30+', label: 'Capítulos narrativos' },
+              { icon: <Gamepad2 className="w-6 h-6" />, stat: '9', label: 'Tipos de desafios' },
+              { icon: <Users className="w-6 h-6" />, stat: '6', label: 'Jogadores simultâneos' },
+              { icon: <Swords className="w-6 h-6" />, stat: '10+', label: 'Duelos épicos' },
+              { icon: <Trophy className="w-6 h-6" />, stat: '∞', label: 'Rejogabilidade' },
+              { icon: <Map className="w-6 h-6" />, stat: '40+', label: 'Personagens' },
+            ].map((s, i) => (
+              <MedievalCard key={i} glow={i < 3} className="text-center">
+                <div className="text-primary mb-2 flex justify-center">{s.icon}</div>
+                <p className="font-display text-2xl text-primary font-bold">{s.stat}</p>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
+              </MedievalCard>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <SectionDivider />
 
       {/* ══════════ MODO SOLO — COMO FUNCIONA ══════════ */}
       <section className="px-5 py-16">
@@ -709,25 +972,25 @@ const LandingPage = () => {
               </div>
               <div className="p-5">
                 <h3 className="font-display text-base font-bold text-foreground flex items-center gap-2">
-                  <Gamepad2 className="w-5 h-5 text-primary" /> 9 Tipos de Mini-Games
+                  <Gamepad2 className="w-5 h-5 text-primary" /> 9 Mini-Games Únicos
                 </h3>
                 <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                  QTE de reflexo, esquiva de tentações, memória bíblica, stealth, caça ao tesouro, Simon Says, puzzle de versículos, caminho da fé e duelo de dados. Cada um com tela de instrução antes do início.
+                  QTE de reflexo, esquiva de tentações, memória bíblica, stealth, caça ao tesouro, puzzles de versículos, caminho da fé e muito mais — cada um integrado à narrativa.
                 </p>
               </div>
             </MedievalCard>
 
             <MedievalCard glow className="overflow-hidden p-0">
               <div className="relative h-36 overflow-hidden">
-                <img src={cidadeCelestial} alt="Finais múltiplos" className="w-full h-full object-cover" loading="lazy" />
+                <img src={palacioBelo} alt="Multiplayer" className="w-full h-full object-cover" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
               </div>
               <div className="p-5">
                 <h3 className="font-display text-base font-bold text-foreground flex items-center gap-2">
-                  <Trophy className="w-5 h-5 text-primary" /> Múltiplos Finais
+                  <Users className="w-5 h-5 text-primary" /> Multiplayer Presencial
                 </h3>
                 <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                  Seus atributos determinam qual final você alcança. Cidade Celestial gloriosa, finais alternativos ou caminhos secretos. Cada jogada é diferente com <strong className="text-primary">eventos aleatórios</strong> e dados invisíveis.
+                  Até 6 jogadores com tabuleiro premium digital, dados 3D, eventos coletivos e chat. Perfeito para <strong className="text-primary">grupos de jovens</strong>, retiros e famílias.
                 </p>
               </div>
             </MedievalCard>
@@ -737,65 +1000,36 @@ const LandingPage = () => {
 
       <SectionDivider />
 
-      {/* ══════════ MODO MULTIPLAYER ══════════ */}
-      <section className="px-5 py-16 bg-card/30">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="text-center">
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Multiplayer</p>
-            <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
-              Dois modos para jogar <span className="text-primary">em grupo</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <MedievalCard glow className="text-center space-y-4">
-              <div className="w-14 h-14 mx-auto rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center" style={{ boxShadow: '0 0 15px hsl(40 70% 50% / 0.2)' }}>
-                <Users className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="font-display text-lg text-foreground font-bold">Online</h3>
-              <ul className="text-xs text-muted-foreground text-left space-y-2">
-                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Até 6 jogadores simultâneos via internet</li>
-                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Tabuleiro premium digital com 65 casas</li>
-                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Dados 3D animados (branco com pontos pretos)</li>
-                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> 65 eventos narrativos no tabuleiro</li>
-                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Ranking e medalhas por partida</li>
-                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Compartilhe o link e jogue com amigos</li>
-              </ul>
-            </MedievalCard>
-
-            <MedievalCard glow className="text-center space-y-4">
-              <div className="w-14 h-14 mx-auto rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center" style={{ boxShadow: '0 0 15px hsl(40 70% 50% / 0.2)' }}>
-                <Swords className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="font-display text-lg text-foreground font-bold">Presencial (Reunidos)</h3>
-              <ul className="text-xs text-muted-foreground text-left space-y-2">
-                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> 2 a 8 jogadores no mesmo dispositivo</li>
-                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Funciona 100% offline — ideal para retiros</li>
-                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Use dados físicos reais ou o dado digital</li>
-                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Cada jogador escolhe nome e personagem</li>
-                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Eventos surpresa a cada casa</li>
-                <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> Perfeito para grupos de jovens e famílias</li>
-              </ul>
-            </MedievalCard>
-          </div>
+      {/* ══════════ CTA intermediário 1 ══════════ */}
+      <section className="px-5 py-10 bg-card/30">
+        <div className="max-w-lg mx-auto text-center space-y-4">
+          <p className="font-display text-lg text-foreground font-bold">
+            Não espere mais — <span className="text-primary">sua jornada começa agora</span>
+          </p>
+          <CtaButton onClick={handleBuy} variant="primary" className="w-full">
+            <Crown className="w-5 h-5" />
+            Garantir Meu Acesso — R$67/ano
+          </CtaButton>
+          <p className="text-xs text-muted-foreground flex items-center justify-center gap-2">
+            <Shield className="w-3.5 h-3.5" /> 7 dias de garantia · De <span className="line-through">R$197</span> por R$67
+          </p>
         </div>
       </section>
 
       <SectionDivider />
 
-      {/* ══════════ PERSONAGENS + CENAS ══════════ */}
+      {/* ══════════ CHARACTERS + SCENES ══════════ */}
       <section className="px-5 py-16">
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-10">
           <div className="text-center">
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Conteúdo do App</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Personagens & Cenários</p>
             <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight mt-2">
-              40+ personagens e cenários <span className="text-primary">cinematográficos</span>
+              Conheça os <span className="text-primary">heróis e vilões</span> da jornada
             </h2>
-            <p className="text-sm text-muted-foreground mt-2">Todas as imagens abaixo são reais — exatamente o que você verá no app</p>
           </div>
 
-          <div className="grid grid-cols-4 md:grid-cols-8 gap-4 justify-items-center">
-            <CharacterPortrait src={cristao} name="Cristão" role="Protagonista" />
+          <div className="flex flex-wrap justify-center gap-5">
+            <CharacterPortrait src={cristao} name="Cristão" role="O Peregrino" />
             <CharacterPortrait src={evangelista} name="Evangelista" role="O Guia" />
             <CharacterPortrait src={fiel} name="Fiel" role="Companheiro" />
             <CharacterPortrait src={esperanca} name="Esperança" role="Amigo Fiel" />
@@ -823,93 +1057,6 @@ const LandingPage = () => {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      <SectionDivider />
-
-      {/* ══════════ PAIN POINTS ══════════ */}
-      <section className="px-5 py-16 bg-card/30">
-        <div className="max-w-2xl mx-auto text-center space-y-8">
-          <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">Você já sentiu isso?</p>
-          <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
-            A fé esfriando... Os desafios pesando...<br />
-            <span className="text-primary">E a sensação de estar sozinho na caminhada</span>
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-            {[
-              'Sente que devocional virou rotina e não toca mais o coração?',
-              'Quer ensinar valores bíblicos mas os jovens não se engajam?',
-              'Procura algo diferente para seu grupo de jovens e não encontra?',
-              'Deseja uma experiência bíblica profunda mas acessível e moderna?',
-              'Sente que está espiritualmente estagnado e precisa de algo novo?',
-              'Quer algo que una diversão e edificação espiritual ao mesmo tempo?',
-            ].map((pain, i) => (
-              <MedievalCard key={i} className="flex items-start gap-3 p-4">
-                <X className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-foreground/80 font-body">{pain}</p>
-              </MedievalCard>
-            ))}
-          </div>
-
-          <p className="text-base text-foreground/70 font-body italic">
-            Você não está sozinho. Milhares de cristãos sentem o mesmo vazio.
-            Mas existe uma solução que transforma isso em uma <strong className="text-primary">jornada épica de fé</strong>.
-          </p>
-        </div>
-      </section>
-
-      <SectionDivider />
-
-      {/* ══════════ SOLUTION ══════════ */}
-      <section className="px-5 py-16">
-        <div className="max-w-2xl mx-auto text-center space-y-8">
-          <p className="text-xs uppercase tracking-[0.3em] text-primary font-display">A Solução</p>
-          <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">
-            Apresentamos <span className="text-primary">O Peregrino</span><br />
-            — A Jornada Interativa
-          </h2>
-
-          <p className="text-base text-foreground/70 font-body max-w-lg mx-auto">
-            Não é apenas um jogo. É uma <strong className="text-primary">experiência narrativa completa</strong> que transforma
-            a maior alegoria cristã de todos os tempos em algo que você <em>vive, sente e nunca esquece</em>.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {[
-              { icon: <BookOpen className="w-6 h-6" />, stat: '30+', label: 'Capítulos narrativos' },
-              { icon: <Gamepad2 className="w-6 h-6" />, stat: '9', label: 'Tipos de desafios' },
-              { icon: <Users className="w-6 h-6" />, stat: '6', label: 'Jogadores simultâneos' },
-              { icon: <Swords className="w-6 h-6" />, stat: '10+', label: 'Duelos épicos' },
-              { icon: <Trophy className="w-6 h-6" />, stat: '∞', label: 'Rejogabilidade' },
-              { icon: <Map className="w-6 h-6" />, stat: '40+', label: 'Personagens' },
-            ].map((s, i) => (
-              <MedievalCard key={i} glow={i < 3} className="text-center">
-                <div className="text-primary mb-2 flex justify-center">{s.icon}</div>
-                <p className="font-display text-2xl text-primary font-bold">{s.stat}</p>
-                <p className="text-xs text-muted-foreground">{s.label}</p>
-              </MedievalCard>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <SectionDivider />
-
-      {/* ══════════ CTA intermediário ══════════ */}
-      <section className="px-5 py-10 bg-card/30">
-        <div className="max-w-lg mx-auto text-center space-y-4">
-          <p className="font-display text-lg text-foreground font-bold">
-            Não espere mais — <span className="text-primary">sua jornada começa agora</span>
-          </p>
-          <CtaButton onClick={handleBuy} variant="primary" className="w-full">
-            <Crown className="w-5 h-5" />
-            Garantir Meu Acesso — R$147/ano
-          </CtaButton>
-          <p className="text-xs text-muted-foreground flex items-center justify-center gap-2">
-            <Shield className="w-3.5 h-3.5" /> 7 dias de garantia · Pagamento seguro
-          </p>
         </div>
       </section>
 
@@ -969,6 +1116,14 @@ const LandingPage = () => {
                 </div>
               </MedievalCard>
             ))}
+          </div>
+
+          {/* CTA after features */}
+          <div className="text-center pt-4">
+            <CtaButton onClick={handleBuy} variant="primary" className="w-full max-w-md mx-auto">
+              <Crown className="w-5 h-5" />
+              Quero Tudo Isso — R$67/ano
+            </CtaButton>
           </div>
         </div>
       </section>
@@ -1063,12 +1218,20 @@ const LandingPage = () => {
               </ul>
             </MedievalCard>
           </div>
+
+          {/* CTA after for-who */}
+          <div className="text-center pt-2">
+            <CtaButton onClick={handleBuy} variant="primary" className="w-full max-w-md mx-auto">
+              <Flame className="w-5 h-5" />
+              Sim, Eu Quero! — R$67/ano
+            </CtaButton>
+          </div>
         </div>
       </section>
 
       <SectionDivider />
 
-      {/* ══════════ CTA intermediário 2 ══════════ */}
+      {/* ══════════ CTA intermediário — Cruz ══════════ */}
       <section className="relative px-5 py-12 overflow-hidden">
         <div className="absolute inset-0">
           <img src={cruzFardo} alt="" className="w-full h-full object-cover opacity-20" />
@@ -1081,7 +1244,7 @@ const LandingPage = () => {
           </p>
           <CtaButton onClick={handleBuy} variant="primary" className="w-full">
             <Flame className="w-5 h-5" />
-            Quero Começar Minha Jornada — R$147/ano
+            Quero Começar Minha Jornada — R$67/ano
           </CtaButton>
         </div>
       </section>
@@ -1201,6 +1364,14 @@ const LandingPage = () => {
               </MedievalCard>
             ))}
           </div>
+
+          {/* CTA after testimonials */}
+          <div className="text-center pt-2">
+            <CtaButton onClick={handleBuy} variant="primary" className="w-full max-w-md mx-auto">
+              <Crown className="w-5 h-5" />
+              Quero Viver Essa Experiência — R$67/ano
+            </CtaButton>
+          </div>
         </div>
       </section>
 
@@ -1234,7 +1405,6 @@ const LandingPage = () => {
             Tudo isso junto custaria mais de <span className="line-through text-foreground/40">R$ 1.400</span>
           </p>
 
-          {/* Medieval crest */}
           <div className="flex justify-center mb-2">
             <div
               className="w-20 h-20 rounded-full flex items-center justify-center border-2 border-primary/50 bg-gradient-to-b from-primary/20 to-primary/5"
@@ -1244,54 +1414,10 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <MedievalCard glow className="max-w-sm mx-auto text-center relative overflow-hidden">
-            {/* Corner ornaments */}
-            <div className="absolute top-2 left-2 text-primary/15 text-lg">⚜</div>
-            <div className="absolute top-2 right-2 text-primary/15 text-lg">⚜</div>
-            <div className="absolute bottom-2 left-2 text-primary/15 text-lg">⚜</div>
-            <div className="absolute bottom-2 right-2 text-primary/15 text-lg">⚜</div>
-            <p className="text-xs uppercase tracking-[0.2em] text-primary font-display mb-1">Acesso completo por apenas</p>
-            <div className="flex items-baseline justify-center gap-1 mb-1">
-              <span className="text-sm text-muted-foreground">R$</span>
-              <span
-                className="font-display text-5xl md:text-6xl font-bold text-primary"
-                style={{ textShadow: '0 0 30px hsl(40 70% 50% / 0.5)' }}
-              >
-                147
-              </span>
-              <span className="text-sm text-muted-foreground">/ano</span>
-            </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Equivale a apenas <strong className="text-primary">R$ 0,40/dia</strong> — menos que uma bala
-            </p>
-
-            <div className="space-y-2 text-left mb-6">
-              {[
-                'Acesso a todos os 30+ capítulos',
-                'Parte I (O Peregrino) e Parte II (A Peregrina)',
-                'Todos os 9 tipos de mini-games',
-                'Modo multiplayer online e presencial',
-                'Múltiplos finais e eventos aleatórios',
-                '40+ personagens com arte original',
-                'Funciona 100% offline',
-                'Atualizações futuras inclusas',
-                'Instale em quantos dispositivos quiser',
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-2 text-sm text-foreground/80 font-body">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  {item}
-                </div>
-              ))}
-            </div>
-
-            <CtaButton onClick={handleBuy} variant="primary" className="w-full">
-              <Crown className="w-5 h-5" />
-              Quero Começar Minha Jornada
-            </CtaButton>
-          </MedievalCard>
+          <PriceCard onBuy={handleBuy} />
 
           <CountdownTimer />
-          <p className="text-xs text-destructive font-display animate-pulse">⚠️ Essa oferta expira hoje!</p>
+          <p className="text-xs text-destructive font-display animate-pulse">⚠️ Preço de lançamento por tempo limitado!</p>
         </div>
       </section>
 
@@ -1413,8 +1539,11 @@ const LandingPage = () => {
           <div className="flex flex-col gap-3 max-w-sm mx-auto pt-4">
             <CtaButton onClick={handleBuy} variant="primary" className="w-full text-base">
               <Crown className="w-5 h-5" />
-              Adquirir Agora — R$147/ano
+              Garantir por R$67/ano
             </CtaButton>
+            <p className="text-xs text-destructive font-display font-bold">
+              De <span className="line-through">R$197</span> por apenas R$67/ano — Preço de Lançamento!
+            </p>
           </div>
 
           <div className="flex items-center justify-center gap-4 pt-3">
@@ -1429,7 +1558,7 @@ const LandingPage = () => {
             <button
               onClick={() => {
                 if (navigator.share) {
-                  navigator.share({ title: 'O Peregrino — Jornada Interativa', text: 'Viva a maior batalha espiritual de todos os tempos!', url: window.location.href });
+                  navigator.share({ title: 'O Peregrino — Jornada Interativa', text: 'Viva a maior batalha espiritual de todos os tempos! De R$197 por apenas R$67/ano no lançamento!', url: window.location.href });
                 }
               }}
               className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"

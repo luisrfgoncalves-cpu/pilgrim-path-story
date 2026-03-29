@@ -1,10 +1,9 @@
 import { Crown, Lock } from 'lucide-react';
 
-const SALE_URL = 'https://ocapelao-app.centrobiblico.online/venda';
+const SALE_URL = 'https://pay.kiwify.com.br/TZv1sS9';
 
 const PreviewPaywall = () => {
   const handleBuy = () => {
-    // Try opening in parent window, fall back to current
     try {
       window.top?.open(SALE_URL, '_blank', 'noopener');
     } catch {
@@ -45,8 +44,12 @@ const PreviewPaywall = () => {
         }}
       >
         <Crown className="w-5 h-5" />
-        Adquirir — R$147/ano
+        Garantir por R$67/ano
       </button>
+
+      <p className="text-[10px] text-muted-foreground">
+        De <span className="line-through">R$197</span> por apenas R$67/ano — Lançamento!
+      </p>
 
       <button
         onClick={() => window.history.back()}
