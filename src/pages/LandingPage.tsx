@@ -414,8 +414,10 @@ const LandingPage = () => {
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true;
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const alreadyInstalled = isStandalone || localStorage.getItem('pwa_installed') === '1';
 
   useEffect(() => {
+    if (alreadyInstalled) return; // Never show banner if already installed
     const handler = (e: Event) => {
       e.preventDefault();
       setInstallPrompt(e);
@@ -424,7 +426,7 @@ const LandingPage = () => {
     window.addEventListener('beforeinstallprompt', handler);
 
     // If on mobile, not standalone, and no beforeinstallprompt after 3s → show manual banner
-    if (isMobile && !isStandalone) {
+    if (isMobile && !alreadyInstalled) {
       const timeout = setTimeout(() => {
         setShowInstallBanner((prev) => {
           if (!prev) return true; // show manual banner if native didn't fire
@@ -446,6 +448,7 @@ const LandingPage = () => {
       const result = await installPrompt.userChoice;
       if (result.outcome === 'accepted') {
         setShowInstallBanner(false);
+        localStorage.setItem('pwa_installed', '1');
       }
       setInstallPrompt(null);
     } else {
