@@ -130,6 +130,12 @@ export const chapterOrder = [
   "fase2-cena11",
   "fase3-cena1", "fase3-cena2", "fase3-cena3", "fase3-cena4", "fase3-cena5",
   "fase3-cena6", "fase3-cena7", "fase3-cena8", "fase3-cena9", "fase3-cena10",
+  "fase4-cena1", "fase4-cena2", "fase4-cena3", "fase4-cena4", "fase4-cena5",
+  "fase4-cena6", "fase4-cena7", "fase4-cena8", "fase4-cena9", "fase4-cena10",
+  "fase5-cena1", "fase5-cena2", "fase5-cena3", "fase5-cena4", "fase5-cena5",
+  "fase5-cena6", "fase5-cena7", "fase5-cena8", "fase5-cena9", "fase5-cena10",
+  "fase6-cena1", "fase6-cena2", "fase6-cena4", "fase6-cena5",
+  "fase6-cena6", "fase6-cena7", "fase6-cena8",
 ];
 
 export const storyChapters: Record<string, StoryChapter> = {
@@ -175,7 +181,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena2",
     title: "Obstinado e Flexível",
     location: "Cidade da Destruição",
-    characters: ["cristao"],
+    characters: ["cristao", "obstinado", "flexivel"],
     reflection: "r2",
     narrative: [
       "Você tenta esquecer, mas o fardo não diminui. Seus vizinhos — Obstinado e Flexível — percebem sua angústia.",
