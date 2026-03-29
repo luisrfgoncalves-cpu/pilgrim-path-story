@@ -37,7 +37,7 @@ const ResultPage = () => {
     const t2 = setTimeout(() => {
       makeChoice(state.currentChapterId, state.nextChapterId, state.choiceText, state.effects);
       navigate('/cena', { replace: true });
-    }, 3500);
+    }, 2000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [state, makeChoice, navigate]);
 

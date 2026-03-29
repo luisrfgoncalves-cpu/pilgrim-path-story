@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { getChapter, storyChapters, ChoiceEffect } from '@/data/story';
 import { sceneImages } from '@/data/sceneImages';
-import { MapPin, BookOpen, Home, ScrollText, Lock } from 'lucide-react';
+import { MapPin, Home, ScrollText, Lock } from 'lucide-react';
 
 const ScenePage = () => {
   const navigate = useNavigate();
@@ -71,20 +71,15 @@ const ScenePage = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-3">
+      <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center justify-between max-w-lg mx-auto">
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-gold" />
-            <span className="font-display text-sm text-gold">O Peregrino</span>
-          </div>
-          <button onClick={() => navigate('/')} className="text-muted-foreground hover:text-foreground transition-colors">
-            <Home className="w-4 h-4" />
+          <button onClick={() => navigate('/')} className="text-muted-foreground hover:text-foreground transition-colors text-xs">
+            ← Início
           </button>
-        </div>
-        <div className="max-w-lg mx-auto mt-2">
-          <div className="h-0.5 bg-secondary rounded-full overflow-hidden">
+          <div className="h-0.5 flex-1 mx-4 bg-secondary rounded-full overflow-hidden">
             <div className="h-full bg-primary transition-all duration-700 rounded-full" style={{ width: `${progressPercent}%` }} />
           </div>
+          <span className="text-[10px] text-muted-foreground">{progressPercent}%</span>
         </div>
       </header>
 
