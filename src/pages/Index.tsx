@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getStreak, getDashboardMessage } from '@/lib/gameLoop';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import SplashScreen from '@/components/SplashScreen';
+import GameNotification from '@/components/GameNotification';
 import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen } from 'lucide-react';
 
 const Index = () => {
@@ -32,8 +33,7 @@ const Index = () => {
   useEffect(() => {
     if (streak.isNewDay && streak.days >= 2 && !showSplash) {
       setStreakShown(true);
-      const t = setTimeout(() => setStreakShown(false), 4000);
-      return () => clearTimeout(t);
+      // GameNotification handles auto-dismiss
     }
   }, [streak, showSplash]);
 
@@ -69,14 +69,12 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Streak toast */}
-      {streakShown && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground shadow-lg">
-            <Flame className="w-4 h-4" />
-            <span className="text-sm font-medium">{streak.message}</span>
-          </div>
+      <GameNotification visible={streakShown} onDismiss={() => setStreakShown(false)} duration={10000}>
+        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground shadow-lg">
+          <Flame className="w-4 h-4" />
+          <span className="text-sm font-medium">{streak.message}</span>
         </div>
-      )}
+      </GameNotification>
 
       {/* Main content — centered */}
       <div className="flex-1 flex flex-col items-center justify-center px-5 pt-8 pb-4">

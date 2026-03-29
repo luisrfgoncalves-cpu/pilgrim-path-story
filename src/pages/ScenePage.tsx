@@ -28,6 +28,7 @@ import { MiniGame, MiniGameResult } from '@/components/MiniGames';
 import { FullscreenMiniGame, FULLSCREEN_GAMES } from '@/components/FullscreenMiniGame';
 import { miniGameMappings } from '@/data/miniGameMappings';
 import { playGameSfx } from '@/lib/gameSfx';
+import GameNotification from '@/components/GameNotification';
 import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, ArrowLeft, Zap, Star, Shield, Flame } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
 import { useAuth } from '@/contexts/AuthContext';
@@ -251,8 +252,8 @@ const ScenePage = () => {
     if (s) {
       setSurprise(s);
       setSurpriseShown(true);
-      const t = setTimeout(() => setSurpriseShown(false), 4000);
-      return () => clearTimeout(t);
+      // No auto-timeout — GameNotification handles it
+      return;
     } else {
       setSurprise(null);
       setSurpriseShown(false);
@@ -263,8 +264,7 @@ const ScenePage = () => {
   useEffect(() => {
     if (newSupportCount > 0 && !supportToastShown) {
       setSupportToastShown(true);
-      const timer = setTimeout(() => setSupportToastShown(false), 4000);
-      return () => clearTimeout(timer);
+      // GameNotification handles auto-dismiss
     }
   }, [newSupportCount, supportToastShown]);
 
@@ -314,7 +314,7 @@ const ScenePage = () => {
       setLastStreakEffect('positive');
       if (newStreak >= 3) {
         setShowStreakBurst(true);
-        setTimeout(() => setShowStreakBurst(false), 2000);
+        // GameNotification handles auto-dismiss
       }
     } else if (total < 0) {
       setStreak(lastStreakEffect === 'negative' ? streak + 1 : 1);
@@ -410,31 +410,27 @@ const ScenePage = () => {
       {/* Emotional tint overlay — full screen color wash per state */}
       <div className="fixed inset-0 pointer-events-none z-[38] transition-all duration-[2000ms] ease-in-out" style={{ background: 'var(--bg-overlay, transparent)' }} />
       {/* Surprise micro-reward toast */}
-      {surpriseShown && surprise && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
-          <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-card border border-primary/30 shadow-lg max-w-xs">
-            <span className="text-xl">{surprise.icon}</span>
-            <div>
-              <p className="text-xs font-display text-primary">{surprise.title}</p>
-              <p className="text-[10px] text-foreground/80">{surprise.message}</p>
-            </div>
+      <GameNotification visible={surpriseShown && !!surprise} onDismiss={() => setSurpriseShown(false)} duration={12000}>
+        <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-card border border-primary/30 shadow-lg">
+          <span className="text-xl">{surprise?.icon}</span>
+          <div>
+            <p className="text-xs font-display text-primary">{surprise?.title}</p>
+            <p className="text-[10px] text-foreground/80">{surprise?.message}</p>
           </div>
         </div>
-      )}
+      </GameNotification>
       {/* Support bonus toast */}
-      {supportToastShown && newSupportCount > 0 && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
-          <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-card border border-primary/30 shadow-lg max-w-xs">
-            <Heart className="w-5 h-5 text-primary" />
-            <div>
-              <p className="text-xs font-display text-primary">Apoio recebido!</p>
-              <p className="text-[10px] text-foreground/80">
-                {newSupportCount} {newSupportCount === 1 ? 'peregrino orou' : 'peregrinos oraram'} por você.
-              </p>
-            </div>
+      <GameNotification visible={supportToastShown && newSupportCount > 0} onDismiss={() => setSupportToastShown(false)} duration={12000} position="top-offset">
+        <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-card border border-primary/30 shadow-lg">
+          <Heart className="w-5 h-5 text-primary" />
+          <div>
+            <p className="text-xs font-display text-primary">Apoio recebido!</p>
+            <p className="text-[10px] text-foreground/80">
+              {newSupportCount} {newSupportCount === 1 ? 'peregrino orou' : 'peregrinos oraram'} por você.
+            </p>
           </div>
         </div>
-      )}
+      </GameNotification>
       {/* Header with avatar */}
       <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-2">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
@@ -685,7 +681,7 @@ const ScenePage = () => {
                     triggerChoiceEffect(result.effects as Record<string, number>);
                     sfxForChoice(result.effects as Record<string, number>);
                   }
-                  setTimeout(() => setShowMiniGameResult(false), 3000);
+                  // GameNotification handles dismiss
                 }}
               />
             </div>
@@ -707,7 +703,7 @@ const ScenePage = () => {
                     triggerChoiceEffect(result.effects as Record<string, number>);
                     sfxForChoice(result.effects as Record<string, number>);
                   }
-                  setTimeout(() => setShowMiniGameResult(false), 3000);
+                  // GameNotification handles dismiss
                 }}
                 onSkip={() => {
                   setMiniGameDone(true);
@@ -717,8 +713,8 @@ const ScenePage = () => {
           )}
 
           {/* Mini-game result toast */}
-          {showMiniGameResult && miniGameResult && (
-            <div className="mb-4 animate-fade-in">
+          {miniGameResult && (
+            <GameNotification visible={showMiniGameResult} onDismiss={() => setShowMiniGameResult(false)} duration={15000} position="top">
               <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 ${
                 miniGameResult.success
                   ? 'bg-primary/10 border-primary/30 text-primary'
@@ -740,7 +736,7 @@ const ScenePage = () => {
                   </p>
                 </div>
               </div>
-            </div>
+            </GameNotification>
           )}
 
           {/* Suspense overlay */}
@@ -1034,20 +1030,15 @@ const ScenePage = () => {
       )}
 
       {/* ═══ STREAK BURST ═══ */}
-      {showStreakBurst && streak >= 3 && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[60] pointer-events-none"
-          style={{ animation: 'streakBurst 2s ease-out forwards' }}>
-          <div className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-primary/90 text-primary-foreground shadow-xl">
-            <Zap className="w-5 h-5" />
-            <span className="font-display text-lg">
-              {streak}x Combo!
-            </span>
-            <span className="text-sm opacity-80">
-              {lastStreakEffect === 'positive' ? '🔥 Em chamas!' : '💔 Sequência sombria'}
-            </span>
-          </div>
+      <GameNotification visible={showStreakBurst && streak >= 3} onDismiss={() => setShowStreakBurst(false)} duration={8000} position="top-offset">
+        <div className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-primary/90 text-primary-foreground shadow-xl">
+          <Zap className="w-5 h-5" />
+          <span className="font-display text-lg">{streak}x Combo!</span>
+          <span className="text-sm opacity-80">
+            {lastStreakEffect === 'positive' ? '🔥 Em chamas!' : '💔 Sequência sombria'}
+          </span>
         </div>
-      )}
+      </GameNotification>
 
       {/* ═══ CHARACTER ENTRANCE REVEAL — 3D style, no circle ═══ */}
       {charReveal && (

@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import PremiumDice from '@/components/multiplayer/PremiumDice';
 import PremiumBoard from '@/components/multiplayer/PremiumBoard';
 import EventReveal from '@/components/multiplayer/EventReveal';
+import GameNotification from '@/components/GameNotification';
 import { BOARD_SIZE, boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
 import { playMove, playVictory, playTurnStart } from '@/components/multiplayer/BoardSounds';
 import { playGameSfx } from '@/lib/gameSfx';
@@ -51,7 +52,7 @@ const MultiplayerPage = () => {
         } else {
           setTurnAnnounce(`Vez de ${turnPlayer.display_name}`);
         }
-        setTimeout(() => setTurnAnnounce(null), 2500);
+        // GameNotification handles dismiss
       }
     }
   }, [room?.current_turn_player_id, players, user?.id]);
@@ -312,27 +313,24 @@ const MultiplayerPage = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Turn announcement overlay */}
-      {turnAnnounce && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[45] animate-fade-in">
-          <div className="px-6 py-3 rounded-2xl font-display text-lg" style={{
-            background: turnAnnounce === 'Sua vez!'
-              ? 'linear-gradient(135deg, hsl(40 60% 20%), hsl(40 50% 15%))'
-              : 'linear-gradient(135deg, hsl(30 20% 15%), hsl(30 15% 10%))',
-            border: turnAnnounce === 'Sua vez!'
-              ? '1px solid hsl(40 60% 55% / 0.5)'
-              : '1px solid hsl(30 15% 25%)',
-            color: turnAnnounce === 'Sua vez!'
-              ? 'hsl(40 80% 70%)'
-              : 'hsl(38 30% 70%)',
-            boxShadow: turnAnnounce === 'Sua vez!'
-              ? '0 0 40px hsl(40 60% 55% / 0.2)'
-              : '0 8px 24px rgba(0,0,0,0.4)',
-            animation: 'charRevealName 0.5s ease-out both',
-          }}>
-            {turnAnnounce === 'Sua vez!' ? '⚔️ ' : '🎲 '}{turnAnnounce}
-          </div>
+      <GameNotification visible={!!turnAnnounce} onDismiss={() => setTurnAnnounce(null)} duration={8000} position="top-offset">
+        <div className="px-6 py-3 rounded-2xl font-display text-lg" style={{
+          background: turnAnnounce === 'Sua vez!'
+            ? 'linear-gradient(135deg, hsl(40 60% 20%), hsl(40 50% 15%))'
+            : 'linear-gradient(135deg, hsl(30 20% 15%), hsl(30 15% 10%))',
+          border: turnAnnounce === 'Sua vez!'
+            ? '1px solid hsl(40 60% 55% / 0.5)'
+            : '1px solid hsl(30 15% 25%)',
+          color: turnAnnounce === 'Sua vez!'
+            ? 'hsl(40 80% 70%)'
+            : 'hsl(38 30% 70%)',
+          boxShadow: turnAnnounce === 'Sua vez!'
+            ? '0 0 40px hsl(40 60% 55% / 0.2)'
+            : '0 8px 24px rgba(0,0,0,0.4)',
+        }}>
+          {turnAnnounce === 'Sua vez!' ? '⚔️ ' : '🎲 '}{turnAnnounce}
         </div>
-      )}
+      </GameNotification>
 
       {/* Event reveal overlay */}
       {revealEvent && (
