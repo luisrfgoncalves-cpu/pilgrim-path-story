@@ -777,6 +777,12 @@
   100% { opacity: 0; transform: translateY(-30px) translateX(8px); }
 }
 
+/* Splash CTA pulse glow */
+@keyframes splashBtnPulse {
+  0%, 100% { box-shadow: 0 0 20px hsl(var(--primary) / 0.3), 0 0 60px hsl(var(--primary) / 0.1); transform: scale(1); }
+  50% { box-shadow: 0 0 30px hsl(var(--primary) / 0.5), 0 0 80px hsl(var(--primary) / 0.2); transform: scale(1.03); }
+}
+
 /* ═══ Inline Consequence Overlay ═══ */
 @keyframes consequenceFadeIn {
   from { opacity: 0; }
