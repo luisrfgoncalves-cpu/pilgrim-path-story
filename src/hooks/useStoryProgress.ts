@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { FIRST_CHAPTER_ID, ChoiceEffect, ConditionalEffect } from '@/data/story';
+import { loadProgressFromCloud, loadHistoryFromCloud, savePlaythroughToCloud } from '@/lib/cloudSave';
 
 const STORAGE_KEY = 'peregrino-progress';
 const HISTORY_KEY = 'peregrino-history';
