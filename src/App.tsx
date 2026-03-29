@@ -16,6 +16,7 @@ import AuthPage from "./pages/AuthPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
 import CommunityPage from "./pages/CommunityPage.tsx";
 import MultiplayerPage from "./pages/MultiplayerPage.tsx";
+import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/personagens" element={<CharactersPage />} />
             <Route path="/reflexoes" element={<ReflectionsPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/perfil" element={<ProfilePage />} />
             <Route path="/comunidade" element={<CommunityPage />} />
             <Route path="/multiplayer" element={<MultiplayerPage />} />
