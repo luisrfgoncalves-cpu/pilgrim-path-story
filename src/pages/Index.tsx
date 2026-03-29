@@ -1,19 +1,12 @@
 import { useNavigate } from 'react-router-dom';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { getChapter, storyChapters, chapterOrder } from '@/data/story';
 import { getReplayIncentive, getUnlockableHints } from '@/data/sceneVariations';
 import { useAuth } from '@/contexts/AuthContext';
+import { getStreak, getDashboardMessage, getMilestones } from '@/lib/gameLoop';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, KeyRound } from 'lucide-react';
-
-const replayMessages = [
-  "Escolhas diferentes levam a caminhos diferentes. Descubra o que mudaria.",
-  "Você explorou apenas um lado da história. Há muito mais para descobrir.",
-  "E se você tivesse escolhido diferente no vale? Na feira? No castelo?",
-  "Cada jornada é única. Sua próxima pode ser completamente diferente.",
-  "Novos caminhos, novas lições. A história muda com você.",
-];
+import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, KeyRound, Flame, Star } from 'lucide-react';
 
 const getPlayerState = (attrs: { fe: number; coragem: number; perseveranca: number; discernimento: number }) => {
   const avg = (attrs.fe + attrs.coragem + attrs.perseveranca + attrs.discernimento) / 4;
@@ -28,6 +21,18 @@ const Index = () => {
   const navigate = useNavigate();
   const { hasProgress, startJourney, resetProgress, progress, history, isReplay } = useStoryProgress();
   const { user, profile } = useAuth();
+  const [streakShown, setStreakShown] = useState(false);
+
+  const streak = useMemo(() => getStreak(), []);
+
+  // Show streak toast briefly
+  useEffect(() => {
+    if (streak.isNewDay && streak.days >= 2) {
+      setStreakShown(true);
+      const t = setTimeout(() => setStreakShown(false), 4000);
+      return () => clearTimeout(t);
+    }
+  }, [streak]);
 
   const handleContinue = () => {
     startJourney();
@@ -48,9 +53,7 @@ const Index = () => {
   const lastResult = history.playthroughs.length > 0
     ? history.playthroughs[history.playthroughs.length - 1]
     : null;
-  const replayMsg = replayMessages[history.totalPlaythroughs % replayMessages.length];
 
-  // Determine current phase
   const currentPhase = useMemo(() => {
     const id = progress.currentChapterId;
     if (id.startsWith('fase3')) return { num: 3, name: 'O Vale da Sombra' };
@@ -58,8 +61,30 @@ const Index = () => {
     return { num: 1, name: 'A Partida' };
   }, [progress.currentChapterId]);
 
+  const dashboardMsg = useMemo(() =>
+    getDashboardMessage(progress.attributes, progress.choicesMade, currentPhase.num, progress.playthrough),
+    [progress.attributes, progress.choicesMade, currentPhase.num, progress.playthrough]
+  );
+
+  const milestones = useMemo(() =>
+    getMilestones(progress.choicesMade, progress.visitedChapters.length, progress.attributes),
+    [progress.choicesMade, progress.visitedChapters.length, progress.attributes]
+  );
+
+  const reachedMilestones = milestones.filter(m => m.reached);
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Streak toast */}
+      {streakShown && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground shadow-lg">
+            <Flame className="w-4 h-4" />
+            <span className="text-sm font-medium">{streak.message}</span>
+          </div>
+        </div>
+      )}
+
       {/* Top section — avatar & status */}
       <div className="flex-1 flex flex-col items-center justify-center px-5 pt-10 pb-4">
         <div className="w-full max-w-sm space-y-5 text-center animate-fade-in">
@@ -98,6 +123,11 @@ const Index = () => {
             )}
           </div>
 
+          {/* Contextual message */}
+          {hasProgress && (
+            <p className="text-xs text-muted-foreground italic px-4">{dashboardMsg}</p>
+          )}
+
           {/* Progress bar */}
           {hasProgress && (
             <div className="space-y-2">
@@ -109,7 +139,15 @@ const Index = () => {
               </div>
               <div className="flex items-center justify-between text-[10px] text-muted-foreground">
                 <span>{progressPercent}% da jornada</span>
-                <span>{progress.choicesMade} decisões</span>
+                <div className="flex items-center gap-2">
+                  {streak.days >= 2 && (
+                    <span className="flex items-center gap-0.5 text-primary">
+                      <Flame className="w-3 h-3" />
+                      {streak.days}
+                    </span>
+                  )}
+                  <span>{progress.choicesMade} decisões</span>
+                </div>
               </div>
             </div>
           )}
@@ -123,6 +161,21 @@ const Index = () => {
               <span className="text-[10px] text-muted-foreground">
                 🔥{progress.attributes.fe} ⛰️{progress.attributes.perseveranca} 👁️{progress.attributes.discernimento} 🛡️{progress.attributes.coragem}
               </span>
+            </div>
+          )}
+
+          {/* Milestones row */}
+          {hasProgress && reachedMilestones.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-1.5">
+              {reachedMilestones.map((m, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-card border border-primary/20 text-[10px] text-foreground/80"
+                  title={m.label}
+                >
+                  {m.icon} {m.label}
+                </span>
+              ))}
             </div>
           )}
 
