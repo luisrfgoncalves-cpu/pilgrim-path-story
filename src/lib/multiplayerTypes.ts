@@ -9,6 +9,7 @@ export interface GameRoom {
   current_turn_player_id: string | null;
   turn_order: string[];
   board_size: number;
+  board_events?: Record<number, string> | string[];
   created_at: string;
 }
 
