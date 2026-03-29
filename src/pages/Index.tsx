@@ -1,61 +1,51 @@
 import { useNavigate } from 'react-router-dom';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { useCloudSync } from '@/hooks/useCloudSync';
-import { getChapter, storyChapters, chapterOrder } from '@/data/story';
-import { getPart2Chapter, part2Chapters, part2ChapterOrder } from '@/data/storyPart2';
-import { getReplayIncentive, getUnlockableHints } from '@/data/sceneVariations';
+import { getChapter, storyChapters } from '@/data/story';
+import { getPart2Chapter, part2Chapters } from '@/data/storyPart2';
 import { useAuth } from '@/contexts/AuthContext';
-import { getStreak, getDashboardMessage, getMilestones } from '@/lib/gameLoop';
+import { getStreak, getDashboardMessage } from '@/lib/gameLoop';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, KeyRound, Flame, Star, Swords, BookOpen } from 'lucide-react';
-
-const getPlayerState = (attrs: { fe: number; coragem: number; perseveranca: number; discernimento: number }) => {
-  const avg = (attrs.fe + attrs.coragem + attrs.perseveranca + attrs.discernimento) / 4;
-  if (avg >= 8) return { label: 'Iluminado', color: 'text-primary', icon: '✦' };
-  if (avg >= 6.5) return { label: 'Firme', color: 'text-primary/80', icon: '⬆' };
-  if (avg >= 5) return { label: 'Caminhando', color: 'text-foreground', icon: '→' };
-  if (avg >= 4) return { label: 'Em dúvida', color: 'text-muted-foreground', icon: '?' };
-  return { label: 'Abatido', color: 'text-destructive', icon: '↓' };
-};
+import SplashScreen from '@/components/SplashScreen';
+import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
   const { hasProgress, startJourney, resetProgress, progress, history, isReplay, loadFromCloud } = useStoryProgress();
   const { user, profile } = useAuth();
   useCloudSync(loadFromCloud);
-  const [streakShown, setStreakShown] = useState(false);
+
+  const [showSplash, setShowSplash] = useState(() => {
+    const seen = sessionStorage.getItem('splash_seen');
+    return !seen;
+  });
+
+  const handleSplashDone = useCallback(() => {
+    setShowSplash(false);
+    sessionStorage.setItem('splash_seen', '1');
+  }, []);
 
   const streak = useMemo(() => getStreak(), []);
+  const [streakShown, setStreakShown] = useState(false);
 
   useEffect(() => {
-    if (streak.isNewDay && streak.days >= 2) {
+    if (streak.isNewDay && streak.days >= 2 && !showSplash) {
       setStreakShown(true);
       const t = setTimeout(() => setStreakShown(false), 4000);
       return () => clearTimeout(t);
     }
-  }, [streak]);
+  }, [streak, showSplash]);
 
-  const handleContinue = () => {
-    startJourney();
-    navigate('/cena');
-  };
-
+  const handleContinue = () => { startJourney(); navigate('/cena'); };
   const handleNewJourney = (campaign: 'part1' | 'part2' = 'part1') => {
-    resetProgress(campaign);
-    startJourney();
-    navigate('/cena');
+    resetProgress(campaign); startJourney(); navigate('/cena');
   };
 
   const isPart2 = progress.campaign === 'part2';
   const currentChapter = isPart2 ? getPart2Chapter(progress.currentChapterId) : getChapter(progress.currentChapterId);
   const totalChapters = isPart2 ? Object.keys(part2Chapters).length : Object.keys(storyChapters).length;
   const progressPercent = Math.round((progress.visitedChapters.length / totalChapters) * 100);
-  const playerState = getPlayerState(progress.attributes);
-
-  const lastResult = history.playthroughs.length > 0
-    ? history.playthroughs[history.playthroughs.length - 1]
-    : null;
 
   const currentPhase = useMemo(() => {
     const id = progress.currentChapterId;
@@ -72,12 +62,9 @@ const Index = () => {
     [progress.attributes, progress.choicesMade, currentPhase.num, progress.playthrough]
   );
 
-  const milestones = useMemo(() =>
-    getMilestones(progress.choicesMade, progress.visitedChapters.length, progress.attributes),
-    [progress.choicesMade, progress.visitedChapters.length, progress.attributes]
-  );
-
-  const reachedMilestones = milestones.filter(m => m.reached);
+  if (showSplash) {
+    return <SplashScreen onFinish={handleSplashDone} />;
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -91,23 +78,19 @@ const Index = () => {
         </div>
       )}
 
-      {/* Top section — avatar & status */}
-      <div className="flex-1 flex flex-col items-center justify-center px-5 pt-10 pb-4">
-        <div className="w-full max-w-sm space-y-5 text-center animate-fade-in">
+      {/* Main content — centered */}
+      <div className="flex-1 flex flex-col items-center justify-center px-5 pt-8 pb-4">
+        <div className="w-full max-w-sm text-center animate-fade-in space-y-4">
 
-          {/* Phase & playthrough */}
-          <div className="space-y-1">
-            {isReplay && (
-              <p className="text-[10px] uppercase tracking-widest text-primary/60 font-medium">
-                Jogada {progress.playthrough}
-              </p>
-            )}
+          {/* Phase indicator */}
+          {hasProgress && (
             <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground font-medium">
-              {hasProgress ? `${isPart2 ? 'Parte II · ' : ''}Fase ${currentPhase.num} · ${currentPhase.name}` : 'O Peregrino'}
+              {isPart2 ? 'Parte II · ' : ''}Fase {currentPhase.num} · {currentPhase.name}
+              {isReplay && <span className="text-primary/60 ml-2">· Jogada {progress.playthrough}</span>}
             </p>
-          </div>
+          )}
 
-          {/* Central Avatar */}
+          {/* Avatar — large and prominent */}
           <PilgrimAvatar
             attributes={hasProgress ? progress.attributes : { fe: 3, perseveranca: 3, discernimento: 3, coragem: 3 }}
             tone={hasProgress ? undefined : 'heavy'}
@@ -116,7 +99,7 @@ const Index = () => {
             className="mx-auto"
           />
 
-          {/* Title */}
+          {/* Title + location */}
           <div>
             <h1 className="font-display text-2xl text-foreground leading-tight">
               {hasProgress && currentChapter ? currentChapter.title : 'O Peregrino'}
@@ -124,183 +107,88 @@ const Index = () => {
             {hasProgress && currentChapter && (
               <p className="text-xs text-muted-foreground mt-1">{currentChapter.location}</p>
             )}
-            {!hasProgress && (
-              <p className="text-xs uppercase tracking-[0.3em] text-primary font-medium mt-2">Uma jornada interativa</p>
-            )}
           </div>
 
-          {/* Contextual message */}
+          {/* Dashboard message */}
           {hasProgress && (
-            <p className="text-xs text-muted-foreground italic px-4">{dashboardMsg}</p>
+            <p className="text-xs text-muted-foreground italic px-2">{dashboardMsg}</p>
           )}
 
-          {/* Progress bar */}
+          {/* Compact progress + stats row */}
           {hasProgress && (
             <div className="space-y-2">
               <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary rounded-full transition-all duration-700"
-                  style={{ width: `${progressPercent}%` }}
-                />
+                <div className="h-full bg-primary rounded-full transition-all duration-700" style={{ width: `${progressPercent}%` }} />
               </div>
               <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                <span>{progressPercent}% da jornada</span>
-                <div className="flex items-center gap-2">
+                <span>{progressPercent}%</span>
+                <div className="flex items-center gap-3">
                   {streak.days >= 2 && (
                     <span className="flex items-center gap-0.5 text-primary">
-                      <Flame className="w-3 h-3" />
-                      {streak.days}
+                      <Flame className="w-3 h-3" />{streak.days}
                     </span>
                   )}
-                  <span>{progress.choicesMade} decisões</span>
+                  <span className="flex gap-1.5">
+                    🔥{progress.attributes.fe}
+                    ⛰️{progress.attributes.perseveranca}
+                    👁️{progress.attributes.discernimento}
+                    🛡️{progress.attributes.coragem}
+                  </span>
                 </div>
               </div>
             </div>
           )}
-
-          {/* Player state badge */}
-          {hasProgress && (
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border">
-              <span className={`text-sm ${playerState.color}`}>{playerState.icon}</span>
-              <span className={`text-xs font-medium ${playerState.color}`}>{playerState.label}</span>
-              <span className="text-[10px] text-muted-foreground">·</span>
-              <span className="text-[10px] text-muted-foreground">
-                🔥{progress.attributes.fe} ⛰️{progress.attributes.perseveranca} 👁️{progress.attributes.discernimento} 🛡️{progress.attributes.coragem}
-              </span>
-            </div>
-          )}
-
-          {/* Milestones row */}
-          {hasProgress && reachedMilestones.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-1.5">
-              {reachedMilestones.map((m, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-card border border-primary/20 text-[10px] text-foreground/80"
-                  title={m.label}
-                >
-                  {m.icon} {m.label}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Replay incentive — history-aware */}
-          {lastResult && !hasProgress && (() => {
-            const incentive = getReplayIncentive(history, progress.playthrough);
-            const hints = getUnlockableHints(history);
-            return (
-              <div className="bg-card border border-border rounded-lg p-3 space-y-2">
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">Última Jornada</p>
-                <div className="flex items-center justify-center gap-3 text-xs">
-                  <span>🔥 {lastResult.attributes.fe}</span>
-                  <span>⛰️ {lastResult.attributes.perseveranca}</span>
-                  <span>👁️ {lastResult.attributes.discernimento}</span>
-                  <span>🛡️ {lastResult.attributes.coragem}</span>
-                </div>
-                {incentive && (
-                  <p className="text-[10px] text-primary italic">{incentive}</p>
-                )}
-                {hints.length > 0 && (
-                  <div className="pt-1 space-y-1">
-                    <p className="text-[9px] uppercase tracking-widest text-muted-foreground font-medium flex items-center gap-1">
-                      <KeyRound className="w-3 h-3" /> Ainda por descobrir
-                    </p>
-                    {hints.map((hint, i) => (
-                      <p key={i} className="text-[10px] text-foreground/70">{hint}</p>
-                    ))}
-                  </div>
-                )}
-                {history.totalPlaythroughs > 0 && (
-                  <p className="text-[9px] text-muted-foreground">
-                    {history.totalPlaythroughs} {history.totalPlaythroughs === 1 ? 'jornada completada' : 'jornadas completadas'}
-                  </p>
-                )}
-              </div>
-            );
-          })()}
         </div>
       </div>
 
-      {/* Bottom section — actions */}
-      <div className="px-5 pb-8 pt-2 w-full max-w-sm mx-auto space-y-3 animate-fade-in" style={{ animationDelay: '0.15s' }}>
+      {/* Actions — fixed bottom */}
+      <div className="px-5 pb-8 pt-2 w-full max-w-sm mx-auto space-y-3 animate-fade-in" style={{ animationDelay: '0.1s' }}>
         {/* Primary CTA */}
         {hasProgress ? (
-          <button
-            onClick={handleContinue}
-            className="btn-medieval w-full flex items-center justify-center gap-3"
-          >
+          <button onClick={handleContinue} className="btn-medieval w-full flex items-center justify-center gap-3">
             <ChevronRight className="w-6 h-6" />
             Continuar Jornada
           </button>
         ) : (
-          <button
-            onClick={() => handleNewJourney()}
-            className="btn-medieval w-full flex items-center justify-center gap-3"
-          >
-            {history.totalPlaythroughs > 0 ? (
-              <>
-                <RotateCcw className="w-6 h-6" />
-                Nova Jornada
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-6 h-6" />
-                Iniciar Jornada
-              </>
-            )}
+          <button onClick={() => handleNewJourney()} className="btn-medieval w-full flex items-center justify-center gap-3">
+            {history.totalPlaythroughs > 0
+              ? <><RotateCcw className="w-6 h-6" />Nova Jornada</>
+              : <><Sparkles className="w-6 h-6" />Iniciar Jornada</>
+            }
           </button>
         )}
 
-        {/* Campaign selector — Part II */}
+        {/* Part II */}
         {!hasProgress && (
-          <button
-            onClick={() => handleNewJourney('part2')}
-            className="btn-medieval-secondary w-full flex items-center justify-center gap-3"
-          >
+          <button onClick={() => handleNewJourney('part2')} className="btn-medieval-secondary w-full flex items-center justify-center gap-3">
             <BookOpen className="w-6 h-6 text-primary" />
             Parte II — A Peregrina
           </button>
         )}
 
-        {/* Secondary buttons row */}
+        {/* Nav grid */}
         <div className="grid grid-cols-4 gap-3">
-          <button
-            onClick={() => navigate('/jornada')}
-            className="btn-medieval-icon flex flex-col items-center gap-2 !py-4"
-          >
+          <button onClick={() => navigate('/jornada')} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4">
             <Map className="w-6 h-6 text-muted-foreground" />
             <span className="text-xs text-muted-foreground font-display">Mapa</span>
           </button>
-          <button
-            onClick={() => navigate('/multiplayer')}
-            className="btn-medieval-icon flex flex-col items-center gap-2 !py-4 !border-primary/30"
-          >
+          <button onClick={() => navigate('/multiplayer')} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4 !border-primary/30">
             <Swords className="w-6 h-6 text-primary" />
             <span className="text-xs text-primary font-display">Multiplayer</span>
           </button>
-          <button
-            onClick={() => user ? navigate('/perfil') : navigate('/auth')}
-            className="btn-medieval-icon flex flex-col items-center gap-2 !py-4"
-          >
+          <button onClick={() => user ? navigate('/perfil') : navigate('/auth')} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4">
             {user ? <User className="w-6 h-6 text-muted-foreground" /> : <LogIn className="w-6 h-6 text-muted-foreground" />}
             <span className="text-xs text-muted-foreground font-display">{user ? (profile?.display_name || 'Perfil') : 'Entrar'}</span>
           </button>
-          <button
-            onClick={() => navigate('/comunidade')}
-            className="btn-medieval-icon flex flex-col items-center gap-2 !py-4"
-          >
+          <button onClick={() => navigate('/comunidade')} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4">
             <Users className="w-6 h-6 text-muted-foreground" />
             <span className="text-xs text-muted-foreground font-display">Comunidade</span>
           </button>
         </div>
 
-        {/* Restart option when in progress */}
+        {/* Restart */}
         {hasProgress && (
-          <button
-            onClick={() => handleNewJourney(progress.campaign || 'part1')}
-            className="w-full text-center text-[11px] text-muted-foreground hover:text-foreground transition-colors pt-1"
-          >
+          <button onClick={() => handleNewJourney(progress.campaign || 'part1')} className="w-full text-center text-[11px] text-muted-foreground hover:text-foreground transition-colors pt-1">
             Recomeçar do início
           </button>
         )}
