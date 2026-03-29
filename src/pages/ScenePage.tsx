@@ -29,9 +29,12 @@ import { FullscreenMiniGame, FULLSCREEN_GAMES } from '@/components/FullscreenMin
 import { miniGameMappings } from '@/data/miniGameMappings';
 import { playGameSfx } from '@/lib/gameSfx';
 import GameNotification from '@/components/GameNotification';
-import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, ArrowLeft, Zap, Star, Shield, Flame } from 'lucide-react';
+import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, ArrowLeft, Zap, Star, Shield, Flame, Share2 } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
 import { useAuth } from '@/contexts/AuthContext';
+import { trackPageView, trackSceneComplete } from '@/lib/analytics';
+import { shareResult } from '@/lib/socialShare';
+import { toast } from 'sonner';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
   fe: { label: 'Fé', emoji: '🔥', icon: Flame },
@@ -194,6 +197,15 @@ const ScenePage = () => {
   }, [chapter, playthroughRecorded]);
 
   useEffect(() => {
+    // SCROLL TO TOP on every scene change
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    // Track analytics
+    trackPageView(`scene:${progress.currentChapterId}`);
+    trackSceneComplete(progress.currentChapterId);
+
     setTransitioning(true);
     setNarrativeIndex(0);
     setShowChoices(false);
@@ -211,6 +223,8 @@ const ScenePage = () => {
     const t = setTimeout(() => {
       setTransitioning(false);
       triggerSceneEntryVFX(progress.currentChapterId);
+      // Second scroll after content renders
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
     }, 100);
     return () => clearTimeout(t);
   }, [progress.currentChapterId]);
@@ -478,6 +492,18 @@ const ScenePage = () => {
               aria-label={audioOn ? 'Desativar som' : 'Ativar som'}
             >
               {audioOn ? <Volume2 className="w-5 h-5 text-muted-foreground" /> : <VolumeX className="w-5 h-5 text-muted-foreground" />}
+            </button>
+            <button
+              onClick={() => {
+                const phase = progress.currentChapterId.startsWith('fase') ? parseInt(progress.currentChapterId.charAt(4)) || 1 : 1;
+                shareResult(progress.attributes, progress.choicesMade, phase).then(ok => {
+                  if (ok) toast.success('Compartilhado!');
+                });
+              }}
+              className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95"
+              aria-label="Compartilhar"
+            >
+              <Share2 className="w-5 h-5 text-muted-foreground" />
             </button>
             <button onClick={() => navigate('/')} className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95">
               <Home className="w-5 h-5 text-muted-foreground" />

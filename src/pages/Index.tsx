@@ -233,6 +233,15 @@ const Index = () => {
             Recomeçar do início
           </button>
         )}
+
+        <div className="flex items-center justify-center gap-4 pt-2">
+          <button onClick={() => navigate('/termos')} className="text-[10px] text-muted-foreground hover:text-foreground transition-colors">
+            Termos e Privacidade
+          </button>
+          <button onClick={() => navigate('/landing')} className="text-[10px] text-muted-foreground hover:text-foreground transition-colors">
+            Sobre o App
+          </button>
+        </div>
       </div>
     </div>
   );
