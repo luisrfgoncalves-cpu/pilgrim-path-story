@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress, PlayerAttributes } from '@/hooks/useStoryProgress';
 import { storyChapters } from '@/data/story';
-import { ArrowLeft, Flame, Shield, BookOpen, Mountain, ScrollText, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Flame, Shield, BookOpen, Mountain, ScrollText, ChevronRight, TrendingUp } from 'lucide-react';
+import ScreenHero from '@/components/ScreenHero';
+import pilgrimAdvancing from '@/assets/pilgrim-advancing.png';
 
 const attributeConfig: { key: keyof PlayerAttributes; label: string; icon: React.ReactNode; emoji: string; description: string; max: number }[] = [
   { key: 'fe', label: 'Fé', icon: <Flame className="w-4 h-4" />, emoji: '🔥', description: 'Confiança no caminho e no Rei da Cidade Celestial', max: 80 },
@@ -33,7 +35,17 @@ const ProgressPage = () => {
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-5 py-6 space-y-6">
+      <div className="max-w-lg mx-auto">
+        <ScreenHero
+          image={pilgrimAdvancing}
+          name="Seu Progresso"
+          subtitle={`${progressPercent}% da jornada · ${progress.choicesMade} decisões`}
+          sfx="accept"
+          size="md"
+        />
+      </div>
+
+      <main className="max-w-lg mx-auto px-5 pb-6 space-y-6">
         {/* Journey stats */}
         <div className="bg-card border border-border rounded-lg p-5 space-y-4">
           <h2 className="font-display text-base text-foreground">Jornada</h2>

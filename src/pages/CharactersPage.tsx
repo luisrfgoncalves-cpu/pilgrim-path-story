@@ -3,11 +3,21 @@ import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { characters } from '@/data/story';
 import { part2Characters } from '@/data/storyPart2';
 import { characterImages } from '@/data/characterImages';
-import { ArrowLeft, Lock } from 'lucide-react';
+import { ArrowLeft, Lock, Users } from 'lucide-react';
+import ScreenHero from '@/components/ScreenHero';
+import { useMemo } from 'react';
 
 const CharactersPage = () => {
   const navigate = useNavigate();
   const { progress } = useStoryProgress();
+
+  // Pick a random unlocked character for the hero
+  const heroChar = useMemo(() => {
+    const unlocked = [...characters, ...part2Characters].filter(c =>
+      progress.visitedChapters.includes(c.unlockedAtChapter) && characterImages[c.id]
+    );
+    return unlocked.length > 0 ? unlocked[Math.floor(Math.random() * unlocked.length)] : null;
+  }, [progress.visitedChapters]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -20,7 +30,17 @@ const CharactersPage = () => {
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-5 py-6 space-y-3">
+      <div className="max-w-lg mx-auto">
+        <ScreenHero
+          image={heroChar ? characterImages[heroChar.id] : undefined}
+          icon={!heroChar ? <Users className="w-full h-full" /> : undefined}
+          name={heroChar?.name || 'Personagens'}
+          subtitle={heroChar?.role || 'Os companheiros e inimigos da jornada'}
+          sfx="charRevealAlly"
+        />
+      </div>
+
+      <main className="max-w-lg mx-auto px-5 pb-6 space-y-3">
         {[...characters, ...part2Characters].map(char => {
           const unlocked = progress.visitedChapters.includes(char.unlockedAtChapter);
           const portrait = characterImages[char.id];
