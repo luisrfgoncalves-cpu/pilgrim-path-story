@@ -7,6 +7,10 @@ import pilgrimDoubt from '@/assets/pilgrim-doubt.png';
 import pilgrimStanding from '@/assets/pilgrim-standing.png';
 import pilgrimAdvancing from '@/assets/pilgrim-advancing.png';
 import pilgrimRadiant from '@/assets/pilgrim-radiant.png';
+import pilgrimDifficulty from '@/assets/pilgrim-difficulty.png';
+import pilgrimFree from '@/assets/pilgrim-free.png';
+import pilgrimConflict from '@/assets/pilgrim-conflict.png';
+import pilgrimRecovery from '@/assets/pilgrim-recovery.png';
 
 interface PilgrimAvatarProps {
   attributes: PlayerAttributes;
@@ -14,68 +18,121 @@ interface PilgrimAvatarProps {
   size?: 'sm' | 'md' | 'lg';
   className?: string;
   showLabel?: boolean;
+  /** Story flag that can override posture (e.g. 'livre' after the cross) */
+  storyFlag?: string;
 }
 
-type PostureState = 'burdened' | 'doubt' | 'standing' | 'advancing' | 'radiant';
+export type PostureState =
+  | 'abatido'
+  | 'confuso'
+  | 'determinado'
+  | 'em_dificuldade'
+  | 'esperancoso'
+  | 'livre'
+  | 'em_conflito'
+  | 'recuperacao'
+  | 'vitoria_final';
 
-const getPosture = (avg: number): PostureState => {
-  if (avg >= 8) return 'radiant';
-  if (avg >= 6.5) return 'advancing';
-  if (avg >= 5) return 'standing';
-  if (avg >= 3.5) return 'doubt';
-  return 'burdened';
+/**
+ * Resolve posture from attributes average + emotional tone + story flags.
+ * Story flags take priority, then tone nuance, then attribute average.
+ */
+const resolvePosture = (avg: number, tone: EmotionalTone, storyFlag?: string): PostureState => {
+  // Story-driven overrides (highest priority)
+  if (storyFlag === 'livre') return 'livre';
+  if (storyFlag === 'vitoria') return 'vitoria_final';
+
+  // Tone-driven nuances
+  if (tone === 'heavy' && avg < 4) return 'abatido';
+  if (tone === 'heavy') return 'em_dificuldade';
+  if (tone === 'tension' && avg < 5) return 'em_conflito';
+  if (tone === 'tension') return 'em_dificuldade';
+  if (tone === 'doubt') return 'confuso';
+  if (tone === 'hope' && avg >= 7) return 'esperancoso';
+  if (tone === 'hope') return 'recuperacao';
+  if (tone === 'peace' && avg >= 8) return 'vitoria_final';
+  if (tone === 'peace') return 'esperancoso';
+
+  // Attribute-average fallback
+  if (avg >= 8.5) return 'vitoria_final';
+  if (avg >= 7) return 'esperancoso';
+  if (avg >= 5.5) return 'determinado';
+  if (avg >= 4) return 'recuperacao';
+  if (avg >= 3) return 'confuso';
+  return 'abatido';
 };
 
 const postureAssets: Record<PostureState, string> = {
-  burdened: pilgrimBurdened,
-  doubt: pilgrimDoubt,
-  standing: pilgrimStanding,
-  advancing: pilgrimAdvancing,
-  radiant: pilgrimRadiant,
+  abatido: pilgrimBurdened,
+  confuso: pilgrimDoubt,
+  determinado: pilgrimStanding,
+  em_dificuldade: pilgrimDifficulty,
+  esperancoso: pilgrimAdvancing,
+  livre: pilgrimFree,
+  em_conflito: pilgrimConflict,
+  recuperacao: pilgrimRecovery,
+  vitoria_final: pilgrimRadiant,
 };
 
 const postureLabels: Record<PostureState, string> = {
-  burdened: 'Abatido',
-  doubt: 'Em Dúvida',
-  standing: 'Peregrino',
-  advancing: 'Firme',
-  radiant: 'Radiante',
+  abatido: 'Abatido',
+  confuso: 'Confuso',
+  determinado: 'Determinado',
+  em_dificuldade: 'Em Dificuldade',
+  esperancoso: 'Esperançoso',
+  livre: 'Livre',
+  em_conflito: 'Em Conflito',
+  recuperacao: 'Recuperação',
+  vitoria_final: 'Vitória',
 };
 
-/* Breathing speed varies by posture — burdened breathes heavier/slower */
 const breatheDuration: Record<PostureState, string> = {
-  burdened: '5s',
-  doubt: '4.5s',
-  standing: '4s',
-  advancing: '3.8s',
-  radiant: '4.2s',
+  abatido: '5s',
+  confuso: '4.5s',
+  determinado: '4s',
+  em_dificuldade: '5.2s',
+  esperancoso: '3.8s',
+  livre: '3.5s',
+  em_conflito: '4.8s',
+  recuperacao: '4.2s',
+  vitoria_final: '4.2s',
 };
 
 const swayDuration: Record<PostureState, string> = {
-  burdened: '7s',
-  doubt: '6s',
-  standing: '8s',
-  advancing: '5s',
-  radiant: '6s',
+  abatido: '7s',
+  confuso: '6s',
+  determinado: '8s',
+  em_dificuldade: '6.5s',
+  esperancoso: '5s',
+  livre: '5.5s',
+  em_conflito: '5.8s',
+  recuperacao: '6.5s',
+  vitoria_final: '6s',
 };
 
-const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = '', showLabel = false }: PilgrimAvatarProps) => {
+const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = '', showLabel = false, storyFlag }: PilgrimAvatarProps) => {
   const { fe, coragem, perseveranca, discernimento } = attributes;
   const avg = (fe + coragem + perseveranca + discernimento) / 4;
-  const posture = getPosture(avg);
+  const posture = resolvePosture(avg, tone, storyFlag);
 
   const visual = useMemo(() => {
     switch (posture) {
-      case 'radiant':
+      case 'vitoria_final':
         return { border: 'ring-2 ring-primary', shadow: 'shadow-[0_0_30px_hsl(var(--primary)/0.4)]', overlayClass: '' };
-      case 'advancing':
+      case 'esperancoso':
+      case 'livre':
         return { border: 'ring-1 ring-primary/60', shadow: 'shadow-[0_0_16px_hsl(var(--primary)/0.2)]', overlayClass: '' };
-      case 'standing':
+      case 'determinado':
+      case 'recuperacao':
         return { border: 'ring-1 ring-border', shadow: '', overlayClass: '' };
-      case 'doubt':
+      case 'confuso':
         return { border: 'ring-1 ring-muted-foreground/30', shadow: '', overlayClass: 'brightness-90' };
-      case 'burdened':
-        return { border: 'ring-1 ring-destructive/30', shadow: '', overlayClass: 'brightness-[0.8] saturate-[0.7]' };
+      case 'em_conflito':
+        return { border: 'ring-1 ring-destructive/40', shadow: 'shadow-[0_0_12px_hsl(var(--destructive)/0.2)]', overlayClass: 'brightness-[0.85] contrast-[1.1]' };
+      case 'em_dificuldade':
+        return { border: 'ring-1 ring-destructive/30', shadow: '', overlayClass: 'brightness-[0.8] saturate-[0.8]' };
+      case 'abatido':
+        return { border: 'ring-1 ring-destructive/30', shadow: '', overlayClass: 'brightness-[0.75] saturate-[0.6]' };
     }
   }, [posture]);
 
@@ -106,7 +163,7 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
           height={768}
         />
 
-        {/* Vignette: darkened edges to focus on character */}
+        {/* Vignette */}
         {(size === 'lg' || size === 'md') && (
           <div
             className="absolute inset-0 pointer-events-none"
@@ -116,9 +173,14 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
           />
         )}
 
-        {/* Radiant glow pulse */}
-        {posture === 'radiant' && (
+        {/* Victory glow pulse */}
+        {posture === 'vitoria_final' && (
           <div className="absolute inset-0 bg-primary/10 animate-[pulse_3s_ease-in-out_infinite] pointer-events-none" />
+        )}
+
+        {/* Free state — golden warmth overlay */}
+        {posture === 'livre' && (
+          <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
         )}
 
         {/* Ambient dust particles — only on lg */}
