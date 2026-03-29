@@ -96,8 +96,40 @@ const sceneClasses: Record<PostureState, string> = {
 };
 
 /**
+ * Phase baseline: each story phase has a "gravity" that pulls the emotional state
+ * toward certain postures. The attribute average still modulates the final result.
+ */
+type PhaseBaseline = {
+  low: PostureState;   // when avg is below threshold
+  high: PostureState;  // when avg is above threshold
+  threshold: number;   // attribute avg divider
+};
+
+const phaseBaselines: Record<string, PhaseBaseline> = {
+  // Fase 1 — Cidade da Destruição (cena1–cena15): início, peso do fardo
+  fase1: { low: 'abatido', high: 'abatido', threshold: 99 },
+  // Fase 2 — Casa do Intérprete: aprendizado
+  fase2: { low: 'confuso', high: 'esperancoso', threshold: 5.5 },
+  // Fase 3 — Vale da Humilhação / Apolião: conflito
+  fase3: { low: 'em_conflito', high: 'determinado', threshold: 5 },
+  // Fase 4 — Feira da Vaidade: pressão social
+  fase4: { low: 'em_dificuldade', high: 'determinado', threshold: 5.5 },
+  // Fase 5 — Castelo da Dúvida / Gigante Desespero: queda
+  fase5: { low: 'abatido', high: 'em_dificuldade', threshold: 4.5 },
+  // Fase 6 — Final / Cidade Celestial
+  fase6: { low: 'esperancoso', high: 'vitoria_final', threshold: 7 },
+};
+
+function getPhaseFromChapter(chapterId: string): string {
+  // fase2-cena1 → fase2, fase3-cena5 → fase3, cena1–cena15 → fase1
+  if (chapterId.startsWith('fase')) {
+    return chapterId.split('-')[0];
+  }
+  return 'fase1'; // cena1–cena15 are all phase 1
+}
+
+/**
  * Recent decision trend: checks if last N choices were mostly positive or negative.
- * Returns a modifier: positive = trending up, negative = trending down.
  */
 function getDecisionTrend(recentEffects: Array<Record<string, number>>): number {
   if (recentEffects.length === 0) return 0;
