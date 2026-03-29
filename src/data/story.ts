@@ -916,6 +916,272 @@ export const storyChapters: Record<string, StoryChapter> = {
     flagNarrative: [
       { flag: "enfrentou_presenca", text: "Você enfrentou o que tentou te parar. Essa coragem agora faz parte de quem você é." }
     ],
+    choices: [
+      {
+        text: "Seguir em frente",
+        nextChapterId: "fase4-cena1",
+        effects: { perseveranca: 1 }
+      }
+    ]
+  },
+
+  // ========== FASE 4: FEIRA DA VAIDADE ==========
+
+  "fase4-cena1": {
+    id: "fase4-cena1",
+    title: "A Feira",
+    location: "Feira da Vaidade",
+    characters: ["cristao"],
+    narrative: [
+      "Você chega a um lugar movimentado. Pessoas, ofertas e distrações estão por toda parte."
+    ],
+    flagNarrative: [
+      { flag: "enfrentou_vale", text: "Depois do vale escuro, a luz e o barulho da feira são quase um alívio — mas algo parece errado." }
+    ],
+    noFlagNarrative: [
+      { flag: "enfrentou_vale", text: "O contraste com o caminho anterior é impressionante. A feira pulsa com vida e energia." }
+    ],
+    choices: [
+      {
+        text: "Observar com cuidado",
+        nextChapterId: "fase4-cena2",
+        effects: { discernimento: 1 },
+        flag: "observou_feira",
+        conditionalEffects: [
+          { attr: "discernimento", threshold: 6, bonus: { discernimento: 1 }, penalty: {} }
+        ]
+      },
+      {
+        text: "Se envolver",
+        nextChapterId: "fase4-cena3",
+        effects: { fe: -1 },
+        flag: "envolveu_feira"
+      }
+    ]
+  },
+
+  "fase4-cena2": {
+    id: "fase4-cena2",
+    title: "A Armadilha Disfarçada",
+    location: "Feira da Vaidade",
+    characters: ["cristao"],
+    narrative: [
+      "Você percebe que tudo ali tenta desviar sua atenção do caminho."
+    ],
+    flagNarrative: [
+      { flag: "escolheu_caminho_estreito", text: "Ter escolhido o caminho estreito antes te ajuda a ver: este lugar é feito para quem busca atalhos." }
+    ],
+    choices: [
+      {
+        text: "Permanecer atento",
+        nextChapterId: "fase4-cena4",
+        effects: { fe: 1 }
+      },
+      {
+        text: "Relaxar",
+        nextChapterId: "fase4-cena3",
+        effects: { discernimento: -1 }
+      }
+    ]
+  },
+
+  "fase4-cena3": {
+    id: "fase4-cena3",
+    title: "Envolvido",
+    location: "Feira da Vaidade",
+    characters: ["cristao"],
+    narrative: [
+      "Você começa a se distrair. O ambiente é envolvente e difícil de resistir."
+    ],
+    adaptiveNarrative: [
+      { minAttr: "fe", minValue: 8, text: "Mesmo assim, algo dentro de você resiste. Sua fé é forte demais para ceder facilmente." }
+    ],
+    choices: [
+      {
+        text: "Continuar",
+        nextChapterId: "fase4-cena5",
+        effects: { fe: -1 }
+      },
+      {
+        text: "Tentar sair",
+        nextChapterId: "fase4-cena4",
+        effects: { coragem: 1 }
+      }
+    ]
+  },
+
+  "fase4-cena4": {
+    id: "fase4-cena4",
+    title: "Foco Mantido",
+    location: "Feira da Vaidade",
+    characters: ["cristao"],
+    narrative: [
+      "Você decide manter o foco, mesmo com tudo ao redor tentando te puxar."
+    ],
+    flagNarrative: [
+      { flag: "enfrentou_presenca", text: "Você já enfrentou algo muito pior no vale. A feira não se compara àquela escuridão." }
+    ],
+    choices: [
+      {
+        text: "Seguir firme",
+        nextChapterId: "fase4-cena6",
+        effects: { perseveranca: 1 },
+        conditionalEffects: [
+          { attr: "perseveranca", threshold: 7, bonus: { fe: 1 }, penalty: {} }
+        ]
+      },
+      {
+        text: "Questionar sua decisão",
+        nextChapterId: "fase4-cena5",
+        effects: { fe: -1 }
+      }
+    ]
+  },
+
+  "fase4-cena5": {
+    id: "fase4-cena5",
+    title: "Pressão Social",
+    location: "Feira da Vaidade",
+    characters: ["cristao"],
+    narrative: [
+      "A pressão aumenta. Pessoas começam a notar que você não pertence àquele lugar."
+    ],
+    noFlagNarrative: [
+      { flag: "observou_feira", text: "Sem ter observado com cuidado antes, é difícil entender o que está acontecendo ao redor." }
+    ],
+    choices: [
+      {
+        text: "Se adaptar",
+        nextChapterId: "fase4-cena7",
+        effects: { discernimento: -1 }
+      },
+      {
+        text: "Permanecer diferente",
+        nextChapterId: "fase4-cena6",
+        effects: { coragem: 2 },
+        flag: "permaneceu_diferente",
+        conditionalEffects: [
+          { attr: "coragem", threshold: 6, bonus: { perseveranca: 1 }, penalty: {} }
+        ]
+      }
+    ]
+  },
+
+  "fase4-cena6": {
+    id: "fase4-cena6",
+    title: "Resistência",
+    location: "Feira da Vaidade",
+    characters: ["cristao"],
+    narrative: [
+      "Você mantém sua posição. Isso chama atenção e gera resistência ao seu redor."
+    ],
+    flagNarrative: [
+      { flag: "permaneceu_diferente", text: "Sua decisão de permanecer diferente não passou despercebida. Alguns olham com desprezo, outros com admiração." }
+    ],
+    choices: [
+      {
+        text: "Continuar",
+        nextChapterId: "fase4-cena8",
+        effects: { fe: 1 }
+      },
+      {
+        text: "Recuar",
+        nextChapterId: "fase4-cena7",
+        effects: { coragem: -1 }
+      }
+    ]
+  },
+
+  "fase4-cena7": {
+    id: "fase4-cena7",
+    title: "Afastamento",
+    location: "Feira da Vaidade",
+    characters: ["cristao"],
+    narrative: [
+      "Ao tentar se adaptar, você sente que está se afastando do propósito."
+    ],
+    adaptiveNarrative: [
+      { minAttr: "discernimento", minValue: 7, text: "Seu discernimento grita: isso não é quem você é. Ainda há tempo de voltar." }
+    ],
+    choices: [
+      {
+        text: "Retornar ao caminho",
+        nextChapterId: "fase4-cena6",
+        effects: { fe: 1 }
+      },
+      {
+        text: "Permanecer assim",
+        nextChapterId: "fase4-cena9",
+        effects: { fe: -2 }
+      }
+    ]
+  },
+
+  "fase4-cena8": {
+    id: "fase4-cena8",
+    title: "O Custo",
+    location: "Feira da Vaidade",
+    characters: ["cristao"],
+    narrative: [
+      "A oposição aumenta. Você percebe que manter sua posição tem um custo."
+    ],
+    flagNarrative: [
+      { flag: "entrou_casa_interprete", text: "As lições do Intérprete ecoam: o caminho verdadeiro nunca foi fácil. Mas vale a pena." }
+    ],
+    choices: [
+      {
+        text: "Aceitar o custo",
+        nextChapterId: "fase4-cena10",
+        effects: { perseveranca: 2 },
+        flag: "aceitou_custo_feira",
+        conditionalEffects: [
+          { attr: "fe", threshold: 6, bonus: { coragem: 1 }, penalty: { coragem: -1 } }
+        ]
+      },
+      {
+        text: "Evitar conflito",
+        nextChapterId: "fase4-cena7",
+        effects: { coragem: -1 }
+      }
+    ]
+  },
+
+  "fase4-cena9": {
+    id: "fase4-cena9",
+    title: "Perdido",
+    location: "Feira da Vaidade",
+    characters: ["cristao"],
+    narrative: [
+      "Você se perde entre as distrações. O caminho já não é claro."
+    ],
+    flagNarrative: [
+      { flag: "pediu_ajuda_pantano", text: "No pântano, você aprendeu a pedir ajuda. Talvez seja hora de fazer isso novamente." }
+    ],
+    choices: [
+      {
+        text: "Recomeçar foco",
+        nextChapterId: "fase4-cena6",
+        effects: { discernimento: 1 }
+      },
+      {
+        text: "Permanecer perdido",
+        nextChapterId: "fase4-cena9",
+        effects: {}
+      }
+    ]
+  },
+
+  "fase4-cena10": {
+    id: "fase4-cena10",
+    title: "Firme na Jornada",
+    location: "Saída da Feira",
+    characters: ["cristao"],
+    narrative: [
+      "Mesmo sob pressão, você permanece firme. Isso fortalece sua jornada."
+    ],
+    flagNarrative: [
+      { flag: "aceitou_custo_feira", text: "Aceitar o custo foi difícil, mas te transformou. Você sai da feira mais forte e mais decidido." }
+    ],
     choices: [],
     isEnding: true,
     endingType: "parte1"

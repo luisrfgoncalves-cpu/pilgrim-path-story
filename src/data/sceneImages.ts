@@ -5,6 +5,7 @@ import sabedoriaMundana from '@/assets/scenes/sabedoria-mundana.jpg';
 import colinaDificuldade from '@/assets/scenes/colina-dificuldade.jpg';
 import casaInterprete from '@/assets/scenes/casa-interprete.jpg';
 import valeHumilhacao from '@/assets/scenes/vale-humilhacao.jpg';
+import feiraVaidade from '@/assets/scenes/feira-vaidade.jpg';
 
 export const sceneImages: Record<string, string> = {
   'cena1': cidadeDestruicao,
@@ -43,4 +44,14 @@ export const sceneImages: Record<string, string> = {
   'fase3-cena8': valeHumilhacao,
   'fase3-cena9': valeHumilhacao,
   'fase3-cena10': valeHumilhacao,
+  'fase4-cena1': feiraVaidade,
+  'fase4-cena2': feiraVaidade,
+  'fase4-cena3': feiraVaidade,
+  'fase4-cena4': feiraVaidade,
+  'fase4-cena5': feiraVaidade,
+  'fase4-cena6': feiraVaidade,
+  'fase4-cena7': feiraVaidade,
+  'fase4-cena8': feiraVaidade,
+  'fase4-cena9': feiraVaidade,
+  'fase4-cena10': feiraVaidade,
 };
