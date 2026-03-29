@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { storyChapters, chapterOrder } from '@/data/story';
+import { part2Chapters, part2ChapterOrder } from '@/data/storyPart2';
 import { ArrowLeft, Lock, CheckCircle2, MapPin, ChevronDown, ChevronUp, RotateCcw, Compass } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import ScreenHero from '@/components/ScreenHero';
@@ -12,7 +13,7 @@ import mapFase4 from '@/assets/map-fase4.jpg';
 import mapFase5 from '@/assets/map-fase5.jpg';
 import mapFase6 from '@/assets/map-fase6.jpg';
 
-const PHASES = [
+const PHASES_PART1 = [
   {
     id: 'fase1', label: 'A Partida', subtitle: 'Cidade da Destruição → Porta Estreita',
     image: mapFase1, color: '#E8724A',
@@ -51,16 +52,59 @@ const PHASES = [
   },
 ];
 
+const PHASES_PART2 = [
+  {
+    id: 'p2-fase1', label: 'O Chamado de Cristã', subtitle: 'Cidade da Destruição → Porta Estreita',
+    image: mapFase1, color: '#AB47BC',
+    description: 'Cristã, esposa do Peregrino, recebe o chamado e parte com seus filhos e Misericórdia.',
+    verse: '"Vinde a mim, todos os que estais cansados e oprimidos" — Mateus 11:28',
+  },
+  {
+    id: 'p2-fase2', label: 'A Companhia', subtitle: 'Casa do Intérprete → Cruz e Sepulcro',
+    image: mapFase2, color: '#26C6DA',
+    description: 'Grande-Coração guia o grupo pelas lições do Intérprete e pela libertação na Cruz.',
+    verse: '"Eis que envio o meu anjo diante de ti, para guardar-te pelo caminho" — Êxodo 23:20',
+  },
+  {
+    id: 'p2-fase3', label: 'A Jornada em Grupo', subtitle: 'Vale da Humilhação → Feira da Vaidade',
+    image: mapFase3, color: '#EF5350',
+    description: 'A família enfrenta o vale sombrio e a feira com a força da comunidade.',
+    verse: '"Ainda que um caia, o outro levanta o seu companheiro" — Eclesiastes 4:10',
+  },
+  {
+    id: 'p2-fase4', label: 'A Resistência', subtitle: 'Gigante Desespero → Castelo da Dúvida',
+    image: mapFase4, color: '#FF7043',
+    description: 'Grande-Coração derruba o Castelo da Dúvida e Valente-pela-Verdade se junta ao grupo.',
+    verse: '"Maior é o que está em vós do que o que está no mundo" — 1 João 4:4',
+  },
+  {
+    id: 'p2-fase5', label: 'As Provas Finais', subtitle: 'Terra Encantada → Montanhas Deleitosas',
+    image: mapFase5, color: '#42A5F5',
+    description: 'O grupo resiste ao sono encantado e encontra Firme, que se une à caminhada.',
+    verse: '"Vigiai e orai, para que não entreis em tentação" — Mateus 26:41',
+  },
+  {
+    id: 'p2-fase6', label: 'A Travessia de Cristã', subtitle: 'Rio da Morte → Cidade Celestial',
+    image: mapFase6, color: '#FFD700',
+    description: 'Cristã atravessa o rio da morte em paz e entra na glória eterna.',
+    verse: '"Preciosa é aos olhos do Senhor a morte dos seus santos" — Salmo 116:15',
+  },
+];
+
 const JourneysPage = () => {
   const navigate = useNavigate();
   const { progress, goToChapter, startJourney, resetProgress } = useStoryProgress();
   const [expandedPhase, setExpandedPhase] = useState<string | null>(null);
 
+  const isPart2 = progress.campaign === 'part2';
+  const PHASES = isPart2 ? PHASES_PART2 : PHASES_PART1;
+  const activeChapters = isPart2 ? part2Chapters : storyChapters;
+  const activeChapterOrder = isPart2 ? part2ChapterOrder : chapterOrder;
+
   const handleChapterClick = (chapterId: string) => {
     if (progress.visitedChapters.includes(chapterId)) {
       goToChapter(chapterId);
       startJourney();
-      // Force re-render even if already on /cena by navigating away then back
       navigate('/jornada', { replace: true });
       setTimeout(() => navigate('/cena'), 50);
     }
@@ -78,8 +122,13 @@ const JourneysPage = () => {
   };
 
   const getPhaseChapterIds = (phaseId: string) => {
+    if (isPart2) {
+      if (phaseId === 'p2-fase1') {
+        return activeChapterOrder.filter(id => /^p2-cena\d+$/.test(id));
+      }
+      return activeChapterOrder.filter(id => id.startsWith(phaseId.replace('p2-fase', 'p2-fase') + '-'));
+    }
     if (phaseId === 'fase1') {
-      // Fase 1 chapters use "cena1"-"cena15" (no prefix)
       return chapterOrder.filter(id => /^cena\d+$/.test(id));
     }
     return chapterOrder.filter(id => id.startsWith(phaseId + '-'));
@@ -89,13 +138,13 @@ const JourneysPage = () => {
     return PHASES.map(phase => ({
       ...phase,
       chapters: getPhaseChapterIds(phase.id)
-        .map(id => ({ id, chapter: storyChapters[id] }))
+        .map(id => ({ id, chapter: activeChapters[id] }))
         .filter(c => c.chapter),
     }));
-  }, []);
+  }, [isPart2, progress.visitedChapters]);
 
   const totalVisited = progress.visitedChapters.length;
-  const total = chapterOrder.length;
+  const total = activeChapterOrder.length;
 
   const isPhaseVisited = (phaseId: string) =>
     getPhaseChapterIds(phaseId).some(id => progress.visitedChapters.includes(id));
@@ -131,7 +180,7 @@ const JourneysPage = () => {
           </button>
           <div className="flex-1">
             <h1 className="font-display text-lg" style={{ color: 'hsl(40 60% 70%)' }}>
-              📜 Mapa do Peregrino
+              📜 {isPart2 ? 'Mapa da Peregrina' : 'Mapa do Peregrino'}
             </h1>
             <div className="flex items-center gap-2">
               <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'hsl(30 20% 15%)', border: '1px solid hsl(40 30% 25% / 0.4)' }}>
@@ -154,7 +203,7 @@ const JourneysPage = () => {
       <div className="max-w-lg mx-auto">
         <ScreenHero
           icon={<Compass className="w-full h-full" />}
-          name="Mapa do Peregrino"
+          name={isPart2 ? 'Mapa da Peregrina' : 'Mapa do Peregrino'}
           subtitle={`${Math.round((totalVisited / total) * 100)}% explorado`}
           sfx="gameStart"
           size="md"
@@ -170,10 +219,10 @@ const JourneysPage = () => {
             <div className="h-px w-10" style={{ background: 'hsl(40 50% 45% / 0.4)' }} />
           </div>
           <h2 className="font-display text-xl" style={{ color: 'hsl(38 50% 72%)', textShadow: '0 2px 8px hsl(0 0% 0% / 0.6)' }}>
-            O Progresso do Peregrino
+            {isPart2 ? 'A Jornada da Peregrina' : 'O Progresso do Peregrino'}
           </h2>
           <p className="text-xs italic font-body mt-1" style={{ color: 'hsl(35 25% 50%)' }}>
-            Da Cidade da Destruição à Cidade Celestial
+            {isPart2 ? 'A caminhada de Cristã e seus companheiros' : 'Da Cidade da Destruição à Cidade Celestial'}
           </p>
         </div>
 
@@ -460,7 +509,7 @@ const JourneysPage = () => {
           <button
             onClick={() => {
               if (window.confirm('Tem certeza que deseja recomeçar toda a jornada do início?')) {
-                resetProgress('part1');
+                resetProgress(progress.campaign || 'part1');
                 navigate('/');
               }
             }}

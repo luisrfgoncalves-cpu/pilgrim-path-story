@@ -109,6 +109,18 @@ const postureLabels: Record<PostureState, string> = {
   vitoria_final: 'Vitória',
 };
 
+const postureLabelsFemale: Record<PostureState, string> = {
+  abatido: 'Abatida',
+  confuso: 'Confusa',
+  determinado: 'Determinada',
+  em_dificuldade: 'Em Dificuldade',
+  esperancoso: 'Esperançosa',
+  livre: 'Livre',
+  em_conflito: 'Em Conflito',
+  recuperacao: 'Recuperação',
+  vitoria_final: 'Vitória',
+};
+
 const breatheDuration: Record<PostureState, string> = {
   abatido: '5s',
   confuso: '4.5s',
@@ -138,6 +150,7 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
   const avg = (fe + coragem + perseveranca + discernimento) / 4;
   const posture = resolvePosture(avg, tone, storyFlag);
   const assets = campaign === 'part2' ? postureAssetsFemale : postureAssets;
+  const labels = campaign === 'part2' ? postureLabelsFemale : postureLabels;
 
   // Track previous posture for crossfade
   const [displayedPosture, setDisplayedPosture] = useState(posture);
@@ -219,7 +232,7 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
         {/* Current image (fading in during crossfade, or fully visible) */}
         <img
           src={assets[crossfading ? posture : displayedPosture]}
-          alt={postureLabels[activePosture]}
+          alt={labels[activePosture]}
           className={`w-full h-full object-cover transition-all duration-[1200ms] ease-in-out ${visual.overlayClass} ${size === 'lg' ? 'scale-110' : ''}`}
           style={{
             ...imgStyle(activePosture),
@@ -284,7 +297,7 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
         <span className={`uppercase tracking-widest font-medium transition-all duration-[1200ms] ${
           size === 'lg' ? 'text-xs text-foreground/80' : 'text-[9px] text-muted-foreground'
         }`}>
-          {postureLabels[activePosture]}
+          {labels[activePosture]}
         </span>
       )}
     </div>
