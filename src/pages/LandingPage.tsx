@@ -228,7 +228,7 @@ const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
   const [showPaywall, setShowPaywall] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const allowedPaths = ['/', '/jornada', '/personagens', '/comunidade', '/multiplayer', '/reflexoes', '/progresso'];
+  const allowedPaths = ['/', '/jornada', '/personagens', '/comunidade', '/multiplayer', '/reflexoes', '/progresso', '/cena', '/resultado'];
 
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
