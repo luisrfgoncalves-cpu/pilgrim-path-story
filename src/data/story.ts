@@ -11,6 +11,12 @@ export interface StoryChoice {
   consequence?: string;
   effects: ChoiceEffect;
   requires?: Partial<ChoiceEffect>;
+  /** Flag key to set when this choice is made (e.g. "entrou_casa", "caminho_facil") */
+  flag?: string;
+  /** Only show this choice if the player HAS this flag */
+  requiresFlag?: string;
+  /** Only show this choice if the player does NOT have this flag */
+  excludesFlag?: string;
 }
 
 export interface StoryChapter {
@@ -19,6 +25,10 @@ export interface StoryChapter {
   location: string;
   narrative: string[];
   adaptiveNarrative?: { minAttr: keyof ChoiceEffect; minValue: number; text: string }[];
+  /** Narrative segments shown only if the player has a specific flag */
+  flagNarrative?: { flag: string; text: string }[];
+  /** Narrative segments shown only if the player does NOT have a flag */
+  noFlagNarrative?: { flag: string; text: string }[];
   choices: StoryChoice[];
   isEnding?: boolean;
   endingType?: 'parte1';
@@ -79,7 +89,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Ignorar esse sentimento",
         nextChapterId: "cena2",
-        effects: { fe: -1, discernimento: -1 }
+        effects: { fe: -1, discernimento: -1 },
+        flag: "ignorou_inquietacao"
       },
       {
         text: "Tentar entender o que está acontecendo",
@@ -214,12 +225,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Caminho fácil",
         nextChapterId: "cena8",
-        effects: { discernimento: -1 }
+        effects: { discernimento: -1 },
+        flag: "escolheu_caminho_facil"
       },
       {
         text: "Caminho estreito",
         nextChapterId: "cena9",
-        effects: { fe: 2 }
+        effects: { fe: 2 },
+        flag: "escolheu_caminho_estreito"
       }
     ]
   },
@@ -342,7 +355,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Pedir ajuda",
         nextChapterId: "cena14",
-        effects: { fe: 2 }
+        effects: { fe: 2 },
+        flag: "pediu_ajuda_pantano"
       },
       {
         text: "Tentar sair sozinho",
@@ -401,7 +415,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Entrar",
         nextChapterId: "fase2-cena2",
-        effects: { fe: 1 }
+        effects: { fe: 1 },
+        flag: "entrou_casa_interprete"
       },
       {
         text: "Ignorar e seguir",
@@ -485,6 +500,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Quando água é lançada, a poeira se assenta. Você percebe que esforço sozinho não resolve tudo."
     ],
+    flagNarrative: [
+      { flag: "pediu_ajuda_pantano", text: "Você se lembra do pântano. Lá também precisou de ajuda. A lição se repete." },
+      { flag: "escolheu_caminho_facil", text: "Você pensa no caminho fácil que escolheu antes. Talvez essa seja a diferença: entender, não apenas seguir." }
+    ],
     choices: [
       {
         text: "Refletir sobre isso",
@@ -528,6 +547,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "interprete"],
     narrative: [
       "Você descobre que há alguém alimentando o fogo por trás."
+    ],
+    flagNarrative: [
+      { flag: "ignorou_inquietacao", text: "Você lembra que já ignorou algo importante antes. Dessa vez, presta mais atenção." }
     ],
     choices: [
       {
@@ -594,6 +616,13 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "interprete"],
     narrative: [
       "O homem te diz que entender essas coisas é essencial para continuar."
+    ],
+    flagNarrative: [
+      { flag: "escolheu_caminho_estreito", text: "\"Você já fez a escolha difícil antes\", ele diz. \"Continue assim.\"" },
+      { flag: "entrou_casa_interprete", text: "\"Foi sábio ter entrado aqui. Muitos passam direto e perdem o que é essencial.\"" }
+    ],
+    noFlagNarrative: [
+      { flag: "entrou_casa_interprete", text: "Mesmo sem ter escolhido entrar de início, as lições chegaram até você." }
     ],
     choices: [
       {

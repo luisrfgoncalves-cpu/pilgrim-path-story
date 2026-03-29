@@ -7,7 +7,7 @@ import { MapPin, Home, ScrollText, Lock } from 'lucide-react';
 
 const ScenePage = () => {
   const navigate = useNavigate();
-  const { progress, makeChoice, meetsRequirements } = useStoryProgress();
+  const { progress, makeChoice, meetsRequirements, hasFlag } = useStoryProgress();
   const [narrativeIndex, setNarrativeIndex] = useState(0);
   const [showChoices, setShowChoices] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -15,12 +15,18 @@ const ScenePage = () => {
   const chapter = getChapter(progress.currentChapterId);
   const bgImage = chapter ? sceneImages[chapter.id] : undefined;
 
-  // Build full narrative with adaptive segments
+  // Build full narrative with adaptive + flag-based segments
   const fullNarrative = chapter ? [
     ...chapter.narrative,
     ...(chapter.adaptiveNarrative || [])
       .filter(seg => progress.attributes[seg.minAttr as keyof typeof progress.attributes] >= seg.minValue)
-      .map(seg => seg.text)
+      .map(seg => seg.text),
+    ...(chapter.flagNarrative || [])
+      .filter(seg => hasFlag(seg.flag))
+      .map(seg => seg.text),
+    ...(chapter.noFlagNarrative || [])
+      .filter(seg => !hasFlag(seg.flag))
+      .map(seg => seg.text),
   ] : [];
 
   useEffect(() => {
@@ -40,7 +46,7 @@ const ScenePage = () => {
     }
   }, [narrativeIndex, chapter, fullNarrative.length]);
 
-  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string) => {
+  const handleChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string) => {
     if (consequence) {
       navigate('/resultado', {
         state: {
@@ -50,10 +56,11 @@ const ScenePage = () => {
           effects,
           currentChapterId: chapter?.id,
           attributeChanges: effects,
+          flag,
         }
       });
     } else {
-      makeChoice(chapter!.id, nextChapterId, choiceText, effects);
+      makeChoice(chapter!.id, nextChapterId, choiceText, effects, flag);
     }
   };
 
@@ -65,8 +72,12 @@ const ScenePage = () => {
   const totalChapters = Object.keys(storyChapters).length;
   const progressPercent = Math.round((progress.visitedChapters.length / totalChapters) * 100);
 
-  const availableChoices = chapter.choices.filter(c => meetsRequirements(c.requires));
-  const lockedChoices = chapter.choices.filter(c => !meetsRequirements(c.requires));
+  const availableChoices = chapter.choices.filter(c => 
+    meetsRequirements(c.requires) && 
+    (!c.requiresFlag || hasFlag(c.requiresFlag)) &&
+    (!c.excludesFlag || !hasFlag(c.excludesFlag))
+  );
+  const lockedChoices = chapter.choices.filter(c => !meetsRequirements(c.requires) && !c.requiresFlag && !c.excludesFlag);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -157,7 +168,7 @@ const ScenePage = () => {
                   {availableChoices.map((choice, i) => (
                     <button
                       key={i}
-                      onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence)}
+                      onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag)}
                       className="w-full text-left p-4 rounded-lg bg-card border border-border hover:border-primary/50 hover:glow-gold transition-all duration-300 group"
                     >
                       <p className="text-foreground font-body text-sm group-hover:text-gold transition-colors">{choice.text}</p>
