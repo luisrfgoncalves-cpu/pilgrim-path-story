@@ -233,12 +233,12 @@ const ScenePage = () => {
           playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
         }, 400);
         setCharReveal(revealChar);
-        // After 6 seconds, dismiss reveal and set persistent portrait
+        // After 8 seconds, dismiss reveal and set persistent portrait
         setTimeout(() => {
           setCharReveal(null);
           setCharRevealDone(true);
           setPersistentChar(revealChar);
-        }, 6000);
+        }, 8000);
       }, 1000);
       return () => clearTimeout(delay);
     }
