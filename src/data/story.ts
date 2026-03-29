@@ -865,14 +865,109 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     narrative: [
       "A casa fica para trás, mas suas lições caminham com você. A poeira e a vassoura. O fogo que não apaga. O homem na gaiola. O palácio que exige luta.",
-      "O caminho desce agora, em direção a um vale sombrio. O ar esfria. Nuvens cobrem o sol.",
-      "O Vale da Humilhação espera."
+      "O caminho sobe agora. Uma colina íngreme se ergue à frente — a Colina da Dificuldade."
     ],
     choices: [
       {
-        text: "Descer ao vale com as lições frescas na mente",
+        text: "Subir a colina íngreme",
+        nextChapterId: "fase2-cena12",
+        effects: { perseveranca: 1 }
+      }
+    ]
+  },
+
+  "fase2-cena12": {
+    id: "fase2-cena12",
+    title: "A Colina da Dificuldade",
+    location: "Colina da Dificuldade",
+    characters: ["cristao"],
+    narrative: [
+      "A Colina da Dificuldade se ergue como um muro de pedra. Bunyan a descreve como tão íngreme que só se pode subir de mãos e joelhos. No pé da colina, uma fonte de água fresca — para fortalecer o peregrino antes da escalada.",
+      "Dois caminhos alternativos contornam a colina: um chamado Perigo, cheio de bosques escuros, e outro chamado Destruição, que leva a um campo de pedras traiçoeiras. Formalista e Hipocrisia, que pularam o muro, tomaram esses atalhos — e nunca mais foram vistos.",
+      "Não há atalho para a colina. É subir — ou desistir."
+    ],
+    toneNarrative: [
+      { attr: "perseveranca", highThreshold: 7, highText: "Sua perseverança faz cada degrau natural parecer um convite. Difícil, sim — mas possível.", lowThreshold: 3, lowText: "A colina parece infinita. Seus joelhos gritam de dor antes mesmo do primeiro terço." }
+    ],
+    choices: [
+      {
+        text: "Subir direto pela trilha íngreme",
+        nextChapterId: "fase2-cena13",
+        effects: { perseveranca: 2, coragem: 1 },
+        flag: "subiu_colina_direto"
+      },
+      {
+        text: "Tentar o caminho Perigo — parece mais fácil",
+        nextChapterId: "fase2-cena13",
+        effects: { perseveranca: -1, discernimento: -1 },
+        flag: "tentou_atalho_colina"
+      }
+    ]
+  },
+
+  "fase2-cena13": {
+    id: "fase2-cena13",
+    title: "O Caramanchão e o Pergaminho Perdido",
+    location: "Colina da Dificuldade",
+    characters: ["cristao"],
+    interactionType: 'timed',
+    timeLimit: 15,
+    timeoutChoiceIndex: 1,
+    narrative: [
+      "Na metade da subida, um caramanchão de pedra oferece sombra e descanso. Bunyan nos diz que o Senhor o construiu para alívio dos peregrinos cansados.",
+      "Você se senta. O cansaço é imenso. As pálpebras pesam. O vento é morno. O caramanchão é tão confortável...",
+      "No livro original, Cristão adormeceu aqui — e o pergaminho selado caiu de suas mãos. Quando acordou e descobriu a perda, teve que descer toda a colina para buscá-lo, chorando e se recriminando."
+    ],
+    flagNarrative: [
+      { flag: "tentou_atalho_colina", text: "O atalho te trouxe de volta ao mesmo ponto, mais cansado. A colina não aceita atalhos." }
+    ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 7, highText: "Você reconhece o perigo: descanso demais no meio da subida pode custar mais do que cansaço.", lowThreshold: 3, lowText: "O sono é irresistível. Só um momento... só fechar os olhos..." }
+    ],
+    choices: [
+      {
+        text: "Descansar brevemente e verificar o pergaminho antes de seguir",
+        nextChapterId: "fase2-cena14",
+        effects: { discernimento: 2, perseveranca: 1 },
+        flag: "guardou_pergaminho"
+      },
+      {
+        text: "Adormecer profundamente no caramanchão",
+        nextChapterId: "fase2-cena14",
+        effects: { discernimento: -2, perseveranca: -1 },
+        flag: "dormiu_caramanchao"
+      }
+    ]
+  },
+
+  "fase2-cena14": {
+    id: "fase2-cena14",
+    title: "Os Leões Acorrentados",
+    location: "Portão do Palácio Belo",
+    characters: ["cristao", "discricao"],
+    narrative: [
+      "No topo da colina, o caminho estreita entre muros altos. E ali, bloqueando a passagem, dois leões enormes rugem com ferocidade.",
+      "Dois homens correm na direção oposta — Timidez e Desconfiança. \"Volte!\", gritam. \"Os leões nos devorarão!\"",
+      "Mas um porteiro chamado Vigilante grita do outro lado: \"Não tema! Os leões estão acorrentados! Mantenha-se no meio do caminho e eles não poderão tocá-lo!\"",
+      "Bunyan usa os leões para ensinar que os perigos no caminho cristão são muitas vezes mais aparentes do que reais — desde que o peregrino permaneça no centro do caminho estreito."
+    ],
+    flagNarrative: [
+      { flag: "dormiu_caramanchao", text: "Você acorda em pânico e descobre que o pergaminho caiu. Corre colina abaixo, encontra-o no caramanchão, e sobe tudo de novo — exausto, mas aliviado. A lição: não durma no caminho." }
+    ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 7, highText: "Você olha os leões nos olhos. Suas correntes são grossas — eles não podem alcançá-lo se mantiver o caminho.", lowThreshold: 3, lowText: "Os rugidos fazem seu sangue gelar. Todo instinto grita para correr." }
+    ],
+    choices: [
+      {
+        text: "Passar entre os leões, mantendo-se no centro do caminho",
         nextChapterId: "fase3-cena1",
-        effects: { fe: 1, coragem: 1 }
+        effects: { coragem: 2, fe: 1 },
+        flag: "passou_pelos_leoes"
+      },
+      {
+        text: "Hesitar e quase voltar, mas a voz de Vigilante te encoraja",
+        nextChapterId: "fase3-cena1",
+        effects: { coragem: 1, fe: 1 }
       }
     ]
   },
@@ -1454,8 +1549,42 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Seguir para o próximo trecho da jornada",
-        nextChapterId: "fase4-cena11",
+        nextChapterId: "fase4-cena11b",
         effects: { fe: 1, perseveranca: 1 }
+      }
+    ]
+  },
+
+  "fase4-cena11b": {
+    id: "fase4-cena11b",
+    title: "Demas e a Mina de Prata",
+    location: "Colina de Lucro",
+    characters: ["cristao", "esperanca", "demas"],
+    narrative: [
+      "Na estrada, um homem acena de uma colina próxima. Seu nome é Demas. Ao seu lado, a entrada de uma mina brilha com veios de prata.",
+      "\"Peregrinos! Venham ver! Há uma mina de prata aqui — basta cavar um pouco e ficarão ricos! Muitos peregrinos já se desviaram para cá. É seguro.\"",
+      "Esperança te puxa: \"Ouvi dizer que essa mina é traiçoeira. O chão cede, e quem entra raramente sai. Interesses e seus amigos provavelmente estão lá dentro.\"",
+      "Bunyan nos diz que Demas era descendente de Geazi e de Judas — homens que venderam a eternidade por prata."
+    ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 7, highText: "A prata brilha, mas você reconhece o brilho: é o mesmo das barracas da feira. Beleza superficial escondendo ruína.", lowThreshold: 3, lowText: "A prata é real. Brilha ao sol. E você está tão cansado de caminhar sem nada..." }
+    ],
+    flagNarrative: [
+      { flag: "rejeitou_interesses", text: "Interesses teria corrido para essa mina. Sua decisão de rejeitá-lo se prova sábia." },
+      { flag: "envolveu_feira", text: "A feira já te seduziu uma vez. Esta mina é a mesma armadilha com outro rosto." }
+    ],
+    choices: [
+      {
+        text: "\"Sua mina é uma cova. O preço da prata é a alma.\"",
+        nextChapterId: "fase4-cena11",
+        effects: { fe: 2, discernimento: 1 },
+        flag: "rejeitou_demas"
+      },
+      {
+        text: "Ir olhar a mina — só uma espiada",
+        nextChapterId: "fase4-cena11",
+        effects: { fe: -2, discernimento: -1 },
+        flag: "cedeu_demas"
       }
     ]
   },
