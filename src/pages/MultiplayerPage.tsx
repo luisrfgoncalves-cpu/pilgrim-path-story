@@ -480,8 +480,25 @@ const MultiplayerPage = () => {
         {/* Game over ranking */}
         {isGameOver && (
           <div className="space-y-4 py-4 animate-fade-in">
-            <div className="text-center space-y-2">
-              <h2 className="font-display text-2xl text-foreground">🏆 Resultado Final</h2>
+            {/* Particles */}
+            <div className="fixed inset-0 pointer-events-none z-30 overflow-hidden">
+              {[...Array(20)].map((_, i) => (
+                <span key={i} className="absolute rounded-full" style={{
+                  width: `${2 + Math.random() * 3}px`,
+                  height: `${2 + Math.random() * 3}px`,
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  background: `hsl(40 70% ${50 + Math.random() * 20}% / ${0.4 + Math.random() * 0.4})`,
+                  animation: `pilgrimDust ${2 + i * 0.3}s ease-in-out infinite`,
+                  animationDelay: `${i * 0.15}s`,
+                }} />
+              ))}
+            </div>
+            <div className="text-center space-y-3">
+              <span className="text-5xl block" style={{ animation: 'pulse 2s infinite' }}>🏆</span>
+              <h2 className="font-display text-2xl" style={{ color: 'hsl(40 80% 70%)', textShadow: '0 0 20px hsl(40 60% 55% / 0.3)' }}>
+                Resultado Final
+              </h2>
               <p className="text-xs text-muted-foreground">A jornada chegou ao fim!</p>
             </div>
 
