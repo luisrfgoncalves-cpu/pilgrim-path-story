@@ -417,44 +417,51 @@ const LandingPage = () => {
   const alreadyInstalled = isStandalone || localStorage.getItem('pwa_installed') === '1';
 
   useEffect(() => {
-    if (alreadyInstalled) return; // Never show banner if already installed
-    const handler = (e: Event) => {
+    const onBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
-      setInstallPrompt(e);
-      setShowInstallBanner(true);
+      setInstallPrompt(e as any);
+      if (!alreadyInstalled) setShowInstallBanner(true);
     };
-    window.addEventListener('beforeinstallprompt', handler);
 
-    // If on mobile, not standalone, and no beforeinstallprompt after 3s → show manual banner
-    if (isMobile && !alreadyInstalled) {
-      const timeout = setTimeout(() => {
-        setShowInstallBanner((prev) => {
-          if (!prev) return true; // show manual banner if native didn't fire
-          return prev;
-        });
+    const onAppInstalled = () => {
+      localStorage.setItem('pwa_installed', '1');
+      setShowInstallBanner(false);
+      setInstallPrompt(null);
+      sessionStorage.setItem('install_banner_dismissed', '1');
+    };
+
+    window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt);
+    window.addEventListener('appinstalled', onAppInstalled);
+
+    if (isStandalone) {
+      localStorage.setItem('pwa_installed', '1');
+    } else if (isMobile && !alreadyInstalled && !sessionStorage.getItem('install_banner_dismissed')) {
+      const timeout = window.setTimeout(() => {
+        if (isIOS) setShowInstallBanner(true);
       }, 3000);
+
       return () => {
         clearTimeout(timeout);
-        window.removeEventListener('beforeinstallprompt', handler);
+        window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt);
+        window.removeEventListener('appinstalled', onAppInstalled);
       };
     }
 
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', onAppInstalled);
+    };
+  }, [alreadyInstalled, isIOS, isMobile, isStandalone]);
 
   const handleInstall = async () => {
     if (installPrompt) {
       installPrompt.prompt();
-      const result = await installPrompt.userChoice;
-      if (result.outcome === 'accepted') {
-        setShowInstallBanner(false);
-        localStorage.setItem('pwa_installed', '1');
-      }
+      await installPrompt.userChoice;
       setInstallPrompt(null);
-    } else {
-      // No native prompt available — show instructions
-      setShowInstallInstructions(true);
+      return;
     }
+
+    setShowInstallInstructions(true);
   };
 
   const handleBuy = () => {
@@ -556,11 +563,11 @@ const LandingPage = () => {
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="text-primary font-bold">2.</span>
-                  <p>Toque em <strong className="text-foreground">"Instalar aplicativo"</strong> ou <strong className="text-foreground">"Adicionar à tela inicial"</strong></p>
+                  <p>Toque em <strong className="text-foreground">"Instalar aplicativo"</strong> (não use “Adicionar à tela inicial”)</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="text-primary font-bold">3.</span>
-                  <p>Confirme tocando em <strong className="text-foreground">"Instalar"</strong></p>
+                  <p>Se não aparecer “Instalar aplicativo”, abra no <strong className="text-foreground">Google Chrome</strong> e tente novamente</p>
                 </div>
               </div>
             )}
