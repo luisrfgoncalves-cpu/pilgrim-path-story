@@ -45,12 +45,11 @@ export interface StoryChapter {
   location: string;
   narrative: string[];
   adaptiveNarrative?: { minAttr: keyof ChoiceEffect; minValue: number; text: string }[];
-  /** Narrative segments shown only if the player has a specific flag */
   flagNarrative?: { flag: string; text: string }[];
-  /** Narrative segments shown only if the player does NOT have a flag */
   noFlagNarrative?: { flag: string; text: string }[];
-  /** Tone-based narrative: shows confident or insecure text based on attributes */
   toneNarrative?: ToneNarrative[];
+  /** Text shown only on replays (playthrough > 1) */
+  replayNarrative?: string[];
   choices: StoryChoice[];
   isEnding?: boolean;
   endingType?: 'parte1' | 'final_good' | 'final_bad';
