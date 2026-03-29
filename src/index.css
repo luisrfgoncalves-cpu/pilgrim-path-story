@@ -126,6 +126,7 @@
 
   .font-display {
     font-family: 'Playfair Display', serif;
+    word-spacing: 0.12em;
   }
 
   .font-body {
