@@ -311,6 +311,29 @@ const MultiplayerPage = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Turn announcement overlay */}
+      {turnAnnounce && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[45] animate-fade-in">
+          <div className="px-6 py-3 rounded-2xl font-display text-lg" style={{
+            background: turnAnnounce === 'Sua vez!'
+              ? 'linear-gradient(135deg, hsl(40 60% 20%), hsl(40 50% 15%))'
+              : 'linear-gradient(135deg, hsl(30 20% 15%), hsl(30 15% 10%))',
+            border: turnAnnounce === 'Sua vez!'
+              ? '1px solid hsl(40 60% 55% / 0.5)'
+              : '1px solid hsl(30 15% 25%)',
+            color: turnAnnounce === 'Sua vez!'
+              ? 'hsl(40 80% 70%)'
+              : 'hsl(38 30% 70%)',
+            boxShadow: turnAnnounce === 'Sua vez!'
+              ? '0 0 40px hsl(40 60% 55% / 0.2)'
+              : '0 8px 24px rgba(0,0,0,0.4)',
+            animation: 'charRevealName 0.5s ease-out both',
+          }}>
+            {turnAnnounce === 'Sua vez!' ? '⚔️ ' : '🎲 '}{turnAnnounce}
+          </div>
+        </div>
+      )}
+
       {/* Event reveal overlay */}
       {revealEvent && (
         <EventReveal
