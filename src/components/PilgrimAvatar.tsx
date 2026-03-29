@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { PlayerAttributes } from '@/hooks/useStoryProgress';
 import { EmotionalTone } from '@/lib/emotionalIntensity';
 
@@ -114,8 +114,32 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
   const avg = (fe + coragem + perseveranca + discernimento) / 4;
   const posture = resolvePosture(avg, tone, storyFlag);
 
+  // Track previous posture for crossfade
+  const [displayedPosture, setDisplayedPosture] = useState(posture);
+  const [prevPosture, setPrevPosture] = useState<PostureState | null>(null);
+  const [crossfading, setCrossfading] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    if (posture !== displayedPosture && !crossfading) {
+      // Start crossfade: show both images, fade out old, fade in new
+      setPrevPosture(displayedPosture);
+      setCrossfading(true);
+
+      timeoutRef.current = setTimeout(() => {
+        setDisplayedPosture(posture);
+        setCrossfading(false);
+        setPrevPosture(null);
+      }, 1200); // crossfade duration
+    }
+    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
+  }, [posture, displayedPosture, crossfading]);
+
+  // Use the target posture for visual styling (so lighting transitions immediately)
+  const activePosture = crossfading ? posture : displayedPosture;
+
   const visual = useMemo(() => {
-    switch (posture) {
+    switch (activePosture) {
       case 'vitoria_final':
         return { border: 'ring-2 ring-primary', shadow: 'shadow-[0_0_30px_hsl(var(--primary)/0.4)]', overlayClass: '' };
       case 'esperancoso':
@@ -133,7 +157,7 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
       case 'abatido':
         return { border: 'ring-1 ring-destructive/30', shadow: '', overlayClass: 'brightness-[0.75] saturate-[0.6]' };
     }
-  }, [posture]);
+  }, [activePosture]);
 
   const sizeConfig = {
     sm: { container: 'w-10 h-10', rounded: 'rounded-full', showParticles: false },
@@ -143,29 +167,55 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
 
   const enableAnimations = size === 'md' || size === 'lg';
 
+  const imgStyle = (p: PostureState) => ({
+    objectPosition: size === 'sm' ? 'center 15%' : 'center 10%',
+    ...(enableAnimations ? {
+      animation: `pilgrimBreathe ${breatheDuration[p]} ease-in-out infinite, pilgrimSway ${swayDuration[p]} ease-in-out infinite`,
+      transformOrigin: 'center bottom',
+    } : {}),
+  });
+
   return (
     <div className={`relative flex flex-col items-center gap-1.5 ${className}`}>
-      <div className={`${sizeConfig.container} ${sizeConfig.rounded} ${visual.border} ${visual.shadow} overflow-hidden relative bg-card transition-all duration-700`}>
-        {/* Avatar image with breathing + sway animations */}
+      <div className={`${sizeConfig.container} ${sizeConfig.rounded} ${visual.border} ${visual.shadow} overflow-hidden relative bg-card transition-all duration-[1200ms] ease-in-out`}>
+
+        {/* Previous image (fading out during crossfade) */}
+        {crossfading && prevPosture && (
+          <img
+            src={postureAssets[prevPosture]}
+            alt=""
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out ${size === 'lg' ? 'scale-110' : ''}`}
+            style={{ ...imgStyle(prevPosture), opacity: 0 }}
+            width={512}
+            height={768}
+          />
+        )}
+
+        {/* Current image (fading in during crossfade, or fully visible) */}
         <img
-          src={postureAssets[posture]}
-          alt={postureLabels[posture]}
-          className={`w-full h-full object-cover transition-all duration-700 ${visual.overlayClass} ${size === 'lg' ? 'scale-110' : ''}`}
+          src={postureAssets[crossfading ? posture : displayedPosture]}
+          alt={postureLabels[activePosture]}
+          className={`w-full h-full object-cover transition-all duration-[1200ms] ease-in-out ${visual.overlayClass} ${size === 'lg' ? 'scale-110' : ''}`}
           style={{
-            objectPosition: size === 'sm' ? 'center 15%' : 'center 10%',
-            ...(enableAnimations ? {
-              animation: `pilgrimBreathe ${breatheDuration[posture]} ease-in-out infinite, pilgrimSway ${swayDuration[posture]} ease-in-out infinite`,
-              transformOrigin: 'center bottom',
-            } : {}),
+            ...imgStyle(activePosture),
+            opacity: crossfading ? 0 : 1,
           }}
           width={512}
           height={768}
+          onLoad={(e) => {
+            // Trigger fade-in after image loads
+            if (crossfading) {
+              requestAnimationFrame(() => {
+                (e.target as HTMLImageElement).style.opacity = '1';
+              });
+            }
+          }}
         />
 
         {/* Vignette */}
         {(size === 'lg' || size === 'md') && (
           <div
-            className="absolute inset-0 pointer-events-none"
+            className="absolute inset-0 pointer-events-none transition-all duration-[1500ms]"
             style={{
               background: 'radial-gradient(ellipse 70% 60% at center 35%, transparent 40%, hsl(var(--background) / 0.7) 100%)',
             }}
@@ -173,14 +223,10 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
         )}
 
         {/* Victory glow pulse */}
-        {posture === 'vitoria_final' && (
-          <div className="absolute inset-0 bg-primary/10 animate-[pulse_3s_ease-in-out_infinite] pointer-events-none" />
-        )}
+        <div className={`absolute inset-0 bg-primary/10 pointer-events-none transition-opacity duration-[1500ms] ${activePosture === 'vitoria_final' ? 'opacity-100 animate-[pulse_3s_ease-in-out_infinite]' : 'opacity-0'}`} />
 
         {/* Free state — golden warmth overlay */}
-        {posture === 'livre' && (
-          <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
-        )}
+        <div className={`absolute inset-0 bg-primary/5 pointer-events-none transition-opacity duration-[1500ms] ${activePosture === 'livre' ? 'opacity-100' : 'opacity-0'}`} />
 
         {/* Ambient dust particles — only on lg */}
         {sizeConfig.showParticles && (
@@ -210,10 +256,10 @@ const PilgrimAvatar = ({ attributes, tone = 'neutral', size = 'sm', className = 
       </div>
 
       {(showLabel || size === 'md' || size === 'lg') && (
-        <span className={`uppercase tracking-widest font-medium ${
+        <span className={`uppercase tracking-widest font-medium transition-all duration-[1200ms] ${
           size === 'lg' ? 'text-xs text-foreground/80' : 'text-[9px] text-muted-foreground'
         }`}>
-          {postureLabels[posture]}
+          {postureLabels[activePosture]}
         </span>
       )}
     </div>
