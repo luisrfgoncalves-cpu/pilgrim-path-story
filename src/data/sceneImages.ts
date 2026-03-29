@@ -30,4 +30,5 @@ export const sceneImages: Record<string, string> = {
   'cidade-celestial-glorioso': cidadeCelestial,
   'cidade-celestial-humilde': cidadeCelestial,
   'cidade-celestial-sofrido': cidadeCelestial,
+  'cidade-celestial-desvio': cidadeCelestial,
 };
