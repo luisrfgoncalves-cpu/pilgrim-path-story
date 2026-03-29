@@ -1655,22 +1655,22 @@ function ReflexGame({ config, onComplete }: MiniGameProps) {
 import { ScripturePuzzle } from '@/components/games/ScripturePuzzle';
 import { PathOfFaith } from '@/components/games/PathOfFaith';
 
-export function MiniGame({ config, onComplete }: MiniGameProps) {
+export function MiniGame({ config, onComplete, characterPortraits }: MiniGameProps) {
   switch (config.type) {
     case 'qte':
-      return <QTEGame config={config} onComplete={onComplete} />;
+      return <QTEGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'swipe':
-      return <SwipeDodgeGame config={config} onComplete={onComplete} />;
+      return <SwipeDodgeGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'memory':
-      return <MemoryGame config={config} onComplete={onComplete} />;
+      return <MemoryGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'stealth':
-      return <StealthGame config={config} onComplete={onComplete} />;
+      return <StealthGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'diceduel':
-      return <DiceDuelGame config={config} onComplete={onComplete} />;
+      return <DiceDuelGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'treasure':
-      return <TreasureHuntGame config={config} onComplete={onComplete} />;
+      return <TreasureHuntGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'reflex':
-      return <ReflexGame config={config} onComplete={onComplete} />;
+      return <ReflexGame config={config} onComplete={onComplete} characterPortraits={characterPortraits} />;
     case 'wordpuzzle':
       return <ScripturePuzzle config={config} onComplete={onComplete} />;
     case 'pathchoice':
