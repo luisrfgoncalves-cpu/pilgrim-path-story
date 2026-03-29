@@ -56,6 +56,12 @@ export interface StoryChapter {
   endingType?: 'parte1' | 'final_good' | 'final_bad';
   reflection?: string;
   characters?: string[];
+  /** Interaction type for choices in this chapter */
+  interactionType?: 'hold' | 'timed' | 'drag';
+  /** Time limit in seconds (for 'timed' type) */
+  timeLimit?: number;
+  /** Default choice index when timer expires (for 'timed' type) */
+  timeoutChoiceIndex?: number;
 }
 
 export interface Character {
@@ -181,6 +187,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Fardo Insuportável",
     location: "Cidade da Destruição",
     characters: ["cristao"],
+    interactionType: 'timed',
+    timeLimit: 12,
+    timeoutChoiceIndex: 1,
     narrative: [
       "O peso se torna insuportável. Você já não consegue fingir que está tudo bem."
     ],
@@ -248,6 +257,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Fora da Cidade",
     characters: ["cristao"],
     reflection: "r4",
+    interactionType: 'drag',
     narrative: [
       "Você vê dois caminhos: um fácil e outro estreito e difícil."
     ],
@@ -342,6 +352,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Pântano do Desânimo",
     characters: ["cristao"],
     reflection: "r5",
+    interactionType: 'hold',
     narrative: [
       "O terreno começa a ficar instável. Você entra em uma área difícil de atravessar."
     ],
@@ -389,6 +400,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Afundando",
     location: "Pântano do Desânimo",
     characters: ["cristao"],
+    interactionType: 'timed',
+    timeLimit: 10,
+    timeoutChoiceIndex: 1,
     narrative: [
       "Você começa a afundar. O terreno era mais perigoso do que parecia."
     ],
@@ -524,6 +538,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Sala da Poeira",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+    interactionType: 'hold',
     narrative: [
       "Ele te leva a uma sala onde alguém tenta limpar o chão, mas a poeira só aumenta."
     ],
