@@ -119,6 +119,21 @@ const ScenePage = () => {
     return () => clearTimeout(t);
   }, [progress.currentChapterId]);
 
+  // Roll for surprise on scene entry
+  useEffect(() => {
+    if (!chapter) return;
+    const s = rollForSurprise(progress.attributes, chapter.id, progress.choicesMade);
+    if (s) {
+      setSurprise(s);
+      setSurpriseShown(true);
+      const t = setTimeout(() => setSurpriseShown(false), 4000);
+      return () => clearTimeout(t);
+    } else {
+      setSurprise(null);
+      setSurpriseShown(false);
+    }
+  }, [chapter?.id]);
+
   // Audio: set ambience when scene or emotional state changes
   useEffect(() => {
     if (chapter && emotional) {
