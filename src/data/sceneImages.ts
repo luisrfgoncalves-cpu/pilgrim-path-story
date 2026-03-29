@@ -105,4 +105,5 @@ export const sceneImages: Record<string, string> = {
   'fase6-cena6': rioFinal,
   'fase6-cena7': cidadeCelestial,
   'fase6-cena8': cidadeCelestial,
+  'fase6-cena9': cidadeCelestial,
 };

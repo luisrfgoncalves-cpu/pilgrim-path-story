@@ -172,7 +172,7 @@ export const chapterOrder = [
   "fase5-cena6", "fase5-cena7", "fase5-cena8", "fase5-cena9", "fase5-cena10",
   "fase5-cena11", "fase5-cena12", "fase5-cena13", "fase5-cena14",
   "fase6-cena1", "fase6-cena2", "fase6-cena3", "fase6-cena4", "fase6-cena5",
-  "fase6-cena6", "fase6-cena7", "fase6-cena8",
+  "fase6-cena6", "fase6-cena7", "fase6-cena8", "fase6-cena9",
 ];
 
 export const storyChapters: Record<string, StoryChapter> = {
