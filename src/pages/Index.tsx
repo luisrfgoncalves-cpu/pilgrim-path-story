@@ -28,7 +28,6 @@ const Index = () => {
 
   const streak = useMemo(() => getStreak(), []);
 
-  // Show streak toast briefly
   useEffect(() => {
     if (streak.isNewDay && streak.days >= 2) {
       setStreakShown(true);
@@ -229,7 +228,7 @@ const Index = () => {
         {hasProgress ? (
           <button
             onClick={handleContinue}
-            className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 transition-opacity glow-gold"
+            className="btn-medieval w-full flex items-center justify-center gap-3"
           >
             <ChevronRight className="w-5 h-5" />
             Continuar Jornada
@@ -237,7 +236,7 @@ const Index = () => {
         ) : (
           <button
             onClick={() => handleNewJourney()}
-            className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 transition-opacity glow-gold"
+            className="btn-medieval w-full flex items-center justify-center gap-3"
           >
             {history.totalPlaythroughs > 0 ? (
               <>
@@ -257,7 +256,7 @@ const Index = () => {
         {!hasProgress && (
           <button
             onClick={() => handleNewJourney('part2')}
-            className="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-xl bg-card border border-primary/30 text-foreground font-display text-sm hover:border-primary/60 transition-colors"
+            className="btn-medieval-secondary w-full flex items-center justify-center gap-3"
           >
             <BookOpen className="w-5 h-5 text-primary" />
             Parte II — A Peregrina
@@ -268,28 +267,28 @@ const Index = () => {
         <div className="grid grid-cols-4 gap-2">
           <button
             onClick={() => navigate('/jornada')}
-            className="flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors"
+            className="btn-medieval-icon flex flex-col items-center gap-1.5"
           >
             <Map className="w-4 h-4 text-muted-foreground" />
             <span className="text-[10px] text-muted-foreground font-medium">Mapa</span>
           </button>
           <button
             onClick={() => navigate('/multiplayer')}
-            className="flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl bg-card border border-primary/30 hover:border-primary/60 transition-colors"
+            className="btn-medieval-icon flex flex-col items-center gap-1.5 !border-primary/30"
           >
             <Swords className="w-4 h-4 text-primary" />
             <span className="text-[10px] text-primary font-medium">Multiplayer</span>
           </button>
           <button
             onClick={() => user ? navigate('/perfil') : navigate('/auth')}
-            className="flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors"
+            className="btn-medieval-icon flex flex-col items-center gap-1.5"
           >
             {user ? <User className="w-4 h-4 text-muted-foreground" /> : <LogIn className="w-4 h-4 text-muted-foreground" />}
             <span className="text-[10px] text-muted-foreground font-medium">{user ? (profile?.display_name || 'Perfil') : 'Entrar'}</span>
           </button>
           <button
             onClick={() => navigate('/comunidade')}
-            className="flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors"
+            className="btn-medieval-icon flex flex-col items-center gap-1.5"
           >
             <Users className="w-4 h-4 text-muted-foreground" />
             <span className="text-[10px] text-muted-foreground font-medium">Comunidade</span>
