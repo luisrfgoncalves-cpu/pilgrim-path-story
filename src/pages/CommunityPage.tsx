@@ -101,12 +101,12 @@ const CommunityPage: React.FC = () => {
   const [sending, setSending] = useState<string | null>(null);
   const [selectedPilgrim, setSelectedPilgrim] = useState<PilgrimSummary | null>(null);
 
+  // Shuffle pilgrims to avoid implicit ranking by activity/progress
   const loadAll = useCallback(async () => {
     const [pilgrimsRes, messagesRes, supportsRes] = await Promise.all([
       supabase
         .from('profiles')
         .select('id, display_name, avatar_style, current_phase, total_choices, bio, updated_at')
-        .order('updated_at', { ascending: false })
         .limit(30),
       supabase
         .from('pilgrim_messages')
