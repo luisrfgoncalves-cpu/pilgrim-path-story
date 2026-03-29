@@ -169,7 +169,11 @@ const ScenePage = () => {
     setMiniGameDone(false);
     setMiniGameResult(null);
     setShowMiniGameResult(false);
-    const t = setTimeout(() => setTransitioning(false), 100);
+    const t = setTimeout(() => {
+      setTransitioning(false);
+      // Auto-trigger dramatic VFX on scene entry
+      triggerSceneEntryVFX(progress.currentChapterId);
+    }, 100);
     return () => clearTimeout(t);
   }, [progress.currentChapterId]);
 
