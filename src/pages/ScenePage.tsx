@@ -29,9 +29,12 @@ import { FullscreenMiniGame, FULLSCREEN_GAMES } from '@/components/FullscreenMin
 import { miniGameMappings } from '@/data/miniGameMappings';
 import { playGameSfx } from '@/lib/gameSfx';
 import GameNotification from '@/components/GameNotification';
-import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, ArrowLeft, Zap, Star, Shield, Flame } from 'lucide-react';
+import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, ArrowLeft, Zap, Star, Shield, Flame, Share2 } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
 import { useAuth } from '@/contexts/AuthContext';
+import { trackPageView, trackSceneComplete } from '@/lib/analytics';
+import { shareResult } from '@/lib/socialShare';
+import { toast } from 'sonner';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
   fe: { label: 'Fé', emoji: '🔥', icon: Flame },
