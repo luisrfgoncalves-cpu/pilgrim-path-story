@@ -117,6 +117,7 @@ function QTEGame({ config, onComplete }: MiniGameProps) {
   const hitTarget = (id: number) => {
     setTargets(prev => prev.filter(t => t.id !== id));
     setScore(s => s + 1);
+    playGameSfx('hit');
   };
 
   const finalScore = maxTargets > 0 ? Math.round((score / maxTargets) * 100) : 0;
@@ -300,8 +301,10 @@ function SwipeDodgeGame({ config, onComplete }: MiniGameProps) {
     if (correct) {
       setCorrectCount(c => c + 1);
       setFeedback(dodged ? '🛡️ Esquivou!' : '✨ Aceitou!');
+      playGameSfx(dodged ? 'dodge' : 'accept');
     } else {
       setFeedback(dodged ? '❌ Era bênção!' : '💔 Era tentação!');
+      playGameSfx('wrong');
     }
     setRound(r => r + 1);
     setCurrentItem(null);
@@ -515,7 +518,7 @@ function MemoryGame({ config, onComplete }: MiniGameProps) {
     if (newInput[idx] !== sequence[idx]) {
       // Wrong!
       setFeedbackText('❌ Sequência errada!');
-      setPhase('feedback');
+      playGameSfx('wrong');
       setTimeout(() => {
         const nextRound = round + 1;
         setRound(nextRound);
@@ -532,6 +535,7 @@ function MemoryGame({ config, onComplete }: MiniGameProps) {
       // Correct!
       setWins(w => w + 1);
       setFeedbackText('✨ Correto!');
+      playGameSfx('correct');
       setPhase('feedback');
       setTimeout(() => {
         const nextRound = round + 1;
@@ -712,8 +716,10 @@ function StealthGame({ config, onComplete }: MiniGameProps) {
     if (inSafe) {
       setSuccesses(s => s + 1);
       setFeedback('🤫 Passou!');
+      playGameSfx('stealthPass');
     } else {
       setFeedback('⚠️ Detectado!');
+      playGameSfx('stealthFail');
     }
 
     setTimeout(() => {
@@ -1255,6 +1261,7 @@ function TreasureHuntGame({ config, onComplete }: MiniGameProps) {
     if (item) {
       setFound(f => f + 1);
       setLastFound(`${item.emoji} ${item.label}`);
+      playGameSfx('itemFound');
       setTimeout(() => setLastFound(null), 1500);
     }
     // Check if all found
