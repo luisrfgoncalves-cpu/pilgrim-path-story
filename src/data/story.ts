@@ -548,6 +548,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Você descobre que há alguém alimentando o fogo por trás."
     ],
+    flagNarrative: [
+      { flag: "ignorou_inquietacao", text: "Você lembra que já ignorou algo importante antes. Dessa vez, presta mais atenção." }
+    ],
     choices: [
       {
         text: "Entender o significado",
@@ -613,6 +616,13 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "interprete"],
     narrative: [
       "O homem te diz que entender essas coisas é essencial para continuar."
+    ],
+    flagNarrative: [
+      { flag: "escolheu_caminho_estreito", text: "\"Você já fez a escolha difícil antes\", ele diz. \"Continue assim.\"" },
+      { flag: "entrou_casa_interprete", text: "\"Foi sábio ter entrado aqui. Muitos passam direto e perdem o que é essencial.\"" }
+    ],
+    noFlagNarrative: [
+      { flag: "entrou_casa_interprete", text: "Mesmo sem ter escolhido entrar de início, as lições chegaram até você." }
     ],
     choices: [
       {
