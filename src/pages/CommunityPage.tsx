@@ -99,7 +99,9 @@ const CommunityPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-lg mx-auto">
-        <NavLink to="/" icon={ArrowLeft} label="Voltar" className="mb-6" />
+        <NavLink to="/" className="text-sm text-primary hover:underline flex items-center gap-1 mb-6">
+          <ArrowLeft className="w-4 h-4" /> Voltar
+        </NavLink>
 
         <h1 className="text-2xl font-bold text-foreground mb-4">Comunidade de Peregrinos</h1>
 
