@@ -599,6 +599,39 @@ const LandingPage = () => {
         </button>
       </div>
 
+      {/* ══════════ INSTALL BANNER ══════════ */}
+      {showInstallBanner && (
+        <div
+          className="sticky top-[41px] z-50 flex items-center justify-between gap-3 px-4 py-3 border-b border-primary/20"
+          style={{
+            background: 'linear-gradient(90deg, hsl(40 30% 10%), hsl(40 20% 6%), hsl(40 30% 10%))',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+          }}
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <Smartphone className="w-5 h-5 text-primary flex-shrink-0" />
+            <span className="text-xs text-foreground/90 font-display font-bold truncate">
+              Instale o App no seu celular!
+            </span>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={handleInstall}
+              className="px-3 py-1.5 text-xs font-display font-bold rounded-lg bg-primary text-primary-foreground border border-primary/60 hover:scale-105 transition-transform"
+              style={{ boxShadow: '0 0 10px hsl(40 70% 50% / 0.3)' }}
+            >
+              INSTALAR
+            </button>
+            <button
+              onClick={() => setShowInstallBanner(false)}
+              className="p-1 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ══════════ HERO ══════════ */}
       <section className="relative min-h-[95vh] flex flex-col items-center justify-center px-5 py-16 text-center overflow-hidden">
         <div className="absolute inset-0">
