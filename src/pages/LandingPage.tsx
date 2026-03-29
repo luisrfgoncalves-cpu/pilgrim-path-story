@@ -657,7 +657,60 @@ const LandingPage = () => {
         </div>
       )}
 
-      {/* ══════════ HERO ══════════ */}
+      {/* ══════════ INSTALL INSTRUCTIONS MODAL ══════════ */}
+      {showInstallInstructions && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-6" onClick={() => setShowInstallInstructions(false)}>
+          <div
+            className="w-full max-w-sm rounded-2xl border border-primary/30 p-6 space-y-4"
+            style={{ background: 'linear-gradient(180deg, hsl(40 20% 10%), hsl(40 10% 6%))' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3">
+              <Smartphone className="w-6 h-6 text-primary" />
+              <h3 className="font-display text-lg text-foreground font-bold">Instalar o App</h3>
+            </div>
+            {isIOS ? (
+              <div className="space-y-3 text-sm text-foreground/80">
+                <p className="font-display text-primary text-xs uppercase tracking-wider">No iPhone / iPad:</p>
+                <div className="flex items-start gap-3">
+                  <span className="text-primary font-bold">1.</span>
+                  <p>Toque no ícone de <strong className="text-foreground">Compartilhar</strong> (quadrado com seta para cima) na barra do Safari</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-primary font-bold">2.</span>
+                  <p>Role para baixo e toque em <strong className="text-foreground">"Adicionar à Tela de Início"</strong></p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-primary font-bold">3.</span>
+                  <p>Toque em <strong className="text-foreground">"Adicionar"</strong> no canto superior direito</p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3 text-sm text-foreground/80">
+                <p className="font-display text-primary text-xs uppercase tracking-wider">No Android:</p>
+                <div className="flex items-start gap-3">
+                  <span className="text-primary font-bold">1.</span>
+                  <p>Toque no menu <strong className="text-foreground">⋮</strong> (três pontos) no canto superior do Chrome</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-primary font-bold">2.</span>
+                  <p>Toque em <strong className="text-foreground">"Instalar aplicativo"</strong> ou <strong className="text-foreground">"Adicionar à tela inicial"</strong></p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-primary font-bold">3.</span>
+                  <p>Confirme tocando em <strong className="text-foreground">"Instalar"</strong></p>
+                </div>
+              </div>
+            )}
+            <button
+              onClick={() => setShowInstallInstructions(false)}
+              className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-display font-bold text-sm hover:scale-[1.02] transition-transform"
+            >
+              Entendi!
+            </button>
+          </div>
+        </div>
+      )
       <section className="relative min-h-[95vh] flex flex-col items-center justify-center px-5 py-16 text-center overflow-hidden">
         <div className="absolute inset-0">
           <img src={cidadeDestruicao} alt="Cidade da Destruição" className="w-full h-full object-cover opacity-50" />
