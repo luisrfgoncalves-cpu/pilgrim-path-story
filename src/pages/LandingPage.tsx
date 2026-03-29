@@ -6,6 +6,7 @@ import {
   Swords, Gamepad2, Brain, Eye, Heart, Crown, Map, Trophy, Lock,
   Play, Award, Timer, Target, Compass, ArrowRight, MessageCircle, Gift
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 // ── IMAGENS REAIS DO APP ──
 import cidadeDestruicao from '@/assets/scenes/cidade-destruicao.jpg';
@@ -461,7 +462,12 @@ const LandingPage = () => {
       return;
     }
 
-    setShowInstallInstructions(true);
+    if (isIOS) {
+      setShowInstallInstructions(true);
+      return;
+    }
+
+    toast.info('No Android, use apenas "Instalar aplicativo" no Chrome para instalar de verdade.');
   };
 
   const handleBuy = () => {
