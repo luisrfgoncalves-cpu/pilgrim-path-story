@@ -77,6 +77,8 @@ export const sceneImages: Record<string, string> = {
   'fase4-cena8': esperancaEncontro,
   'fase4-cena9': feiraVaidade,
   'fase4-cena10': esperancaEncontro,
+  'fase4-cena11': esperancaEncontro,
+  'fase4-cena12': fielEncontro,
 
   // FASE 5: Castelo da Dúvida
   'fase5-cena1': pradoAgradavel,
