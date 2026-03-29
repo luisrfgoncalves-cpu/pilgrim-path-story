@@ -126,21 +126,24 @@ const PhoneMockupTour = () => {
     'Tela de Resultado',
   ];
 
-  // Auto-scroll
+  // Auto-scroll — section by section, slow and smooth
   useEffect(() => {
     if (isPaused) return;
     autoRef.current = setInterval(() => {
       if (!scrollRef.current) return;
       const el = scrollRef.current;
-      const maxScroll = el.scrollHeight - el.clientHeight;
-      if (el.scrollTop >= maxScroll - 2) {
+      const sectionEls = el.querySelectorAll('[data-section]');
+      const nextIdx = activeSection + 1;
+      if (nextIdx >= sectionEls.length) {
         el.scrollTo({ top: 0, behavior: 'smooth' });
+        setActiveSection(0);
       } else {
-        el.scrollBy({ top: 60, behavior: 'smooth' });
+        sectionEls[nextIdx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setActiveSection(nextIdx);
       }
-    }, 120);
+    }, 3500);
     return () => clearInterval(autoRef.current);
-  }, [isPaused]);
+  }, [isPaused, activeSection]);
 
   // Track active section
   useEffect(() => {
