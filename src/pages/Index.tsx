@@ -2,9 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { getChapter, storyChapters, chapterOrder } from '@/data/story';
+import { getReplayIncentive, getUnlockableHints } from '@/data/sceneVariations';
 import { useAuth } from '@/contexts/AuthContext';
 import PilgrimAvatar from '@/components/PilgrimAvatar';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn } from 'lucide-react';
+import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, KeyRound } from 'lucide-react';
 
 const replayMessages = [
   "Escolhas diferentes levam a caminhos diferentes. Descubra o que mudaria.",
@@ -125,24 +126,40 @@ const Index = () => {
             </div>
           )}
 
-          {/* Replay summary */}
-          {lastResult && !hasProgress && (
-            <div className="bg-card border border-border rounded-lg p-3 space-y-2">
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">Última Jornada</p>
-              <div className="flex items-center justify-center gap-3 text-xs">
-                <span>🔥 {lastResult.attributes.fe}</span>
-                <span>⛰️ {lastResult.attributes.perseveranca}</span>
-                <span>👁️ {lastResult.attributes.discernimento}</span>
-                <span>🛡️ {lastResult.attributes.coragem}</span>
+          {/* Replay incentive — history-aware */}
+          {lastResult && !hasProgress && (() => {
+            const incentive = getReplayIncentive(history, progress.playthrough);
+            const hints = getUnlockableHints(history);
+            return (
+              <div className="bg-card border border-border rounded-lg p-3 space-y-2">
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">Última Jornada</p>
+                <div className="flex items-center justify-center gap-3 text-xs">
+                  <span>🔥 {lastResult.attributes.fe}</span>
+                  <span>⛰️ {lastResult.attributes.perseveranca}</span>
+                  <span>👁️ {lastResult.attributes.discernimento}</span>
+                  <span>🛡️ {lastResult.attributes.coragem}</span>
+                </div>
+                {incentive && (
+                  <p className="text-[10px] text-primary italic">{incentive}</p>
+                )}
+                {hints.length > 0 && (
+                  <div className="pt-1 space-y-1">
+                    <p className="text-[9px] uppercase tracking-widest text-muted-foreground font-medium flex items-center gap-1">
+                      <KeyRound className="w-3 h-3" /> Ainda por descobrir
+                    </p>
+                    {hints.map((hint, i) => (
+                      <p key={i} className="text-[10px] text-foreground/70">{hint}</p>
+                    ))}
+                  </div>
+                )}
+                {history.totalPlaythroughs > 0 && (
+                  <p className="text-[9px] text-muted-foreground">
+                    {history.totalPlaythroughs} {history.totalPlaythroughs === 1 ? 'jornada completada' : 'jornadas completadas'}
+                  </p>
+                )}
               </div>
-              <p className="text-[10px] text-primary italic">{replayMsg}</p>
-              {history.totalPlaythroughs > 0 && (
-                <p className="text-[9px] text-muted-foreground">
-                  {history.totalPlaythroughs} {history.totalPlaythroughs === 1 ? 'jornada completada' : 'jornadas completadas'}
-                </p>
-              )}
-            </div>
-          )}
+            );
+          })()}
         </div>
       </div>
 
