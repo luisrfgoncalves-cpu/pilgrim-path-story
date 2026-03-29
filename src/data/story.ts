@@ -187,6 +187,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Fardo Insuportável",
     location: "Cidade da Destruição",
     characters: ["cristao"],
+    interactionType: 'timed',
+    timeLimit: 12,
+    timeoutChoiceIndex: 1,
     narrative: [
       "O peso se torna insuportável. Você já não consegue fingir que está tudo bem."
     ],
@@ -397,6 +400,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Afundando",
     location: "Pântano do Desânimo",
     characters: ["cristao"],
+    interactionType: 'timed',
+    timeLimit: 10,
+    timeoutChoiceIndex: 1,
     narrative: [
       "Você começa a afundar. O terreno era mais perigoso do que parecia."
     ],
