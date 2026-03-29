@@ -269,40 +269,39 @@ const MockScreen = ({ id }: { id: number }) => {
   return screens[id] || screens[0];
 };
 
-const PhoneMockupTour = () => {
-  const [isPaused, setIsPaused] = useState(false);
-  const [activeScreen, setActiveScreen] = useState(0);
-  const autoRef = useRef<ReturnType<typeof setInterval>>();
+const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
+  const [showPaywall, setShowPaywall] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const screens = [
-    { label: 'Splash Screen', desc: 'Tela de abertura do app' },
-    { label: 'Dashboard', desc: 'Painel do peregrino' },
-    { label: 'Cena Narrativa', desc: 'Escolhas que mudam a história' },
-    { label: 'Duelo de Dados', desc: 'Batalhas épicas com dados 3D' },
-    { label: 'Mapa da Jornada', desc: 'Progresso na peregrinação' },
-    { label: 'Multiplayer Online', desc: 'Tabuleiro premium digital' },
-    { label: 'Modo Reunidos', desc: 'Jogue presencialmente' },
-    { label: 'Personagens', desc: '40+ personagens bíblicos' },
-    { label: 'Reflexões', desc: 'Meditações espirituais' },
-    { label: 'Resultado Final', desc: 'Sua jornada completa' },
-  ];
+  // Routes the user can browse freely (strategic showcase)
+  const allowedPaths = ['/', '/jornada', '/personagens', '/comunidade', '/multiplayer', '/reflexoes', '/progresso'];
 
   useEffect(() => {
-    if (isPaused) return;
-    autoRef.current = setInterval(() => {
-      setActiveScreen(prev => (prev + 1) % screens.length);
-    }, 3500);
-    return () => clearInterval(autoRef.current);
-  }, [isPaused, screens.length]);
+    const handleMessage = (e: MessageEvent) => {
+      // Listen for navigation attempts from the iframe
+      if (e.data?.type === 'navigation' && e.data?.path) {
+        const path = e.data.path;
+        const isAllowed = allowedPaths.some(p => path === p || path.startsWith(p));
+        if (!isAllowed) {
+          setShowPaywall(true);
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
-  const goToScreen = (idx: number) => {
-    setIsPaused(true);
-    setActiveScreen(idx);
-  };
+  // Show paywall overlay after user explores for a bit
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // After 45s of browsing, show a gentle CTA
+    }, 45000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="flex flex-col items-center gap-5">
-      {/* Phone frame */}
+      {/* Phone frame with REAL app inside */}
       <div
         className="relative"
         style={{
@@ -325,17 +324,56 @@ const PhoneMockupTour = () => {
           <div className="absolute -left-[3px] top-[170px] w-[3px] h-12 rounded-l-sm" style={{ background: '#333' }} />
           <div className="absolute -right-[3px] top-[130px] w-[3px] h-16 rounded-r-sm" style={{ background: '#333' }} />
 
-          {/* Screen */}
+          {/* Screen with real app iframe */}
           <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-[#0c0a14]">
             {/* Dynamic Island */}
             <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-[22px] bg-black rounded-full z-30" style={{ boxShadow: 'inset 0 0 4px rgba(0,0,0,0.8)' }}>
               <div className="absolute right-[18px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full" style={{ background: 'radial-gradient(circle, #1a3a5c, #0a1a2c)' }} />
             </div>
 
-            {/* Rendered app screen */}
-            <div className="absolute inset-0 z-10 transition-opacity duration-500">
-              <MockScreen id={activeScreen} />
-            </div>
+            {/* Real app iframe */}
+            <iframe
+              ref={iframeRef}
+              src="/?preview=landing"
+              className="absolute inset-0 w-full h-full z-10 border-0"
+              style={{ borderRadius: '2rem' }}
+              title="Preview do App"
+              sandbox="allow-scripts allow-same-origin"
+            />
+
+            {/* Paywall overlay */}
+            {showPaywall && (
+              <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+                <div className="text-center space-y-3">
+                  <div className="text-4xl">🔒</div>
+                  <p className="font-display text-sm font-bold" style={{ color: '#d4a44a' }}>
+                    Conteúdo Exclusivo
+                  </p>
+                  <p className="text-[10px]" style={{ color: '#a89060' }}>
+                    Adquira o acesso completo para viver toda a jornada do Peregrino
+                  </p>
+                  <button
+                    onClick={onBuy}
+                    className="px-5 py-2 rounded-xl text-[11px] font-display font-bold"
+                    style={{
+                      background: 'linear-gradient(135deg, #d4a44a, #8b6914)',
+                      color: '#fff',
+                      boxShadow: '0 0 16px #d4a44a66',
+                    }}
+                  >
+                    <Crown className="w-3.5 h-3.5 inline mr-1.5" />
+                    Adquirir — R$147/ano
+                  </button>
+                  <button
+                    onClick={() => setShowPaywall(false)}
+                    className="block mx-auto text-[9px] mt-2"
+                    style={{ color: '#888' }}
+                  >
+                    Continuar explorando
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Home indicator */}
             <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-28 h-[4px] bg-white/30 rounded-full z-30" />
@@ -346,52 +384,25 @@ const PhoneMockupTour = () => {
         <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-10 rounded-full" style={{ background: 'radial-gradient(ellipse, hsl(40 70% 50% / 0.12), transparent)' }} />
       </div>
 
-      {/* Screen label */}
-      <div className="text-center">
-        <p className="font-display text-sm text-foreground font-bold">{screens[activeScreen].label}</p>
-        <p className="text-xs text-muted-foreground">{screens[activeScreen].desc}</p>
+      {/* Label */}
+      <div className="text-center space-y-2">
+        <p className="font-display text-sm text-foreground font-bold">Explore o app por dentro</p>
+        <p className="text-xs text-muted-foreground">Navegue livremente pelo app — toque, role, explore!</p>
       </div>
 
-      {/* Controls */}
-      <div className="flex flex-col items-center gap-3 w-full max-w-xs">
-        <button
-          onClick={() => setIsPaused(p => !p)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl border-2 border-primary/40 bg-card/80 hover:border-primary/70 transition-all text-sm hover:scale-105"
-          style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.2), 0 0 40px hsl(40 70% 50% / 0.08), inset 0 1px 0 hsl(40 80% 75% / 0.1)' }}
-        >
-          {isPaused ? (
-            <><Play className="w-4 h-4 text-primary" /> <span className="text-foreground text-xs font-display">Retomar Tour</span></>
-          ) : (
-            <><Clock className="w-4 h-4 text-primary" /> <span className="text-foreground text-xs font-display">Pausar Tour</span></>
-          )}
-        </button>
-
-        <div className="flex flex-wrap justify-center gap-1.5">
-          {screens.map((screen, i) => (
-            <button
-              key={i}
-              onClick={() => goToScreen(i)}
-              className="group relative"
-            >
-              <div
-                className="w-2.5 h-2.5 rounded-full transition-all duration-300"
-                style={{
-                  background: i === activeScreen ? 'hsl(40 70% 50%)' : 'rgba(255,255,255,0.12)',
-                  boxShadow: i === activeScreen ? '0 0 8px hsl(40 70% 50% / 0.5)' : 'none',
-                  transform: i === activeScreen ? 'scale(1.3)' : 'scale(1)',
-                }}
-              />
-              <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] text-foreground bg-card/90 border border-border px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                {screen.label}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        <p className="text-[10px] text-muted-foreground">
-          {isPaused ? '👆 Clique nos pontos para navegar' : '⏩ Tour automático — clique para pausar'}
-        </p>
-      </div>
+      {/* CTA below mockup */}
+      <button
+        onClick={onBuy}
+        className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-display text-sm font-bold text-primary-foreground"
+        style={{
+          background: 'linear-gradient(135deg, hsl(40 70% 45%), hsl(40 60% 30%))',
+          boxShadow: '0 0 20px hsl(40 70% 50% / 0.3), 0 4px 15px rgba(0,0,0,0.4)',
+          border: '1px solid hsl(40 70% 55% / 0.3)',
+        }}
+      >
+        <Crown className="w-4 h-4" />
+        Quero o Acesso Completo
+      </button>
     </div>
   );
 };
