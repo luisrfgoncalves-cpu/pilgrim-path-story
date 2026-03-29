@@ -7,12 +7,12 @@ import { getPart2Chapter, part2Chapters } from '@/data/storyPart2';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getStreak, getDashboardMessage } from '@/lib/gameLoop';
-import { downloadBackup, importBackup } from '@/lib/progressBackup';
+// progressBackup removed — auto-save handles persistence
 import PilgrimAvatar from '@/components/PilgrimAvatar';
 import SplashScreen from '@/components/SplashScreen';
 import Onboarding from '@/components/Onboarding';
 import GameNotification from '@/components/GameNotification';
-import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen, Home, Download, Upload, Sun, Moon } from 'lucide-react';
+import { ChevronRight, Sparkles, RotateCcw, Map, User, Users, LogIn, Flame, Swords, BookOpen, Home, Sun, Moon } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Index = () => {
@@ -184,69 +184,37 @@ const Index = () => {
 
         {/* Nav grid */}
         <div className="grid grid-cols-5 gap-2">
-          <button onClick={handleBackToSplash} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4">
-            <Home className="w-6 h-6 text-primary" />
-            <span className="text-xs text-primary font-display">Início</span>
+          <button onClick={handleBackToSplash} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 aspect-square">
+            <Home className="w-5 h-5 text-primary" />
+            <span className="text-[10px] text-primary font-display leading-tight">Início</span>
           </button>
-          <button onClick={() => navigate('/jornada')} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4">
-            <Map className="w-6 h-6 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground font-display">Mapa</span>
+          <button onClick={() => navigate('/jornada')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 aspect-square">
+            <Map className="w-5 h-5 text-muted-foreground" />
+            <span className="text-[10px] text-muted-foreground font-display leading-tight">Mapa</span>
           </button>
-          <button onClick={() => navigate('/multiplayer')} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4 !border-primary/30">
-            <Swords className="w-6 h-6 text-primary" />
-            <span className="text-xs text-primary font-display">Multi</span>
+          <button onClick={() => navigate('/multiplayer')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 aspect-square !border-primary/30">
+            <Swords className="w-5 h-5 text-primary" />
+            <span className="text-[10px] text-primary font-display leading-tight">Múltiplo</span>
           </button>
-          <button onClick={() => user ? navigate('/perfil') : navigate('/auth')} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4">
-            {user ? <User className="w-6 h-6 text-muted-foreground" /> : <LogIn className="w-6 h-6 text-muted-foreground" />}
-            <span className="text-xs text-muted-foreground font-display">{user ? (profile?.display_name || 'Perfil') : 'Entrar'}</span>
+          <button onClick={() => user ? navigate('/perfil') : navigate('/auth')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 aspect-square">
+            {user ? <User className="w-5 h-5 text-muted-foreground" /> : <LogIn className="w-5 h-5 text-muted-foreground" />}
+            <span className="text-[10px] text-muted-foreground font-display leading-tight">{user ? (profile?.display_name || 'Perfil') : 'Entrar'}</span>
           </button>
-          <button onClick={() => navigate('/comunidade')} className="btn-medieval-icon flex flex-col items-center gap-2 !py-4">
-            <Users className="w-6 h-6 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground font-display">Social</span>
+          <button onClick={() => navigate('/comunidade')} className="btn-medieval-icon flex flex-col items-center justify-center gap-1 aspect-square">
+            <Users className="w-5 h-5 text-muted-foreground" />
+            <span className="text-[10px] text-muted-foreground font-display leading-tight">Social</span>
           </button>
         </div>
 
-        {/* Theme toggle + Backup (only for non-logged users) */}
-        <div className="flex gap-2">
+        {/* Theme toggle */}
+        <div className="flex justify-center">
           <button
             onClick={toggleTheme}
-            className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
             aria-label={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
           >
             {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
-          {!user && (
-            <>
-              <button
-                onClick={() => { downloadBackup(); toast.success('Backup salvo!'); }}
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
-              >
-                <Download className="w-4 h-4" />
-                Backup
-              </button>
-              <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all cursor-pointer">
-                <Upload className="w-4 h-4" />
-                Restaurar
-                <input
-                  type="file"
-                  accept=".json"
-                  className="hidden"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    const result = await importBackup(file);
-                    if (result.success) {
-                      toast.success('Progresso restaurado! Recarregando...');
-                      setTimeout(() => window.location.reload(), 1000);
-                    } else {
-                      toast.error(result.error || 'Erro ao restaurar');
-                    }
-                    e.target.value = '';
-                  }}
-                />
-              </label>
-            </>
-          )}
         </div>
 
         {/* Restart */}
