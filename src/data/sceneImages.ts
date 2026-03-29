@@ -1,4 +1,5 @@
 import cidadeDestruicao from '@/assets/scenes/cidade-destruicao.jpg';
+import cristaPartida from '@/assets/scenes/crista-partida.jpg';
 import pantanoDesanimo from '@/assets/scenes/pantano-desanimo.jpg';
 import portaoEstreito from '@/assets/scenes/portao-estreito.jpg';
 import sabedoriaMundana from '@/assets/scenes/sabedoria-mundana.jpg';
@@ -115,8 +116,8 @@ export const sceneImages: Record<string, string> = {
   'fase6-cena9': cidadeCelestial,
 
   // ═══════ PARTE II ═══════
-  'p2-cena1': cidadeDestruicao,
-  'p2-cena2': cidadeDestruicao,
+  'p2-cena1': cristaPartida,
+  'p2-cena2': cristaPartida,
   'p2-cena3': pantanoDesanimo,
   'p2-cena4': portaoEstreito,
   'p2-cena5': portaoEstreito,
