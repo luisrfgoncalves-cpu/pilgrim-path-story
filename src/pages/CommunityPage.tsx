@@ -263,13 +263,14 @@ const CommunityPage: React.FC = () => {
         <div className="flex gap-1 mb-5 bg-card rounded-lg p-1 border border-border">
           {([
             { key: 'pilgrims', label: 'Peregrinos', icon: Users },
+            { key: 'events', label: 'Eventos', icon: Trophy },
             { key: 'feed', label: 'Atividade', icon: Activity },
             { key: 'messages', label: 'Mensagens', icon: MessageCircle },
           ] as const).map(t => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${
+              className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-md text-[11px] font-medium transition-all ${
                 tab === t.key
                   ? 'bg-primary text-primary-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
@@ -277,6 +278,9 @@ const CommunityPage: React.FC = () => {
             >
               <t.icon className="w-3.5 h-3.5" />
               {t.label}
+              {t.key === 'events' && collectiveEvent.canClaim && (
+                <span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />
+              )}
             </button>
           ))}
         </div>
