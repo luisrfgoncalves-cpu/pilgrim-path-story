@@ -1,36 +1,42 @@
 import { useMemo } from 'react';
 import { PlayerAttributes } from '@/hooks/useStoryProgress';
+import { PostureState } from '@/components/PilgrimAvatar';
 
 /**
  * Computes continuous CSS custom properties + filter values
- * based on player attributes for reactive UI atmosphere.
- *
- * - Low fé → darker (lower brightness)
- * - High fé → soft warm glow
- * - Low discernimento → slight blur (doubt/confusion)
- * - High discernimento → crisp, stable
- * - Low coragem → desaturated
- * - High coragem → vivid
- * - Low perseverança → subtle sway/wobble via transform
- * - High perseverança → rock-solid
+ * based on player attributes AND emotional posture for reactive UI atmosphere.
  */
 
 export interface AtmosphereStyle {
-  /** Applied to the main scene container */
   containerStyle: React.CSSProperties;
-  /** Applied to the narrative text area */
   textStyle: React.CSSProperties;
-  /** Applied to the scene image */
   imageStyle: React.CSSProperties;
-  /** Overlay opacity for vignette (0-1) */
   vignetteOpacity: number;
-  /** Glow overlay opacity (0-1) */
   glowOpacity: number;
-  /** CSS class for wobble animation */
   wobbleClass: string;
 }
 
-export function useAtmosphere(attributes: PlayerAttributes): AtmosphereStyle {
+/** Per-posture atmosphere modifiers */
+const postureModifiers: Record<PostureState, {
+  brightnessShift: number;
+  saturationShift: number;
+  extraBlur: number;
+  vignetteBoost: number;
+  glowBoost: number;
+  hueShift: number;
+}> = {
+  abatido:        { brightnessShift: -0.20, saturationShift: -0.35, extraBlur: 0.8, vignetteBoost: 0.25, glowBoost: 0,    hueShift: 0 },
+  confuso:        { brightnessShift: -0.08, saturationShift: -0.10, extraBlur: 1.2, vignetteBoost: 0.10, glowBoost: 0,    hueShift: 0 },
+  determinado:    { brightnessShift:  0,    saturationShift:  0,    extraBlur: 0,   vignetteBoost: 0,    glowBoost: 0,    hueShift: 0 },
+  em_dificuldade: { brightnessShift: -0.15, saturationShift: -0.25, extraBlur: 0.3, vignetteBoost: 0.20, glowBoost: 0,    hueShift: 0 },
+  esperancoso:    { brightnessShift:  0.08, saturationShift:  0.10, extraBlur: 0,   vignetteBoost: 0,    glowBoost: 0.15, hueShift: 4 },
+  livre:          { brightnessShift:  0.12, saturationShift:  0.15, extraBlur: 0,   vignetteBoost: 0,    glowBoost: 0.25, hueShift: 6 },
+  em_conflito:    { brightnessShift: -0.10, saturationShift: -0.15, extraBlur: 0,   vignetteBoost: 0.18, glowBoost: 0,    hueShift: -3 },
+  recuperacao:    { brightnessShift:  0.03, saturationShift:  0,    extraBlur: 0,   vignetteBoost: 0.05, glowBoost: 0.08, hueShift: 2 },
+  vitoria_final:  { brightnessShift:  0.15, saturationShift:  0.20, extraBlur: 0,   vignetteBoost: 0,    glowBoost: 0.30, hueShift: 8 },
+};
+
+export function useAtmosphere(attributes: PlayerAttributes, posture: PostureState = 'determinado'): AtmosphereStyle {
   return useMemo(() => {
     const { fe, coragem, perseveranca, discernimento } = attributes;
 
@@ -40,35 +46,25 @@ export function useAtmosphere(attributes: PlayerAttributes): AtmosphereStyle {
     const persN = Math.min(perseveranca / 10, 1);
     const discN = Math.min(discernimento / 10, 1);
 
-    // Brightness: 0.65 (low fé) → 1.1 (high fé)
-    const brightness = 0.65 + feN * 0.45;
+    const mod = postureModifiers[posture];
 
-    // Saturation: 0.5 (low coragem) → 1.15 (high coragem)
-    const saturation = 0.5 + coragemN * 0.65;
+    // Base values from attributes
+    const brightness = Math.max(0.5, Math.min(1.3, 0.65 + feN * 0.45 + mod.brightnessShift));
+    const saturation = Math.max(0.3, Math.min(1.3, 0.5 + coragemN * 0.65 + mod.saturationShift));
+    const blur = Math.max(0, (1 - discN) * 1.5 + mod.extraBlur);
+    const hueShift = (feN > 0.7 ? (feN - 0.7) * 15 : 0) + mod.hueShift;
 
-    // Blur: 1.5px (low discernimento) → 0 (high discernimento)
-    const blur = Math.max(0, (1 - discN) * 1.5);
+    const vignetteOpacity = Math.max(0, Math.min(0.6, (1 - feN) * 0.4 + mod.vignetteBoost));
+    const glowOpacity = Math.max(0, Math.min(0.5, (feN > 0.6 ? (feN - 0.6) * 0.5 : 0) + mod.glowBoost));
 
-    // Warm hue-rotate for high fé: 0 → 5deg warm shift
-    const hueShift = feN > 0.7 ? (feN - 0.7) * 15 : 0;
-
-    // Vignette darkness for low fé
-    const vignetteOpacity = Math.max(0, (1 - feN) * 0.4);
-
-    // Warm glow for high fé
-    const glowOpacity = feN > 0.6 ? (feN - 0.6) * 0.5 : 0;
-
-    // Wobble for low perseverança
     const wobbleClass = persN < 0.35 ? 'atmo-wobble' : '';
-
-    // Text opacity: slight fade when doubt is high
     const textOpacity = 0.75 + discN * 0.25;
 
     const filter = [
       `brightness(${brightness.toFixed(2)})`,
       `saturate(${saturation.toFixed(2)})`,
       blur > 0.1 ? `blur(${blur.toFixed(1)}px)` : '',
-      hueShift > 0 ? `hue-rotate(${hueShift.toFixed(1)}deg)` : '',
+      hueShift !== 0 ? `hue-rotate(${hueShift.toFixed(1)}deg)` : '',
     ].filter(Boolean).join(' ');
 
     return {
@@ -88,5 +84,5 @@ export function useAtmosphere(attributes: PlayerAttributes): AtmosphereStyle {
       glowOpacity,
       wobbleClass,
     };
-  }, [attributes]);
+  }, [attributes, posture]);
 }
