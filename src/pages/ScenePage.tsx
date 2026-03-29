@@ -233,12 +233,12 @@ const ScenePage = () => {
           playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
         }, 400);
         setCharReveal(revealChar);
-        // After 6 seconds, dismiss reveal and set persistent portrait
+        // After 8 seconds, dismiss reveal and set persistent portrait
         setTimeout(() => {
           setCharReveal(null);
           setCharRevealDone(true);
           setPersistentChar(revealChar);
-        }, 6000);
+        }, 8000);
       }, 1000);
       return () => clearTimeout(delay);
     }
@@ -1052,60 +1052,84 @@ const ScenePage = () => {
       {/* ═══ CHARACTER ENTRANCE REVEAL — 3D style, no circle ═══ */}
       {charReveal && (
         <div
-          className="fixed inset-0 z-[55] flex items-end justify-center pointer-events-auto"
+          className="fixed inset-0 z-[55] flex items-center justify-center pointer-events-auto"
           onClick={() => {
             setCharReveal(null);
             setCharRevealDone(true);
             setPersistentChar(charReveal);
           }}
-          style={{ animation: 'charRevealBg 6s ease-out forwards' }}
+          style={{ animation: 'charRevealBg 8s ease-out forwards' }}
         >
-          {/* Dark cinematic backdrop */}
+          {/* Dark cinematic backdrop with radial light */}
           <div className="absolute inset-0" style={{
-            background: 'linear-gradient(180deg, hsl(0 0% 0% / 0.3) 0%, hsl(0 0% 0% / 0.75) 50%, hsl(0 0% 0% / 0.85) 100%)',
+            background: 'radial-gradient(ellipse 60% 80% at 50% 60%, hsl(0 0% 0% / 0.5) 0%, hsl(0 0% 0% / 0.92) 100%)',
           }} />
 
-          {/* Character image — BIG, no circle, 3D-style with shadow */}
-          <div className="relative z-10 w-full max-w-lg mx-auto flex flex-col items-center pb-8" style={{ animation: 'charRevealIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
+          {/* Ambient floating particles */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
+            {[...Array(18)].map((_, i) => (
+              <span
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: `${1.5 + Math.random() * 3}px`,
+                  height: `${1.5 + Math.random() * 3}px`,
+                  left: `${5 + Math.random() * 90}%`,
+                  top: `${10 + Math.random() * 80}%`,
+                  background: i % 3 === 0 ? 'hsl(40 70% 60% / 0.7)' : 'hsl(0 0% 80% / 0.4)',
+                  animation: `pilgrimDust ${2.5 + i * 0.4}s ease-in-out infinite`,
+                  animationDelay: `${i * 0.2}s`,
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Character image — VERY BIG, no frame, floating 3D */}
+          <div className="relative z-10 flex flex-col items-center" style={{ animation: 'charRevealIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
             <div className="relative">
               <img
                 src={charReveal.img}
                 alt={charReveal.name}
-                className="w-52 h-64 md:w-64 md:h-80 object-cover object-top mx-auto"
+                className="w-72 h-[22rem] md:w-[22rem] md:h-[28rem] object-cover object-top mx-auto"
                 style={{
-                  borderRadius: '16px 16px 0 0',
-                  boxShadow: '0 -8px 40px hsl(40 50% 45% / 0.3), 0 20px 60px hsl(0 0% 0% / 0.7), -20px 0 40px hsl(0 0% 0% / 0.4), 20px 0 40px hsl(0 0% 0% / 0.4)',
-                  filter: 'contrast(1.1) brightness(1.05)',
+                  borderRadius: '0',
+                  border: 'none',
+                  boxShadow: '0 0 80px hsl(40 50% 45% / 0.25), 0 30px 80px hsl(0 0% 0% / 0.8), -30px 0 60px hsl(0 0% 0% / 0.5), 30px 0 60px hsl(0 0% 0% / 0.5)',
+                  filter: 'contrast(1.12) brightness(1.08) drop-shadow(0 0 30px hsl(40 50% 40% / 0.3))',
+                  maskImage: 'linear-gradient(to bottom, black 65%, transparent 100%)',
+                  WebkitMaskImage: 'linear-gradient(to bottom, black 65%, transparent 100%)',
                 }}
               />
-              {/* 3D depth effect — bottom gradient fade */}
-              <div className="absolute bottom-0 left-0 right-0 h-24" style={{
-                background: 'linear-gradient(180deg, transparent 0%, hsl(0 0% 0% / 0.9) 100%)',
-                borderRadius: '0 0 0 0',
+              {/* Glow behind character */}
+              <div className="absolute inset-0 -z-10 blur-3xl scale-125" style={{
+                background: 'radial-gradient(ellipse at center 40%, hsl(40 50% 50% / 0.2) 0%, transparent 70%)',
               }} />
-              {/* Name overlay on image */}
-              <div className="absolute bottom-4 left-0 right-0 text-center" style={{ animation: 'charRevealName 0.7s ease-out 0.5s both' }}>
-                <p className="font-display text-3xl md:text-4xl font-bold" style={{
-                  color: 'hsl(40 80% 75%)',
-                  textShadow: '0 3px 16px hsl(0 0% 0% / 0.9), 0 0 40px hsl(40 60% 50% / 0.5)',
-                  letterSpacing: '0.02em',
-                }}>
-                  {charReveal.name}
-                </p>
-                {charReveal.role && (
-                  <p className="text-sm md:text-base mt-1.5 font-display uppercase tracking-widest" style={{
-                    color: 'hsl(40 50% 60%)',
-                    textShadow: '0 2px 8px hsl(0 0% 0% / 0.8)',
-                  }}>
-                    {charReveal.role}
-                  </p>
-                )}
-              </div>
             </div>
-            {/* Tap to dismiss hint */}
-            <p className="text-[10px] mt-4 font-display uppercase tracking-widest" style={{
-              color: 'hsl(0 0% 50%)',
-              animation: 'charRevealName 0.5s ease-out 1.5s both',
+
+            {/* Name — below image, dramatic */}
+            <div className="text-center mt-2" style={{ animation: 'charRevealName 0.8s ease-out 0.6s both' }}>
+              <p className="font-display text-4xl md:text-5xl font-bold" style={{
+                color: 'hsl(40 80% 75%)',
+                textShadow: '0 4px 20px hsl(0 0% 0% / 0.9), 0 0 60px hsl(40 60% 50% / 0.4)',
+                letterSpacing: '0.03em',
+              }}>
+                {charReveal.name}
+              </p>
+              {charReveal.role && (
+                <p className="text-base md:text-lg mt-2 font-display uppercase tracking-[0.3em]" style={{
+                  color: 'hsl(40 40% 55%)',
+                  textShadow: '0 2px 12px hsl(0 0% 0% / 0.8)',
+                  animation: 'charRevealName 0.6s ease-out 1s both',
+                }}>
+                  {charReveal.role}
+                </p>
+              )}
+            </div>
+
+            {/* Tap hint */}
+            <p className="text-[10px] mt-6 font-display uppercase tracking-widest" style={{
+              color: 'hsl(0 0% 45%)',
+              animation: 'charRevealName 0.5s ease-out 2s both',
             }}>
               Toque para continuar
             </p>
