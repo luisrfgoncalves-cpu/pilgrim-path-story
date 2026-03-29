@@ -383,31 +383,7 @@ const JourneysPage = () => {
                         </span>
                       </div>
 
-                      {/* Action buttons */}
                       <div className="flex gap-2">
-                        {/* Replay phase button */}
-                        <button
-                          onClick={() => handlePhaseReplay(phase.id)}
-                          onClick={() => handlePhaseReplay(phase.id, 'part1')}
-                         >
-                          style={{
-                            background: `${phase.color}20`,
-                            border: `1.5px solid ${phase.color}50`,
-                            color: phase.color,
-                          }}
-                        >
-                        <button
-                          onClick={() => handlePhaseReplay(phase.id, 'part1')}
-                          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all active:scale-[0.98]"
-                          style={{
-                            background: `${phase.color}20`,
-                            border: `1.5px solid ${phase.color}50`,
-                            color: phase.color,
-                          }}
-                        >
-                      {/* Action buttons */}
-                      <div className="flex gap-2">
-                        {/* Replay phase button */}
                         <button
                           onClick={() => handlePhaseReplay(phase.id, 'part1')}
                           className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all active:scale-[0.98]"
