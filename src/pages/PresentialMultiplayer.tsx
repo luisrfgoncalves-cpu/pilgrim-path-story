@@ -814,6 +814,16 @@ const PresentialMultiplayer = () => {
     isStunned: p.isStunned,
   }));
 
+  // Stats overlay
+  if (showStats) {
+    return (
+      <BoardStats
+        players={players}
+        onClose={() => setShowStats(false)}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Phase Transition Cutscene */}
