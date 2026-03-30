@@ -13,6 +13,39 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Separate heavy multiplayer code into its own chunk
+          'multiplayer': [
+            './src/pages/PresentialMultiplayer.tsx',
+            './src/pages/MultiplayerPage.tsx',
+            './src/components/multiplayer/ImmersiveBoard.tsx',
+            './src/components/multiplayer/ContinuousTrail.tsx',
+            './src/components/multiplayer/ImmersiveBoardTypes.ts',
+            './src/components/multiplayer/MedievalTileIcons.tsx',
+            './src/components/multiplayer/BoardMiniGame.tsx',
+            './src/components/multiplayer/EpicVictoryScreen.tsx',
+            './src/components/multiplayer/PhaseTransition.tsx',
+            './src/components/multiplayer/RiverOfDeath.tsx',
+            './src/components/multiplayer/TileEventPopup.tsx',
+            './src/components/multiplayer/BoardSounds.ts',
+            './src/components/multiplayer/BoardStats.tsx',
+            './src/components/multiplayer/EventReveal.tsx',
+          ],
+          // Separate scene/story data
+          'story-data': [
+            './src/data/story.ts',
+            './src/data/storyPart2.ts',
+            './src/data/eventPools.ts',
+            './src/data/eventPoolsPart2.ts',
+            './src/data/sceneVariations.ts',
+          ],
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     mode === "development" && componentTagger(),
@@ -66,7 +99,22 @@ export default defineConfig(({ mode }) => ({
       workbox: {
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/~oauth/, /^\/landing/, /^\/vendas/, /^\/obrigado/],
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        // Only precache critical files — NOT heavy images
+        globPatterns: ["**/*.{js,css,html,ico,svg,woff2}"],
+        // Runtime cache for images — loaded on demand, not upfront
+        runtimeCaching: [
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|webp)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images',
+              expiration: {
+                maxEntries: 80,
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+              },
+            },
+          },
+        ],
       },
     }),
   ].filter(Boolean),
