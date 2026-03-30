@@ -217,22 +217,31 @@ function PhaseSection({
                 </div>
               )}
 
-              {/* Type label */}
+              {/* Type label - prominent speech bubble */}
               {isSpecial && (
                 <div className="absolute top-1/2 -translate-y-1/2 z-10"
-                  style={{ left: `${tileSize + 6}px` }}
+                  style={{ left: `${tileSize + 8}px` }}
                 >
                   <div className="relative">
+                    {/* Arrow pointing left */}
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full"
                       style={{
                         width: 0, height: 0,
-                        borderTop: '4px solid transparent',
-                        borderBottom: '4px solid transparent',
-                        borderRight: `4px solid ${config.color}60`,
+                        borderTop: '6px solid transparent',
+                        borderBottom: '6px solid transparent',
+                        borderRight: `6px solid ${config.color}80`,
                       }}
                     />
-                    <span className="text-[7px] font-display font-bold whitespace-nowrap px-1.5 py-0.5 rounded"
-                      style={{ background: `${config.color}20`, color: config.color, border: `1px solid ${config.color}40` }}
+                    <span className="text-[11px] font-display font-bold whitespace-nowrap px-2.5 py-1 rounded-md"
+                      style={{
+                        background: `linear-gradient(135deg, ${config.color}35, ${config.color}15)`,
+                        color: config.color,
+                        border: `1.5px solid ${config.color}60`,
+                        boxShadow: `0 0 12px ${config.glowColor}, 0 2px 8px rgba(0,0,0,0.5)`,
+                        textShadow: `0 0 8px ${config.glowColor}`,
+                        letterSpacing: '0.03em',
+                        wordSpacing: '0.15em',
+                      }}
                     >
                       {config.label}
                     </span>
