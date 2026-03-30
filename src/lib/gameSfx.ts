@@ -1,15 +1,15 @@
 /**
  * Lightweight SFX player for mini-games
- * Uses Web Audio API directly — no dependency on React hooks
+ * Uses pre-warmed shared AudioContext for zero-delay playback
  */
+import { getPrewarmedAudioContext } from '@/hooks/useAudioPrewarm';
 
 const midiToFreq = (midi: number) => 440 * Math.pow(2, (midi - 69) / 12);
 
-let _ctx: AudioContext | null = null;
 const getCtx = (): AudioContext => {
-  if (!_ctx) _ctx = new AudioContext();
-  if (_ctx.state === 'suspended') _ctx.resume();
-  return _ctx;
+  const ctx = getPrewarmedAudioContext();
+  if (!ctx) throw new Error('No audio context');
+  return ctx;
 };
 
 function note(ctx: AudioContext, dest: AudioNode, freq: number, start: number, dur: number, vol = 0.05) {
