@@ -21,6 +21,7 @@ import tileDoubleDice from '@/assets/board/tile-double-dice.jpg';
 import tileCurrent from '@/assets/board/tile-current.jpg';
 import tileCheckpoint from '@/assets/board/tile-checkpoint.jpg';
 import tileNormal from '@/assets/board/tile-normal.jpg';
+import tileBackToStart from '@/assets/board/tile-back-to-start.jpg';
 
 // 120 tiles total, 20 per phase (each phase = ~2 phone screens)
 export const IMMERSIVE_BOARD_SIZE = 120;
@@ -32,7 +33,7 @@ export type TileType =
   | 'refuge' | 'challenge' | 'surprise' | 'scripture'
   | 'trap' | 'giant' | 'shield' | 'blessing'
   | 'swap' | 'double_dice' | 'current' | 'checkpoint'
-  | 'normal';
+  | 'back_to_start' | 'normal';
 
 export interface TileConfig {
   type: TileType;
@@ -61,6 +62,7 @@ export const TILE_TYPES: Record<TileType, TileConfig> = {
   double_dice: { type: 'double_dice', label: 'Dado Duplo',     emoji: '🎲', color: 'hsl(25 80% 55%)', glowColor: 'rgba(255,112,67,0.3)', description: 'Joga novamente!', sfx: 'dice', tileImage: tileDoubleDice },
   current:     { type: 'current',     label: 'Correnteza',     emoji: '🌊', color: 'hsl(195 70% 50%)',glowColor: 'rgba(38,198,218,0.3)', description: 'Arrasta para frente ou trás aleatoriamente', sfx: 'water', tileImage: tileCurrent },
   checkpoint:  { type: 'checkpoint',  label: 'Checkpoint',     emoji: '🏰', color: 'hsl(35 70% 45%)', glowColor: 'rgba(212,175,55,0.3)', description: 'Salva posição — não volta antes daqui!', sfx: 'checkpoint', tileImage: tileCheckpoint },
+  back_to_start: { type: 'back_to_start', label: 'Volta ao Início', emoji: '☠️', color: 'hsl(0 70% 40%)', glowColor: 'rgba(200,20,20,0.5)', description: 'Punição suprema — volta à casa 1!', sfx: 'trap', tileImage: tileBackToStart },
   normal:      { type: 'normal',      label: 'Caminho',        emoji: '·',  color: 'hsl(0 0% 40%)',   glowColor: 'rgba(100,100,100,0.1)',description: 'Siga em frente', sfx: undefined, tileImage: tileNormal },
 };
 
@@ -98,7 +100,7 @@ export function generateImmersiveTiles(seed: number): TileType[] {
   const tiles: TileType[] = [];
   for (let i = 0; i < IMMERSIVE_BOARD_SIZE; i++) {
     const localIdx = i % TILES_PER_PHASE;
-
+    const phaseIdx = Math.floor(i / TILES_PER_PHASE);
     if (i === 0) { tiles.push('start'); continue; }
     if (i === IMMERSIVE_BOARD_SIZE - 1) { tiles.push('finish'); continue; }
 
@@ -120,6 +122,9 @@ export function generateImmersiveTiles(seed: number): TileType[] {
 
     // Strategic trap at penultimate position (18) of each phase
     if (localIdx === 17) { tiles.push('trap'); continue; }
+
+    // Back to start — rare but devastating, once per phase at position 19
+    if (localIdx === 18 && phaseIdx >= 2) { tiles.push('back_to_start'); continue; }
 
     // Scripture near end of phase
     if (localIdx === 15) { tiles.push('scripture'); continue; }

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { characterImages } from '@/data/characterImages';
@@ -7,7 +7,7 @@ import {
   playStun, playMove, playVictory,
 } from './BoardSounds';
 
-// Map tile types to character images and sound categories
+// Map tile types to character images
 const TILE_CHARACTER_MAP: Record<string, string> = {
   giant: 'gigante_desespero',
   challenge: 'apolion',
@@ -23,9 +23,9 @@ const TILE_CHARACTER_MAP: Record<string, string> = {
   checkpoint: 'pastores',
   start: 'cristao',
   finish: 'esperanca',
+  back_to_start: 'desconfianca',
 };
 
-// Sound category per tile type
 type SoundCategory = 'positive' | 'negative' | 'challenge' | 'stun' | 'neutral' | 'victory';
 const TILE_SOUND_MAP: Record<string, SoundCategory> = {
   refuge: 'positive',
@@ -40,11 +40,27 @@ const TILE_SOUND_MAP: Record<string, SoundCategory> = {
   current: 'neutral',
   trap: 'negative',
   giant: 'stun',
+  back_to_start: 'stun',
   finish: 'victory',
 };
 
+// Haptic vibration for mobile
+function triggerHaptic(pattern: 'negative' | 'stun' | 'positive') {
+  if (!navigator.vibrate) return;
+  switch (pattern) {
+    case 'stun': navigator.vibrate([100, 50, 200, 50, 300]); break;
+    case 'negative': navigator.vibrate([150, 80, 150]); break;
+    case 'positive': navigator.vibrate([50, 30, 50]); break;
+  }
+}
+
 function playSoundForTile(tileType: TileType) {
   const cat = TILE_SOUND_MAP[tileType] || 'neutral';
+  // Haptic feedback
+  if (cat === 'stun') triggerHaptic('stun');
+  else if (cat === 'negative') triggerHaptic('negative');
+  else if (cat === 'positive') triggerHaptic('positive');
+
   switch (cat) {
     case 'positive': playPositiveEvent(); break;
     case 'negative': playNegativeEvent(); break;
@@ -53,6 +69,25 @@ function playSoundForTile(tileType: TileType) {
     case 'victory': playVictory(); break;
     default: playMove(); break;
   }
+}
+
+// Suspense sound — building tension
+function playSuspenseSound() {
+  const AudioCtx = typeof window !== 'undefined' ? (window.AudioContext || (window as any).webkitAudioContext) : null;
+  if (!AudioCtx) return;
+  const ctx = new AudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(180, ctx.currentTime);
+  osc.frequency.linearRampToValueAtTime(350, ctx.currentTime + 1.2);
+  gain.gain.setValueAtTime(0.04, ctx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 1.0);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.3);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 1.3);
 }
 
 interface TileEventPopupProps {
@@ -66,21 +101,32 @@ interface TileEventPopupProps {
 
 export default function TileEventPopup({ visible, tileType, message, emoji, playerName, onDismiss }: TileEventPopupProps) {
   const hasPlayedSound = useRef(false);
+  const [phase, setPhase] = useState<'suspense' | 'reveal'>('suspense');
 
   useEffect(() => {
-    if (visible && !hasPlayedSound.current) {
-      hasPlayedSound.current = true;
-      playSoundForTile(tileType);
+    if (!visible) {
+      setPhase('suspense');
+      hasPlayedSound.current = false;
+      return;
     }
-    if (!visible) hasPlayedSound.current = false;
+    // Start suspense phase
+    playSuspenseSound();
+    const revealTimer = setTimeout(() => {
+      setPhase('reveal');
+      if (!hasPlayedSound.current) {
+        hasPlayedSound.current = true;
+        playSoundForTile(tileType);
+      }
+    }, 1400); // 1.4s suspense delay
+    return () => clearTimeout(revealTimer);
   }, [visible, tileType]);
 
-  // Auto-dismiss after 8 seconds
+  // Auto-dismiss after reveal
   useEffect(() => {
-    if (!visible) return;
+    if (!visible || phase !== 'reveal') return;
     const t = setTimeout(onDismiss, 8000);
     return () => clearTimeout(t);
-  }, [visible, onDismiss]);
+  }, [visible, phase, onDismiss]);
 
   if (!visible) return null;
 
@@ -88,130 +134,142 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
   const charKey = TILE_CHARACTER_MAP[tileType];
   const charImg = charKey ? characterImages[charKey] : null;
 
-  // Determine visual mood
   const isPositive = ['refuge', 'blessing', 'shield', 'double_dice', 'checkpoint', 'finish'].includes(tileType);
-  const isNegative = ['trap', 'giant'].includes(tileType);
+  const isNegative = ['trap', 'giant', 'back_to_start'].includes(tileType);
   const isChallenge = ['challenge', 'scripture'].includes(tileType);
 
   const borderColor = isNegative
     ? 'hsl(0 60% 45%)'
-    : isPositive
-    ? 'hsl(45 70% 50%)'
-    : isChallenge
-    ? 'hsl(25 80% 50%)'
+    : isPositive ? 'hsl(45 70% 50%)'
+    : isChallenge ? 'hsl(25 80% 50%)'
     : 'hsl(210 40% 50%)';
 
   const bgGradient = isNegative
     ? 'linear-gradient(135deg, hsl(0 30% 12%), hsl(0 20% 8%))'
-    : isPositive
-    ? 'linear-gradient(135deg, hsl(40 30% 14%), hsl(35 20% 8%))'
-    : isChallenge
-    ? 'linear-gradient(135deg, hsl(25 30% 14%), hsl(20 15% 8%))'
+    : isPositive ? 'linear-gradient(135deg, hsl(40 30% 14%), hsl(35 20% 8%))'
+    : isChallenge ? 'linear-gradient(135deg, hsl(25 30% 14%), hsl(20 15% 8%))'
     : 'linear-gradient(135deg, hsl(220 20% 14%), hsl(220 15% 8%))';
 
   const glowColor = isNegative
     ? 'rgba(220,40,40,0.3)'
-    : isPositive
-    ? 'rgba(255,215,0,0.3)'
-    : isChallenge
-    ? 'rgba(255,140,40,0.3)'
+    : isPositive ? 'rgba(255,215,0,0.3)'
+    : isChallenge ? 'rgba(255,140,40,0.3)'
     : 'rgba(100,160,255,0.2)';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" onClick={onDismiss}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={phase === 'reveal' ? onDismiss : undefined}>
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
 
-      {/* Popup */}
-      <div
-        className="relative w-full max-w-sm rounded-2xl overflow-hidden animate-scale-in"
-        style={{
-          background: bgGradient,
-          border: `2px solid ${borderColor}`,
-          boxShadow: `0 0 60px ${glowColor}, 0 20px 60px rgba(0,0,0,0.5)`,
-        }}
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Close button */}
-        <button
-          onClick={onDismiss}
-          className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
-          style={{
-            background: 'rgba(0,0,0,0.6)',
-            border: '1px solid rgba(255,255,255,0.15)',
-          }}
-        >
-          <X className="w-4 h-4 text-white/70" />
-        </button>
-
-        {/* Character image */}
-        {charImg && (
-          <div className="relative w-full h-40 overflow-hidden">
-            <img
-              src={charImg}
-              alt={config.label}
-              className="w-full h-full object-cover"
-              style={{
-                filter: isNegative ? 'saturate(1.3) contrast(1.1)' : 'saturate(1.2) brightness(1.1)',
-              }}
-            />
-            <div
-              className="absolute inset-0"
-              style={{
-                background: `linear-gradient(to top, ${isNegative ? 'hsl(0 30% 12%)' : isPositive ? 'hsl(40 30% 14%)' : 'hsl(220 20% 14%)'} 0%, transparent 60%)`,
-              }}
-            />
-            {/* Pulsing vignette for negative */}
-            {isNegative && (
-              <div className="absolute inset-0 animate-pulse" style={{
-                background: 'radial-gradient(circle, transparent 40%, rgba(150,0,0,0.3) 100%)',
-              }} />
-            )}
-          </div>
-        )}
-
-        {/* Content */}
-        <div className="p-5 text-center space-y-3">
-          {/* Big emoji */}
-          <div className="text-5xl" style={{
-            filter: `drop-shadow(0 0 12px ${glowColor})`,
-            animation: isNegative ? 'pulse 1.5s infinite' : isPositive ? 'bounce 2s infinite' : undefined,
+      {/* SUSPENSE PHASE — dramatic buildup */}
+      {phase === 'suspense' && (
+        <div className="relative z-10 flex flex-col items-center gap-4 animate-pulse">
+          {/* Shaking emoji */}
+          <div className="text-7xl" style={{
+            animation: 'shake 0.15s infinite alternate',
+            filter: `drop-shadow(0 0 30px ${glowColor})`,
           }}>
             {emoji}
           </div>
-
-          {/* Tile type label */}
-          <div
-            className="inline-block px-4 py-1.5 rounded-full text-xs font-display uppercase tracking-widest"
-            style={{
-              background: `${borderColor}20`,
-              border: `1px solid ${borderColor}60`,
-              color: borderColor,
-            }}
+          {/* Suspense text */}
+          <p className="text-lg font-display font-bold tracking-wider uppercase animate-pulse"
+            style={{ color: borderColor, textShadow: `0 0 20px ${glowColor}` }}
           >
-            {config.label}
-          </div>
+            {isNegative ? '⚠️ Perigo...' : isChallenge ? '⚔️ Desafio...' : isPositive ? '✨ Algo acontece...' : '🔮 O destino decide...'}
+          </p>
+          {/* Pulsing ring */}
+          <div className="absolute w-40 h-40 rounded-full border-2 animate-ping opacity-30"
+            style={{ borderColor }}
+          />
+        </div>
+      )}
 
-          {/* Player name */}
-          {playerName && (
-            <p className="text-sm text-white/50 font-medium">{playerName}</p>
+      {/* REVEAL PHASE — full popup */}
+      {phase === 'reveal' && (
+        <div
+          className="relative w-full max-w-sm rounded-2xl overflow-hidden"
+          style={{
+            background: bgGradient,
+            border: `2px solid ${borderColor}`,
+            boxShadow: `0 0 60px ${glowColor}, 0 20px 60px rgba(0,0,0,0.5)`,
+            animation: 'scaleReveal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+          }}
+          onClick={e => e.stopPropagation()}
+        >
+          {/* Close button */}
+          <button
+            onClick={onDismiss}
+            className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+            style={{ background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.15)' }}
+          >
+            <X className="w-4 h-4 text-white/70" />
+          </button>
+
+          {/* Character image */}
+          {charImg && (
+            <div className="relative w-full h-44 overflow-hidden">
+              <img
+                src={charImg}
+                alt={config.label}
+                className="w-full h-full object-cover"
+                style={{ filter: isNegative ? 'saturate(1.3) contrast(1.1)' : 'saturate(1.2) brightness(1.1)' }}
+              />
+              <div className="absolute inset-0" style={{
+                background: `linear-gradient(to top, ${isNegative ? 'hsl(0 30% 12%)' : isPositive ? 'hsl(40 30% 14%)' : 'hsl(220 20% 14%)'} 0%, transparent 60%)`,
+              }} />
+              {isNegative && (
+                <div className="absolute inset-0 animate-pulse" style={{
+                  background: 'radial-gradient(circle, transparent 40%, rgba(150,0,0,0.3) 100%)',
+                }} />
+              )}
+            </div>
           )}
 
-          {/* Message */}
-          <p className="text-base font-display leading-relaxed" style={{
-            color: isNegative ? 'hsl(0 60% 75%)' : isPositive ? 'hsl(45 80% 80%)' : 'hsl(0 0% 88%)',
-            textShadow: `0 0 15px ${glowColor}`,
-          }}>
-            {message}
-          </p>
+          {/* Content */}
+          <div className="p-5 text-center space-y-3">
+            <div className="text-5xl" style={{
+              filter: `drop-shadow(0 0 12px ${glowColor})`,
+              animation: isNegative ? 'shake 0.3s infinite alternate' : isPositive ? 'bounce 2s infinite' : undefined,
+            }}>
+              {emoji}
+            </div>
 
-          {/* Description */}
-          <p className="text-xs text-white/40 italic">{config.description}</p>
+            <div
+              className="inline-block px-4 py-1.5 rounded-full text-xs font-display uppercase tracking-widest"
+              style={{ background: `${borderColor}20`, border: `1px solid ${borderColor}60`, color: borderColor }}
+            >
+              {config.label}
+            </div>
 
-          {/* Tap to dismiss */}
-          <p className="text-[10px] text-white/25 mt-2">Toque para fechar</p>
+            {playerName && (
+              <p className="text-sm text-white/50 font-medium">{playerName}</p>
+            )}
+
+            <p className="text-base font-display leading-relaxed" style={{
+              color: isNegative ? 'hsl(0 60% 75%)' : isPositive ? 'hsl(45 80% 80%)' : 'hsl(0 0% 88%)',
+              textShadow: `0 0 15px ${glowColor}`,
+              wordSpacing: '0.1em',
+            }}>
+              {message}
+            </p>
+
+            <p className="text-xs text-white/40 italic">{config.description}</p>
+            <p className="text-[10px] text-white/25 mt-2">Toque para fechar</p>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* CSS animations */}
+      <style>{`
+        @keyframes shake {
+          0% { transform: translateX(-3px) rotate(-2deg); }
+          100% { transform: translateX(3px) rotate(2deg); }
+        }
+        @keyframes scaleReveal {
+          0% { transform: scale(0.3) rotate(-5deg); opacity: 0; }
+          100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 }

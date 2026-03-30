@@ -66,6 +66,7 @@ function resolveTileEffect(
   shield: boolean;
   extraTurn: boolean;
   resetToCheckpoint: boolean;
+  resetToStart: boolean;
   message: string;
   emoji: string;
 } {
@@ -73,7 +74,7 @@ function resolveTileEffect(
   const result = {
     posAdjust: 0, attrChanges: {} as Record<string, number>,
     stun: false, stunTurns: 0, shield: false, extraTurn: false,
-    resetToCheckpoint: false, message: '', emoji: '',
+    resetToCheckpoint: false, resetToStart: false, message: '', emoji: '',
   };
 
   switch (tileType) {
@@ -179,6 +180,19 @@ function resolveTileEffect(
       result.message = '🏰 Checkpoint salvo! Perseverança +1.';
       result.emoji = '🏰';
       break;
+    case 'back_to_start':
+      if (player.hasShield) {
+        result.message = '🛡️ Seu escudo te salvou da maldição! Você não voltou ao início!';
+        result.emoji = '🛡️';
+      } else {
+        result.resetToStart = true;
+        result.stun = true;
+        result.stunTurns = 1;
+        result.attrChanges = { coragem: -2, perseveranca: -1 };
+        result.message = '☠️ MALDIÇÃO! Uma força sombria te arrasta de volta ao início da jornada!';
+        result.emoji = '☠️';
+      }
+      break;
     default:
       result.message = 'Caminho tranquilo...';
       result.emoji = '·';
@@ -268,7 +282,9 @@ const PresentialMultiplayer = () => {
     const effect = resolveTileEffect(tileType, player, players, Date.now() + newPos);
 
     let finalPos = newPos;
-    if (effect.resetToCheckpoint) {
+    if (effect.resetToStart) {
+      finalPos = 0;
+    } else if (effect.resetToCheckpoint) {
       finalPos = player.checkpoint;
     } else {
       finalPos = Math.max(0, Math.min(newPos + effect.posAdjust, IMMERSIVE_BOARD_SIZE - 1));
