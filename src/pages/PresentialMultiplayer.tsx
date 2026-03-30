@@ -302,6 +302,7 @@ const PresentialMultiplayer = () => {
   const [miniGame, setMiniGame] = useState<{ tileType: TileType; playerIdx: number; prevPosition: number; newPosition: number } | null>(null);
   const pendingActionRef = useRef<(() => void) | null>(null);
   const [isTokenMoving, setIsTokenMoving] = useState(false);
+  const [showStats, setShowStats] = useState(false);
 
   // New state for phase transitions and River of Death
   const [showPhaseTransition, setShowPhaseTransition] = useState<number | null>(null);
