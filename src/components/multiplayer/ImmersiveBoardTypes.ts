@@ -20,6 +20,7 @@ import tileSwap from '@/assets/board/tile-swap.jpg';
 import tileDoubleDice from '@/assets/board/tile-double-dice.jpg';
 import tileCurrent from '@/assets/board/tile-current.jpg';
 import tileCheckpoint from '@/assets/board/tile-checkpoint.jpg';
+import tileNormal from '@/assets/board/tile-normal.jpg';
 
 // 120 tiles total, 20 per phase (each phase = ~2 phone screens)
 export const IMMERSIVE_BOARD_SIZE = 120;
@@ -60,7 +61,7 @@ export const TILE_TYPES: Record<TileType, TileConfig> = {
   double_dice: { type: 'double_dice', label: 'Dado Duplo',     emoji: '🎲', color: 'hsl(25 80% 55%)', glowColor: 'rgba(255,112,67,0.3)', description: 'Joga novamente!', sfx: 'dice', tileImage: tileDoubleDice },
   current:     { type: 'current',     label: 'Correnteza',     emoji: '🌊', color: 'hsl(195 70% 50%)',glowColor: 'rgba(38,198,218,0.3)', description: 'Arrasta para frente ou trás aleatoriamente', sfx: 'water', tileImage: tileCurrent },
   checkpoint:  { type: 'checkpoint',  label: 'Checkpoint',     emoji: '🏰', color: 'hsl(35 70% 45%)', glowColor: 'rgba(212,175,55,0.3)', description: 'Salva posição — não volta antes daqui!', sfx: 'checkpoint', tileImage: tileCheckpoint },
-  normal:      { type: 'normal',      label: 'Caminho',        emoji: '·',  color: 'hsl(0 0% 40%)',   glowColor: 'rgba(100,100,100,0.1)',description: 'Siga em frente', sfx: undefined },
+  normal:      { type: 'normal',      label: 'Caminho',        emoji: '·',  color: 'hsl(0 0% 40%)',   glowColor: 'rgba(100,100,100,0.1)',description: 'Siga em frente', sfx: undefined, tileImage: tileNormal },
 };
 
 // Tiles that trigger mini-games (boss/challenge encounters)
@@ -140,12 +141,12 @@ export function generateImmersiveTiles(seed: number): TileType[] {
 }
 
 // ─── Trail coordinates for winding path within each phase ───
-// 20 tiles spanning ~420svh (~4 phone screens per phase) for proper card spacing
+// 20 tiles spanning ~500svh (~5 phone screens per phase) for generous card spacing
 export function getTrailPositions(tilesCount: number = TILES_PER_PHASE): { x: number; y: number }[] {
   const positions: { x: number; y: number }[] = [];
   for (let i = 0; i < tilesCount; i++) {
     const t = i / (tilesCount - 1);
-    const y = 2 + t * 96; // 2% to 98% vertical spread
+    const y = 3 + t * 94; // 3% to 97% — safe margin to stay inside phase
     // Serpentine: alternates left-right
     const wave = Math.sin(t * Math.PI * 3.5) * 26;
     const x = 50 + wave;
