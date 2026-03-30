@@ -38,7 +38,7 @@ import valentePelaVerdade from '@/assets/characters/valente-pela-verdade.jpg';
 
 import sealImg from '@/assets/medieval-seal.png';
 import logoImg from '@/assets/logo-peregrino.png';
-import pilgrimStanding from '@/assets/pilgrim-standing.png';
+import pilgrimHero from '@/assets/pilgrim-hero-nobg.png';
 
 const SALE_URL = 'https://pay.kiwify.com.br/TZv1sS9';
 
@@ -783,17 +783,18 @@ const LandingPage = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/30 to-background" />
         </div>
 
-        <div className="relative z-10 max-w-2xl mx-auto space-y-5">
+        <div className="relative z-10 max-w-2xl mx-auto space-y-4">
 
-          {/* Logo "O Peregrino" */}
-          <div className="flex justify-center">
+          {/* Logo "O Peregrino" — grande e próximo do topo */}
+          <div className="flex justify-center pt-1">
             <img
               src={logoImg}
               alt="O Peregrino"
-              className="h-20 md:h-28 object-contain drop-shadow-[0_4px_30px_hsl(40_70%_50%/0.5)]"
+              className="h-28 md:h-40 object-contain drop-shadow-[0_6px_40px_hsl(40_70%_50%/0.6)]"
             />
           </div>
 
+          {/* Headline */}
           <h1
             className="font-display text-3xl md:text-5xl text-foreground leading-[1.1] font-bold"
             style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 0 40px hsl(40 70% 50% / 0.3)' }}
@@ -802,6 +803,7 @@ const LandingPage = () => {
             <span className="text-primary">Espiritual</span> de Todos os Tempos
           </h1>
 
+          {/* Subheadline */}
           <p
             className="text-base md:text-xl text-foreground/90 leading-relaxed max-w-lg mx-auto font-body"
             style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}
@@ -810,22 +812,23 @@ const LandingPage = () => {
             que vai <em>desafiar sua fé, provocar suas emoções</em> e mudar sua perspectiva para sempre.
           </p>
 
-          {/* Avatar do Peregrino */}
-          <div className="flex justify-center py-2">
+          {/* Avatar do Peregrino — sem fundo, flutuando sobre a cena */}
+          <div className="flex justify-center py-1">
             <div className="relative">
               <img
-                src={pilgrimStanding}
+                src={pilgrimHero}
                 alt="O Peregrino"
-                className="h-44 md:h-56 object-contain drop-shadow-[0_8px_40px_hsl(40_70%_50%/0.4)]"
+                className="h-52 md:h-64 object-contain drop-shadow-[0_8px_40px_hsl(40_70%_50%/0.5)]"
               />
               {/* Glow aura */}
               <div
-                className="absolute inset-0 -z-10 blur-3xl bg-primary/15 rounded-full scale-150"
+                className="absolute inset-0 -z-10 blur-3xl bg-primary/20 rounded-full scale-150"
                 style={{ animation: 'screenHeroGlow 3s ease-in-out infinite' }}
               />
             </div>
           </div>
 
+          {/* Copy + CTA */}
           <p className="text-sm text-primary font-display tracking-wide" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
             ⚔️ Mais de 30 capítulos · 9 tipos de desafios · Múltiplos finais
           </p>
