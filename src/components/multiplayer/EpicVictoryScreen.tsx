@@ -203,17 +203,17 @@ export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: Epic
         transition: 'background 2s ease',
       }} />
 
-      {/* Light rays — only during positive phases */}
-      {phase !== 'ignorance' && (
+      {/* Light rays — only during positive phases, reduced on mobile */}
+      {phase !== 'ignorance' && capability.tier !== 'essential' && (
         <div className="fixed inset-0 overflow-hidden opacity-30 pointer-events-none">
-          {Array.from({ length: 12 }).map((_, i) => (
+          {Array.from({ length: capability.tier === 'premium' ? 12 : 6 }).map((_, i) => (
             <div
               key={i}
               className="absolute top-0 left-1/2 h-full"
               style={{
                 width: '2px',
                 background: 'linear-gradient(to bottom, rgba(255,215,0,0.6), transparent 50%)',
-                transform: `rotate(${i * 30}deg)`,
+                transform: `rotate(${i * (capability.tier === 'premium' ? 30 : 60)}deg)`,
                 transformOrigin: 'top center',
                 animation: `rayPulse 3s ease-in-out ${i * 0.2}s infinite alternate`,
               }}
@@ -222,10 +222,10 @@ export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: Epic
         </div>
       )}
 
-      {/* Fireworks */}
+      {/* Fireworks — reduced count on lower tiers */}
       {showFireworks && phase !== 'ignorance' && (
         <div className="fixed inset-0 pointer-events-none">
-          {Array.from({ length: 12 }).map((_, i) => (
+          {Array.from({ length: capability.tier === 'premium' ? 12 : capability.tier === 'optimized' ? 6 : 3 }).map((_, i) => (
             <Firework key={i} delay={i * 600} x={5 + Math.random() * 90} y={5 + Math.random() * 40} />
           ))}
         </div>
