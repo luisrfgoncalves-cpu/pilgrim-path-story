@@ -74,7 +74,7 @@ function PhaseSection({
     <div
       data-phase={phaseIdx}
       className="relative w-full overflow-hidden"
-      style={{ minHeight: '200svh' }} // 2 phone screens per phase
+      style={{ minHeight: '350svh' }} // 3.5 phone screens per phase for spacing
     >
       {/* Background - BRIGHT and vivid */}
       <div className="absolute inset-0">
@@ -122,27 +122,54 @@ function PhaseSection({
         </div>
       )}
 
-      {/* Trail path SVG */}
-      <svg className="absolute inset-0 w-full h-full z-[1] pointer-events-none" preserveAspectRatio="none">
+      {/* Trail segments between tiles - narrow medieval paths */}
+      <div className="absolute inset-0 z-[1] pointer-events-none">
         {trailPositions.map((pos, i) => {
           if (i === 0) return null;
           const prev = trailPositions[i - 1];
+          // Calculate segment position & angle
+          const x1Pct = prev.x;
+          const y1Pct = prev.y;
+          const x2Pct = pos.x;
+          const y2Pct = pos.y;
+          const midX = (x1Pct + x2Pct) / 2;
+          const midY = (y1Pct + y2Pct) / 2;
+          // Use percentages for length calculation (approximate with aspect ratio)
+          const dx = (x2Pct - x1Pct) * 3.5; // account for tall container
+          const dy = (y2Pct - y1Pct);
+          const length = Math.sqrt(dx * dx + dy * dy);
+          const angle = Math.atan2(y2Pct - y1Pct, (x2Pct - x1Pct) * 3.5) * (180 / Math.PI);
+          // Alternate between stone and dirt trail
+          const trailImg = i % 2 === 0 ? trailStoneImg : trailDirtImg;
+
           return (
-            <line
-              key={i}
-              x1={`${prev.x}%`} y1={`${prev.y}%`}
-              x2={`${pos.x}%`} y2={`${pos.y}%`}
-              stroke={`hsla(${phase.accentHue} 50% 60% / 0.4)`}
-              strokeWidth="4"
-              strokeDasharray="10 5"
-              strokeLinecap="round"
-            />
+            <div
+              key={`trail-${i}`}
+              className="absolute overflow-hidden"
+              style={{
+                left: `${midX}%`,
+                top: `${midY}%`,
+                width: `${length * 0.3}%`,
+                height: '28px',
+                transform: `translate(-50%, -50%) rotate(${angle}deg)`,
+                borderRadius: '14px',
+                opacity: 0.75,
+              }}
+            >
+              <img
+                src={trailImg}
+                alt=""
+                className="w-full h-full object-cover"
+                loading="lazy"
+                style={{ filter: 'brightness(0.9) saturate(1.2)' }}
+              />
+            </div>
           );
         })}
-      </svg>
+      </div>
 
       {/* Tiles */}
-      <div className="relative w-full z-[2]" style={{ minHeight: '200svh' }}>
+      <div className="relative w-full z-[2]" style={{ minHeight: '350svh' }}>
         {trailPositions.map((pos, localIdx) => {
           const globalIdx = startIdx + localIdx;
           if (globalIdx >= IMMERSIVE_BOARD_SIZE) return null;
