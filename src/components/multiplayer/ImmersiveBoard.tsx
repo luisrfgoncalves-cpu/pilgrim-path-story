@@ -89,19 +89,19 @@ function PhaseSection({
         }} />
       </div>
 
-      {/* Phase title */}
-      <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-center pt-4 pb-2">
-        <div className="flex items-center gap-3 px-5 py-3 rounded-xl backdrop-blur-md"
+      {/* Phase title - side bubble style, not covering the board */}
+      <div className="absolute top-3 left-3 z-10">
+        <div className="relative flex items-center gap-2 px-3 py-1.5 rounded-lg backdrop-blur-md"
           style={{
-            background: `linear-gradient(135deg, hsla(${phase.accentHue} 50% 25% / 0.85), hsla(${phase.accentHue} 40% 15% / 0.9))`,
-            border: `2px solid hsla(${phase.accentHue} 60% 55% / 0.5)`,
-            boxShadow: `0 0 40px hsla(${phase.accentHue} 60% 50% / 0.3)`,
+            background: `linear-gradient(135deg, hsla(${phase.accentHue} 50% 25% / 0.9), hsla(${phase.accentHue} 40% 15% / 0.95))`,
+            border: `1.5px solid hsla(${phase.accentHue} 60% 55% / 0.5)`,
+            boxShadow: `0 0 20px hsla(${phase.accentHue} 60% 50% / 0.2)`,
           }}
         >
-          <span className="text-2xl">{phase.icon}</span>
+          <span className="text-sm">{phase.icon}</span>
           <div>
-            <h3 className="text-base font-display font-bold" style={{ color: `hsl(${phase.accentHue} 60% 80%)` }}>{phase.name}</h3>
-            <p className="text-[10px] uppercase tracking-wider" style={{ color: `hsl(${phase.accentHue} 40% 65%)` }}>{phase.subtitle}</p>
+            <h3 className="text-[11px] font-display font-bold leading-tight" style={{ color: `hsl(${phase.accentHue} 60% 80%)` }}>{phase.name}</h3>
+            <p className="text-[7px] uppercase tracking-wider" style={{ color: `hsl(${phase.accentHue} 40% 65%)` }}>{phase.subtitle}</p>
           </div>
         </div>
       </div>
