@@ -506,12 +506,13 @@ const PresentialMultiplayer = () => {
           };
         }));
 
-        // Store pending move
+        // Store pending move — mark retreats so they don't trigger tile events
         pendingMoveAfterPopup.current = {
           playerIdx: turnIdx,
           targetPos: finalPos,
           attrs: {},
           stats: {},
+          isReturnMove: finalPos < newPos || effect.resetToStart || effect.resetToCheckpoint,
         };
         // Also handle finish after move
         if (isFinished) {
