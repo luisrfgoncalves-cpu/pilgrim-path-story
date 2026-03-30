@@ -144,11 +144,11 @@ export default function BoardStats({ players, onClose }: BoardStatsProps) {
             <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <h1 className="font-display text-base text-foreground">Placar da Partida</h1>
+            <h1 className="font-display text-lg font-bold text-foreground">Placar da Partida</h1>
           </div>
           <button
             onClick={handleShare}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs font-display hover:bg-primary/20 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/30 text-primary text-sm font-display font-bold hover:bg-primary/20 transition-colors"
           >
             <Share2 className="w-3.5 h-3.5" />
             Compartilhar
@@ -159,7 +159,7 @@ export default function BoardStats({ players, onClose }: BoardStatsProps) {
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 max-w-lg mx-auto w-full">
         {/* Ranking */}
         <div className="bg-card/60 border border-border rounded-xl p-4">
-          <h2 className="font-display text-sm text-foreground mb-3 flex items-center gap-2">
+          <h2 className="font-display text-base font-bold text-foreground mb-3 flex items-center gap-2">
             Ranking
           </h2>
           <div className="space-y-2">
@@ -173,14 +173,14 @@ export default function BoardStats({ players, onClose }: BoardStatsProps) {
                     border: rank === 0 ? '1px solid hsl(40 60% 55% / 0.3)' : '1px solid transparent',
                   }}
                 >
-                  <span className="font-display text-lg w-7 text-center" style={{
+                  <span className="font-display text-xl w-8 text-center" style={{
                     color: rank === 0 ? 'hsl(40 80% 60%)' : rank === 1 ? 'hsl(0 0% 75%)' : rank === 2 ? 'hsl(25 60% 50%)' : 'hsl(0 0% 50%)',
                   }}>
                     {rank === 0 ? '👑' : `${rank + 1}º`}
                   </span>
                   <div className="w-8 h-8 rounded-full shrink-0" style={{ backgroundColor: p.color, border: `2px solid ${p.color}80` }} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-display font-bold text-foreground truncate">{p.name}</p>
+                    <p className="text-base font-display font-bold text-foreground truncate">{p.name}</p>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 h-1.5 rounded-full bg-muted/30 overflow-hidden">
                         <div className="h-full rounded-full transition-all" style={{
@@ -188,12 +188,12 @@ export default function BoardStats({ players, onClose }: BoardStatsProps) {
                           background: `linear-gradient(to right, ${p.color}80, ${p.color})`,
                         }} />
                       </div>
-                      <span className="text-[9px] text-muted-foreground shrink-0">{progress}%</span>
+                      <span className="text-xs text-muted-foreground shrink-0">{progress}%</span>
                     </div>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-sm font-display font-bold" style={{ color: 'hsl(40 80% 65%)' }}>{score}</p>
-                    <p className="text-[8px] text-muted-foreground uppercase tracking-wider">pontos</p>
+                    <p className="text-base font-display font-bold" style={{ color: 'hsl(40 80% 65%)' }}>{score}</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider">pontos</p>
                   </div>
                 </div>
               );
@@ -213,19 +213,19 @@ export default function BoardStats({ players, onClose }: BoardStatsProps) {
                 background: `linear-gradient(135deg, ${p.color}15, transparent)`,
               }}>
                 <div className="w-10 h-10 rounded-full shrink-0" style={{ backgroundColor: p.color, border: `2px solid ${p.color}80` }}>
-                  <div className="w-full h-full rounded-full flex items-center justify-center text-sm font-bold text-white">
+                  <div className="w-full h-full rounded-full flex items-center justify-center text-base font-bold text-white">
                     {p.name.charAt(0).toUpperCase()}
                   </div>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-display font-bold text-foreground">{p.name}</p>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-base font-display font-bold text-foreground">{p.name}</p>
+                  <p className="text-xs text-muted-foreground">
                     {p.finished ? `Chegou em ${p.finishOrder}º lugar` : `Casa ${p.position + 1} · Fase ${Math.floor(p.position / TILES_PER_PHASE) + 1}`}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-lg font-display font-bold" style={{ color: 'hsl(40 80% 65%)' }}>{score}</p>
-                  <p className="text-[8px] text-muted-foreground">PONTOS</p>
+                  <p className="text-xl font-display font-bold" style={{ color: 'hsl(40 80% 65%)' }}>{score}</p>
+                  <p className="text-xs text-muted-foreground">PONTOS</p>
                 </div>
               </div>
 
@@ -238,8 +238,8 @@ export default function BoardStats({ players, onClose }: BoardStatsProps) {
                   { key: 'coragem', label: 'Coragem', icon: '🗡️' },
                 ].map(attr => (
                   <div key={attr.key} className="text-center py-1">
-                    <p className="text-[9px] text-muted-foreground">{attr.label}</p>
-                    <p className="text-sm font-display font-bold text-foreground">
+                    <p className="text-xs text-muted-foreground">{attr.label}</p>
+                    <p className="text-base font-display font-bold text-foreground">
                       {(p.attributes as any)[attr.key]}
                     </p>
                   </div>
@@ -259,9 +259,9 @@ export default function BoardStats({ players, onClose }: BoardStatsProps) {
                   { label: 'Trocas', value: `${p.stats.swapsTriggered}` },
                   { label: 'Voltas ao Início', value: `${p.stats.backToStartCount}` },
                 ].map(stat => (
-                  <div key={stat.label} className="bg-card/40 px-2 py-2 text-center">
-                    <p className="text-[8px] text-muted-foreground leading-tight">{stat.label}</p>
-                    <p className="text-xs font-display font-bold text-foreground">{stat.value}</p>
+                  <div key={stat.label} className="bg-card/40 px-2 py-2.5 text-center">
+                    <p className="text-[10px] text-muted-foreground leading-tight">{stat.label}</p>
+                    <p className="text-sm font-display font-bold text-foreground">{stat.value}</p>
                   </div>
                 ))}
               </div>
@@ -269,10 +269,10 @@ export default function BoardStats({ players, onClose }: BoardStatsProps) {
               {/* Medals */}
               {medals.length > 0 && (
                 <div className="px-3 py-2.5 space-y-1.5">
-                  <p className="text-[9px] uppercase tracking-wider text-muted-foreground font-display">Títulos conquistados</p>
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-display">Títulos conquistados</p>
                   <div className="flex flex-wrap gap-1.5">
                     {medals.map((m, i) => (
-                      <div key={i} className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-display"
+                      <div key={i} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-display"
                         style={{
                           background: 'hsl(40 30% 15% / 0.5)',
                           border: '1px solid hsl(40 50% 40% / 0.3)',
