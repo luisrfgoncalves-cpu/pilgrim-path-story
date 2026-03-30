@@ -26,6 +26,10 @@ const AuthPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isRateLimited('auth-submit', 5, 60000)) {
+      toast.error('Muitas tentativas. Aguarde um momento.');
+      return;
+    }
     setSubmitting(true);
 
     if (mode === 'forgot') {
