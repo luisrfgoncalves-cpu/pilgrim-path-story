@@ -1013,6 +1013,7 @@ const PresentialMultiplayer = () => {
         tileType={miniGame?.tileType || 'normal'}
         playerName={players[miniGame?.playerIdx || 0]?.name || ''}
         onResult={handleMiniGameResult}
+        phaseIdx={miniGame ? Math.floor(miniGame.newPosition / TILES_PER_PHASE) : 0}
       />
 
       {/* Sticky header */}
