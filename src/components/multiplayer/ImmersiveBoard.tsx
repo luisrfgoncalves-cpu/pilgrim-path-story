@@ -89,7 +89,7 @@ function PhaseSection({
     <div
       data-phase={phaseIdx}
       className="relative w-full overflow-hidden"
-      style={{ minHeight: '420svh' }} // ~4 phone screens per phase for proper spacing
+      style={{ minHeight: '500svh' }}
     >
       {/* Background - BRIGHT and vivid */}
       <div className="absolute inset-0">
@@ -100,13 +100,12 @@ function PhaseSection({
           loading={phaseIdx === 0 ? 'eager' : 'lazy'}
           style={{ filter: 'brightness(0.85) saturate(1.7) contrast(1.1)' }}
         />
-        {/* Light overlay - minimal darkening */}
         <div className="absolute inset-0" style={{
           background: `linear-gradient(to bottom, hsla(${phase.accentHue} 25% 8% / 0.3) 0%, hsla(${phase.accentHue} 15% 5% / 0.15) 50%, hsla(${phase.accentHue} 25% 8% / 0.35) 100%)`,
         }} />
       </div>
 
-      {/* Phase title - side bubble style, not covering the board */}
+      {/* Phase title */}
       <div className="absolute top-3 left-3 z-10">
         <div className="relative flex items-center gap-2 px-3 py-1.5 rounded-lg backdrop-blur-md"
           style={{
@@ -137,47 +136,58 @@ function PhaseSection({
         </div>
       )}
 
-      {/* Trail segments between tiles - phase-contextual medieval paths */}
+      {/* Trail segments between tiles */}
       <div className="absolute inset-0 z-[1] pointer-events-none">
         {trailPositions.map((pos, i) => {
           if (i === 0) return null;
           const prev = trailPositions[i - 1];
           const midX = (prev.x + pos.x) / 2;
           const midY = (prev.y + pos.y) / 2;
-          // Container is ~420svh tall, ~390px wide on mobile
-          // Convert % differences to approximate pixel ratios
-          const aspectRatio = 4.2 * (674 / 390); // height/width ratio of container
+          const aspectRatio = 5.0 * (674 / 390);
           const dx = (pos.x - prev.x);
           const dy = (pos.y - prev.y) * aspectRatio;
           const lengthPx = Math.sqrt(dx * dx + dy * dy);
           const angle = Math.atan2((pos.y - prev.y) * aspectRatio, (pos.x - prev.x)) * (180 / Math.PI);
           
-          // Phase-contextual trail image - alternate between the two for the phase
           const phaseTrails = PHASE_TRAILS[phaseIdx] || [trailStoneImg, trailDirtImg];
           const trailImg = i % 2 === 0 ? phaseTrails[0] : phaseTrails[1];
 
           return (
-            <div
-              key={`trail-${i}`}
-              className="absolute overflow-hidden"
-              style={{
-                left: `${midX}%`,
-                top: `${midY}%`,
-                width: `${lengthPx * 0.38}%`,
-                height: '36px',
-                transform: `translate(-50%, -50%) rotate(${angle}deg)`,
-                borderRadius: '18px',
-                opacity: 0.9,
-                boxShadow: '0 2px 12px rgba(0,0,0,0.5)',
-                border: '1px solid rgba(255,255,255,0.1)',
-              }}
-            >
-              <img
-                src={trailImg}
-                alt=""
-                className="w-full h-full object-cover"
-                loading="lazy"
-                style={{ filter: 'brightness(0.95) saturate(1.3)' }}
+            <div key={`trail-${i}`}>
+              {/* Trail segment */}
+              <div
+                className="absolute overflow-hidden"
+                style={{
+                  left: `${midX}%`,
+                  top: `${midY}%`,
+                  width: `${lengthPx * 0.42}%`,
+                  height: '38px',
+                  transform: `translate(-50%, -50%) rotate(${angle}deg)`,
+                  borderRadius: '19px',
+                  opacity: 0.92,
+                  boxShadow: `0 0 18px rgba(0,0,0,0.6), 0 0 8px ${`hsla(${phase.accentHue} 40% 50% / 0.15)`}`,
+                  border: '1px solid rgba(255,255,255,0.08)',
+                }}
+              >
+                <img
+                  src={trailImg}
+                  alt=""
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  style={{ filter: 'brightness(0.95) saturate(1.3)' }}
+                />
+              </div>
+              {/* Connector dot at destination tile */}
+              <div
+                className="absolute w-3 h-3 rounded-full"
+                style={{
+                  left: `${pos.x}%`,
+                  top: `${pos.y}%`,
+                  transform: 'translate(-50%, -50%)',
+                  background: `radial-gradient(circle, ${`hsl(${phase.accentHue} 50% 60%)`} 30%, rgba(0,0,0,0.8) 100%)`,
+                  boxShadow: `0 0 8px ${`hsla(${phase.accentHue} 50% 50% / 0.5)`}`,
+                  border: '1px solid rgba(255,255,255,0.2)',
+                }}
               />
             </div>
           );
@@ -185,7 +195,7 @@ function PhaseSection({
       </div>
 
       {/* Tiles */}
-      <div className="relative w-full z-[2]" style={{ minHeight: '420svh' }}>
+      <div className="relative w-full z-[2]" style={{ minHeight: '500svh' }}>
         {trailPositions.map((pos, localIdx) => {
           const globalIdx = startIdx + localIdx;
           if (globalIdx >= IMMERSIVE_BOARD_SIZE) return null;
@@ -195,11 +205,10 @@ function PhaseSection({
           const playersHere = players.filter(p => p.position === globalIdx && !p.finished);
           const isCurrentPlayerHere = playersHere.some(p => p.id === currentTurnId);
 
-          // Get tile image: character image for character tiles, environment image for context tiles
           const tileCharKey = config.characterKey;
           const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
           const tileEnvImg = config.tileImage || null;
-          const tileImg = tileCharImg || tileEnvImg; // character takes priority
+          const tileImg = tileCharImg || tileEnvImg;
           const isSpecial = tileType !== 'normal';
           const isBoss = tileType === 'giant' || tileType === 'challenge';
           const tileSize = isBoss ? 76 : isSpecial ? 68 : 56;
@@ -211,7 +220,7 @@ function PhaseSection({
               style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
               onClick={() => onTileClick?.(globalIdx, tileType)}
             >
-              {/* Tile body with image background */}
+              {/* Tile body - enhanced 3D depth */}
               <div
                 className={`relative flex items-center justify-center overflow-hidden
                   ${playersHere.length > 0 ? 'scale-125 ring-2 ring-white/50' : ''}
@@ -223,19 +232,23 @@ function PhaseSection({
                   height: tileSize,
                   borderRadius: isBoss ? 18 : isSpecial ? 16 : 12,
                   background: tileImg ? 'none' : `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))`,
-                  boxShadow: `0 0 ${playersHere.length > 0 ? '35' : '18'}px ${config.glowColor},
-                    inset 0 2px 3px rgba(255,255,255,0.15),
-                    0 4px 14px rgba(0,0,0,0.5)`,
+                  boxShadow: `
+                    0 0 ${playersHere.length > 0 ? '35' : '18'}px ${config.glowColor},
+                    inset 0 2px 3px rgba(255,255,255,0.2),
+                    inset 0 -2px 4px rgba(0,0,0,0.4),
+                    0 6px 20px rgba(0,0,0,0.7),
+                    0 2px 6px rgba(0,0,0,0.5)
+                  `,
                   border: `2.5px solid ${config.color}`,
                 }}
               >
-                {/* Image filling the tile */}
-                {tileImg && isSpecial && (
+                {/* Image filling the tile - now includes normal tiles */}
+                {tileImg && (
                   <img
                     src={tileImg}
                     alt={config.label}
                     className="absolute inset-0 w-full h-full object-cover"
-                    style={{ filter: isBoss ? 'saturate(1.4) contrast(1.2)' : 'saturate(1.2)' }}
+                    style={{ filter: isBoss ? 'saturate(1.4) contrast(1.2)' : isSpecial ? 'saturate(1.2)' : 'brightness(0.7) saturate(0.8)' }}
                     loading="lazy"
                   />
                 )}
@@ -246,10 +259,9 @@ function PhaseSection({
                 >
                   {globalIdx + 1}
                 </span>
-
               </div>
 
-              {/* Medieval icon - outside the card, on the left edge */}
+              {/* Medieval icon */}
               <div className="absolute -left-4 top-1/2 -translate-y-1/2 z-10"
                 style={{
                   background: 'rgba(0,0,0,0.85)',
@@ -267,20 +279,19 @@ function PhaseSection({
                 />
               </div>
 
-              {/* Boss indicator - outside top-right */}
+              {/* Boss indicator */}
               {isBoss && (
                 <div className="absolute -top-2 -right-2 text-xs z-10 animate-bounce">
                   {tileType === 'giant' ? '💀' : '⚔️'}
                 </div>
               )}
 
-              {/* Type label - speech bubble style, to the right */}
+              {/* Type label */}
               {isSpecial && (
                 <div className="absolute top-1/2 -translate-y-1/2 z-10"
                   style={{ left: `${tileSize + 6}px` }}
                 >
                   <div className="relative">
-                    {/* Arrow pointing left */}
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full"
                       style={{
                         width: 0, height: 0,
@@ -324,13 +335,31 @@ function PhaseSection({
         })}
       </div>
 
-      {/* Phase transition */}
+      {/* Phase transition divider */}
       {phaseIdx < PHASES.length - 1 && (
-        <div className="absolute bottom-0 left-0 right-0 h-24 z-[5]"
-          style={{
-            background: `linear-gradient(to bottom, transparent, hsla(${PHASES[phaseIdx + 1].accentHue} 25% 8% / 0.85))`,
-          }}
-        />
+        <div className="absolute bottom-0 left-0 right-0 z-[5]">
+          {/* Gradient fade */}
+          <div className="h-28" style={{
+            background: `linear-gradient(to bottom, transparent, hsla(${PHASES[phaseIdx + 1].accentHue} 25% 8% / 0.9))`,
+          }} />
+          {/* Decorative medieval divider line */}
+          <div className="relative h-8 flex items-center justify-center"
+            style={{ background: `hsla(${PHASES[phaseIdx + 1].accentHue} 25% 8% / 0.9)` }}
+          >
+            <div className="absolute inset-x-8 h-[2px]" style={{
+              background: `linear-gradient(to right, transparent, hsla(${phase.accentHue} 50% 50% / 0.6), hsla(${PHASES[phaseIdx + 1].accentHue} 50% 50% / 0.6), transparent)`,
+            }} />
+            <div className="relative z-10 w-8 h-8 rounded-full flex items-center justify-center"
+              style={{
+                background: `linear-gradient(135deg, hsla(${phase.accentHue} 40% 20% / 0.95), hsla(${PHASES[phaseIdx + 1].accentHue} 40% 20% / 0.95))`,
+                border: `2px solid hsla(${phase.accentHue} 50% 50% / 0.5)`,
+                boxShadow: `0 0 12px hsla(${phase.accentHue} 50% 50% / 0.3)`,
+              }}
+            >
+              <span className="text-xs">{PHASES[phaseIdx + 1].icon}</span>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
