@@ -579,6 +579,362 @@ function CourageHoldGame({ onResult }: { onResult: (won: boolean) => void }) {
   );
 }
 
+// Simon Says — follow the pattern (harder than memory)
+function SimonSaysGame({ difficulty, onResult }: { difficulty: number; onResult: (won: boolean) => void }) {
+  const colors = [
+    { color: 'hsl(0 60% 45%)', emoji: '🔴', label: 'Vermelho' },
+    { color: 'hsl(120 50% 40%)', emoji: '🟢', label: 'Verde' },
+    { color: 'hsl(210 60% 50%)', emoji: '🔵', label: 'Azul' },
+    { color: 'hsl(45 80% 50%)', emoji: '🟡', label: 'Amarelo' },
+  ];
+  const seqLength = Math.min(3 + difficulty, 8);
+  const [sequence, setSequence] = useState<number[]>([]);
+  const [playerSeq, setPlayerSeq] = useState<number[]>([]);
+  const [phase, setPhase] = useState<'show' | 'input' | 'done'>('show');
+  const [showIdx, setShowIdx] = useState(-1);
+  const [activeBtn, setActiveBtn] = useState<number | null>(null);
+  const [result, setResult] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const seq: number[] = [];
+    for (let i = 0; i < seqLength; i++) {
+      seq.push(Math.floor(Math.random() * 4));
+    }
+    setSequence(seq);
+  }, [seqLength]);
+
+  useEffect(() => {
+    if (phase !== 'show' || sequence.length === 0) return;
+    if (showIdx >= sequence.length) {
+      const t = setTimeout(() => { setShowIdx(-1); setPhase('input'); }, 600);
+      return () => clearTimeout(t);
+    }
+    if (showIdx === -1) {
+      const t = setTimeout(() => setShowIdx(0), 800);
+      return () => clearTimeout(t);
+    }
+    setActiveBtn(sequence[showIdx]);
+    const t1 = setTimeout(() => setActiveBtn(null), 500);
+    const t2 = setTimeout(() => setShowIdx(s => s + 1), 700);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [phase, showIdx, sequence]);
+
+  const handleTap = (idx: number) => {
+    if (phase !== 'input') return;
+    const newSeq = [...playerSeq, idx];
+    setPlayerSeq(newSeq);
+    setActiveBtn(idx);
+    setTimeout(() => setActiveBtn(null), 200);
+
+    if (navigator.vibrate) navigator.vibrate(20);
+    const pos = newSeq.length - 1;
+    if (newSeq[pos] !== sequence[pos]) {
+      setResult(false);
+      setPhase('done');
+      playNegativeEvent();
+      return;
+    }
+    if (newSeq.length === sequence.length) {
+      setResult(true);
+      setPhase('done');
+      playPositiveEvent();
+    }
+  };
+
+  useEffect(() => {
+    if (phase === 'done' && result !== null) {
+      const t = setTimeout(() => onResult(result), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [phase, result, onResult]);
+
+  return (
+    <div className="flex flex-col items-center gap-4 p-4">
+      {phase === 'show' && (
+        <p className="text-sm font-display text-white/70 animate-pulse">
+          Observe a sequência de cores!
+        </p>
+      )}
+      {phase === 'input' && (
+        <p className="text-sm font-display text-white/70">
+          Repita! ({playerSeq.length}/{sequence.length})
+        </p>
+      )}
+      <div className="grid grid-cols-2 gap-3">
+        {colors.map((c, i) => (
+          <button
+            key={i}
+            onClick={() => handleTap(i)}
+            disabled={phase !== 'input'}
+            className="w-24 h-24 rounded-2xl flex items-center justify-center text-4xl transition-all active:scale-90"
+            style={{
+              background: activeBtn === i ? c.color : `${c.color}30`,
+              border: `3px solid ${activeBtn === i ? 'white' : c.color}`,
+              boxShadow: activeBtn === i ? `0 0 30px ${c.color}` : 'none',
+              transform: activeBtn === i ? 'scale(1.1)' : 'scale(1)',
+            }}
+          >
+            {c.emoji}
+          </button>
+        ))}
+      </div>
+      {phase === 'done' && (
+        <div className="text-center space-y-2">
+          <span className="text-5xl block">{result ? '✅' : '❌'}</span>
+          <p className="text-lg font-display" style={{ color: result ? 'hsl(120 60% 70%)' : 'hsl(0 60% 70%)' }}>
+            {result ? 'Sequência perfeita!' : 'Sequência errada!'}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Word Scramble — unscramble a biblical word
+function WordScrambleGame({ difficulty, onResult }: { difficulty: number; onResult: (won: boolean) => void }) {
+  const wordPool = [
+    // Easy
+    { word: 'FÉ', hint: 'Confiança em Deus' },
+    { word: 'PAZ', hint: 'Fruto do Espírito' },
+    { word: 'LUZ', hint: 'Jesus é a...' },
+    { word: 'AMOR', hint: 'O maior mandamento' },
+    // Normal
+    { word: 'GRAÇA', hint: 'Favor imerecido' },
+    { word: 'CRUZ', hint: 'Onde Cristo morreu' },
+    { word: 'FIEL', hint: 'Companheiro de Cristão' },
+    { word: 'PORTA', hint: 'Estreita é a...' },
+    // Hard
+    { word: 'ESCUDO', hint: 'Armadura da fé' },
+    { word: 'ESPADA', hint: 'A Palavra de Deus' },
+    { word: 'CORAGEM', hint: 'Para enfrentar gigantes' },
+    { word: 'PROMESSA', hint: 'Chave do calabouço' },
+  ];
+  const validWords = wordPool.filter(w => {
+    if (difficulty <= 1) return w.word.length <= 4;
+    if (difficulty <= 2) return w.word.length <= 5;
+    return true;
+  });
+  const [target] = useState(() => validWords[Math.floor(Math.random() * validWords.length)]);
+  const [scrambled] = useState(() => {
+    const letters = target.word.split('');
+    for (let i = letters.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [letters[i], letters[j]] = [letters[j], letters[i]];
+    }
+    // Ensure it's actually scrambled
+    if (letters.join('') === target.word) {
+      [letters[0], letters[letters.length - 1]] = [letters[letters.length - 1], letters[0]];
+    }
+    return letters;
+  });
+  const [selected, setSelected] = useState<number[]>([]);
+  const [result, setResult] = useState<boolean | null>(null);
+  const [timeLeft, setTimeLeft] = useState(difficulty <= 1 ? 15 : difficulty <= 2 ? 12 : 10);
+
+  useEffect(() => {
+    if (result !== null) return;
+    const t = setInterval(() => {
+      setTimeLeft(p => {
+        if (p <= 1) {
+          setResult(false);
+          playNegativeEvent();
+          return 0;
+        }
+        return p - 1;
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, [result]);
+
+  const handleLetterTap = (idx: number) => {
+    if (result !== null || selected.includes(idx)) return;
+    const newSelected = [...selected, idx];
+    setSelected(newSelected);
+    if (navigator.vibrate) navigator.vibrate(15);
+
+    if (newSelected.length === scrambled.length) {
+      const formed = newSelected.map(i => scrambled[i]).join('');
+      const won = formed === target.word;
+      setResult(won);
+      if (won) playPositiveEvent(); else playNegativeEvent();
+    }
+  };
+
+  const handleUndo = () => {
+    if (result !== null || selected.length === 0) return;
+    setSelected(prev => prev.slice(0, -1));
+  };
+
+  useEffect(() => {
+    if (result !== null) {
+      const t = setTimeout(() => onResult(result), 1800);
+      return () => clearTimeout(t);
+    }
+  }, [result, onResult]);
+
+  const formedWord = selected.map(i => scrambled[i]).join('');
+
+  return (
+    <div className="flex flex-col items-center gap-3 p-4">
+      <p className="text-sm font-display text-white/70">Monte a palavra! ⏱ {timeLeft}s</p>
+      <p className="text-xs text-white/40 italic">Dica: {target.hint}</p>
+
+      {/* Formed word display */}
+      <div className="flex gap-1 min-h-[48px] items-center">
+        {target.word.split('').map((_, i) => (
+          <div key={i} className="w-10 h-12 rounded-lg flex items-center justify-center text-xl font-display font-bold"
+            style={{
+              background: i < formedWord.length ? 'hsl(45 60% 25%)' : 'hsl(0 0% 12%)',
+              border: `2px solid ${i < formedWord.length ? 'hsl(45 60% 50%)' : 'hsl(0 0% 25%)'}`,
+              color: 'hsl(45 80% 80%)',
+            }}
+          >
+            {formedWord[i] || ''}
+          </div>
+        ))}
+      </div>
+
+      {/* Scrambled letters */}
+      <div className="flex gap-2 flex-wrap justify-center">
+        {scrambled.map((letter, i) => (
+          <button
+            key={i}
+            onClick={() => handleLetterTap(i)}
+            disabled={selected.includes(i) || result !== null}
+            className="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-display font-bold transition-all active:scale-90"
+            style={{
+              background: selected.includes(i) ? 'hsl(0 0% 8%)' : 'hsl(220 20% 18%)',
+              border: `2px solid ${selected.includes(i) ? 'hsl(0 0% 15%)' : 'hsl(220 30% 40%)'}`,
+              color: selected.includes(i) ? 'hsl(0 0% 30%)' : 'hsl(0 0% 90%)',
+              opacity: selected.includes(i) ? 0.3 : 1,
+            }}
+          >
+            {letter}
+          </button>
+        ))}
+      </div>
+
+      {selected.length > 0 && result === null && (
+        <button onClick={handleUndo} className="text-xs text-white/50 underline">Desfazer</button>
+      )}
+
+      {result !== null && (
+        <div className="text-center space-y-1">
+          <span className="text-5xl block">{result ? '✅' : '❌'}</span>
+          <p className="text-lg font-display" style={{ color: result ? 'hsl(120 60% 70%)' : 'hsl(0 60% 70%)' }}>
+            {result ? `"${target.word}" — Correto!` : `Era "${target.word}"...`}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Timing Bar — stop the bar at the right zone
+function TimingBarGame({ difficulty, onResult }: { difficulty: number; onResult: (won: boolean) => void }) {
+  const speed = 2 + difficulty * 1.5; // faster = harder
+  const targetZone = { start: 35, end: 65 - difficulty * 5 }; // narrower = harder
+  const [barPos, setBarPos] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const [stopped, setStopped] = useState(false);
+  const [result, setResult] = useState<boolean | null>(null);
+  const animRef = useRef<number | null>(null);
+  const lastTimeRef = useRef(0);
+
+  useEffect(() => {
+    if (stopped) return;
+    const animate = (time: number) => {
+      if (!lastTimeRef.current) lastTimeRef.current = time;
+      const delta = (time - lastTimeRef.current) / 16;
+      lastTimeRef.current = time;
+      
+      setBarPos(prev => {
+        let next = prev + direction * speed * delta;
+        if (next >= 100) { next = 100; setDirection(-1); }
+        if (next <= 0) { next = 0; setDirection(1); }
+        return next;
+      });
+      animRef.current = requestAnimationFrame(animate);
+    };
+    animRef.current = requestAnimationFrame(animate);
+    return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
+  }, [stopped, direction, speed]);
+
+  const handleStop = () => {
+    if (stopped) return;
+    setStopped(true);
+    const won = barPos >= targetZone.start && barPos <= targetZone.end;
+    setResult(won);
+    if (won) {
+      playPositiveEvent();
+      if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+    } else {
+      playNegativeEvent();
+      if (navigator.vibrate) navigator.vibrate([150, 80, 150]);
+    }
+  };
+
+  useEffect(() => {
+    if (result !== null) {
+      const t = setTimeout(() => onResult(result), 1800);
+      return () => clearTimeout(t);
+    }
+  }, [result, onResult]);
+
+  return (
+    <div className="flex flex-col items-center gap-4 p-4">
+      <p className="text-sm font-display text-white/70">Pare na zona dourada!</p>
+      
+      {/* Bar track */}
+      <div className="relative w-full h-10 rounded-full overflow-hidden" style={{
+        background: 'hsl(0 0% 10%)',
+        border: '2px solid hsl(0 0% 25%)',
+      }}>
+        {/* Target zone */}
+        <div className="absolute top-0 bottom-0 rounded" style={{
+          left: `${targetZone.start}%`,
+          width: `${targetZone.end - targetZone.start}%`,
+          background: 'hsl(45 60% 30% / 0.5)',
+          border: '1px solid hsl(45 60% 50% / 0.6)',
+        }} />
+        {/* Moving indicator */}
+        <div className="absolute top-0 bottom-0 w-3 rounded-full transition-none" style={{
+          left: `${barPos}%`,
+          transform: 'translateX(-50%)',
+          background: stopped
+            ? (result ? 'hsl(120 60% 50%)' : 'hsl(0 60% 50%)')
+            : 'hsl(0 0% 90%)',
+          boxShadow: `0 0 12px ${stopped
+            ? (result ? 'hsl(120 60% 50% / 0.6)' : 'hsl(0 60% 50% / 0.6)')
+            : 'hsl(0 0% 90% / 0.4)'}`,
+        }} />
+      </div>
+
+      {!stopped ? (
+        <button
+          onClick={handleStop}
+          className="w-28 h-28 rounded-full flex items-center justify-center text-3xl font-display font-bold active:scale-90 transition-transform"
+          style={{
+            background: 'radial-gradient(circle, hsl(45 40% 25%), hsl(45 30% 12%))',
+            border: '3px solid hsl(45 50% 45%)',
+            boxShadow: '0 0 20px hsl(45 50% 45% / 0.3)',
+            color: 'hsl(45 80% 80%)',
+          }}
+        >
+          PARE!
+        </button>
+      ) : (
+        <div className="text-center space-y-2">
+          <span className="text-5xl block">{result ? '✅' : '❌'}</span>
+          <p className="text-lg font-display" style={{ color: result ? 'hsl(120 60% 70%)' : 'hsl(0 60% 70%)' }}>
+            {result ? 'Precisão divina!' : 'Fora do alvo...'}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Quick path choice — choose the right path
 function PathChoiceGame({ onResult }: { onResult: (won: boolean) => void }) {
   const paths = [
