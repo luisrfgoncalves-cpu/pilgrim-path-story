@@ -144,7 +144,7 @@ function PhaseSection({
           const tileImg = tileCharImg || tileEnvImg;
           const isSpecial = tileType !== 'normal';
           const isBoss = tileType === 'giant' || tileType === 'challenge';
-          const tileSize = isBoss ? 76 : isSpecial ? 68 : 56;
+          const tileSize = isBoss ? 80 : isSpecial ? 72 : 60;
 
           return (
             <div
