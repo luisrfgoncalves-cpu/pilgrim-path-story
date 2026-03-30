@@ -302,7 +302,7 @@ const ScenePage = () => {
       return () => clearTimeout(delay);
     }
   }, [chapter?.id, transitioning]);
-...
+
   useEffect(() => {
     if (!chapter) return;
     if (narrativeIndex < fullNarrative.length - 1) {
