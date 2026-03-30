@@ -311,6 +311,7 @@ const PresentialMultiplayer = () => {
     attrs: Record<string, number>;
     shield?: boolean;
     stats: Partial<PlayerStats>;
+    isReturnMove?: boolean; // true = retreat/penalty move, don't trigger tile events at destination
   } | null>(null);
 
   // New state for phase transitions and River of Death
