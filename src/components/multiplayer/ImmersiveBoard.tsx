@@ -59,7 +59,7 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
     setAnimatedPosition(prevPos);
 
     let stepIdx = 0;
-    const STEP_DELAY = 350; // ms per tile — slow enough to see clearly
+    const STEP_DELAY = 650; // ms per tile — very slow, dramatic movement
 
     const doStep = () => {
       if (stepIdx >= steps.length) {

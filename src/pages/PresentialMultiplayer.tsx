@@ -487,12 +487,8 @@ const PresentialMultiplayer = () => {
         };
       }));
 
-      // Show tile message
-      if (tileType !== 'normal' && tileType !== 'start') {
-        setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
-      } else {
-        nextTurn();
-      }
+      // Show tile message for ALL tiles (every tile opens a popup)
+      setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
     };
 
     // Store pending action — if phase changed, show transition first
