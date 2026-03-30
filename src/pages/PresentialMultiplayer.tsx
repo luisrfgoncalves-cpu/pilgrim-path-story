@@ -756,6 +756,13 @@ const PresentialMultiplayer = () => {
       pendingMoveAfterPopup.current = null;
       const { playerIdx, targetPos, attrs, stats, shield, isReturnMove } = pendingMove;
 
+      // Show return move info for user feedback
+      if (isReturnMove) {
+        const currentPos = players[playerIdx]?.position ?? 0;
+        const casasDiff = Math.abs(currentPos - targetPos);
+        setReturnMoveInfo(`↩️ Voltando ${casasDiff} casa${casasDiff > 1 ? 's' : ''}...`);
+      }
+
       // Move the token visually
       setIsTokenMoving(true);
       setPlayers(prev => prev.map((p, i) => {
