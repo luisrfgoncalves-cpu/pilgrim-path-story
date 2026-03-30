@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import { sanitizeDisplayName, sanitizeText } from '@/lib/sanitize';
 import { ArrowLeft, Save, LogOut, Bell, BellOff, Sun, Moon, BookOpen } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { requestNotificationPermission, isNotificationsEnabled, toggleNotifications } from '@/lib/notifications';
