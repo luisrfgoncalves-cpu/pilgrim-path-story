@@ -7,24 +7,35 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import ScrollToTop from "@/components/ScrollToTop";
 import PreviewPaywall from "@/components/PreviewPaywall";
+import { lazy, Suspense } from "react";
+import { Loader2 } from "lucide-react";
+
+// Eagerly loaded pages (needed immediately)
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
-import JourneysPage from "./pages/JourneysPage.tsx";
-import ScenePage from "./pages/ScenePage.tsx";
-import ResultPage from "./pages/ResultPage.tsx";
-import ProgressPage from "./pages/ProgressPage.tsx";
-import CharactersPage from "./pages/CharactersPage.tsx";
-import ReflectionsPage from "./pages/ReflectionsPage.tsx";
 import AuthPage from "./pages/AuthPage.tsx";
-import ProfilePage from "./pages/ProfilePage.tsx";
-import CommunityPage from "./pages/CommunityPage.tsx";
-import MultiplayerPage from "./pages/MultiplayerPage.tsx";
-import PresentialMultiplayer from "./pages/PresentialMultiplayer.tsx";
-import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
-import TermsPage from "./pages/TermsPage.tsx";
-import LandingPage from "./pages/LandingPage.tsx";
-import ThankYouPage from "./pages/ThankYouPage.tsx";
-import { Loader2 } from "lucide-react";
+
+// Lazy loaded pages (loaded on demand — saves ~500KB+ on initial load)
+const JourneysPage = lazy(() => import("./pages/JourneysPage.tsx"));
+const ScenePage = lazy(() => import("./pages/ScenePage.tsx"));
+const ResultPage = lazy(() => import("./pages/ResultPage.tsx"));
+const ProgressPage = lazy(() => import("./pages/ProgressPage.tsx"));
+const CharactersPage = lazy(() => import("./pages/CharactersPage.tsx"));
+const ReflectionsPage = lazy(() => import("./pages/ReflectionsPage.tsx"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage.tsx"));
+const CommunityPage = lazy(() => import("./pages/CommunityPage.tsx"));
+const MultiplayerPage = lazy(() => import("./pages/MultiplayerPage.tsx"));
+const PresentialMultiplayer = lazy(() => import("./pages/PresentialMultiplayer.tsx"));
+const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage.tsx"));
+const TermsPage = lazy(() => import("./pages/TermsPage.tsx"));
+const LandingPage = lazy(() => import("./pages/LandingPage.tsx"));
+const ThankYouPage = lazy(() => import("./pages/ThankYouPage.tsx"));
+
+const PageLoader = () => (
+  <div className="min-h-screen bg-background flex items-center justify-center">
+    <Loader2 className="w-8 h-8 text-primary animate-spin" />
+  </div>
+);
 
 const queryClient = new QueryClient();
 
