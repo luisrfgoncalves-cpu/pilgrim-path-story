@@ -304,6 +304,15 @@ const PresentialMultiplayer = () => {
   const [isTokenMoving, setIsTokenMoving] = useState(false);
   const [showStats, setShowStats] = useState(false);
 
+  // Deferred move after mini-game popup closes
+  const pendingMoveAfterPopup = useRef<{
+    playerIdx: number;
+    targetPos: number;
+    attrs: Record<string, number>;
+    shield?: boolean;
+    stats: Partial<PlayerStats>;
+  } | null>(null);
+
   // New state for phase transitions and River of Death
   const [showPhaseTransition, setShowPhaseTransition] = useState<number | null>(null);
   const [showRiverOfDeath, setShowRiverOfDeath] = useState<{ playerIdx: number; prevPos: number; newPos: number } | null>(null);
