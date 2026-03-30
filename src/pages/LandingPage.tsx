@@ -600,7 +600,12 @@ const LandingPage = () => {
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   const alreadyInstalled = isStandalone || localStorage.getItem('pwa_installed') === '1';
 
+  // Disable install banner entirely on landing/sales page
+  const isLandingPage = window.location.pathname === '/landing' || window.location.pathname === '/vendas';
+
   useEffect(() => {
+    if (isLandingPage) return; // Never show install prompts on sales page
+
     const onBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setInstallPrompt(e as any);
