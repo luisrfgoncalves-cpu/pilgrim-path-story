@@ -1,8 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ImmersiveBoard from '@/components/multiplayer/ImmersiveBoard';
-import PremiumDice from '@/components/multiplayer/PremiumDice';
-import EventReveal from '@/components/multiplayer/EventReveal';
+import { Dice3D } from '@/components/Dice3D';
+import TileEventPopup from '@/components/multiplayer/TileEventPopup';
 import GameNotification from '@/components/GameNotification';
 import { boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
 import {
@@ -192,10 +192,12 @@ const PresentialMultiplayer = () => {
   const [editingNames, setEditingNames] = useState<Record<string, string>>({});
   const [currentTurn, setCurrentTurn] = useState(0);
   const [tileTypes, setTileTypes] = useState<TileType[]>([]);
-  const [tileMessage, setTileMessage] = useState<{ message: string; emoji: string } | null>(null);
+  const [tileMessage, setTileMessage] = useState<{ message: string; emoji: string; tileType: TileType; playerName?: string } | null>(null);
+  const [diceValue, setDiceValue] = useState(1);
+  const [diceRolling, setDiceRolling] = useState(false);
   const [turnAnnounce, setTurnAnnounce] = useState<string | null>(null);
   const [finishCount, setFinishCount] = useState(0);
-  const [showDice, setShowDice] = useState(true);
+  
 
   const addPlayer = () => {
     if (players.length >= 8) return;
@@ -292,15 +294,8 @@ const PresentialMultiplayer = () => {
 
     // Show tile message
     if (tileType !== 'normal' && tileType !== 'start') {
-      setTileMessage({ message: effect.message, emoji: effect.emoji });
-      setTimeout(() => {
-        setTileMessage(null);
-        if (effect.extraTurn) {
-          setTurnAnnounce(`🎲 ${player.name} joga de novo!`);
-        } else {
-          nextTurn();
-        }
-      }, 2500);
+      setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
+      // Don't auto-dismiss - let popup handle its own timing
     } else {
       nextTurn();
     }
@@ -330,9 +325,21 @@ const PresentialMultiplayer = () => {
 
   const handleTileClick = (position: number, tileType: TileType) => {
     const config = TILE_TYPES[tileType];
-    setTileMessage({ message: `Casa ${position + 1}: ${config.label} — ${config.description}`, emoji: config.emoji });
-    setTimeout(() => setTileMessage(null), 3000);
+    setTileMessage({ message: `Casa ${position + 1}: ${config.label} — ${config.description}`, emoji: config.emoji, tileType });
   };
+
+  const handleTilePopupDismiss = useCallback(() => {
+    const currentMsg = tileMessage;
+    setTileMessage(null);
+    if (currentMsg) {
+      const p = players[currentTurn];
+      if (p?.extraTurn) {
+        setTurnAnnounce(`🎲 ${p.name} joga de novo!`);
+      } else {
+        nextTurn();
+      }
+    }
+  }, [tileMessage, players, currentTurn, nextTurn]);
 
   const resetGame = () => {
     setPlayers(prev => prev.map((p, i) => createPlayer(i, p.name)));
@@ -458,18 +465,15 @@ const PresentialMultiplayer = () => {
         </div>
       </GameNotification>
 
-      {/* Tile event message */}
-      <GameNotification visible={!!tileMessage} onDismiss={() => setTileMessage(null)} duration={2500} position="top-offset">
-        <div className="px-6 py-4 rounded-2xl font-display text-base max-w-xs text-center" style={{
-          background: 'linear-gradient(135deg, hsl(0 0% 12%), hsl(0 0% 8%))',
-          border: '1px solid hsl(0 0% 30% / 0.5)',
-          color: 'hsl(0 0% 90%)',
-          boxShadow: '0 0 30px rgba(0,0,0,0.5)',
-        }}>
-          <span className="text-2xl block mb-1">{tileMessage?.emoji}</span>
-          {tileMessage?.message}
-        </div>
-      </GameNotification>
+      {/* Tile event popup - large with character images */}
+      <TileEventPopup
+        visible={!!tileMessage}
+        tileType={tileMessage?.tileType || 'normal'}
+        message={tileMessage?.message || ''}
+        emoji={tileMessage?.emoji || ''}
+        playerName={tileMessage?.playerName}
+        onDismiss={handleTilePopupDismiss}
+      />
 
       {/* Sticky header with current player info */}
       <header className="sticky top-0 z-20 bg-card/95 backdrop-blur-md border-b border-border px-4 py-2">
@@ -535,29 +539,52 @@ const PresentialMultiplayer = () => {
 
         {/* Dice section — fixed at bottom */}
         {phase === 'playing' && !currentPlayer?.finished && (
-          <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background via-background/95 to-transparent pt-8 pb-4 px-4">
+          <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background via-background/95 to-transparent pt-10 pb-5 px-4">
             <div className="max-w-lg mx-auto">
               {currentPlayer?.isStunned ? (
-                <div className="text-center p-3 rounded-xl bg-destructive/10 border border-destructive/20">
-                  <p className="text-sm text-destructive font-display">😵 {currentPlayer.name} está paralisado!</p>
-                  <button onClick={() => handleDiceRoll(0)} className="mt-2 px-4 py-2 rounded-lg bg-card border border-border text-xs text-foreground">
+                <div className="text-center p-4 rounded-xl bg-destructive/10 border border-destructive/20">
+                  <p className="text-lg text-destructive font-display font-bold">😵 {currentPlayer.name} está paralisado!</p>
+                  <button onClick={() => handleDiceRoll(0)} className="mt-3 px-5 py-3 rounded-lg bg-card border border-border text-sm text-foreground font-display">
                     Passar a vez
                   </button>
                 </div>
               ) : (
-                <div className="space-y-2">
-                  <PremiumDice onRoll={handleDiceRoll} disabled={false} isMyTurn={true} />
+                <div className="space-y-3">
+                  {/* 3D Dice */}
+                  <div className="flex flex-col items-center gap-2">
+                    <button
+                      onClick={() => {
+                        setDiceRolling(true);
+                        const result = Math.floor(Math.random() * 6) + 1;
+                        setDiceValue(result);
+                        setTimeout(() => {
+                          setDiceRolling(false);
+                          handleDiceRoll(result);
+                        }, 1200);
+                      }}
+                      className="focus:outline-none active:scale-95 transition-transform"
+                      disabled={diceRolling}
+                    >
+                      <Dice3D value={diceValue} rolling={diceRolling} size={90} color="gold" />
+                    </button>
+                    <p className="text-base font-display font-bold text-foreground tracking-wide"
+                      style={{ textShadow: '0 0 10px hsl(40 60% 55% / 0.3)' }}
+                    >
+                      {diceRolling ? 'Rolando...' : 'Toque no dado para jogar!'}
+                    </p>
+                  </div>
                   <div className="flex items-center gap-2">
                     <div className="flex-1 h-px bg-border/30" />
-                    <span className="text-[8px] uppercase tracking-[0.2em] text-muted-foreground/50">dado físico</span>
+                    <span className="text-xs uppercase tracking-[0.15em] text-muted-foreground font-display">dado físico</span>
                     <div className="flex-1 h-px bg-border/30" />
                   </div>
-                  <div className="flex justify-center gap-1.5">
+                  <div className="flex justify-center gap-2">
                     {[1, 2, 3, 4, 5, 6].map(n => (
                       <button
                         key={n}
                         onClick={() => handleDiceRoll(n)}
-                        className="w-10 h-10 rounded-xl bg-card border border-border text-foreground font-bold text-base hover:border-primary/40 hover:bg-primary/5 active:scale-95 transition-all"
+                        className="w-12 h-12 rounded-xl bg-card border-2 border-border text-foreground font-bold text-lg hover:border-primary/40 hover:bg-primary/5 active:scale-95 transition-all font-display"
+                        style={{ boxShadow: '0 3px 8px rgba(0,0,0,0.3)' }}
                       >
                         {n}
                       </button>
