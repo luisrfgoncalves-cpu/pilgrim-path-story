@@ -813,7 +813,7 @@ const LandingPage = () => {
           </h1>
 
           <p
-            className="text-sm md:text-lg text-foreground/90 leading-relaxed max-w-lg mx-auto font-body"
+            className="text-base md:text-lg text-foreground/90 leading-relaxed max-w-lg mx-auto font-body"
             style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}
           >
             A obra-prima de <strong>John Bunyan</strong> transformada em uma experiência interativa
