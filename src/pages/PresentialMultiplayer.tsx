@@ -733,7 +733,7 @@ const PresentialMultiplayer = () => {
                     <p className="text-base font-display font-bold text-foreground tracking-wide"
                       style={{ textShadow: '0 0 10px hsl(40 60% 55% / 0.3)' }}
                     >
-                      {diceRolling ? 'Rolando...' : 'Toque no dado para jogar!'}
+                      {diceRolling ? 'Rolando...' : isTokenMoving ? '🚶 Movendo...' : 'Toque no dado para jogar!'}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
