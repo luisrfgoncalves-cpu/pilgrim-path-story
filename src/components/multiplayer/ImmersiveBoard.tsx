@@ -167,9 +167,8 @@ function PhaseSection({
           const isBoss = tileType === 'giant' || tileType === 'challenge';
           const tileSize = isBoss ? 76 : isSpecial ? 68 : 56;
 
-          // Character images only for boss tiles AND only when phase is fully rendered
-          const showCharImg = isBoss && isFullRender && config.characterKey;
-          const tileCharImg = showCharImg ? characterImages[config.characterKey!] : null;
+          // Character images on ALL special tiles (like before)
+          const tileCharImg = isSpecial && config.characterKey ? characterImages[config.characterKey!] : null;
 
           const iconOnRight = localIdx % 2 === 0;
 
@@ -196,24 +195,22 @@ function PhaseSection({
                     width: tileSize,
                     height: tileSize,
                     borderRadius: isBoss ? 18 : isSpecial ? 16 : 12,
-                    background: tileCharImg ? 'none' : `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))`,
+                    // Use CSS background-image instead of <img> for better perf
+                    backgroundImage: tileCharImg ? `url(${tileCharImg})` : undefined,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundColor: !tileCharImg ? undefined : 'hsl(0 0% 12%)',
+                    background: !tileCharImg ? `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))` : undefined,
                     boxShadow: `0 0 ${playersHere.length > 0 ? '30' : '14'}px ${config.glowColor},
                       0 4px 12px rgba(0,0,0,0.5)`,
                     border: `2.5px solid ${config.color}`,
                   }}
                 >
-                  {/* Character image for boss tiles */}
+                  {/* Dark gradient overlay for tiles with images */}
                   {tileCharImg && (
-                    <>
-                      <img src={tileCharImg} alt={config.label}
-                        className="absolute inset-0 w-full h-full object-cover"
-                        loading="lazy"
-                        style={{ filter: 'saturate(1.3) contrast(1.2)' }}
-                      />
-                      <div className="absolute inset-0" style={{
-                        background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.45) 100%)',
-                      }} />
-                    </>
+                    <div className="absolute inset-0 rounded-[inherit]" style={{
+                      background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%)',
+                    }} />
                   )}
 
                   {/* Number badge */}
@@ -223,11 +220,11 @@ function PhaseSection({
                     {globalIdx + 1}
                   </span>
 
-                  {/* Center content */}
+                  {/* Center emoji/icon */}
                   {!isSpecial && <span className="text-lg opacity-50">·</span>}
                   {isBoss && <span className="relative z-10 text-2xl drop-shadow-lg">{tileType === 'giant' ? '💀' : '⚔️'}</span>}
-                  {isSpecial && !isBoss && !tileCharImg && (
-                    <span className="text-xl">{config.emoji}</span>
+                  {isSpecial && !isBoss && (
+                    <span className="relative z-10 text-xl drop-shadow-lg">{config.emoji}</span>
                   )}
                 </div>
 
