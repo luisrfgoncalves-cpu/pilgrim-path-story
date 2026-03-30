@@ -793,6 +793,12 @@ const LandingPage = () => {
             </span>
           </div>
 
+          <img
+            src={logoImg}
+            alt="O Peregrino"
+            className="w-64 md:w-80 mx-auto drop-shadow-[0_0_30px_hsl(40_70%_50%/0.4)]"
+          />
+
           <h1
             className="font-display text-4xl md:text-6xl text-foreground leading-[1.1] font-bold"
             style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 0 40px hsl(40 70% 50% / 0.3)' }}
@@ -809,9 +815,6 @@ const LandingPage = () => {
             que vai <em>desafiar sua fé, provocar suas emoções</em> e mudar sua perspectiva para sempre.
           </p>
 
-          <p className="text-sm text-primary font-display tracking-wide" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
-            ⚔️ Mais de 30 capítulos · 9 tipos de desafios · Múltiplos finais
-          </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
             <CtaButton onClick={handleBuy} variant="primary">
