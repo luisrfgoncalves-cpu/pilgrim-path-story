@@ -228,6 +228,7 @@ const ICON_MAP: Record<TileType, (p: IconProps) => JSX.Element> = {
   double_dice: DoubleDiceIcon,
   current: CurrentIcon,
   checkpoint: CheckpointIcon,
+  back_to_start: TrapIcon, // reuse trap icon with skull
   normal: NormalIcon,
 };
 
