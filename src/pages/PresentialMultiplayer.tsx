@@ -904,9 +904,12 @@ const PresentialMultiplayer = () => {
               )}
             </div>
           </div>
-          <span className="text-[10px] text-primary font-display bg-card px-2 py-1 rounded-md border border-primary/20">
-            🎲 Presencial
-          </span>
+          <button
+            onClick={() => setShowStats(true)}
+            className="text-[10px] text-primary font-display font-bold bg-card px-3 py-1.5 rounded-lg border border-primary/30 hover:bg-primary/10 active:scale-95 transition-all"
+          >
+            Placar
+          </button>
         </div>
       </header>
 
