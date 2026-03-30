@@ -539,29 +539,52 @@ const PresentialMultiplayer = () => {
 
         {/* Dice section — fixed at bottom */}
         {phase === 'playing' && !currentPlayer?.finished && (
-          <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background via-background/95 to-transparent pt-8 pb-4 px-4">
+          <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background via-background/95 to-transparent pt-10 pb-5 px-4">
             <div className="max-w-lg mx-auto">
               {currentPlayer?.isStunned ? (
-                <div className="text-center p-3 rounded-xl bg-destructive/10 border border-destructive/20">
-                  <p className="text-sm text-destructive font-display">😵 {currentPlayer.name} está paralisado!</p>
-                  <button onClick={() => handleDiceRoll(0)} className="mt-2 px-4 py-2 rounded-lg bg-card border border-border text-xs text-foreground">
+                <div className="text-center p-4 rounded-xl bg-destructive/10 border border-destructive/20">
+                  <p className="text-lg text-destructive font-display font-bold">😵 {currentPlayer.name} está paralisado!</p>
+                  <button onClick={() => handleDiceRoll(0)} className="mt-3 px-5 py-3 rounded-lg bg-card border border-border text-sm text-foreground font-display">
                     Passar a vez
                   </button>
                 </div>
               ) : (
-                <div className="space-y-2">
-                  <PremiumDice onRoll={handleDiceRoll} disabled={false} isMyTurn={true} />
+                <div className="space-y-3">
+                  {/* 3D Dice */}
+                  <div className="flex flex-col items-center gap-2">
+                    <button
+                      onClick={() => {
+                        setDiceRolling(true);
+                        const result = Math.floor(Math.random() * 6) + 1;
+                        setDiceValue(result);
+                        setTimeout(() => {
+                          setDiceRolling(false);
+                          handleDiceRoll(result);
+                        }, 1200);
+                      }}
+                      className="focus:outline-none active:scale-95 transition-transform"
+                      disabled={diceRolling}
+                    >
+                      <Dice3D value={diceValue} rolling={diceRolling} size={90} color="gold" />
+                    </button>
+                    <p className="text-base font-display font-bold text-foreground tracking-wide"
+                      style={{ textShadow: '0 0 10px hsl(40 60% 55% / 0.3)' }}
+                    >
+                      {diceRolling ? 'Rolando...' : 'Toque no dado para jogar!'}
+                    </p>
+                  </div>
                   <div className="flex items-center gap-2">
                     <div className="flex-1 h-px bg-border/30" />
-                    <span className="text-[8px] uppercase tracking-[0.2em] text-muted-foreground/50">dado físico</span>
+                    <span className="text-xs uppercase tracking-[0.15em] text-muted-foreground font-display">dado físico</span>
                     <div className="flex-1 h-px bg-border/30" />
                   </div>
-                  <div className="flex justify-center gap-1.5">
+                  <div className="flex justify-center gap-2">
                     {[1, 2, 3, 4, 5, 6].map(n => (
                       <button
                         key={n}
                         onClick={() => handleDiceRoll(n)}
-                        className="w-10 h-10 rounded-xl bg-card border border-border text-foreground font-bold text-base hover:border-primary/40 hover:bg-primary/5 active:scale-95 transition-all"
+                        className="w-12 h-12 rounded-xl bg-card border-2 border-border text-foreground font-bold text-lg hover:border-primary/40 hover:bg-primary/5 active:scale-95 transition-all font-display"
+                        style={{ boxShadow: '0 3px 8px rgba(0,0,0,0.3)' }}
                       >
                         {n}
                       </button>
