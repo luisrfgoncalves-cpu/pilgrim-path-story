@@ -976,7 +976,7 @@ const ScenePage = () => {
                       key={`timed-${timedRetryCount}`}
                       timeLimit={chapter.timeLimit || 15}
                       onTimeout={() => {
-                        playGameSfx('penalty');
+                        playGameSfx('defeat');
                         toast.error('⏳ O tempo acabou! Tente novamente — leia o texto e escolha rápido.');
                         setTimedRetryCount(prev => prev + 1);
                       }}
