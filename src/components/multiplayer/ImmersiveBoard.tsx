@@ -5,23 +5,7 @@ import {
 } from './ImmersiveBoardTypes';
 import { MedievalTileIcon } from './MedievalTileIcons';
 import { characterImages } from '@/data/characterImages';
-import trailStoneImg from '@/assets/board/trail-stone.jpg';
-import trailDirtImg from '@/assets/board/trail-dirt.jpg';
-import trailSwampImg from '@/assets/board/trail-swamp.jpg';
-import trailDarkValleyImg from '@/assets/board/trail-dark-valley.jpg';
-import trailFairImg from '@/assets/board/trail-fair.jpg';
-import trailCastleImg from '@/assets/board/trail-castle.jpg';
-import trailCelestialImg from '@/assets/board/trail-celestial.jpg';
-
-// Phase-specific trail images mapped by phase index
-const PHASE_TRAILS: Record<number, [string, string]> = {
-  0: [trailStoneImg, trailDirtImg],         // Cidade da Destruição - pedras e terra
-  1: [trailSwampImg, trailDirtImg],          // Pântano - lama e terra
-  2: [trailDarkValleyImg, trailStoneImg],    // Vale da Sombra - rocha escura e pedras
-  3: [trailFairImg, trailStoneImg],          // Feira da Vaidade - ruas de paralelepípedo
-  4: [trailCastleImg, trailStoneImg],        // Castelo da Dúvida - corredores de pedra
-  5: [trailCelestialImg, trailStoneImg],     // Cidade Celestial - caminho dourado
-};
+import ContinuousTrail from './ContinuousTrail';
 
 interface Player {
   id: string;
