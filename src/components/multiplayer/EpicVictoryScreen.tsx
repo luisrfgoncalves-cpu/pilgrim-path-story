@@ -101,6 +101,7 @@ export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: Epic
   const [narrativeIdx, setNarrativeIdx] = useState(0);
   const [showFireworks, setShowFireworks] = useState(false);
   const hasPlayed = useRef(false);
+  const capability = useDeviceCapability();
 
   const sorted = [...players]
     .filter(p => p.finishOrder !== null)
