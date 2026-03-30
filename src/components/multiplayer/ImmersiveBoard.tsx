@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import {
   IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, PHASES, TILE_TYPES,
   TileType, getTrailPositions, PhaseConfig,
@@ -27,28 +27,43 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
   const trailPositions = useMemo(() => getTrailPositions(), []);
 
   const currentPlayer = players.find(p => p.id === currentTurnId);
+  const activePhase = currentPlayer ? Math.floor(currentPlayer.position / TILES_PER_PHASE) : 0;
+
+  // Only render current phase ±1 for performance (virtualization)
+  const visiblePhases = useMemo(() => {
+    const set = new Set<number>();
+    set.add(Math.max(0, activePhase - 1));
+    set.add(activePhase);
+    set.add(Math.min(PHASES.length - 1, activePhase + 1));
+    return set;
+  }, [activePhase]);
+
   useEffect(() => {
     if (!currentPlayer || !boardRef.current) return;
-    const phaseIdx = Math.floor(currentPlayer.position / TILES_PER_PHASE);
-    const phaseEl = boardRef.current.querySelector(`[data-phase="${phaseIdx}"]`);
+    const phaseEl = boardRef.current.querySelector(`[data-phase="${activePhase}"]`);
     if (phaseEl) {
       phaseEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, [currentPlayer?.position]);
+  }, [currentPlayer?.position, activePhase]);
 
   return (
     <div ref={boardRef} className="w-full">
       {PHASES.map((phase, phaseIdx) => (
-        <PhaseSection
-          key={phaseIdx}
-          phase={phase}
-          phaseIdx={phaseIdx}
-          tileTypes={tileTypes}
-          trailPositions={trailPositions}
-          players={players}
-          currentTurnId={currentTurnId}
-          onTileClick={onTileClick}
-        />
+        visiblePhases.has(phaseIdx) ? (
+          <PhaseSection
+            key={phaseIdx}
+            phase={phase}
+            phaseIdx={phaseIdx}
+            tileTypes={tileTypes}
+            trailPositions={trailPositions}
+            players={players}
+            currentTurnId={currentTurnId}
+            onTileClick={onTileClick}
+          />
+        ) : (
+          // Placeholder for non-visible phases to maintain scroll height
+          <div key={phaseIdx} data-phase={phaseIdx} style={{ minHeight: '200svh' }} />
+        )
       ))}
     </div>
   );
@@ -72,9 +87,9 @@ function PhaseSection({
     <div
       data-phase={phaseIdx}
       className="relative w-full overflow-hidden"
-      style={{ minHeight: '200svh' }} // 2 phone screens per phase
+      style={{ minHeight: '200svh' }}
     >
-      {/* Background - BRIGHT and vivid */}
+      {/* Background */}
       <div className="absolute inset-0">
         <img
           src={phase.bgImage}
@@ -83,7 +98,6 @@ function PhaseSection({
           loading={phaseIdx === 0 ? 'eager' : 'lazy'}
           style={{ filter: 'brightness(0.85) saturate(1.7) contrast(1.1)' }}
         />
-        {/* Light overlay - minimal darkening */}
         <div className="absolute inset-0" style={{
           background: `linear-gradient(to bottom, hsla(${phase.accentHue} 25% 8% / 0.3) 0%, hsla(${phase.accentHue} 15% 5% / 0.15) 50%, hsla(${phase.accentHue} 25% 8% / 0.35) 100%)`,
         }} />
@@ -106,7 +120,7 @@ function PhaseSection({
         </div>
       </div>
 
-      {/* Character portrait */}
+      {/* Character portrait - single per phase */}
       {charImg && (
         <div className="absolute right-0 top-[15%] w-44 h-56 opacity-40 pointer-events-none z-0"
           style={{
@@ -150,81 +164,116 @@ function PhaseSection({
           const playersHere = players.filter(p => p.position === globalIdx && !p.finished);
           const isCurrentPlayerHere = playersHere.some(p => p.id === currentTurnId);
 
-          // Get character image for this tile
-          const tileCharKey = config.characterKey;
-          const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
           const isSpecial = tileType !== 'normal';
           const isBoss = tileType === 'giant' || tileType === 'challenge';
           const tileSize = isBoss ? 76 : isSpecial ? 68 : 56;
 
+          // Only load character images for boss/important tiles (not every tile)
+          const tileCharKey = isBoss ? config.characterKey : undefined;
+          const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
+
+          // Alternate icon position: even tiles = right, odd tiles = left
+          const iconOnRight = localIdx % 2 === 0;
+
           return (
             <div
               key={globalIdx}
-              className="absolute z-[3] transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300"
+              className="absolute z-[3] transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
               style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
               onClick={() => onTileClick?.(globalIdx, tileType)}
             >
-              {/* Tile body with character image background */}
-              <div
-                className={`relative flex items-center justify-center overflow-hidden
-                  ${playersHere.length > 0 ? 'scale-125 ring-2 ring-white/50' : ''}
-                  ${isCurrentPlayerHere ? 'animate-pulse' : ''}
-                  transition-all duration-300 hover:scale-110
-                `}
-                style={{
-                  width: tileSize,
-                  height: tileSize,
-                  borderRadius: isBoss ? 18 : isSpecial ? 16 : 12,
-                  background: tileCharImg ? 'none' : `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))`,
-                  boxShadow: `0 0 ${playersHere.length > 0 ? '35' : '18'}px ${config.glowColor},
-                    inset 0 2px 3px rgba(255,255,255,0.15),
-                    0 4px 14px rgba(0,0,0,0.5)`,
-                  border: `2.5px solid ${config.color}`,
-                }}
-              >
-                {/* Character image filling the tile */}
-                {tileCharImg && isSpecial && (
-                  <>
-                    <img
-                      src={tileCharImg}
-                      alt={config.label}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      style={{ filter: isBoss ? 'saturate(1.4) contrast(1.2)' : 'saturate(1.2) brightness(0.9)' }}
+              {/* Container for tile + external icon */}
+              <div className="relative flex items-center gap-1">
+                {/* Icon OUTSIDE tile - left side */}
+                {isSpecial && !iconOnRight && (
+                  <div
+                    className="flex-shrink-0 flex items-center justify-center rounded-lg z-10"
+                    style={{
+                      width: isBoss ? 32 : 26,
+                      height: isBoss ? 32 : 26,
+                      background: `radial-gradient(circle, ${config.color}, hsl(0 0% 8%))`,
+                      border: `1.5px solid ${config.color}60`,
+                      boxShadow: `0 0 10px ${config.glowColor}`,
+                    }}
+                  >
+                    <MedievalTileIcon
+                      tileType={tileType}
+                      size={isBoss ? 22 : 18}
+                      color="#fff"
+                      glowColor={config.glowColor}
                     />
-                    {/* Dark overlay for readability */}
-                    <div className="absolute inset-0" style={{
-                      background: `linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.5) 100%)`,
-                    }} />
-                    {/* Color tint */}
-                    <div className="absolute inset-0" style={{
-                      background: `${config.color}`,
-                      opacity: 0.15,
-                      mixBlendMode: 'overlay',
-                    }} />
-                  </>
+                  </div>
                 )}
 
-                {/* Tile number badge */}
-                <span className="absolute -top-1.5 -left-1.5 text-[8px] font-mono font-bold rounded-full w-5 h-5 flex items-center justify-center z-10"
-                  style={{ background: 'rgba(0,0,0,0.9)', color: config.color, border: `1.5px solid ${config.color}50` }}
+                {/* Tile body */}
+                <div
+                  className={`relative flex items-center justify-center overflow-hidden flex-shrink-0
+                    ${playersHere.length > 0 ? 'scale-110 ring-2 ring-white/50' : ''}
+                    ${isCurrentPlayerHere ? 'animate-pulse' : ''}
+                  `}
+                  style={{
+                    width: tileSize,
+                    height: tileSize,
+                    borderRadius: isBoss ? 18 : isSpecial ? 16 : 12,
+                    background: tileCharImg ? 'none' : `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))`,
+                    boxShadow: `0 0 ${playersHere.length > 0 ? '30' : '14'}px ${config.glowColor},
+                      inset 0 2px 3px rgba(255,255,255,0.15),
+                      0 4px 12px rgba(0,0,0,0.5)`,
+                    border: `2.5px solid ${config.color}`,
+                  }}
                 >
-                  {globalIdx + 1}
-                </span>
+                  {/* Character image ONLY for boss tiles */}
+                  {tileCharImg && (
+                    <>
+                      <img
+                        src={tileCharImg}
+                        alt={config.label}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        loading="lazy"
+                        style={{ filter: 'saturate(1.3) contrast(1.2)' }}
+                      />
+                      <div className="absolute inset-0" style={{
+                        background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.45) 100%)',
+                      }} />
+                    </>
+                  )}
 
-                {/* Medieval icon - overlaid on character image */}
-                <div className="relative z-10">
-                  <MedievalTileIcon
-                    tileType={tileType}
-                    size={isBoss ? 34 : isSpecial ? 28 : 22}
-                    color={tileCharImg && isSpecial ? '#fff' : config.color}
-                    glowColor={config.glowColor}
-                  />
+                  {/* Tile number badge */}
+                  <span className="absolute -top-1.5 -left-1.5 text-[8px] font-mono font-bold rounded-full w-5 h-5 flex items-center justify-center z-10"
+                    style={{ background: 'rgba(0,0,0,0.9)', color: config.color, border: `1.5px solid ${config.color}50` }}
+                  >
+                    {globalIdx + 1}
+                  </span>
+
+                  {/* Emoji for non-special or boss tiles (centered fallback) */}
+                  {!isSpecial && (
+                    <span className="text-lg opacity-50">·</span>
+                  )}
+                  {isBoss && (
+                    <span className="relative z-10 text-2xl drop-shadow-lg">
+                      {tileType === 'giant' ? '💀' : '⚔️'}
+                    </span>
+                  )}
                 </div>
 
-                {/* Boss indicator */}
-                {isBoss && (
-                  <div className="absolute top-0.5 right-0.5 text-xs z-10 animate-bounce">
-                    {tileType === 'giant' ? '💀' : '⚔️'}
+                {/* Icon OUTSIDE tile - right side */}
+                {isSpecial && iconOnRight && (
+                  <div
+                    className="flex-shrink-0 flex items-center justify-center rounded-lg z-10"
+                    style={{
+                      width: isBoss ? 32 : 26,
+                      height: isBoss ? 32 : 26,
+                      background: `radial-gradient(circle, ${config.color}, hsl(0 0% 8%))`,
+                      border: `1.5px solid ${config.color}60`,
+                      boxShadow: `0 0 10px ${config.glowColor}`,
+                    }}
+                  >
+                    <MedievalTileIcon
+                      tileType={tileType}
+                      size={isBoss ? 22 : 18}
+                      color="#fff"
+                      glowColor={config.glowColor}
+                    />
                   </div>
                 )}
               </div>
