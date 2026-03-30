@@ -304,6 +304,15 @@ const PresentialMultiplayer = () => {
   const [isTokenMoving, setIsTokenMoving] = useState(false);
   const [showStats, setShowStats] = useState(false);
 
+  // Deferred move after mini-game popup closes
+  const pendingMoveAfterPopup = useRef<{
+    playerIdx: number;
+    targetPos: number;
+    attrs: Record<string, number>;
+    shield?: boolean;
+    stats: Partial<PlayerStats>;
+  } | null>(null);
+
   // New state for phase transitions and River of Death
   const [showPhaseTransition, setShowPhaseTransition] = useState<number | null>(null);
   const [showRiverOfDeath, setShowRiverOfDeath] = useState<{ playerIdx: number; prevPos: number; newPos: number } | null>(null);
@@ -471,30 +480,71 @@ const PresentialMultiplayer = () => {
         setTimeout(() => setCollectiveMsg(null), 4000);
       }
 
-      // Apply final position + attributes + show popup
-      setPlayers(prev => prev.map((p, i) => {
-        if (i !== turnIdx) return p;
-        const newAttrs = { ...p.attributes };
-        for (const [key, val] of Object.entries(effect.attrChanges)) {
-          (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
-        }
-        return {
-          ...p,
-          position: finalPos,
-          finished: isFinished,
-          finishOrder: isFinished ? newFinishCount : null,
-          isStunned: effect.stun,
-          stunTurns: effect.stunTurns,
-          hasShield: effect.shield ? true : (tileType === 'trap' || tileType === 'giant' ? false : p.hasShield),
-          checkpoint: tileType === 'checkpoint' ? finalPos : p.checkpoint,
-          extraTurn: effect.extraTurn,
-          attributes: newAttrs,
-          stats: {
-            ...p.stats,
-            phasesCompleted: Math.floor(finalPos / TILES_PER_PHASE),
-          },
+      // If position changes (posAdjust, reset, etc.), defer move until popup closes
+      if (finalPos !== newPos) {
+        // Apply attrs and state at CURRENT position, defer movement
+        setPlayers(prev => prev.map((p, i) => {
+          if (i !== turnIdx) return p;
+          const newAttrs = { ...p.attributes };
+          for (const [key, val] of Object.entries(effect.attrChanges)) {
+            (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+          }
+          return {
+            ...p,
+            // Keep position at newPos — will move after popup
+            isStunned: effect.stun,
+            stunTurns: effect.stunTurns,
+            hasShield: effect.shield ? true : (tileType === 'trap' || tileType === 'giant' ? false : p.hasShield),
+            checkpoint: tileType === 'checkpoint' ? newPos : p.checkpoint,
+            extraTurn: effect.extraTurn,
+            attributes: newAttrs,
+            stats: {
+              ...p.stats,
+              phasesCompleted: Math.floor(finalPos / TILES_PER_PHASE),
+            },
+          };
+        }));
+
+        // Store pending move
+        pendingMoveAfterPopup.current = {
+          playerIdx: turnIdx,
+          targetPos: finalPos,
+          attrs: {},
+          stats: {},
         };
-      }));
+        // Also handle finish after move
+        if (isFinished) {
+          setPlayers(prev => prev.map((p, i) => {
+            if (i !== turnIdx) return p;
+            return { ...p, finished: true, finishOrder: newFinishCount };
+          }));
+        }
+      } else {
+        // No position change — apply everything now
+        setPlayers(prev => prev.map((p, i) => {
+          if (i !== turnIdx) return p;
+          const newAttrs = { ...p.attributes };
+          for (const [key, val] of Object.entries(effect.attrChanges)) {
+            (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+          }
+          return {
+            ...p,
+            position: finalPos,
+            finished: isFinished,
+            finishOrder: isFinished ? newFinishCount : null,
+            isStunned: effect.stun,
+            stunTurns: effect.stunTurns,
+            hasShield: effect.shield ? true : (tileType === 'trap' || tileType === 'giant' ? false : p.hasShield),
+            checkpoint: tileType === 'checkpoint' ? finalPos : p.checkpoint,
+            extraTurn: effect.extraTurn,
+            attributes: newAttrs,
+            stats: {
+              ...p.stats,
+              phasesCompleted: Math.floor(finalPos / TILES_PER_PHASE),
+            },
+          };
+        }));
+      }
 
       // Show tile message for ALL tiles (every tile opens a popup)
       setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
@@ -608,40 +658,30 @@ const PresentialMultiplayer = () => {
       updatePlayerStats(playerIdx, won ? { scripturesCorrect: 1 } : { scripturesWrong: 1 });
     }
 
-    setPlayers(prev => prev.map((p, i) => {
-      if (i !== playerIdx) return p;
-      if (won) {
-        const refugePos = Math.min(newPosition + 1, IMMERSIVE_BOARD_SIZE - 1);
-        return {
-          ...p,
-          position: refugePos,
-          attributes: {
-            ...p.attributes,
-            coragem: p.attributes.coragem + 2,
-            fe: p.attributes.fe + 1,
-          },
-          stats: {
-            ...p.stats,
-            currentStreak: p.stats.currentStreak + 1,
-            maxStreak: Math.max(p.stats.maxStreak, p.stats.currentStreak + 1),
-          },
-        };
-      } else {
-        return {
-          ...p,
-          position: prevPosition,
-          attributes: {
-            ...p.attributes,
-            coragem: Math.max(0, p.attributes.coragem - 1),
-          },
-          stats: { ...p.stats, currentStreak: 0 },
-        };
-      }
-    }));
+    // DON'T move the token yet — defer until popup closes
+    if (won) {
+      const refugePos = Math.min(newPosition + 1, IMMERSIVE_BOARD_SIZE - 1);
+      pendingMoveAfterPopup.current = {
+        playerIdx,
+        targetPos: refugePos,
+        attrs: { coragem: 2, fe: 1 },
+        stats: {
+          currentStreak: (player.stats.currentStreak || 0) + 1,
+          maxStreak: Math.max(player.stats.maxStreak, (player.stats.currentStreak || 0) + 1),
+        },
+      };
+    } else {
+      pendingMoveAfterPopup.current = {
+        playerIdx,
+        targetPos: prevPosition,
+        attrs: { coragem: -1 },
+        stats: { currentStreak: 0 },
+      };
+    }
 
     setMiniGame(null);
 
-    // Context-appropriate messages — never say "venceu a Escritura" (anti-biblical)
+    // Context-appropriate messages
     const winMessages: Record<string, string> = {
       scripture: `📖 ${player.name} respondeu corretamente a Escritura! A Palavra ilumina o caminho!`,
       giant: `⚔️ ${player.name} derrotou o ${TILE_TYPES[tileType].label}! Avança para o Refúgio!`,
@@ -678,6 +718,98 @@ const PresentialMultiplayer = () => {
   const handleTilePopupDismiss = useCallback(() => {
     const currentMsg = tileMessage;
     setTileMessage(null);
+
+    // If there's a pending move from a mini-game, apply it NOW (after popup closed)
+    const pendingMove = pendingMoveAfterPopup.current;
+    if (pendingMove) {
+      pendingMoveAfterPopup.current = null;
+      const { playerIdx, targetPos, attrs, stats, shield } = pendingMove;
+
+      // Move the token visually
+      setIsTokenMoving(true);
+      setPlayers(prev => prev.map((p, i) => {
+        if (i !== playerIdx) return p;
+        const newAttrs = { ...p.attributes };
+        for (const [key, val] of Object.entries(attrs)) {
+          (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+        }
+        return {
+          ...p,
+          position: targetPos,
+          attributes: newAttrs,
+          hasShield: shield !== undefined ? shield : p.hasShield,
+          stats: { ...p.stats, ...stats },
+        };
+      }));
+
+      // After token arrives, check if the new tile has an event
+      pendingActionRef.current = () => {
+        const newTileType = tileTypes[targetPos] || 'normal';
+
+        // If new tile is a mini-game tile, trigger it
+        if (EXPANDED_MINI_GAME_TILES.includes(newTileType)) {
+          setMiniGame({ tileType: newTileType, playerIdx, prevPosition: targetPos, newPosition: targetPos });
+          return;
+        }
+
+        // If new tile has a non-normal event, show its popup
+        if (newTileType !== 'normal' && newTileType !== 'start') {
+          const phaseIdx = Math.floor(targetPos / TILES_PER_PHASE);
+          const player = players[playerIdx];
+          const effect = resolveTileEffect(newTileType, player, players, Date.now() + targetPos, phaseIdx);
+
+          // Apply secondary tile effects (position adjustments, etc.)
+          let finalPos = targetPos;
+          if (effect.resetToStart) finalPos = 0;
+          else if (effect.resetToCheckpoint) finalPos = player.checkpoint;
+          else finalPos = Math.max(0, Math.min(targetPos + effect.posAdjust, IMMERSIVE_BOARD_SIZE - 1));
+
+          if (finalPos !== targetPos) {
+            // Store another pending move for after THIS popup closes
+            pendingMoveAfterPopup.current = {
+              playerIdx,
+              targetPos: finalPos,
+              attrs: effect.attrChanges,
+              shield: effect.shield ? true : undefined,
+              stats: effect.statUpdate,
+            };
+          } else {
+            // Apply attr changes in place
+            updatePlayerStats(playerIdx, effect.statUpdate);
+            setPlayers(prev => prev.map((p, i) => {
+              if (i !== playerIdx) return p;
+              const newAttrs = { ...p.attributes };
+              for (const [key, val] of Object.entries(effect.attrChanges)) {
+                (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+              }
+              return {
+                ...p,
+                isStunned: effect.stun,
+                stunTurns: effect.stunTurns,
+                hasShield: effect.shield ? true : (newTileType === 'trap' || newTileType === 'giant' ? false : p.hasShield),
+                checkpoint: newTileType === 'checkpoint' ? targetPos : p.checkpoint,
+                extraTurn: effect.extraTurn,
+                attributes: newAttrs,
+              };
+            }));
+          }
+
+          setTileMessage({ message: effect.message, emoji: effect.emoji, tileType: newTileType, playerName: players[playerIdx]?.name });
+          return;
+        }
+
+        // Normal tile — just go to next turn
+        const p = players[playerIdx];
+        if (p?.extraTurn) {
+          setTurnAnnounce(`🎲 ${p.name} joga de novo!`);
+        } else {
+          nextTurn();
+        }
+      };
+      return;
+    }
+
+    // No pending move — standard dismiss behavior
     if (currentMsg) {
       const p = players[currentTurn];
       if (p?.extraTurn) {
@@ -686,7 +818,7 @@ const PresentialMultiplayer = () => {
         nextTurn();
       }
     }
-  }, [tileMessage, players, currentTurn, nextTurn]);
+  }, [tileMessage, players, currentTurn, nextTurn, tileTypes]);
 
   const resetGame = () => {
     setPlayers(prev => prev.map((p, i) => createPlayer(i, p.name)));
