@@ -226,11 +226,18 @@ const SocialProofPopup = () => {
 
 const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
   const [showPaywall, setShowPaywall] = useState(false);
+  const [loadIframe, setLoadIframe] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const phoneRef = useRef<HTMLDivElement>(null);
+
+  const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const shouldUseLivePreview = !isMobileDevice;
 
   const allowedPaths = ['/', '/jornada', '/personagens', '/comunidade', '/multiplayer', '/reflexoes', '/progresso', '/cena', '/resultado'];
 
   useEffect(() => {
+    if (!shouldUseLivePreview) return;
+
     const handleMessage = (e: MessageEvent) => {
       if (e.data?.type === 'navigation' && e.data?.path) {
         const path = e.data.path;
@@ -242,11 +249,34 @@ const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, []);
+  }, [shouldUseLivePreview]);
+
+  useEffect(() => {
+    if (!shouldUseLivePreview) return;
+
+    if (!('IntersectionObserver' in window) || !phoneRef.current) {
+      setLoadIframe(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setLoadIframe(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '300px 0px' }
+    );
+
+    observer.observe(phoneRef.current);
+    return () => observer.disconnect();
+  }, [shouldUseLivePreview]);
 
   return (
     <div className="flex flex-col items-center gap-5">
       <div
+        ref={phoneRef}
         className="relative"
         style={{
           width: 280,
@@ -272,30 +302,48 @@ const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
               <div className="absolute right-[18px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full" style={{ background: 'radial-gradient(circle, #1a3a5c, #0a1a2c)' }} />
             </div>
 
-            {(() => {
-              const phoneInnerWidth = 264;
-              const virtualWidth = 375;
-              const scale = phoneInnerWidth / virtualWidth;
-              return (
-                <div className="absolute inset-0 z-10 overflow-hidden" style={{ borderRadius: '2rem' }}>
-                  <iframe
-                    ref={iframeRef}
-                    src="/?preview=landing"
-                    className="border-0"
-                    style={{
-                      width: virtualWidth,
-                      height: `${100 / scale}%`,
-                      transform: `scale(${scale})`,
-                      transformOrigin: 'top left',
-                    }}
-                    title="Preview do App"
-                    sandbox="allow-scripts allow-same-origin"
-                  />
+            {shouldUseLivePreview ? (
+              (() => {
+                const phoneInnerWidth = 264;
+                const virtualWidth = 375;
+                const scale = phoneInnerWidth / virtualWidth;
+                return (
+                  <div className="absolute inset-0 z-10 overflow-hidden" style={{ borderRadius: '2rem' }}>
+                    <iframe
+                      ref={iframeRef}
+                      src={loadIframe ? '/?preview=landing' : 'about:blank'}
+                      className="border-0"
+                      style={{
+                        width: virtualWidth,
+                        height: `${100 / scale}%`,
+                        transform: `scale(${scale})`,
+                        transformOrigin: 'top left',
+                      }}
+                      title="Preview do App"
+                      sandbox="allow-scripts allow-same-origin"
+                      loading="lazy"
+                    />
+                  </div>
+                );
+              })()
+            ) : (
+              <div className="absolute inset-0 z-10 overflow-hidden" style={{ borderRadius: '2rem' }}>
+                <img
+                  src={cidadeDestruicao}
+                  alt="Prévia do aplicativo O Peregrino"
+                  className="w-full h-full object-cover opacity-80"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/60 to-background/85" />
+                <div className="absolute inset-0 flex items-center justify-center px-4 text-center">
+                  <p className="font-display text-[11px] text-foreground/90 leading-relaxed">
+                    Prévia leve no celular para evitar travamentos.
+                  </p>
                 </div>
-              );
-            })()}
+              </div>
+            )}
 
-            {showPaywall && (
+            {showPaywall && shouldUseLivePreview && (
               <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm px-4">
                 <div className="text-center space-y-3">
                   <div className="text-4xl">🔒</div>
@@ -337,7 +385,11 @@ const PhoneMockupTour = ({ onBuy }: { onBuy: () => void }) => {
 
       <div className="text-center space-y-2">
         <p className="font-display text-sm text-foreground font-bold">Explore o app por dentro</p>
-        <p className="text-xs text-muted-foreground">Navegue livremente pelo app — toque, role, explore!</p>
+        <p className="text-xs text-muted-foreground">
+          {shouldUseLivePreview
+            ? 'Navegue livremente pelo app — toque, role, explore!'
+            : 'No celular usamos uma prévia otimizada para máxima estabilidade.'}
+        </p>
       </div>
 
       <CtaButton onClick={onBuy} variant="primary" className="text-sm min-h-[48px] px-6">
