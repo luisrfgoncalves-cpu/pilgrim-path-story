@@ -14,9 +14,8 @@ export const isEmailAllowed = async (email: string): Promise<{ allowed: boolean;
     .maybeSingle();
 
   if (error) {
-    console.error('Erro ao verificar email:', error);
-    // Fallback: permitir (para não bloquear em caso de erro de rede)
-    return { allowed: true };
+    // SECURITY: deny on error — never allow fallback
+    return { allowed: false, reason: 'Erro ao verificar acesso. Tente novamente.' };
   }
 
   if (!data) {
