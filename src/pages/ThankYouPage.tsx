@@ -87,15 +87,15 @@ Suporte: centrobiblicoonline@gmail.com
       />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/60" />
 
-      <div className="relative z-10 w-full max-w-md mx-auto px-5 py-10 space-y-8">
+      <div className="relative z-10 w-full max-w-lg mx-auto px-4 py-8 space-y-8">
 
         {/* ── HEADER ── */}
-        <div className="text-center space-y-5">
-          <img src={logoImg} alt="O Peregrino" className="w-32 h-32 sm:w-36 sm:h-36 mx-auto rounded-2xl shadow-xl" />
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight" style={{ color: 'hsl(40 70% 60%)' }}>
+        <div className="text-center space-y-6">
+          <img src={logoImg} alt="O Peregrino" className="w-44 h-auto sm:w-52 mx-auto drop-shadow-2xl" />
+          <h1 className="text-3xl sm:text-4xl font-bold leading-tight" style={{ color: 'hsl(40 70% 60%)' }}>
             Seu Acesso está Liberado!
           </h1>
-          <img src={pilgrimStanding} alt="Peregrino" className="w-36 h-36 sm:w-40 sm:h-40 mx-auto object-contain drop-shadow-2xl rounded-xl" />
+          <img src={pilgrimStanding} alt="Peregrino" className="w-44 h-44 sm:w-48 sm:h-48 mx-auto object-cover drop-shadow-2xl rounded-2xl" />
           <p className="text-base sm:text-lg italic" style={{ color: 'hsl(38 40% 75%)' }}>
             Sua jornada rumo à Cidade Celestial começa agora.
           </p>
