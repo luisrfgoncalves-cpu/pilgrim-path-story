@@ -785,8 +785,8 @@ const LandingPage = () => {
 
         <div className="relative z-10 max-w-2xl mx-auto space-y-4">
 
-          {/* Logo "O Peregrino" — grande e próximo do topo */}
-          <div className="flex justify-center pt-1">
+          {/* Logo "O Peregrino" — grande, próximo do cronômetro */}
+          <div className="flex justify-center">
             <img
               src={logoImg}
               alt="O Peregrino"
@@ -812,49 +812,52 @@ const LandingPage = () => {
             que vai <em>desafiar sua fé, provocar suas emoções</em> e mudar sua perspectiva para sempre.
           </p>
 
-          {/* Avatar do Peregrino — sem fundo, flutuando sobre a cena */}
-          <div className="flex justify-center py-1">
-            <div className="relative">
-              <img
-                src={pilgrimHero}
-                alt="O Peregrino"
-                className="h-52 md:h-64 object-contain drop-shadow-[0_8px_40px_hsl(40_70%_50%/0.5)]"
-              />
-              {/* Glow aura */}
-              <div
-                className="absolute inset-0 -z-10 blur-3xl bg-primary/20 rounded-full scale-150"
-                style={{ animation: 'screenHeroGlow 3s ease-in-out infinite' }}
-              />
-            </div>
-          </div>
-
-          {/* Copy + CTA */}
-          <p className="text-sm text-primary font-display tracking-wide" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
-            ⚔️ Mais de 30 capítulos · 9 tipos de desafios · Múltiplos finais
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+          {/* CTA */}
+          <div className="flex flex-col gap-3 justify-center items-center pt-2">
             <CtaButton onClick={handleBuy} variant="primary">
               <Crown className="w-5 h-5" />
               Garantir por R$67/ano
             </CtaButton>
-          </div>
 
-          <p className="text-xs text-destructive font-display font-bold animate-pulse">
-            ⚠️ Preço de lançamento! De <span className="line-through">R$197</span> por apenas R$67/ano
-          </p>
+            <p className="text-xs text-destructive font-display font-bold animate-pulse">
+              ⚠️ Preço de lançamento! De <span className="line-through">R$197</span> por apenas R$67/ano
+            </p>
 
-          <div className="flex items-center justify-center gap-4 pt-1 text-xs text-foreground/70 flex-wrap" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
-            <span className="flex items-center gap-1"><Shield className="w-3.5 h-3.5" /> Garantia 7 dias</span>
-            <span>•</span>
-            <span className="flex items-center gap-1"><Smartphone className="w-3.5 h-3.5" /> Instale no celular</span>
-            <span>•</span>
-            <span className="flex items-center gap-1"><Lock className="w-3.5 h-3.5" /> Pagamento seguro</span>
+            <div className="flex items-center justify-center gap-4 text-xs text-foreground/70 flex-wrap" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+              <span className="flex items-center gap-1"><Shield className="w-3.5 h-3.5" /> Garantia 7 dias</span>
+              <span>•</span>
+              <span className="flex items-center gap-1"><Smartphone className="w-3.5 h-3.5" /> Instale no celular</span>
+              <span>•</span>
+              <span className="flex items-center gap-1"><Lock className="w-3.5 h-3.5" /> Pagamento seguro</span>
+            </div>
           </div>
         </div>
 
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce">
           <ChevronDown className="w-6 h-6 text-primary/50" />
+        </div>
+      </section>
+
+      {/* ══════════ PILGRIM HERO IMAGE ══════════ */}
+      <section className="relative px-5 py-12 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-card/40 to-background" />
+        <div className="relative z-10 flex flex-col items-center gap-4 max-w-lg mx-auto">
+          <div className="relative">
+            <img
+              src={pilgrimHero}
+              alt="O Peregrino — protagonista da jornada"
+              className="h-72 md:h-96 object-contain drop-shadow-[0_12px_50px_hsl(40_70%_50%/0.5)]"
+            />
+            {/* Glow aura */}
+            <div
+              className="absolute inset-0 -z-10 blur-3xl bg-primary/20 rounded-full scale-150"
+              style={{ animation: 'screenHeroGlow 3s ease-in-out infinite' }}
+            />
+          </div>
+          <p className="text-sm text-primary font-display tracking-wide text-center" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+            ⚔️ Mais de 30 capítulos · 9 tipos de desafios · Múltiplos finais
+          </p>
+          <MedievalOrnament size="md" />
         </div>
       </section>
 
