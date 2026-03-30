@@ -573,7 +573,7 @@ const PresentialMultiplayer = () => {
         postAnimationAction();
       }
     };
-  }, [players, currentTurn, tileTypes, finishCount, isTokenMoving]);
+  }, [players, currentTurn, tileTypes, finishCount, isTokenMoving, tileMessage, miniGame, showRiverOfDeath, showPhaseTransition]);
 
   // River of Death result
   const handleRiverResult = useCallback((passed: boolean) => {
