@@ -437,13 +437,6 @@ const PhaseSection = memo(function PhaseSection({
         </div>
       )}
 
-      {/* Token glow animation */}
-      <style>{`
-        @keyframes tokenGlow {
-          0% { transform: scale(1); }
-          100% { transform: scale(1.3); }
-        }
-      `}</style>
     </div>
   );
 });
