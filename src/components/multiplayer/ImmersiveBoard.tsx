@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect } from 'react';
+import { useMemo, useRef, useEffect, useState } from 'react';
 import {
   IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, PHASES, TILE_TYPES,
   TileType, getTrailPositions, PhaseConfig,
@@ -21,21 +21,86 @@ interface ImmersiveBoardProps {
   players: Player[];
   currentTurnId?: string;
   onTileClick?: (position: number, tileType: TileType) => void;
+  onTokenArrived?: () => void; // called when animated token reaches destination
 }
 
-export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTileClick }: ImmersiveBoardProps) {
+export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTileClick, onTokenArrived }: ImmersiveBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
   const trailPositions = useMemo(() => getTrailPositions(), []);
+  const prevPositionRef = useRef<Record<string, number>>({});
+  const [animatingPlayerId, setAnimatingPlayerId] = useState<string | null>(null);
+  const [animatedPosition, setAnimatedPosition] = useState<number | null>(null);
+  const animationRef = useRef<number | null>(null);
 
   const currentPlayer = players.find(p => p.id === currentTurnId);
+
+  // Detect position changes and animate step-by-step
   useEffect(() => {
     if (!currentPlayer || !boardRef.current) return;
-    const phaseIdx = Math.floor(currentPlayer.position / TILES_PER_PHASE);
-    const phaseEl = boardRef.current.querySelector(`[data-phase="${phaseIdx}"]`);
-    if (phaseEl) {
-      phaseEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const prevPos = prevPositionRef.current[currentPlayer.id] ?? currentPlayer.position;
+    const newPos = currentPlayer.position;
+
+    // Save current positions for all players
+    players.forEach(p => { prevPositionRef.current[p.id] = p.position; });
+
+    if (prevPos === newPos) return;
+
+    // Animate step by step
+    const steps = [];
+    if (newPos > prevPos) {
+      for (let i = prevPos + 1; i <= newPos; i++) steps.push(i);
+    } else {
+      for (let i = prevPos - 1; i >= newPos; i--) steps.push(i);
     }
-  }, [currentPlayer?.position]);
+
+    if (steps.length === 0) return;
+
+    setAnimatingPlayerId(currentPlayer.id);
+    setAnimatedPosition(prevPos);
+
+    let stepIdx = 0;
+    const STEP_DELAY = 350; // ms per tile — slow enough to see clearly
+
+    const doStep = () => {
+      if (stepIdx >= steps.length) {
+        // Animation complete
+        setAnimatingPlayerId(null);
+        setAnimatedPosition(null);
+        // Notify parent that token has arrived
+        onTokenArrived?.();
+        return;
+      }
+
+      const pos = steps[stepIdx];
+      setAnimatedPosition(pos);
+
+      // Auto-scroll to follow the token
+      const phaseIdx = Math.floor(pos / TILES_PER_PHASE);
+      const localIdx = pos % TILES_PER_PHASE;
+      const tileEl = boardRef.current?.querySelector(`[data-tile-global="${pos}"]`);
+      if (tileEl) {
+        tileEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      stepIdx++;
+      animationRef.current = window.setTimeout(doStep, STEP_DELAY);
+    };
+
+    // Start animation after a brief moment
+    animationRef.current = window.setTimeout(doStep, 200);
+
+    return () => {
+      if (animationRef.current) clearTimeout(animationRef.current);
+    };
+  }, [currentPlayer?.position, currentPlayer?.id]);
+
+  // For rendering: if animating, override the current player's displayed position
+  const getDisplayPosition = (player: Player): number => {
+    if (player.id === animatingPlayerId && animatedPosition !== null) {
+      return animatedPosition;
+    }
+    return player.position;
+  };
 
   return (
     <div ref={boardRef} className="w-full">
@@ -49,6 +114,8 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
           players={players}
           currentTurnId={currentTurnId}
           onTileClick={onTileClick}
+          getDisplayPosition={getDisplayPosition}
+          animatingPlayerId={animatingPlayerId}
         />
       ))}
     </div>
@@ -57,6 +124,7 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
 
 function PhaseSection({
   phase, phaseIdx, tileTypes, trailPositions, players, currentTurnId, onTileClick,
+  getDisplayPosition, animatingPlayerId,
 }: {
   phase: PhaseConfig;
   phaseIdx: number;
@@ -65,6 +133,8 @@ function PhaseSection({
   players: Player[];
   currentTurnId?: string;
   onTileClick?: (position: number, tileType: TileType) => void;
+  getDisplayPosition: (player: Player) => number;
+  animatingPlayerId: string | null;
 }) {
   const startIdx = phaseIdx * TILES_PER_PHASE;
   const charImg = phase.characterKey ? characterImages[phase.characterKey] : null;
@@ -135,8 +205,10 @@ function PhaseSection({
 
           const tileType = tileTypes[globalIdx] || 'normal';
           const config = TILE_TYPES[tileType];
-          const playersHere = players.filter(p => p.position === globalIdx && !p.finished);
+          // Use display position (animated) instead of raw position
+          const playersHere = players.filter(p => getDisplayPosition(p) === globalIdx && !p.finished);
           const isCurrentPlayerHere = playersHere.some(p => p.id === currentTurnId);
+          const isAnimatingHere = playersHere.some(p => p.id === animatingPlayerId);
 
           const tileCharKey = config.characterKey;
           const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
@@ -146,18 +218,23 @@ function PhaseSection({
           const isBoss = tileType === 'giant' || tileType === 'challenge';
           const tileSize = isBoss ? 88 : isSpecial ? 78 : 66;
 
+          // Determine label side: if tile is left of center (x < 50), label goes RIGHT; otherwise LEFT
+          const labelOnRight = pos.x < 50;
+
           return (
             <div
               key={globalIdx}
+              data-tile-global={globalIdx}
               className="absolute z-[3] transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300"
               style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
               onClick={() => onTileClick?.(globalIdx, tileType)}
             >
-              {/* Tile body - enhanced 3D depth */}
+              {/* Tile body */}
               <div
                 className={`relative flex items-center justify-center overflow-hidden
                   ${playersHere.length > 0 ? 'scale-125 ring-2 ring-white/50' : ''}
-                  ${isCurrentPlayerHere ? 'animate-pulse' : ''}
+                  ${isAnimatingHere ? 'ring-4 ring-yellow-400/70' : ''}
+                  ${isCurrentPlayerHere && !isAnimatingHere ? 'animate-pulse' : ''}
                   transition-all duration-300 hover:scale-110
                 `}
                 style={{
@@ -175,7 +252,6 @@ function PhaseSection({
                   border: `2.5px solid ${config.color}`,
                 }}
               >
-                {/* Image filling the tile - now includes normal tiles */}
                 {tileImg && (
                   <img
                     src={tileImg}
@@ -186,7 +262,6 @@ function PhaseSection({
                   />
                 )}
 
-                {/* Tile emoji icon overlay for normal tiles */}
                 {!isSpecial && (
                   <span className="relative z-10 text-lg opacity-60">{config.emoji}</span>
                 )}
@@ -217,24 +292,26 @@ function PhaseSection({
                 </div>
               )}
 
-              {/* Type label - large, prominent, never cut off */}
+              {/* Type label — positioned to LEFT or RIGHT of tile based on trail curve */}
               {isSpecial && (
-                <div className="absolute z-10"
-                  style={{
-                    top: `${tileSize + 6}px`,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                  }}
+                <div className="absolute top-1/2 -translate-y-1/2 z-10"
+                  style={labelOnRight
+                    ? { left: `${tileSize + 10}px` }
+                    : { right: `${tileSize + 10}px` }
+                  }
                 >
-                  <div className="relative flex flex-col items-center">
-                    {/* Arrow pointing up */}
-                    <div style={{
-                      width: 0, height: 0,
-                      borderLeft: '7px solid transparent',
-                      borderRight: '7px solid transparent',
-                      borderBottom: `7px solid rgba(0,0,0,0.9)`,
-                    }} />
-                    <span className="text-sm font-display font-extrabold whitespace-nowrap px-3 py-1.5 rounded-lg"
+                  <div className="relative flex items-center">
+                    {/* Arrow pointing toward the tile */}
+                    {labelOnRight ? (
+                      <div style={{
+                        width: 0, height: 0,
+                        borderTop: '7px solid transparent',
+                        borderBottom: '7px solid transparent',
+                        borderRight: '7px solid rgba(0,0,0,0.9)',
+                        marginRight: -1,
+                      }} />
+                    ) : null}
+                    <span className="font-display font-extrabold whitespace-nowrap px-3 py-1.5 rounded-lg"
                       style={{
                         background: 'rgba(0,0,0,0.9)',
                         color: '#FFFFFF',
@@ -248,6 +325,15 @@ function PhaseSection({
                     >
                       {config.label}
                     </span>
+                    {!labelOnRight ? (
+                      <div style={{
+                        width: 0, height: 0,
+                        borderTop: '7px solid transparent',
+                        borderBottom: '7px solid transparent',
+                        borderLeft: '7px solid rgba(0,0,0,0.9)',
+                        marginLeft: -1,
+                      }} />
+                    ) : null}
                   </div>
                 </div>
               )}
@@ -261,8 +347,10 @@ function PhaseSection({
                       className="w-6 h-6 rounded-full border-2 border-white/60 shadow-lg"
                       style={{
                         backgroundColor: p.color,
-                        boxShadow: `0 0 12px ${p.color}90`,
-                        animation: p.id === currentTurnId ? 'bounce 1s infinite' : undefined,
+                        boxShadow: `0 0 ${p.id === animatingPlayerId ? '20' : '12'}px ${p.color}90`,
+                        animation: p.id === animatingPlayerId
+                          ? 'tokenGlow 0.35s ease-in-out infinite alternate'
+                          : p.id === currentTurnId ? 'bounce 1s infinite' : undefined,
                       }}
                       title={p.name}
                     />
@@ -281,11 +369,9 @@ function PhaseSection({
       {/* Phase transition divider */}
       {phaseIdx < PHASES.length - 1 && (
         <div className="absolute bottom-0 left-0 right-0 z-[5]">
-          {/* Gradient fade */}
           <div className="h-28" style={{
             background: `linear-gradient(to bottom, transparent, hsla(${PHASES[phaseIdx + 1].accentHue} 25% 8% / 0.9))`,
           }} />
-          {/* Decorative medieval divider line */}
           <div className="relative h-8 flex items-center justify-center"
             style={{ background: `hsla(${PHASES[phaseIdx + 1].accentHue} 25% 8% / 0.9)` }}
           >
@@ -304,6 +390,14 @@ function PhaseSection({
           </div>
         </div>
       )}
+
+      {/* Token glow animation */}
+      <style>{`
+        @keyframes tokenGlow {
+          0% { transform: scale(1); }
+          100% { transform: scale(1.3); }
+        }
+      `}</style>
     </div>
   );
 }
