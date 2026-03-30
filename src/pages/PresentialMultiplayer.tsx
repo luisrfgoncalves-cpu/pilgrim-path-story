@@ -1,8 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ImmersiveBoard from '@/components/multiplayer/ImmersiveBoard';
-import PremiumDice from '@/components/multiplayer/PremiumDice';
-import EventReveal from '@/components/multiplayer/EventReveal';
+import { Dice3D } from '@/components/Dice3D';
+import TileEventPopup from '@/components/multiplayer/TileEventPopup';
 import GameNotification from '@/components/GameNotification';
 import { boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
 import {
@@ -192,7 +192,9 @@ const PresentialMultiplayer = () => {
   const [editingNames, setEditingNames] = useState<Record<string, string>>({});
   const [currentTurn, setCurrentTurn] = useState(0);
   const [tileTypes, setTileTypes] = useState<TileType[]>([]);
-  const [tileMessage, setTileMessage] = useState<{ message: string; emoji: string } | null>(null);
+  const [tileMessage, setTileMessage] = useState<{ message: string; emoji: string; tileType: TileType; playerName?: string } | null>(null);
+  const [diceValue, setDiceValue] = useState(1);
+  const [diceRolling, setDiceRolling] = useState(false);
   const [turnAnnounce, setTurnAnnounce] = useState<string | null>(null);
   const [finishCount, setFinishCount] = useState(0);
   const [showDice, setShowDice] = useState(true);
