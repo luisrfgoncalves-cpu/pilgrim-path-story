@@ -79,18 +79,20 @@ export interface PhaseConfig {
   subtitle: string;
   icon: string;
   bgImage: string;
+  bgImage2: string; // second bg to avoid stretching
   accentHue: number;
+  trailStyle: 'stone' | 'dirt' | 'forest' | 'dark' | 'golden' | 'mystic';
   characterKey?: string;
   characterName?: string;
 }
 
 export const PHASES: PhaseConfig[] = [
-  { id: 0, name: 'A Partida',   subtitle: 'Cidade da Destruição',  icon: '🏚️', bgImage: phase1Bg, accentHue: 30,  characterKey: 'evangelista',       characterName: 'Evangelista' },
-  { id: 1, name: 'O Caminho',   subtitle: 'Pântano e Provações',   icon: '🗺️', bgImage: phase2Bg, accentHue: 140, characterKey: 'apolion',           characterName: 'Apolião' },
-  { id: 2, name: 'O Vale',      subtitle: 'Sombra da Morte',       icon: '💀', bgImage: phase3Bg, accentHue: 260, characterKey: 'gigante_desespero', characterName: 'Gigante Desespero' },
-  { id: 3, name: 'A Feira',     subtitle: 'Vaidade e Provação',    icon: '🎪', bgImage: phase4Bg, accentHue: 0,   characterKey: 'falador',           characterName: 'Falador' },
-  { id: 4, name: 'O Castelo',   subtitle: 'Dúvida e Resgate',     icon: '🏰', bgImage: phase5Bg, accentHue: 270, characterKey: 'grande_coracao',    characterName: 'Grande-Coração' },
-  { id: 5, name: 'O Rio',       subtitle: 'Cidade Celestial',     icon: '✨', bgImage: phase6Bg, accentHue: 45,  characterKey: 'esperanca',         characterName: 'Esperança' },
+  { id: 0, name: 'A Partida',   subtitle: 'Cidade da Destruição',  icon: '🏚️', bgImage: phase1Bg, bgImage2: phase1bBg, accentHue: 30,  trailStyle: 'stone',  characterKey: 'evangelista',       characterName: 'Evangelista' },
+  { id: 1, name: 'O Caminho',   subtitle: 'Pântano e Provações',   icon: '🗺️', bgImage: phase2Bg, bgImage2: phase2bBg, accentHue: 140, trailStyle: 'forest', characterKey: 'apolion',           characterName: 'Apolião' },
+  { id: 2, name: 'O Vale',      subtitle: 'Sombra da Morte',       icon: '💀', bgImage: phase3Bg, bgImage2: phase3bBg, accentHue: 260, trailStyle: 'dark',   characterKey: 'gigante_desespero', characterName: 'Gigante Desespero' },
+  { id: 3, name: 'A Feira',     subtitle: 'Vaidade e Provação',    icon: '🎪', bgImage: phase4Bg, bgImage2: phase4bBg, accentHue: 0,   trailStyle: 'stone',  characterKey: 'falador',           characterName: 'Falador' },
+  { id: 4, name: 'O Castelo',   subtitle: 'Dúvida e Resgate',     icon: '🏰', bgImage: phase5Bg, bgImage2: phase5bBg, accentHue: 270, trailStyle: 'mystic', characterKey: 'grande_coracao',    characterName: 'Grande-Coração' },
+  { id: 5, name: 'O Rio',       subtitle: 'Cidade Celestial',     icon: '✨', bgImage: phase6Bg, bgImage2: phase6bBg, accentHue: 45,  trailStyle: 'golden', characterKey: 'esperanca',         characterName: 'Esperança' },
 ];
 
 // ─── Generate immersive board tile types ───
