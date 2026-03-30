@@ -815,7 +815,7 @@ const LandingPage = () => {
             que vai <em>desafiar sua fé, provocar suas emoções</em> e mudar sua perspectiva para sempre.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-1">
             <CtaButton onClick={handleBuy} variant="primary">
               <Crown className="w-5 h-5" />
               Garantir por R$67/ano
