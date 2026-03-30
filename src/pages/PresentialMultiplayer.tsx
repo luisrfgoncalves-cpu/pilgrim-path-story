@@ -4,12 +4,14 @@ import ImmersiveBoard from '@/components/multiplayer/ImmersiveBoard';
 import { Dice3D } from '@/components/Dice3D';
 import TileEventPopup from '@/components/multiplayer/TileEventPopup';
 import BoardMiniGame from '@/components/multiplayer/BoardMiniGame';
+import EpicVictoryScreen from '@/components/multiplayer/EpicVictoryScreen';
 import GameNotification from '@/components/GameNotification';
 import { boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
 import {
   IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, TileType, TILE_TYPES,
   MINI_GAME_TILES, generateImmersiveTiles,
 } from '@/components/multiplayer/ImmersiveBoardTypes';
+import { getPhaseNarrative } from '@/components/multiplayer/PhaseNarratives';
 import { playMove, playVictory, playTurnStart } from '@/components/multiplayer/BoardSounds';
 import { playGameSfx } from '@/lib/gameSfx';
 import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown } from 'lucide-react';
@@ -17,6 +19,22 @@ import ScreenHero from '@/components/ScreenHero';
 
 const COLORS = ['#E8724A', '#4CAF50', '#42A5F5', '#FFD54F', '#AB47BC', '#EF5350', '#26C6DA', '#FF7043'];
 const DEFAULT_NAMES = ['Cristão', 'Fiel', 'Esperança', 'Misericórdia', 'Valente', 'Honesto', 'Prudência', 'Caridade'];
+
+// Power-up types
+type PowerUpType = 'holy_water' | 'angels_wing' | 'prayer_scroll' | 'faith_stone';
+interface PowerUp {
+  type: PowerUpType;
+  label: string;
+  emoji: string;
+  description: string;
+}
+
+const POWER_UPS: Record<PowerUpType, PowerUp> = {
+  holy_water:    { type: 'holy_water',    label: 'Água Sagrada',      emoji: '💧', description: 'Remove stun e cura atributos' },
+  angels_wing:   { type: 'angels_wing',   label: 'Asa de Anjo',       emoji: '🪽', description: 'Avança +3 casas no próximo turno' },
+  prayer_scroll: { type: 'prayer_scroll', label: 'Pergaminho de Oração', emoji: '📜', description: 'Protege contra próxima armadilha' },
+  faith_stone:   { type: 'faith_stone',   label: 'Pedra da Fé',       emoji: '💎', description: 'Dobra bônus do próximo evento positivo' },
+};
 
 interface LocalPlayer {
   id: string;
@@ -32,6 +50,9 @@ interface LocalPlayer {
   hasShield: boolean;
   checkpoint: number;
   extraTurn: boolean;
+  powerUps: PowerUpType[];
+  doubleBonusNext: boolean;
+  bonusMoveNext: number;
 }
 
 function createPlayer(index: number, name?: string): LocalPlayer {
@@ -49,15 +70,22 @@ function createPlayer(index: number, name?: string): LocalPlayer {
     hasShield: false,
     checkpoint: 0,
     extraTurn: false,
+    powerUps: [],
+    doubleBonusNext: false,
+    bonusMoveNext: 0,
   };
 }
 
-// ─── Tile effect resolution ───
+// ─── Expanded MINI_GAME_TILES ───
+const EXPANDED_MINI_GAME_TILES: TileType[] = ['giant', 'challenge', 'scripture', 'surprise', 'blessing'];
+
+// ─── Tile effect resolution with phase narratives ───
 function resolveTileEffect(
   tileType: TileType,
   player: LocalPlayer,
   allPlayers: LocalPlayer[],
   seed: number,
+  phaseIdx: number,
 ): {
   posAdjust: number;
   attrChanges: Record<string, number>;
@@ -69,51 +97,78 @@ function resolveTileEffect(
   resetToStart: boolean;
   message: string;
   emoji: string;
+  powerUpGrant?: PowerUpType;
+  collectiveEffect?: { type: 'blessing_all' | 'curse_all'; message: string };
 } {
   const rng = ((seed * 1103515245 + 12345) & 0x7fffffff) % 100;
-  const result = {
+  const result: ReturnType<typeof resolveTileEffect> = {
     posAdjust: 0, attrChanges: {} as Record<string, number>,
     stun: false, stunTurns: 0, shield: false, extraTurn: false,
     resetToCheckpoint: false, resetToStart: false, message: '', emoji: '',
   };
 
+  // Double bonus from faith_stone
+  const bonusMultiplier = player.doubleBonusNext ? 2 : 1;
+
+  // Get phase-specific narrative
+  const narrative = getPhaseNarrative(phaseIdx, tileType, seed);
+
   switch (tileType) {
     case 'refuge':
-      result.attrChanges = { fe: 1, perseveranca: 1 };
-      result.message = '🏠 Refúgio! Você descansa e recupera forças.';
+      result.attrChanges = { fe: 1 * bonusMultiplier, perseveranca: 1 * bonusMultiplier };
+      result.message = narrative || '🏠 Refúgio! Você descansa e recupera forças.';
       result.emoji = '🏠';
+      // 30% chance to grant a power-up at refuge
+      if (rng < 30) {
+        const pups: PowerUpType[] = ['holy_water', 'angels_wing', 'prayer_scroll', 'faith_stone'];
+        result.powerUpGrant = pups[rng % pups.length];
+      }
       break;
     case 'challenge':
       if (rng >= 40) {
-        result.posAdjust = 3;
+        result.posAdjust = 3 * bonusMultiplier;
         result.attrChanges = { coragem: 2 };
-        result.message = '⚔️ Desafio vencido! Avance 3 casas!';
+        result.message = narrative || '⚔️ Desafio vencido! Avance 3 casas!';
       } else {
         result.posAdjust = -2;
         result.attrChanges = { coragem: -1 };
-        result.message = '⚔️ Desafio perdido! Recue 2 casas.';
+        result.message = narrative || '⚔️ Desafio perdido! Recue 2 casas.';
       }
       result.emoji = '⚔️';
       break;
     case 'surprise':
       if (rng >= 50) {
-        result.posAdjust = 2;
+        result.posAdjust = 2 * bonusMultiplier;
         result.attrChanges = { fe: 1 };
-        result.message = '🎁 Surpresa boa! Avance 2 casas!';
+        result.message = narrative || '🎁 Surpresa boa! Avance 2 casas!';
+        // 20% chance for collective blessing
+        if (rng > 80) {
+          result.collectiveEffect = {
+            type: 'blessing_all',
+            message: '✨ Bênção coletiva! Todos os peregrinos ganham +1 Fé!',
+          };
+        }
       } else {
         result.posAdjust = -1;
-        result.message = '🎁 Surpresa ruim... Recue 1 casa.';
+        result.message = narrative || '🎁 Surpresa ruim... Recue 1 casa.';
+        // 15% chance for collective curse
+        if (rng < 15) {
+          result.collectiveEffect = {
+            type: 'curse_all',
+            message: '⚠️ Maldição coletiva! Todos os peregrinos perdem -1 Perseverança!',
+          };
+        }
       }
       result.emoji = '🎁';
       break;
     case 'scripture':
       if (rng >= 35) {
-        result.posAdjust = 2;
+        result.posAdjust = 2 * bonusMultiplier;
         result.attrChanges = { discernimento: 2, fe: 1 };
-        result.message = '📖 Palavra acertada! Discernimento +2, avance 2!';
+        result.message = narrative || '📖 Palavra acertada! Discernimento +2, avance 2!';
       } else {
         result.attrChanges = { discernimento: -1 };
-        result.message = '📖 Resposta errada... Discernimento -1.';
+        result.message = narrative || '📖 Resposta errada... Discernimento -1.';
       }
       result.emoji = '📖';
       break;
@@ -124,7 +179,7 @@ function resolveTileEffect(
       } else {
         result.posAdjust = -3;
         result.attrChanges = { perseveranca: -1 };
-        result.message = '🔙 Armadilha! Recue 3 casas!';
+        result.message = narrative || '🔙 Armadilha! Recue 3 casas!';
         result.emoji = '🔙';
       }
       break;
@@ -135,29 +190,36 @@ function resolveTileEffect(
       } else if (rng >= 70) {
         result.stun = true;
         result.stunTurns = 1;
-        result.message = '💀 O Gigante te capturou! Perde 1 turno.';
+        result.message = narrative || '💀 O Gigante te capturou! Perde 1 turno.';
         result.emoji = '💀';
       } else {
         result.resetToCheckpoint = true;
         result.attrChanges = { coragem: -2 };
-        result.message = '💀 O Gigante te esmaga! Volta ao checkpoint!';
+        result.message = narrative || '💀 O Gigante te esmaga! Volta ao checkpoint!';
         result.emoji = '💀';
       }
       break;
     case 'shield':
       result.shield = true;
-      result.attrChanges = { coragem: 1 };
-      result.message = '🛡️ Armadura de Deus! Proteção ativada!';
+      result.attrChanges = { coragem: 1 * bonusMultiplier };
+      result.message = narrative || '🛡️ Armadura de Deus! Proteção ativada!';
       result.emoji = '🛡️';
       break;
     case 'blessing':
-      result.posAdjust = 4;
-      result.attrChanges = { fe: 2 };
-      result.message = '⭐ Bênção divina! Avance 4 casas!';
+      result.posAdjust = 4 * bonusMultiplier;
+      result.attrChanges = { fe: 2 * bonusMultiplier };
+      result.message = narrative || '⭐ Bênção divina! Avance 4 casas!';
       result.emoji = '⭐';
+      // 25% chance collective blessing
+      if (rng < 25) {
+        result.collectiveEffect = {
+          type: 'blessing_all',
+          message: '🌟 Bênção irradiante! Todos ganham +1 em todos os atributos!',
+        };
+      }
       break;
     case 'swap':
-      result.message = '🔄 Troca de caminhos! Posições trocadas!';
+      result.message = narrative || '🔄 Troca de caminhos! Posições trocadas!';
       result.emoji = '🔄';
       break;
     case 'double_dice':
@@ -168,10 +230,10 @@ function resolveTileEffect(
     case 'current':
       if (rng >= 50) {
         result.posAdjust = 3;
-        result.message = '🌊 Correnteza favorável! Avance 3!';
+        result.message = narrative || '🌊 Correnteza favorável! Avance 3!';
       } else {
         result.posAdjust = -2;
-        result.message = '🌊 Correnteza adversa! Recue 2!';
+        result.message = narrative || '🌊 Correnteza adversa! Recue 2!';
       }
       result.emoji = '🌊';
       break;
@@ -212,8 +274,11 @@ const PresentialMultiplayer = () => {
   const [diceRolling, setDiceRolling] = useState(false);
   const [turnAnnounce, setTurnAnnounce] = useState<string | null>(null);
   const [finishCount, setFinishCount] = useState(0);
+  const [collectiveMsg, setCollectiveMsg] = useState<string | null>(null);
   // Mini-game state
   const [miniGame, setMiniGame] = useState<{ tileType: TileType; playerIdx: number; prevPosition: number; newPosition: number } | null>(null);
+  // Power-up usage
+  const [showPowerUps, setShowPowerUps] = useState(false);
 
   const addPlayer = () => {
     if (players.length >= 8) return;
@@ -251,6 +316,35 @@ const PresentialMultiplayer = () => {
     setTurnAnnounce(`Vez de ${finalPlayers[0].name}!`);
   };
 
+  // Use power-up
+  const usePowerUp = useCallback((pType: PowerUpType) => {
+    const player = players[currentTurn];
+    if (!player || !player.powerUps.includes(pType)) return;
+
+    setPlayers(prev => prev.map((p, i) => {
+      if (i !== currentTurn) return p;
+      const newPowerUps = [...p.powerUps];
+      const idx = newPowerUps.indexOf(pType);
+      if (idx !== -1) newPowerUps.splice(idx, 1);
+
+      switch (pType) {
+        case 'holy_water':
+          return { ...p, powerUps: newPowerUps, isStunned: false, stunTurns: 0,
+            attributes: { ...p.attributes, fe: p.attributes.fe + 1, perseveranca: p.attributes.perseveranca + 1 } };
+        case 'angels_wing':
+          return { ...p, powerUps: newPowerUps, bonusMoveNext: 3 };
+        case 'prayer_scroll':
+          return { ...p, powerUps: newPowerUps, hasShield: true };
+        case 'faith_stone':
+          return { ...p, powerUps: newPowerUps, doubleBonusNext: true };
+        default:
+          return { ...p, powerUps: newPowerUps };
+      }
+    }));
+    setShowPowerUps(false);
+    setTurnAnnounce(`${POWER_UPS[pType].emoji} ${player.name} usou ${POWER_UPS[pType].label}!`);
+  }, [players, currentTurn]);
+
   const handleDiceRoll = useCallback((value?: number) => {
     const player = players[currentTurn];
     if (!player || player.finished) return;
@@ -266,20 +360,26 @@ const PresentialMultiplayer = () => {
     }
 
     const diceVal = value || (Math.floor(Math.random() * 6) + 1);
-    let newPos = Math.min(player.position + diceVal, IMMERSIVE_BOARD_SIZE - 1);
+    const bonusMove = player.bonusMoveNext || 0;
+    let newPos = Math.min(player.position + diceVal + bonusMove, IMMERSIVE_BOARD_SIZE - 1);
     playMove();
+
+    // Clear bonus move
+    if (bonusMove > 0) {
+      setPlayers(prev => prev.map((p, i) => i === currentTurn ? { ...p, bonusMoveNext: 0 } : p));
+    }
 
     const tileType = tileTypes[newPos] || 'normal';
 
-    // If it's a mini-game tile, launch mini-game instead of resolving immediately
-    if (MINI_GAME_TILES.includes(tileType)) {
+    // If it's a mini-game tile, launch mini-game
+    if (EXPANDED_MINI_GAME_TILES.includes(tileType)) {
       setMiniGame({ tileType, playerIdx: currentTurn, prevPosition: player.position, newPosition: newPos });
-      // Move player to the tile visually
       setPlayers(prev => prev.map((p, i) => i === currentTurn ? { ...p, position: newPos, lastDice: diceVal } : p));
       return;
     }
 
-    const effect = resolveTileEffect(tileType, player, players, Date.now() + newPos);
+    const phaseIdx = Math.floor(newPos / TILES_PER_PHASE);
+    const effect = resolveTileEffect(tileType, player, players, Date.now() + newPos, phaseIdx);
 
     let finalPos = newPos;
     if (effect.resetToStart) {
@@ -294,7 +394,27 @@ const PresentialMultiplayer = () => {
     const newFinishCount = isFinished ? finishCount + 1 : finishCount;
     if (isFinished) {
       setFinishCount(newFinishCount);
-      setTimeout(playVictory, 500);
+    }
+
+    // Handle collective effects
+    if (effect.collectiveEffect) {
+      setCollectiveMsg(effect.collectiveEffect.message);
+      setPlayers(prev => prev.map(p => {
+        if (effect.collectiveEffect!.type === 'blessing_all') {
+          return { ...p, attributes: {
+            fe: p.attributes.fe + 1,
+            perseveranca: p.attributes.perseveranca + 1,
+            discernimento: p.attributes.discernimento + 1,
+            coragem: p.attributes.coragem + 1,
+          }};
+        } else {
+          return { ...p, attributes: {
+            ...p.attributes,
+            perseveranca: Math.max(0, p.attributes.perseveranca - 1),
+          }};
+        }
+      }));
+      setTimeout(() => setCollectiveMsg(null), 4000);
     }
 
     // Update player
@@ -304,6 +424,9 @@ const PresentialMultiplayer = () => {
       for (const [key, val] of Object.entries(effect.attrChanges)) {
         (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
       }
+      const newPowerUps = [...p.powerUps];
+      if (effect.powerUpGrant) newPowerUps.push(effect.powerUpGrant);
+
       return {
         ...p,
         position: finalPos,
@@ -316,6 +439,8 @@ const PresentialMultiplayer = () => {
         checkpoint: tileType === 'checkpoint' ? finalPos : p.checkpoint,
         extraTurn: effect.extraTurn,
         attributes: newAttrs,
+        doubleBonusNext: false, // consumed
+        powerUps: newPowerUps,
       };
     }));
 
@@ -354,7 +479,7 @@ const PresentialMultiplayer = () => {
     setTileMessage({ message: `Casa ${position + 1}: ${config.label} — ${config.description}`, emoji: config.emoji, tileType });
   };
 
-  // Mini-game result: win = advance 1 to refuge, lose = go back to previous position
+  // Mini-game result
   const handleMiniGameResult = useCallback((won: boolean) => {
     if (!miniGame) return;
     const { playerIdx, prevPosition, newPosition, tileType } = miniGame;
@@ -363,7 +488,6 @@ const PresentialMultiplayer = () => {
     setPlayers(prev => prev.map((p, i) => {
       if (i !== playerIdx) return p;
       if (won) {
-        // Win: stay at new position +1 (refuge tile)
         const refugePos = Math.min(newPosition + 1, IMMERSIVE_BOARD_SIZE - 1);
         return {
           ...p,
@@ -375,7 +499,6 @@ const PresentialMultiplayer = () => {
           },
         };
       } else {
-        // Lose: go back to previous position
         return {
           ...p,
           position: prevPosition,
@@ -449,7 +572,7 @@ const PresentialMultiplayer = () => {
               Cada fase ocupa uma tela inteira com cenários e personagens. Role o dado e explore a jornada do Peregrino!
             </p>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              🎮 <strong className="text-foreground">120 casas</strong> em 6 fases: Refúgios, Desafios, Surpresas, Armadilhas, Gigantes, Mini-games e muito mais!
+              🎮 <strong className="text-foreground">120 casas</strong> em 6 fases: Refúgios, Desafios, Surpresas, Armadilhas, Gigantes, Mini-games, Power-ups e muito mais!
             </p>
           </div>
 
@@ -507,11 +630,21 @@ const PresentialMultiplayer = () => {
 
   // ─── GAME & FINISHED ───
   const currentPlayer = players[currentTurn];
-  const finishedPlayers = players.filter(p => p.finished).sort((a, b) => (a.finishOrder || 99) - (b.finishOrder || 99));
   const allFinished = players.every(p => p.finished);
 
   if (allFinished && phase !== 'finished') {
     setPhase('finished');
+  }
+
+  // ─── EPIC VICTORY SCREEN ───
+  if (phase === 'finished') {
+    return (
+      <EpicVictoryScreen
+        players={players}
+        onPlayAgain={resetGame}
+        onExit={() => navigate('/multiplayer')}
+      />
+    );
   }
 
   const boardPlayers = players.map(p => ({
@@ -536,7 +669,19 @@ const PresentialMultiplayer = () => {
         </div>
       </GameNotification>
 
-      {/* Tile event popup - large with character images */}
+      {/* Collective event notification */}
+      <GameNotification visible={!!collectiveMsg} onDismiss={() => setCollectiveMsg(null)} duration={4000} position="top-offset">
+        <div className="px-6 py-3 rounded-2xl font-display text-base" style={{
+          background: 'linear-gradient(135deg, hsl(270 40% 20%), hsl(270 30% 12%))',
+          border: '1px solid hsl(270 50% 55% / 0.5)',
+          color: 'hsl(270 60% 80%)',
+          boxShadow: '0 0 40px hsl(270 50% 55% / 0.2)',
+        }}>
+          {collectiveMsg}
+        </div>
+      </GameNotification>
+
+      {/* Tile event popup */}
       <TileEventPopup
         visible={!!tileMessage}
         tileType={tileMessage?.tileType || 'normal'}
@@ -554,7 +699,7 @@ const PresentialMultiplayer = () => {
         onResult={handleMiniGameResult}
       />
 
-      {/* Sticky header with current player info */}
+      {/* Sticky header */}
       <header className="sticky top-0 z-20 bg-card/95 backdrop-blur-md border-b border-border px-4 py-2">
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -563,9 +708,9 @@ const PresentialMultiplayer = () => {
             </button>
             <div>
               <h1 className="font-display text-sm text-foreground">
-                {phase === 'finished' ? '🏆 Fim de Jogo' : `Vez de ${currentPlayer?.name || '...'}`}
+                {`Vez de ${currentPlayer?.name || '...'}`}
               </h1>
-              {phase !== 'finished' && currentPlayer && (
+              {currentPlayer && (
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: currentPlayer.color }} />
                   <span className="text-[9px] text-muted-foreground">
@@ -575,14 +720,61 @@ const PresentialMultiplayer = () => {
               )}
             </div>
           </div>
-          <span className="text-[10px] text-primary font-display bg-card px-2 py-1 rounded-md border border-primary/20">
-            🎲 Presencial
-          </span>
+          <div className="flex items-center gap-2">
+            {/* Power-ups button */}
+            {currentPlayer && currentPlayer.powerUps.length > 0 && (
+              <button
+                onClick={() => setShowPowerUps(!showPowerUps)}
+                className="relative text-[10px] font-display px-2 py-1 rounded-md border transition-all"
+                style={{
+                  background: 'hsl(270 30% 15%)',
+                  borderColor: 'hsl(270 50% 45% / 0.5)',
+                  color: 'hsl(270 60% 75%)',
+                }}
+              >
+                💎 {currentPlayer.powerUps.length}
+              </button>
+            )}
+            <span className="text-[10px] text-primary font-display bg-card px-2 py-1 rounded-md border border-primary/20">
+              🎲 Presencial
+            </span>
+          </div>
         </div>
       </header>
 
+      {/* Power-ups panel */}
+      {showPowerUps && currentPlayer && (
+        <div className="sticky top-[52px] z-30 bg-card/95 backdrop-blur-md border-b border-border px-3 py-2">
+          <div className="max-w-lg mx-auto space-y-1">
+            <p className="text-[10px] text-muted-foreground font-display uppercase tracking-wider">Itens de {currentPlayer.name}</p>
+            <div className="flex gap-2 flex-wrap">
+              {currentPlayer.powerUps.map((pType, i) => {
+                const pu = POWER_UPS[pType];
+                return (
+                  <button
+                    key={`${pType}-${i}`}
+                    onClick={() => usePowerUp(pType)}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[10px] font-display transition-all active:scale-95"
+                    style={{
+                      background: 'hsl(270 25% 15%)',
+                      borderColor: 'hsl(270 40% 40% / 0.5)',
+                      color: 'hsl(270 50% 75%)',
+                    }}
+                  >
+                    <span>{pu.emoji}</span>
+                    <span>{pu.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Scrollable player bar */}
-      <div className="sticky top-[52px] z-20 bg-card/90 backdrop-blur-sm border-b border-border px-3 py-2 overflow-x-auto">
+      <div className="sticky top-[52px] z-20 bg-card/90 backdrop-blur-sm border-b border-border px-3 py-2 overflow-x-auto"
+        style={{ top: showPowerUps ? '100px' : '52px' }}
+      >
         <div className="flex gap-2 max-w-lg mx-auto">
           {players.map((p, i) => {
             const isTurn = i === currentTurn;
@@ -599,6 +791,7 @@ const PresentialMultiplayer = () => {
                   <p className="text-muted-foreground">
                     {p.finished ? `🏆${p.finishOrder}º` : p.isStunned ? '😵' : `${p.position + 1}`}
                     {p.hasShield && ' 🛡️'}
+                    {p.powerUps.length > 0 && ` 💎${p.powerUps.length}`}
                   </p>
                 </div>
               </div>
@@ -616,7 +809,7 @@ const PresentialMultiplayer = () => {
           onTileClick={handleTileClick}
         />
 
-        {/* Dice section — fixed at bottom */}
+        {/* Dice section */}
         {phase === 'playing' && !currentPlayer?.finished && (
           <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background via-background/95 to-transparent pt-10 pb-5 px-4">
             <div className="max-w-lg mx-auto">
@@ -629,6 +822,17 @@ const PresentialMultiplayer = () => {
                 </div>
               ) : (
                 <div className="space-y-3">
+                  {/* Bonus move indicator */}
+                  {currentPlayer.bonusMoveNext > 0 && (
+                    <div className="text-center text-xs font-display" style={{ color: 'hsl(270 60% 70%)' }}>
+                      🪽 Bônus: +{currentPlayer.bonusMoveNext} casas neste turno!
+                    </div>
+                  )}
+                  {currentPlayer.doubleBonusNext && (
+                    <div className="text-center text-xs font-display" style={{ color: 'hsl(45 80% 65%)' }}>
+                      💎 Bônus duplo ativado para próximo evento!
+                    </div>
+                  )}
                   {/* 3D Dice */}
                   <div className="flex flex-col items-center gap-2">
                     <button
@@ -672,52 +876,6 @@ const PresentialMultiplayer = () => {
                 </div>
               )}
             </div>
-          </div>
-        )}
-
-        {/* Game Over */}
-        {phase === 'finished' && (
-          <div className="max-w-lg mx-auto px-4 space-y-4 py-8 animate-fade-in">
-            <div className="text-center space-y-3">
-              <span className="text-5xl block" style={{ animation: 'pulse 2s infinite' }}>🏆</span>
-              <h2 className="font-display text-2xl" style={{ color: 'hsl(40 80% 70%)', textShadow: '0 0 20px hsl(40 60% 55% / 0.3)' }}>
-                Resultado Final
-              </h2>
-            </div>
-            {finishedPlayers.map((p, i) => (
-              <div
-                key={p.id}
-                className="flex items-center gap-4 p-4 rounded-xl border"
-                style={{
-                  background: i === 0 ? 'linear-gradient(135deg, hsl(40 50% 15%), hsl(30 20% 12%))' : 'hsl(var(--card))',
-                  borderColor: i === 0 ? 'hsl(40 60% 55% / 0.4)' : 'hsl(var(--border))',
-                  boxShadow: i === 0 ? '0 0 30px hsl(40 60% 55% / 0.1)' : undefined,
-                }}
-              >
-                <span className="text-3xl">{i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}º`}</span>
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold"
-                  style={{ backgroundColor: p.color + '25', border: `2px solid ${p.color}`, color: p.color }}
-                >
-                  {p.name.charAt(0)}
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-display text-foreground">{p.name}</p>
-                  <div className="flex gap-2 text-[9px] text-muted-foreground mt-0.5">
-                    <span>🔥{p.attributes.fe}</span>
-                    <span>⛰{p.attributes.perseveranca}</span>
-                    <span>👁{p.attributes.discernimento}</span>
-                    <span>🛡{p.attributes.coragem}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <button onClick={resetGame} className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm glow-gold">
-              Jogar Novamente
-            </button>
-            <button onClick={() => navigate('/multiplayer')} className="w-full py-3 rounded-xl bg-card border border-border text-sm text-muted-foreground font-display">
-              Voltar ao Menu
-            </button>
           </div>
         )}
       </main>

@@ -259,6 +259,181 @@ function ScriptureQuiz({ onResult }: { onResult: (won: boolean) => void }) {
   );
 }
 
+// Swipe dodge quick game — dodge or accept items
+function SwipeDodgeGame({ onResult }: { onResult: (won: boolean) => void }) {
+  const items = [
+    { emoji: '🗡️', label: 'Espada inimiga', good: false },
+    { emoji: '🔥', label: 'Fogo do mal', good: false },
+    { emoji: '💎', label: 'Tesouro', good: true },
+    { emoji: '⭐', label: 'Bênção', good: true },
+    { emoji: '☠️', label: 'Caveira', good: false },
+    { emoji: '🕊️', label: 'Pomba', good: true },
+    { emoji: '🐍', label: 'Serpente', good: false },
+    { emoji: '📖', label: 'Escritura', good: true },
+  ];
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [score, setScore] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [order] = useState(() => {
+    const arr = [...items].sort(() => Math.random() - 0.5);
+    return arr.slice(0, 6);
+  });
+  const [done, setDone] = useState(false);
+  const [result, setResult] = useState<boolean | null>(null);
+
+  const handleSwipe = (accepted: boolean) => {
+    if (done) return;
+    const item = order[currentIdx];
+    const correct = item.good === accepted;
+    const newScore = score + (correct ? 1 : 0);
+    const newTotal = total + 1;
+    setScore(newScore);
+    setTotal(newTotal);
+    
+    if (correct) playChallengeEvent();
+    
+    if (currentIdx >= order.length - 1) {
+      const won = newScore >= 4;
+      setResult(won);
+      setDone(true);
+      if (won) playPositiveEvent(); else playNegativeEvent();
+    } else {
+      setCurrentIdx(currentIdx + 1);
+    }
+  };
+
+  useEffect(() => {
+    if (done && result !== null) {
+      const t = setTimeout(() => onResult(result), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [done, result, onResult]);
+
+  if (done) {
+    return (
+      <div className="text-center p-6 space-y-2">
+        <span className="text-5xl block">{result ? '✅' : '❌'}</span>
+        <p className="text-lg font-display" style={{ color: result ? 'hsl(120 60% 70%)' : 'hsl(0 60% 70%)' }}>
+          {result ? `Acertou ${score}/${total}!` : `Apenas ${score}/${total}...`}
+        </p>
+      </div>
+    );
+  }
+
+  const item = order[currentIdx];
+  return (
+    <div className="flex flex-col items-center gap-4 p-4">
+      <p className="text-sm font-display text-white/70">Aceite o BOM, rejeite o MAL! ({currentIdx + 1}/{order.length})</p>
+      <div className="text-6xl mb-2" style={{ animation: 'bounce 0.5s' }}>{item.emoji}</div>
+      <p className="text-base font-display text-white/80">{item.label}</p>
+      <div className="flex gap-4 mt-2">
+        <button
+          onClick={() => handleSwipe(false)}
+          className="w-20 h-14 rounded-xl bg-red-900/40 border-2 border-red-500/50 text-2xl active:scale-90 transition-all"
+        >
+          ❌
+        </button>
+        <button
+          onClick={() => handleSwipe(true)}
+          className="w-20 h-14 rounded-xl bg-green-900/40 border-2 border-green-500/50 text-2xl active:scale-90 transition-all"
+        >
+          ✅
+        </button>
+      </div>
+      <p className="text-xs text-white/40">✅ Aceitar · ❌ Rejeitar</p>
+    </div>
+  );
+}
+
+// Treasure hunt quick game
+function TreasureHuntGame({ onResult }: { onResult: (won: boolean) => void }) {
+  const [boxes] = useState(() => {
+    const arr = Array(9).fill(false);
+    const treasureCount = 3;
+    const positions = new Set<number>();
+    while (positions.size < treasureCount) positions.add(Math.floor(Math.random() * 9));
+    positions.forEach(p => arr[p] = true);
+    return arr;
+  });
+  const [revealed, setRevealed] = useState<boolean[]>(Array(9).fill(false));
+  const [found, setFound] = useState(0);
+  const [attempts, setAttempts] = useState(0);
+  const maxAttempts = 5;
+  const [done, setDone] = useState(false);
+  const [result, setResult] = useState<boolean | null>(null);
+
+  const handleReveal = (idx: number) => {
+    if (done || revealed[idx]) return;
+    const newRevealed = [...revealed];
+    newRevealed[idx] = true;
+    setRevealed(newRevealed);
+    
+    const newAttempts = attempts + 1;
+    setAttempts(newAttempts);
+    
+    if (boxes[idx]) {
+      const newFound = found + 1;
+      setFound(newFound);
+      playChallengeEvent();
+      if (newFound >= 2) {
+        setResult(true);
+        setDone(true);
+        playPositiveEvent();
+        return;
+      }
+    }
+    
+    if (newAttempts >= maxAttempts) {
+      setResult(false);
+      setDone(true);
+      playNegativeEvent();
+    }
+  };
+
+  useEffect(() => {
+    if (done && result !== null) {
+      const t = setTimeout(() => onResult(result), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [done, result, onResult]);
+
+  if (done) {
+    return (
+      <div className="text-center p-6 space-y-2">
+        <span className="text-5xl block">{result ? '✅' : '❌'}</span>
+        <p className="text-lg font-display" style={{ color: result ? 'hsl(120 60% 70%)' : 'hsl(0 60% 70%)' }}>
+          {result ? `Encontrou ${found} tesouros!` : `Apenas ${found} tesouros...`}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-3 p-4">
+      <p className="text-sm font-display text-white/70">Encontre 2 tesouros! ({attempts}/{maxAttempts} tentativas)</p>
+      <div className="grid grid-cols-3 gap-2">
+        {boxes.map((isTreasure, i) => (
+          <button
+            key={i}
+            onClick={() => handleReveal(i)}
+            disabled={revealed[i]}
+            className="w-16 h-16 rounded-xl flex items-center justify-center text-2xl transition-all active:scale-90"
+            style={{
+              background: revealed[i]
+                ? (isTreasure ? 'hsl(45 60% 25%)' : 'hsl(0 0% 15%)')
+                : 'hsl(30 20% 18%)',
+              border: `2px solid ${revealed[i] ? (isTreasure ? 'hsl(45 60% 50%)' : 'hsl(0 0% 30%)') : 'hsl(30 20% 30%)'}`,
+            }}
+          >
+            {revealed[i] ? (isTreasure ? '💎' : '💨') : '❓'}
+          </button>
+        ))}
+      </div>
+      <p className="text-xs text-white/40">Tesouros encontrados: {found}/2</p>
+    </div>
+  );
+}
+
 export default function BoardMiniGame({ visible, tileType, playerName, onResult }: BoardMiniGameProps) {
   const config = TILE_TYPES[tileType] || TILE_TYPES.normal;
   const charKey = config.characterKey;
@@ -273,7 +448,46 @@ export default function BoardMiniGame({ visible, tileType, playerName, onResult 
   if (!visible) return null;
 
   const isGiant = tileType === 'giant';
-  const borderColor = isGiant ? 'hsl(0 60% 45%)' : tileType === 'scripture' ? 'hsl(210 60% 55%)' : 'hsl(25 80% 50%)';
+  const isSurprise = tileType === 'surprise';
+  const isBlessing = tileType === 'blessing';
+  
+  const borderColor = isGiant ? 'hsl(0 60% 45%)'
+    : tileType === 'scripture' ? 'hsl(210 60% 55%)'
+    : isSurprise ? 'hsl(40 70% 50%)'
+    : isBlessing ? 'hsl(45 80% 55%)'
+    : 'hsl(25 80% 50%)';
+
+  const bgStyle = isGiant
+    ? 'linear-gradient(135deg, hsl(0 25% 10%), hsl(0 15% 6%))'
+    : tileType === 'scripture'
+    ? 'linear-gradient(135deg, hsl(220 25% 12%), hsl(220 15% 6%))'
+    : isSurprise
+    ? 'linear-gradient(135deg, hsl(40 25% 12%), hsl(35 15% 6%))'
+    : isBlessing
+    ? 'linear-gradient(135deg, hsl(45 30% 14%), hsl(40 20% 8%))'
+    : 'linear-gradient(135deg, hsl(25 25% 12%), hsl(20 15% 6%))';
+
+  const titleText = isGiant ? 'Batalha contra o Gigante!'
+    : tileType === 'scripture' ? 'Desafio Bíblico!'
+    : isSurprise ? 'Surpresa! Mini-desafio!'
+    : isBlessing ? 'Bênção — Caça ao Tesouro!'
+    : 'Desafio!';
+
+  const subtitleText = isGiant ? 'Vença para avançar! Perca e volte...'
+    : isSurprise ? 'Discerna o bem do mal para ganhar!'
+    : isBlessing ? 'Encontre os tesouros escondidos!'
+    : 'Prove seu valor, peregrino!';
+
+  // Choose mini-game based on tile type
+  const renderMiniGame = () => {
+    switch (tileType) {
+      case 'scripture': return <ScriptureQuiz onResult={handleResult} />;
+      case 'giant': return <ReactionGame difficulty={difficulty} onResult={handleResult} />;
+      case 'surprise': return <SwipeDodgeGame onResult={handleResult} />;
+      case 'blessing': return <TreasureHuntGame onResult={handleResult} />;
+      default: return <MemoryGame difficulty={difficulty} onResult={handleResult} />;
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 animate-fade-in">
@@ -282,11 +496,7 @@ export default function BoardMiniGame({ visible, tileType, playerName, onResult 
       <div
         className="relative w-full max-w-sm rounded-2xl overflow-hidden animate-scale-in"
         style={{
-          background: isGiant
-            ? 'linear-gradient(135deg, hsl(0 25% 10%), hsl(0 15% 6%))'
-            : tileType === 'scripture'
-            ? 'linear-gradient(135deg, hsl(220 25% 12%), hsl(220 15% 6%))'
-            : 'linear-gradient(135deg, hsl(25 25% 12%), hsl(20 15% 6%))',
+          background: bgStyle,
           border: `2px solid ${borderColor}`,
           boxShadow: `0 0 60px ${isGiant ? 'rgba(200,0,0,0.3)' : 'rgba(255,140,40,0.3)'}`,
         }}
@@ -313,23 +523,15 @@ export default function BoardMiniGame({ visible, tileType, playerName, onResult 
           <div className="flex items-center justify-center gap-2 mb-1">
             {isGiant ? <Skull className="w-6 h-6 text-red-400" /> : <Swords className="w-6 h-6 text-orange-400" />}
             <h3 className="text-xl font-display font-bold" style={{ color: borderColor }}>
-              {isGiant ? 'Batalha contra o Gigante!' : tileType === 'scripture' ? 'Desafio Bíblico!' : 'Desafio!'}
+              {titleText}
             </h3>
           </div>
           <p className="text-xs text-white/50">{playerName} · {config.label}</p>
-          <p className="text-xs text-white/40 mt-1">
-            {isGiant ? 'Vença para avançar! Perca e volte...' : 'Prove seu valor, peregrino!'}
-          </p>
+          <p className="text-xs text-white/40 mt-1">{subtitleText}</p>
         </div>
 
         {/* Mini game content */}
-        {tileType === 'scripture' ? (
-          <ScriptureQuiz onResult={handleResult} />
-        ) : tileType === 'giant' ? (
-          <ReactionGame difficulty={difficulty} onResult={handleResult} />
-        ) : (
-          <MemoryGame difficulty={difficulty} onResult={handleResult} />
-        )}
+        {renderMiniGame()}
       </div>
     </div>
   );
