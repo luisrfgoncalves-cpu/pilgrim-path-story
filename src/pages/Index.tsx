@@ -338,9 +338,6 @@ const Index = () => {
           <button onClick={() => navigate('/termos')} className="px-4 py-2 text-[10px] text-muted-foreground hover:text-foreground border border-border rounded-lg bg-card hover:border-primary/30 transition-all font-display whitespace-nowrap">
             Políticas e Termos
           </button>
-          <button onClick={() => navigate('/landing')} className="px-4 py-2 text-[10px] text-muted-foreground hover:text-foreground border border-border rounded-lg bg-card hover:border-primary/30 transition-all font-display whitespace-nowrap">
-            Sobre o aplicativo
-          </button>
         </div>
       </div>
     </div>
