@@ -5,23 +5,7 @@ import {
 } from './ImmersiveBoardTypes';
 import { MedievalTileIcon } from './MedievalTileIcons';
 import { characterImages } from '@/data/characterImages';
-import trailStoneImg from '@/assets/board/trail-stone.jpg';
-import trailDirtImg from '@/assets/board/trail-dirt.jpg';
-import trailSwampImg from '@/assets/board/trail-swamp.jpg';
-import trailDarkValleyImg from '@/assets/board/trail-dark-valley.jpg';
-import trailFairImg from '@/assets/board/trail-fair.jpg';
-import trailCastleImg from '@/assets/board/trail-castle.jpg';
-import trailCelestialImg from '@/assets/board/trail-celestial.jpg';
-
-// Phase-specific trail images mapped by phase index
-const PHASE_TRAILS: Record<number, [string, string]> = {
-  0: [trailStoneImg, trailDirtImg],         // Cidade da Destruição - pedras e terra
-  1: [trailSwampImg, trailDirtImg],          // Pântano - lama e terra
-  2: [trailDarkValleyImg, trailStoneImg],    // Vale da Sombra - rocha escura e pedras
-  3: [trailFairImg, trailStoneImg],          // Feira da Vaidade - ruas de paralelepípedo
-  4: [trailCastleImg, trailStoneImg],        // Castelo da Dúvida - corredores de pedra
-  5: [trailCelestialImg, trailStoneImg],     // Cidade Celestial - caminho dourado
-};
+import ContinuousTrail from './ContinuousTrail';
 
 interface Player {
   id: string;
@@ -136,63 +120,12 @@ function PhaseSection({
         </div>
       )}
 
-      {/* Trail segments between tiles */}
-      <div className="absolute inset-0 z-[1] pointer-events-none">
-        {trailPositions.map((pos, i) => {
-          if (i === 0) return null;
-          const prev = trailPositions[i - 1];
-          const midX = (prev.x + pos.x) / 2;
-          const midY = (prev.y + pos.y) / 2;
-          const aspectRatio = 5.0 * (674 / 390);
-          const dx = (pos.x - prev.x);
-          const dy = (pos.y - prev.y) * aspectRatio;
-          const lengthPx = Math.sqrt(dx * dx + dy * dy);
-          const angle = Math.atan2((pos.y - prev.y) * aspectRatio, (pos.x - prev.x)) * (180 / Math.PI);
-          
-          const phaseTrails = PHASE_TRAILS[phaseIdx] || [trailStoneImg, trailDirtImg];
-          const trailImg = i % 2 === 0 ? phaseTrails[0] : phaseTrails[1];
-
-          return (
-            <div key={`trail-${i}`}>
-              {/* Trail segment */}
-              <div
-                className="absolute overflow-hidden"
-                style={{
-                  left: `${midX}%`,
-                  top: `${midY}%`,
-                  width: `${lengthPx * 0.42}%`,
-                  height: '38px',
-                  transform: `translate(-50%, -50%) rotate(${angle}deg)`,
-                  borderRadius: '19px',
-                  opacity: 0.92,
-                  boxShadow: `0 0 18px rgba(0,0,0,0.6), 0 0 8px ${`hsla(${phase.accentHue} 40% 50% / 0.15)`}`,
-                  border: '1px solid rgba(255,255,255,0.08)',
-                }}
-              >
-                <img
-                  src={trailImg}
-                  alt=""
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  style={{ filter: 'brightness(0.95) saturate(1.3)' }}
-                />
-              </div>
-              {/* Connector dot at destination tile */}
-              <div
-                className="absolute w-3 h-3 rounded-full"
-                style={{
-                  left: `${pos.x}%`,
-                  top: `${pos.y}%`,
-                  transform: 'translate(-50%, -50%)',
-                  background: `radial-gradient(circle, ${`hsl(${phase.accentHue} 50% 60%)`} 30%, rgba(0,0,0,0.8) 100%)`,
-                  boxShadow: `0 0 8px ${`hsla(${phase.accentHue} 50% 50% / 0.5)`}`,
-                  border: '1px solid rgba(255,255,255,0.2)',
-                }}
-              />
-            </div>
-          );
-        })}
-      </div>
+      {/* Continuous trail path */}
+      <ContinuousTrail
+        trailPositions={trailPositions}
+        phaseIdx={phaseIdx}
+        accentHue={phase.accentHue}
+      />
 
       {/* Tiles */}
       <div className="relative w-full z-[2]" style={{ minHeight: '500svh' }}>
@@ -211,7 +144,7 @@ function PhaseSection({
           const tileImg = tileCharImg || tileEnvImg;
           const isSpecial = tileType !== 'normal';
           const isBoss = tileType === 'giant' || tileType === 'challenge';
-          const tileSize = isBoss ? 76 : isSpecial ? 68 : 56;
+          const tileSize = isBoss ? 80 : isSpecial ? 72 : 60;
 
           return (
             <div
