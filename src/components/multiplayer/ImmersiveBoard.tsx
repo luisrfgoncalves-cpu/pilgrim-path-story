@@ -193,7 +193,7 @@ function PhaseSection({
                     />
                     {/* Dark overlay for readability */}
                     <div className="absolute inset-0" style={{
-                      background: `linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.5) 100%)`,
+                      background: `linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.25) 100%)`,
                     }} />
                     {/* Color tint */}
                     <div className="absolute inset-0" style={{
