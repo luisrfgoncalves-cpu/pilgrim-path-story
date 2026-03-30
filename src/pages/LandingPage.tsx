@@ -777,26 +777,24 @@ const LandingPage = () => {
       )}
 
       {/* ══════════ HERO ══════════ */}
-      <section className="relative min-h-[95vh] flex flex-col items-center justify-center px-5 py-16 text-center overflow-hidden">
+      <section className="relative min-h-[100svh] flex flex-col items-center justify-start px-5 pt-4 pb-8 text-center overflow-hidden">
         <div className="absolute inset-0">
           <img src={cidadeDestruicao} alt="Cidade da Destruição" className="w-full h-full object-cover opacity-50" />
           <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/30 to-background" />
         </div>
 
-        <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+        <div className="relative z-10 max-w-2xl mx-auto space-y-2.5 flex flex-col items-center">
 
-          {/* Logo "O Peregrino" — grande, próximo do cronômetro */}
-          <div className="flex justify-center">
-            <img
-              src={logoImg}
-              alt="O Peregrino"
-              className="h-28 md:h-40 object-contain drop-shadow-[0_6px_40px_hsl(40_70%_50%/0.6)]"
-            />
-          </div>
+          {/* Logo "O Peregrino" — grande, colado no topo */}
+          <img
+            src={logoImg}
+            alt="O Peregrino"
+            className="h-24 md:h-36 object-contain drop-shadow-[0_6px_40px_hsl(40_70%_50%/0.6)]"
+          />
 
           {/* Headline */}
           <h1
-            className="font-display text-3xl md:text-5xl text-foreground leading-[1.1] font-bold"
+            className="font-display text-2xl md:text-5xl text-foreground leading-[1.1] font-bold"
             style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 0 40px hsl(40 70% 50% / 0.3)' }}
           >
             Viva a Maior Batalha<br />
@@ -805,7 +803,7 @@ const LandingPage = () => {
 
           {/* Subheadline */}
           <p
-            className="text-base md:text-xl text-foreground/90 leading-relaxed max-w-lg mx-auto font-body"
+            className="text-sm md:text-xl text-foreground/90 leading-relaxed max-w-lg mx-auto font-body"
             style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}
           >
             A obra-prima de <strong>John Bunyan</strong> transformada em uma experiência interativa
@@ -813,7 +811,7 @@ const LandingPage = () => {
           </p>
 
           {/* CTA */}
-          <div className="flex flex-col gap-3 justify-center items-center pt-2">
+          <div className="flex flex-col gap-2 justify-center items-center pt-1 w-full">
             <CtaButton onClick={handleBuy} variant="primary">
               <Crown className="w-5 h-5" />
               Garantir por R$67/ano
@@ -823,18 +821,18 @@ const LandingPage = () => {
               ⚠️ Preço de lançamento! De <span className="line-through">R$197</span> por apenas R$67/ano
             </p>
 
-            <div className="flex items-center justify-center gap-4 text-xs text-foreground/70 flex-wrap" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
-              <span className="flex items-center gap-1"><Shield className="w-3.5 h-3.5" /> Garantia 7 dias</span>
+            <div className="flex items-center justify-center gap-3 text-[11px] text-foreground/70 flex-wrap" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+              <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> Garantia 7 dias</span>
               <span>•</span>
-              <span className="flex items-center gap-1"><Smartphone className="w-3.5 h-3.5" /> Instale no celular</span>
+              <span className="flex items-center gap-1"><Smartphone className="w-3 h-3" /> Instale no celular</span>
               <span>•</span>
-              <span className="flex items-center gap-1"><Lock className="w-3.5 h-3.5" /> Pagamento seguro</span>
+              <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> Pagamento seguro</span>
             </div>
           </div>
         </div>
 
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="w-6 h-6 text-primary/50" />
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce">
+          <ChevronDown className="w-5 h-5 text-primary/50" />
         </div>
       </section>
 
