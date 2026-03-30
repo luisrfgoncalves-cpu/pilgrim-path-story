@@ -338,6 +338,51 @@ const PresentialMultiplayer = () => {
     setTileMessage({ message: `Casa ${position + 1}: ${config.label} — ${config.description}`, emoji: config.emoji, tileType });
   };
 
+  // Mini-game result: win = advance 1 to refuge, lose = go back to previous position
+  const handleMiniGameResult = useCallback((won: boolean) => {
+    if (!miniGame) return;
+    const { playerIdx, prevPosition, newPosition, tileType } = miniGame;
+    const player = players[playerIdx];
+
+    setPlayers(prev => prev.map((p, i) => {
+      if (i !== playerIdx) return p;
+      if (won) {
+        // Win: stay at new position +1 (refuge tile)
+        const refugePos = Math.min(newPosition + 1, IMMERSIVE_BOARD_SIZE - 1);
+        return {
+          ...p,
+          position: refugePos,
+          attributes: {
+            ...p.attributes,
+            coragem: p.attributes.coragem + 2,
+            fe: p.attributes.fe + 1,
+          },
+        };
+      } else {
+        // Lose: go back to previous position
+        return {
+          ...p,
+          position: prevPosition,
+          attributes: {
+            ...p.attributes,
+            coragem: Math.max(0, p.attributes.coragem - 1),
+          },
+        };
+      }
+    }));
+
+    setMiniGame(null);
+    const resultMsg = won
+      ? `⚔️ ${player.name} venceu o ${TILE_TYPES[tileType].label}! Avança para o Refúgio!`
+      : `💀 ${player.name} perdeu! Volta para a casa ${prevPosition + 1}...`;
+    setTileMessage({
+      message: resultMsg,
+      emoji: won ? '🏆' : '😢',
+      tileType,
+      playerName: player.name,
+    });
+  }, [miniGame, players]);
+
   const handleTilePopupDismiss = useCallback(() => {
     const currentMsg = tileMessage;
     setTileMessage(null);
