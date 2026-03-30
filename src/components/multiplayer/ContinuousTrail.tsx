@@ -31,6 +31,7 @@ interface ContinuousTrailProps {
   trailPositions: { x: number; y: number }[];
   phaseIdx: number;
   accentHue: number;
+  enableGlowFilter?: boolean;
 }
 
 /**
@@ -63,7 +64,7 @@ function buildSmoothPath(points: { x: number; y: number }[]): string {
   return d;
 }
 
-export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue }: ContinuousTrailProps) {
+export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue, enableGlowFilter = true }: ContinuousTrailProps) {
   const pathD = useMemo(() => buildSmoothPath(trailPositions), [trailPositions]);
   const trailImg = PHASE_TRAIL_IMG[phaseIdx] || trailDirtImg;
   const trailAltImg = PHASE_TRAIL_ALT[phaseIdx] || trailStoneImg;
