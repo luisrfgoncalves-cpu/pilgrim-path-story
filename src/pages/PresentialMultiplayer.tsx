@@ -241,8 +241,9 @@ const PresentialMultiplayer = () => {
   const [finishCount, setFinishCount] = useState(0);
   const [collectiveMsg, setCollectiveMsg] = useState<string | null>(null);
   const [miniGame, setMiniGame] = useState<{ tileType: TileType; playerIdx: number; prevPosition: number; newPosition: number } | null>(null);
-  // Pending event to show after token animation delay
-  const [pendingEvent, setPendingEvent] = useState<{ message: string; emoji: string; tileType: TileType; playerName?: string } | null>(null);
+  // Pending action to execute AFTER token animation completes
+  const pendingActionRef = useRef<(() => void) | null>(null);
+  const [isTokenMoving, setIsTokenMoving] = useState(false);
 
   const addPlayer = () => {
     if (players.length >= 8) return;
