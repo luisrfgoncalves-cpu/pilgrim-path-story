@@ -101,6 +101,13 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
 
   return (
     <div ref={boardRef} className="w-full">
+      {/* Single global tokenGlow keyframe — avoids duplicating per phase */}
+      <style>{`
+        @keyframes tokenGlow {
+          0% { transform: scale(1); }
+          100% { transform: scale(1.3); }
+        }
+      `}</style>
       {PHASES.map((phase, phaseIdx) => {
         // LAZY LOADING: only mount phases that are visible
         if (!visiblePhases.has(phaseIdx)) {
@@ -174,7 +181,6 @@ const PhaseSection = memo(function PhaseSection({
         return;
       }
 
-      // What fraction of the section is visible
       const topVisible = Math.max(0, -rect.top / sectionH);
       const bottomVisible = Math.min(1, (viewH - rect.top) / sectionH);
 
@@ -185,8 +191,20 @@ const PhaseSection = memo(function PhaseSection({
     };
 
     updateVisibleRange();
-    window.addEventListener('scroll', updateVisibleRange, { passive: true });
-    return () => window.removeEventListener('scroll', updateVisibleRange);
+
+    // THROTTLED scroll listener — prevents excessive recalculations on mobile
+    let ticking = false;
+    const throttledUpdate = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        updateVisibleRange();
+        ticking = false;
+      });
+    };
+
+    window.addEventListener('scroll', throttledUpdate, { passive: true });
+    return () => window.removeEventListener('scroll', throttledUpdate);
   }, []);
 
   return (
@@ -426,13 +444,6 @@ const PhaseSection = memo(function PhaseSection({
         </div>
       )}
 
-      {/* Token glow animation */}
-      <style>{`
-        @keyframes tokenGlow {
-          0% { transform: scale(1); }
-          100% { transform: scale(1.3); }
-        }
-      `}</style>
     </div>
   );
 });
