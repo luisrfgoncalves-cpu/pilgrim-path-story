@@ -83,6 +83,7 @@ const ScenePage = () => {
   const [miniGameReady, setMiniGameReady] = useState(false);
   const [miniGameButtonVisible, setMiniGameButtonVisible] = useState(false);
   const [miniGameAutoPopup, setMiniGameAutoPopup] = useState(false);
+  const [timedRetryCount, setTimedRetryCount] = useState(0);
   // Character entrance reveal
   const [charReveal, setCharReveal] = useState<{ name: string; img: string; role?: string } | null>(null);
   const [charRevealDone, setCharRevealDone] = useState(false); // After reveal, show persistent portrait
@@ -972,11 +973,12 @@ const ScenePage = () => {
 
                   ) : chapter.interactionType === 'timed' ? (
                     <TimedChoice
+                      key={`timed-${timedRetryCount}`}
                       timeLimit={chapter.timeLimit || 15}
                       onTimeout={() => {
-                        const idx = chapter.timeoutChoiceIndex ?? 0;
-                        const fallback = availableChoices[idx] || availableChoices[0];
-                        if (fallback) handleChoice(fallback.nextChapterId, fallback.text, fallback.effects, fallback.consequence, fallback.flag, fallback.conditionalEffects, fallback.item);
+                        playGameSfx('penalty');
+                        toast.error('⏳ O tempo acabou! Tente novamente — leia o texto e escolha rápido.');
+                        setTimedRetryCount(prev => prev + 1);
                       }}
                     >
                       {availableChoices.map((choice, i) => (
