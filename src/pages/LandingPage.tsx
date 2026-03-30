@@ -777,13 +777,13 @@ const LandingPage = () => {
       )}
 
       {/* ══════════ HERO ══════════ */}
-      <section className="relative min-h-[95vh] flex flex-col items-center justify-center px-5 py-10 text-center overflow-hidden">
+      <section className="relative min-h-[95vh] flex flex-col items-center justify-center px-5 py-6 text-center overflow-hidden">
         <div className="absolute inset-0">
           <img src={cidadeDestruicao} alt="Cidade da Destruição" className="w-full h-full object-cover opacity-50" />
           <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/30 to-background" />
         </div>
 
-        <div className="relative z-10 max-w-2xl mx-auto space-y-3">
+        <div className="relative z-10 max-w-2xl mx-auto space-y-2">
           <div
             className="inline-block px-4 py-1.5 rounded-full border border-primary/40 bg-primary/10"
             style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.2)' }}
@@ -815,7 +815,7 @@ const LandingPage = () => {
             que vai <em>desafiar sua fé, provocar suas emoções</em> e mudar sua perspectiva para sempre.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-1">
             <CtaButton onClick={handleBuy} variant="primary">
               <Crown className="w-5 h-5" />
               Garantir por R$67/ano
