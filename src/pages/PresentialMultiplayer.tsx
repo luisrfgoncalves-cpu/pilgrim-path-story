@@ -480,30 +480,71 @@ const PresentialMultiplayer = () => {
         setTimeout(() => setCollectiveMsg(null), 4000);
       }
 
-      // Apply final position + attributes + show popup
-      setPlayers(prev => prev.map((p, i) => {
-        if (i !== turnIdx) return p;
-        const newAttrs = { ...p.attributes };
-        for (const [key, val] of Object.entries(effect.attrChanges)) {
-          (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
-        }
-        return {
-          ...p,
-          position: finalPos,
-          finished: isFinished,
-          finishOrder: isFinished ? newFinishCount : null,
-          isStunned: effect.stun,
-          stunTurns: effect.stunTurns,
-          hasShield: effect.shield ? true : (tileType === 'trap' || tileType === 'giant' ? false : p.hasShield),
-          checkpoint: tileType === 'checkpoint' ? finalPos : p.checkpoint,
-          extraTurn: effect.extraTurn,
-          attributes: newAttrs,
-          stats: {
-            ...p.stats,
-            phasesCompleted: Math.floor(finalPos / TILES_PER_PHASE),
-          },
+      // If position changes (posAdjust, reset, etc.), defer move until popup closes
+      if (finalPos !== newPos) {
+        // Apply attrs and state at CURRENT position, defer movement
+        setPlayers(prev => prev.map((p, i) => {
+          if (i !== turnIdx) return p;
+          const newAttrs = { ...p.attributes };
+          for (const [key, val] of Object.entries(effect.attrChanges)) {
+            (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+          }
+          return {
+            ...p,
+            // Keep position at newPos — will move after popup
+            isStunned: effect.stun,
+            stunTurns: effect.stunTurns,
+            hasShield: effect.shield ? true : (tileType === 'trap' || tileType === 'giant' ? false : p.hasShield),
+            checkpoint: tileType === 'checkpoint' ? newPos : p.checkpoint,
+            extraTurn: effect.extraTurn,
+            attributes: newAttrs,
+            stats: {
+              ...p.stats,
+              phasesCompleted: Math.floor(finalPos / TILES_PER_PHASE),
+            },
+          };
+        }));
+
+        // Store pending move
+        pendingMoveAfterPopup.current = {
+          playerIdx: turnIdx,
+          targetPos: finalPos,
+          attrs: {},
+          stats: {},
         };
-      }));
+        // Also handle finish after move
+        if (isFinished) {
+          setPlayers(prev => prev.map((p, i) => {
+            if (i !== turnIdx) return p;
+            return { ...p, finished: true, finishOrder: newFinishCount };
+          }));
+        }
+      } else {
+        // No position change — apply everything now
+        setPlayers(prev => prev.map((p, i) => {
+          if (i !== turnIdx) return p;
+          const newAttrs = { ...p.attributes };
+          for (const [key, val] of Object.entries(effect.attrChanges)) {
+            (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+          }
+          return {
+            ...p,
+            position: finalPos,
+            finished: isFinished,
+            finishOrder: isFinished ? newFinishCount : null,
+            isStunned: effect.stun,
+            stunTurns: effect.stunTurns,
+            hasShield: effect.shield ? true : (tileType === 'trap' || tileType === 'giant' ? false : p.hasShield),
+            checkpoint: tileType === 'checkpoint' ? finalPos : p.checkpoint,
+            extraTurn: effect.extraTurn,
+            attributes: newAttrs,
+            stats: {
+              ...p.stats,
+              phasesCompleted: Math.floor(finalPos / TILES_PER_PHASE),
+            },
+          };
+        }));
+      }
 
       // Show tile message for ALL tiles (every tile opens a popup)
       setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
