@@ -251,11 +251,20 @@ const PresentialMultiplayer = () => {
       return;
     }
 
-    const diceValue = value || (Math.floor(Math.random() * 6) + 1);
-    let newPos = Math.min(player.position + diceValue, IMMERSIVE_BOARD_SIZE - 1);
+    const diceVal = value || (Math.floor(Math.random() * 6) + 1);
+    let newPos = Math.min(player.position + diceVal, IMMERSIVE_BOARD_SIZE - 1);
     playMove();
 
     const tileType = tileTypes[newPos] || 'normal';
+
+    // If it's a mini-game tile, launch mini-game instead of resolving immediately
+    if (MINI_GAME_TILES.includes(tileType)) {
+      setMiniGame({ tileType, playerIdx: currentTurn, prevPosition: player.position, newPosition: newPos });
+      // Move player to the tile visually
+      setPlayers(prev => prev.map((p, i) => i === currentTurn ? { ...p, position: newPos, lastDice: diceVal } : p));
+      return;
+    }
+
     const effect = resolveTileEffect(tileType, player, players, Date.now() + newPos);
 
     let finalPos = newPos;
@@ -282,7 +291,7 @@ const PresentialMultiplayer = () => {
       return {
         ...p,
         position: finalPos,
-        lastDice: diceValue,
+        lastDice: diceVal,
         finished: isFinished,
         finishOrder: isFinished ? newFinishCount : null,
         isStunned: effect.stun,
@@ -297,7 +306,6 @@ const PresentialMultiplayer = () => {
     // Show tile message
     if (tileType !== 'normal' && tileType !== 'start') {
       setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
-      // Don't auto-dismiss - let popup handle its own timing
     } else {
       nextTurn();
     }
