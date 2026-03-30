@@ -5,6 +5,8 @@ import { Dice3D } from '@/components/Dice3D';
 import TileEventPopup from '@/components/multiplayer/TileEventPopup';
 import BoardMiniGame from '@/components/multiplayer/BoardMiniGame';
 import EpicVictoryScreen from '@/components/multiplayer/EpicVictoryScreen';
+import PhaseTransition from '@/components/multiplayer/PhaseTransition';
+import RiverOfDeath from '@/components/multiplayer/RiverOfDeath';
 import GameNotification from '@/components/GameNotification';
 import { boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
 import {
@@ -12,13 +14,47 @@ import {
   MINI_GAME_TILES, generateImmersiveTiles,
 } from '@/components/multiplayer/ImmersiveBoardTypes';
 import { getPhaseNarrative } from '@/components/multiplayer/PhaseNarratives';
-import { playMove, playVictory, playTurnStart } from '@/components/multiplayer/BoardSounds';
+import {
+  playMove, playVictory, playTurnStart,
+  playPhaseAmbient, playPhaseTransitionSound,
+} from '@/components/multiplayer/BoardSounds';
 import { playGameSfx } from '@/lib/gameSfx';
 import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown } from 'lucide-react';
 import ScreenHero from '@/components/ScreenHero';
 
 const COLORS = ['#E8724A', '#4CAF50', '#42A5F5', '#FFD54F', '#AB47BC', '#EF5350', '#26C6DA', '#FF7043'];
 const DEFAULT_NAMES = ['Cristão', 'Fiel', 'Esperança', 'Misericórdia', 'Valente', 'Honesto', 'Prudência', 'Caridade'];
+
+// ─── Stats tracking ───
+interface PlayerStats {
+  trapsHit: number;
+  challengesWon: number;
+  challengesLost: number;
+  blessingsReceived: number;
+  giantsDefeated: number;
+  giantsLost: number;
+  scripturesCorrect: number;
+  scripturesWrong: number;
+  tilesVisited: number;
+  maxStreak: number;      // consecutive positive outcomes
+  currentStreak: number;
+  backToStartCount: number;
+  shieldsGained: number;
+  swapsTriggered: number;
+  phasesCompleted: number;
+  riverCrossed: boolean;
+}
+
+function emptyStats(): PlayerStats {
+  return {
+    trapsHit: 0, challengesWon: 0, challengesLost: 0,
+    blessingsReceived: 0, giantsDefeated: 0, giantsLost: 0,
+    scripturesCorrect: 0, scripturesWrong: 0, tilesVisited: 0,
+    maxStreak: 0, currentStreak: 0, backToStartCount: 0,
+    shieldsGained: 0, swapsTriggered: 0, phasesCompleted: 0,
+    riverCrossed: false,
+  };
+}
 
 interface LocalPlayer {
   id: string;
@@ -34,6 +70,8 @@ interface LocalPlayer {
   hasShield: boolean;
   checkpoint: number;
   extraTurn: boolean;
+  stats: PlayerStats;
+  lastPhase: number; // track which phase they were in
 }
 
 function createPlayer(index: number, name?: string): LocalPlayer {
@@ -51,11 +89,16 @@ function createPlayer(index: number, name?: string): LocalPlayer {
     hasShield: false,
     checkpoint: 0,
     extraTurn: false,
+    stats: emptyStats(),
+    lastPhase: 0,
   };
 }
 
 // ─── Expanded MINI_GAME_TILES ───
 const EXPANDED_MINI_GAME_TILES: TileType[] = ['giant', 'challenge', 'scripture', 'surprise', 'blessing'];
+
+// ─── River of Death tiles: last 5 tiles before finish ───
+const RIVER_ZONE_START = IMMERSIVE_BOARD_SIZE - 6; // tiles 114-118 are the river zone
 
 // ─── Tile effect resolution with phase narratives ───
 function resolveTileEffect(
@@ -75,6 +118,7 @@ function resolveTileEffect(
   resetToStart: boolean;
   message: string;
   emoji: string;
+  statUpdate: Partial<PlayerStats>;
   collectiveEffect?: { type: 'blessing_all' | 'curse_all'; message: string };
 } {
   const rng = ((seed * 1103515245 + 12345) & 0x7fffffff) % 100;
@@ -82,6 +126,7 @@ function resolveTileEffect(
     posAdjust: 0, attrChanges: {} as Record<string, number>,
     stun: false, stunTurns: 0, shield: false, extraTurn: false,
     resetToCheckpoint: false, resetToStart: false, message: '', emoji: '',
+    statUpdate: { tilesVisited: 1 },
   };
 
   const narrative = getPhaseNarrative(phaseIdx, tileType, seed);
@@ -97,10 +142,12 @@ function resolveTileEffect(
         result.posAdjust = 3;
         result.attrChanges = { coragem: 2 };
         result.message = narrative || '⚔️ Desafio vencido! Avance 3 casas!';
+        result.statUpdate.challengesWon = 1;
       } else {
         result.posAdjust = -2;
         result.attrChanges = { coragem: -1 };
         result.message = narrative || '⚔️ Desafio perdido! Recue 2 casas.';
+        result.statUpdate.challengesLost = 1;
       }
       result.emoji = '⚔️';
       break;
@@ -132,9 +179,11 @@ function resolveTileEffect(
         result.posAdjust = 2;
         result.attrChanges = { discernimento: 2, fe: 1 };
         result.message = narrative || '📖 Palavra acertada! Discernimento +2, avance 2!';
+        result.statUpdate.scripturesCorrect = 1;
       } else {
         result.attrChanges = { discernimento: -1 };
         result.message = narrative || '📖 Resposta errada... Discernimento -1.';
+        result.statUpdate.scripturesWrong = 1;
       }
       result.emoji = '📖';
       break;
@@ -147,6 +196,7 @@ function resolveTileEffect(
         result.attrChanges = { perseveranca: -1 };
         result.message = narrative || '🔙 Armadilha! Recue 3 casas!';
         result.emoji = '🔙';
+        result.statUpdate.trapsHit = 1;
       }
       break;
     case 'giant':
@@ -158,11 +208,13 @@ function resolveTileEffect(
         result.stunTurns = 1;
         result.message = narrative || '💀 O Gigante te capturou! Perde 1 turno.';
         result.emoji = '💀';
+        result.statUpdate.giantsLost = 1;
       } else {
         result.resetToCheckpoint = true;
         result.attrChanges = { coragem: -2 };
         result.message = narrative || '💀 O Gigante te esmaga! Volta ao checkpoint!';
         result.emoji = '💀';
+        result.statUpdate.giantsLost = 1;
       }
       break;
     case 'shield':
@@ -170,12 +222,14 @@ function resolveTileEffect(
       result.attrChanges = { coragem: 1 };
       result.message = narrative || '🛡️ Armadura de Deus! Proteção ativada!';
       result.emoji = '🛡️';
+      result.statUpdate.shieldsGained = 1;
       break;
     case 'blessing':
       result.posAdjust = 4;
       result.attrChanges = { fe: 2 };
       result.message = narrative || '⭐ Bênção divina! Avance 4 casas!';
       result.emoji = '⭐';
+      result.statUpdate.blessingsReceived = 1;
       if (rng < 25) {
         result.collectiveEffect = {
           type: 'blessing_all',
@@ -186,6 +240,7 @@ function resolveTileEffect(
     case 'swap':
       result.message = narrative || '🔄 Troca de caminhos! Posições trocadas!';
       result.emoji = '🔄';
+      result.statUpdate.swapsTriggered = 1;
       break;
     case 'double_dice':
       result.extraTurn = true;
@@ -218,6 +273,7 @@ function resolveTileEffect(
         result.attrChanges = { coragem: -2, perseveranca: -1 };
         result.message = '☠️ PUNIÇÃO! Uma força sombria te arrasta de volta ao início da jornada!';
         result.emoji = '☠️';
+        result.statUpdate.backToStartCount = 1;
       }
       break;
     default:
@@ -241,9 +297,14 @@ const PresentialMultiplayer = () => {
   const [finishCount, setFinishCount] = useState(0);
   const [collectiveMsg, setCollectiveMsg] = useState<string | null>(null);
   const [miniGame, setMiniGame] = useState<{ tileType: TileType; playerIdx: number; prevPosition: number; newPosition: number } | null>(null);
-  // Pending action to execute AFTER token animation completes
   const pendingActionRef = useRef<(() => void) | null>(null);
   const [isTokenMoving, setIsTokenMoving] = useState(false);
+
+  // New state for phase transitions and River of Death
+  const [showPhaseTransition, setShowPhaseTransition] = useState<number | null>(null);
+  const [showRiverOfDeath, setShowRiverOfDeath] = useState<{ playerIdx: number; prevPos: number; newPos: number } | null>(null);
+  const [phaseTransitionPendingAction, setPhaseTransitionPendingAction] = useState<(() => void) | null>(null);
+  const lastPhaseAmbientRef = useRef(-1);
 
   const addPlayer = () => {
     if (players.length >= 8) return;
@@ -278,8 +339,20 @@ const PresentialMultiplayer = () => {
     setCurrentTurn(0);
     playTurnStart();
     playGameSfx('gameStart');
+    playPhaseAmbient(0);
+    lastPhaseAmbientRef.current = 0;
     setTurnAnnounce(`Vez de ${finalPlayers[0].name}!`);
+    // Show phase 0 transition
+    setShowPhaseTransition(0);
   };
+
+  const handlePhaseTransitionComplete = useCallback(() => {
+    setShowPhaseTransition(null);
+    if (phaseTransitionPendingAction) {
+      phaseTransitionPendingAction();
+      setPhaseTransitionPendingAction(null);
+    }
+  }, [phaseTransitionPendingAction]);
 
   // Called by ImmersiveBoard when token animation finishes
   const handleTokenArrived = useCallback(() => {
@@ -289,6 +362,22 @@ const PresentialMultiplayer = () => {
       pendingActionRef.current = null;
     }
   }, []);
+
+  // Update stats helper
+  const updatePlayerStats = (playerIdx: number, updates: Partial<PlayerStats>) => {
+    setPlayers(prev => prev.map((p, i) => {
+      if (i !== playerIdx) return p;
+      const newStats = { ...p.stats };
+      for (const [key, val] of Object.entries(updates)) {
+        if (typeof val === 'number') {
+          (newStats as any)[key] = ((newStats as any)[key] || 0) + val;
+        } else if (typeof val === 'boolean') {
+          (newStats as any)[key] = val;
+        }
+      }
+      return { ...p, stats: newStats };
+    }));
+  };
 
   const handleDiceRoll = useCallback((value?: number) => {
     const player = players[currentTurn];
@@ -310,14 +399,22 @@ const PresentialMultiplayer = () => {
     setIsTokenMoving(true);
 
     const tileType = tileTypes[newPos] || 'normal';
-    const turnIdx = currentTurn; // capture for closure
+    const turnIdx = currentTurn;
     const prevPos = player.position;
+    const prevPhase = Math.floor(prevPos / TILES_PER_PHASE);
+    const newPhase = Math.floor(newPos / TILES_PER_PHASE);
 
-    // Move token visually — ImmersiveBoard will animate step-by-step
+    // Move token visually
     setPlayers(prev => prev.map((p, i) => i === turnIdx ? { ...p, position: newPos, lastDice: diceVal } : p));
 
-    // Store what to do AFTER animation completes
-    pendingActionRef.current = () => {
+    // Build the post-animation action
+    const postAnimationAction = () => {
+      // Check for River of Death zone (last few tiles before finish)
+      if (newPos >= RIVER_ZONE_START && newPos < IMMERSIVE_BOARD_SIZE - 1 && !player.stats.riverCrossed) {
+        setShowRiverOfDeath({ playerIdx: turnIdx, prevPos, newPos });
+        return;
+      }
+
       if (EXPANDED_MINI_GAME_TILES.includes(tileType)) {
         setMiniGame({ tileType, playerIdx: turnIdx, prevPosition: prevPos, newPosition: newPos });
         return;
@@ -325,6 +422,9 @@ const PresentialMultiplayer = () => {
 
       const phaseIdx = Math.floor(newPos / TILES_PER_PHASE);
       const effect = resolveTileEffect(tileType, player, players, Date.now() + newPos, phaseIdx);
+
+      // Update stats
+      updatePlayerStats(turnIdx, effect.statUpdate);
 
       let finalPos = newPos;
       if (effect.resetToStart) {
@@ -380,6 +480,10 @@ const PresentialMultiplayer = () => {
           checkpoint: tileType === 'checkpoint' ? finalPos : p.checkpoint,
           extraTurn: effect.extraTurn,
           attributes: newAttrs,
+          stats: {
+            ...p.stats,
+            phasesCompleted: Math.floor(finalPos / TILES_PER_PHASE),
+          },
         };
       }));
 
@@ -390,7 +494,73 @@ const PresentialMultiplayer = () => {
         nextTurn();
       }
     };
-  }, [players, currentTurn, tileTypes, finishCount]);
+
+    // Store pending action — if phase changed, show transition first
+    pendingActionRef.current = () => {
+      if (newPhase > prevPhase && newPhase <= 5) {
+        // Play phase ambient and transition sound
+        playPhaseTransitionSound(newPhase);
+        playPhaseAmbient(newPhase);
+        lastPhaseAmbientRef.current = newPhase;
+        // Update player's lastPhase
+        setPlayers(prev => prev.map((p, i) => i === turnIdx ? { ...p, lastPhase: newPhase } : p));
+        // Show phase transition cutscene, then execute tile action
+        setPhaseTransitionPendingAction(() => postAnimationAction);
+        setShowPhaseTransition(newPhase);
+      } else {
+        // Play ambient if not already playing for this phase
+        if (lastPhaseAmbientRef.current !== newPhase) {
+          playPhaseAmbient(newPhase);
+          lastPhaseAmbientRef.current = newPhase;
+        }
+        postAnimationAction();
+      }
+    };
+  }, [players, currentTurn, tileTypes, finishCount, isTokenMoving]);
+
+  // River of Death result
+  const handleRiverResult = useCallback((passed: boolean) => {
+    if (!showRiverOfDeath) return;
+    const { playerIdx, prevPos, newPos } = showRiverOfDeath;
+
+    setPlayers(prev => prev.map((p, i) => {
+      if (i !== playerIdx) return p;
+      if (passed) {
+        return {
+          ...p,
+          stats: { ...p.stats, riverCrossed: true },
+          attributes: { ...p.attributes, fe: p.attributes.fe + 3, coragem: p.attributes.coragem + 2 },
+        };
+      } else {
+        // Failed — go back a few tiles
+        const retreatPos = Math.max(RIVER_ZONE_START - 3, 0);
+        return {
+          ...p,
+          position: retreatPos,
+          stats: { ...p.stats },
+          attributes: { ...p.attributes, perseveranca: Math.max(0, p.attributes.perseveranca - 1) },
+        };
+      }
+    }));
+
+    setShowRiverOfDeath(null);
+
+    if (passed) {
+      setTileMessage({
+        message: '✨ Você atravessou o Rio da Morte! A Cidade Celestial está próxima! Fé +3, Coragem +2!',
+        emoji: '✨',
+        tileType: 'blessing',
+        playerName: players[playerIdx]?.name,
+      });
+    } else {
+      setTileMessage({
+        message: '🌊 As águas te venceram... Você recua, mas a fé ainda te sustenta.',
+        emoji: '🌊',
+        tileType: 'current',
+        playerName: players[playerIdx]?.name,
+      });
+    }
+  }, [showRiverOfDeath, players]);
 
   const nextTurn = useCallback(() => {
     setPlayers(current => {
@@ -424,6 +594,15 @@ const PresentialMultiplayer = () => {
     const { playerIdx, prevPosition, newPosition, tileType } = miniGame;
     const player = players[playerIdx];
 
+    // Update stats
+    if (tileType === 'giant') {
+      updatePlayerStats(playerIdx, won ? { giantsDefeated: 1 } : { giantsLost: 1 });
+    } else if (tileType === 'challenge') {
+      updatePlayerStats(playerIdx, won ? { challengesWon: 1 } : { challengesLost: 1 });
+    } else if (tileType === 'scripture') {
+      updatePlayerStats(playerIdx, won ? { scripturesCorrect: 1 } : { scripturesWrong: 1 });
+    }
+
     setPlayers(prev => prev.map((p, i) => {
       if (i !== playerIdx) return p;
       if (won) {
@@ -436,6 +615,11 @@ const PresentialMultiplayer = () => {
             coragem: p.attributes.coragem + 2,
             fe: p.attributes.fe + 1,
           },
+          stats: {
+            ...p.stats,
+            currentStreak: p.stats.currentStreak + 1,
+            maxStreak: Math.max(p.stats.maxStreak, p.stats.currentStreak + 1),
+          },
         };
       } else {
         return {
@@ -445,6 +629,7 @@ const PresentialMultiplayer = () => {
             ...p.attributes,
             coragem: Math.max(0, p.attributes.coragem - 1),
           },
+          stats: { ...p.stats, currentStreak: 0 },
         };
       }
     }));
@@ -481,6 +666,9 @@ const PresentialMultiplayer = () => {
     setTileTypes(generateImmersiveTiles(Date.now()));
     setPhase('playing');
     playGameSfx('gameStart');
+    playPhaseAmbient(0);
+    lastPhaseAmbientRef.current = 0;
+    setShowPhaseTransition(0);
   };
 
   // ─── SETUP ───
@@ -578,7 +766,10 @@ const PresentialMultiplayer = () => {
   if (phase === 'finished') {
     return (
       <EpicVictoryScreen
-        players={players}
+        players={players.map(p => ({
+          ...p,
+          stats: p.stats,
+        }))}
         onPlayAgain={resetGame}
         onExit={() => navigate('/multiplayer')}
       />
@@ -596,6 +787,22 @@ const PresentialMultiplayer = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Phase Transition Cutscene */}
+      {showPhaseTransition !== null && (
+        <PhaseTransition
+          phaseIdx={showPhaseTransition}
+          onComplete={handlePhaseTransitionComplete}
+        />
+      )}
+
+      {/* River of Death */}
+      {showRiverOfDeath && (
+        <RiverOfDeath
+          playerName={players[showRiverOfDeath.playerIdx]?.name || ''}
+          onResult={handleRiverResult}
+        />
+      )}
+
       <GameNotification visible={!!turnAnnounce} onDismiss={() => setTurnAnnounce(null)} duration={4000} position="top-offset">
         <div className="px-6 py-3 rounded-2xl font-display text-lg" style={{
           background: 'linear-gradient(135deg, hsl(40 60% 20%), hsl(40 50% 15%))',
