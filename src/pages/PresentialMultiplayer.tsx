@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import ImmersiveBoard from '@/components/multiplayer/ImmersiveBoard';
 import { Dice3D } from '@/components/Dice3D';
 import TileEventPopup from '@/components/multiplayer/TileEventPopup';
+import BoardMiniGame from '@/components/multiplayer/BoardMiniGame';
 import GameNotification from '@/components/GameNotification';
 import { boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
 import {
   IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, TileType, TILE_TYPES,
-  generateImmersiveTiles,
+  MINI_GAME_TILES, generateImmersiveTiles,
 } from '@/components/multiplayer/ImmersiveBoardTypes';
 import { playMove, playVictory, playTurnStart } from '@/components/multiplayer/BoardSounds';
 import { playGameSfx } from '@/lib/gameSfx';
