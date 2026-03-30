@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import ScrollToTop from "@/components/ScrollToTop";
 import PreviewPaywall from "@/components/PreviewPaywall";
+import PreviewTrialGate from "@/components/PreviewTrialGate";
 import { lazy, Suspense } from "react";
 import { Loader2 } from "lucide-react";
 
