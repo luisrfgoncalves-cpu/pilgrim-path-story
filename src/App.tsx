@@ -48,12 +48,9 @@ const PREVIEW_ALLOWED_CHAPTERS = ['cena1', 'p2-cena1'];
 // Detect if running as installed PWA
 const isInstalledPWA = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true;
 
-/** Gate that requires auth when opened as installed app */
+/** Gate that requires authentication — always enforced */
 const AuthGate = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
-
-  // Only enforce auth when running as installed PWA
-  if (!isInstalledPWA) return <>{children}</>;
 
   if (loading) {
     return (
