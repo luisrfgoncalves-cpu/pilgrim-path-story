@@ -1,11 +1,17 @@
 // ─── Immersive Board Types & Data ───
 
 import phase1Bg from '@/assets/board/phase1-cidade-destruicao.jpg';
+import phase1bBg from '@/assets/board/phase1b-cidade-destruicao.jpg';
 import phase2Bg from '@/assets/board/phase2-pantano-caminho.jpg';
+import phase2bBg from '@/assets/board/phase2b-pantano-caminho.jpg';
 import phase3Bg from '@/assets/board/phase3-vale-sombra.jpg';
+import phase3bBg from '@/assets/board/phase3b-vale-sombra.jpg';
 import phase4Bg from '@/assets/board/phase4-feira-vaidade.jpg';
+import phase4bBg from '@/assets/board/phase4b-feira-vaidade.jpg';
 import phase5Bg from '@/assets/board/phase5-castelo-duvida.jpg';
+import phase5bBg from '@/assets/board/phase5b-castelo-duvida.jpg';
 import phase6Bg from '@/assets/board/phase6-cidade-celestial.jpg';
+import phase6bBg from '@/assets/board/phase6b-cidade-celestial.jpg';
 
 // Tile-specific images (environments & contexts)
 import tileStart from '@/assets/board/tile-start.jpg';
@@ -73,18 +79,20 @@ export interface PhaseConfig {
   subtitle: string;
   icon: string;
   bgImage: string;
+  bgImage2: string; // second bg to avoid stretching
   accentHue: number;
+  trailStyle: 'stone' | 'dirt' | 'forest' | 'dark' | 'golden' | 'mystic';
   characterKey?: string;
   characterName?: string;
 }
 
 export const PHASES: PhaseConfig[] = [
-  { id: 0, name: 'A Partida',   subtitle: 'Cidade da Destruição',  icon: '🏚️', bgImage: phase1Bg, accentHue: 30,  characterKey: 'evangelista',       characterName: 'Evangelista' },
-  { id: 1, name: 'O Caminho',   subtitle: 'Pântano e Provações',   icon: '🗺️', bgImage: phase2Bg, accentHue: 140, characterKey: 'apolion',           characterName: 'Apolião' },
-  { id: 2, name: 'O Vale',      subtitle: 'Sombra da Morte',       icon: '💀', bgImage: phase3Bg, accentHue: 260, characterKey: 'gigante_desespero', characterName: 'Gigante Desespero' },
-  { id: 3, name: 'A Feira',     subtitle: 'Vaidade e Provação',    icon: '🎪', bgImage: phase4Bg, accentHue: 0,   characterKey: 'falador',           characterName: 'Falador' },
-  { id: 4, name: 'O Castelo',   subtitle: 'Dúvida e Resgate',     icon: '🏰', bgImage: phase5Bg, accentHue: 270, characterKey: 'grande_coracao',    characterName: 'Grande-Coração' },
-  { id: 5, name: 'O Rio',       subtitle: 'Cidade Celestial',     icon: '✨', bgImage: phase6Bg, accentHue: 45,  characterKey: 'esperanca',         characterName: 'Esperança' },
+  { id: 0, name: 'A Partida',   subtitle: 'Cidade da Destruição',  icon: '🏚️', bgImage: phase1Bg, bgImage2: phase1bBg, accentHue: 30,  trailStyle: 'stone',  characterKey: 'evangelista',       characterName: 'Evangelista' },
+  { id: 1, name: 'O Caminho',   subtitle: 'Pântano e Provações',   icon: '🗺️', bgImage: phase2Bg, bgImage2: phase2bBg, accentHue: 140, trailStyle: 'forest', characterKey: 'apolion',           characterName: 'Apolião' },
+  { id: 2, name: 'O Vale',      subtitle: 'Sombra da Morte',       icon: '💀', bgImage: phase3Bg, bgImage2: phase3bBg, accentHue: 260, trailStyle: 'dark',   characterKey: 'gigante_desespero', characterName: 'Gigante Desespero' },
+  { id: 3, name: 'A Feira',     subtitle: 'Vaidade e Provação',    icon: '🎪', bgImage: phase4Bg, bgImage2: phase4bBg, accentHue: 0,   trailStyle: 'stone',  characterKey: 'falador',           characterName: 'Falador' },
+  { id: 4, name: 'O Castelo',   subtitle: 'Dúvida e Resgate',     icon: '🏰', bgImage: phase5Bg, bgImage2: phase5bBg, accentHue: 270, trailStyle: 'mystic', characterKey: 'grande_coracao',    characterName: 'Grande-Coração' },
+  { id: 5, name: 'O Rio',       subtitle: 'Cidade Celestial',     icon: '✨', bgImage: phase6Bg, bgImage2: phase6bBg, accentHue: 45,  trailStyle: 'golden', characterKey: 'esperanca',         characterName: 'Esperança' },
 ];
 
 // ─── Generate immersive board tile types ───
@@ -139,17 +147,30 @@ export function generateImmersiveTiles(seed: number): TileType[] {
   return tiles;
 }
 
+// Height per phase in svh units (4 phone screens per phase for spacing)
+export const PHASE_HEIGHT_SVH = 400;
+
 // ─── Trail coordinates for winding path within each phase ───
-// 20 tiles spanning ~200svh (2 phone screens per phase)
+// 20 tiles spanning ~400svh (4 phone screens per phase — plenty of room)
 export function getTrailPositions(tilesCount: number = TILES_PER_PHASE): { x: number; y: number }[] {
   const positions: { x: number; y: number }[] = [];
   for (let i = 0; i < tilesCount; i++) {
     const t = i / (tilesCount - 1);
-    const y = 4 + t * 92; // 4% to 96% vertical
-    // Serpentine: alternates left-right with more pronounced waves
-    const wave = Math.sin(t * Math.PI * 3.5) * 30;
+    const y = 3 + t * 94; // 3% to 97% vertical
+    // Serpentine: alternates left-right with wider curves
+    const wave = Math.sin(t * Math.PI * 3) * 28;
     const x = 50 + wave;
-    positions.push({ x: Math.max(14, Math.min(86, x)), y });
+    positions.push({ x: Math.max(16, Math.min(84, x)), y });
   }
   return positions;
 }
+
+// Trail color configs per style
+export const TRAIL_STYLES: Record<string, { pathColor: string; pathStroke: string; pathWidth: number }> = {
+  stone:  { pathColor: 'rgba(139, 119, 101, 0.7)', pathStroke: 'rgba(101, 82, 65, 0.9)',  pathWidth: 28 },
+  dirt:   { pathColor: 'rgba(120, 100, 60, 0.65)',  pathStroke: 'rgba(90, 70, 40, 0.8)',   pathWidth: 26 },
+  forest: { pathColor: 'rgba(60, 90, 50, 0.6)',     pathStroke: 'rgba(40, 70, 30, 0.8)',   pathWidth: 26 },
+  dark:   { pathColor: 'rgba(50, 40, 60, 0.7)',     pathStroke: 'rgba(80, 50, 100, 0.6)',  pathWidth: 24 },
+  golden: { pathColor: 'rgba(180, 150, 80, 0.6)',   pathStroke: 'rgba(200, 170, 50, 0.5)', pathWidth: 28 },
+  mystic: { pathColor: 'rgba(80, 50, 120, 0.6)',    pathStroke: 'rgba(120, 70, 160, 0.5)', pathWidth: 24 },
+};
