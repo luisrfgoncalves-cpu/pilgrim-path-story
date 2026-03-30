@@ -303,6 +303,9 @@ const ScenePage = () => {
     }
   }, [chapter?.id, transitioning]);
 
+  const hasCharReveal = !!charReveal;
+  const canShowChoices = !hasCharReveal;
+
   useEffect(() => {
     if (!chapter) return;
     if (narrativeIndex < fullNarrative.length - 1) {
