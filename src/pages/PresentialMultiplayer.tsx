@@ -1099,7 +1099,7 @@ const PresentialMultiplayer = () => {
         />
 
         {/* Dice section */}
-        {phase === 'playing' && !currentPlayer?.finished && (
+        {phase === 'playing' && !currentPlayer?.finished && !tileMessage && !miniGame && !showRiverOfDeath && showPhaseTransition === null && (
           <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background via-background/95 to-transparent pt-10 pb-5 px-4">
             <div className="max-w-lg mx-auto">
               {currentPlayer?.isStunned ? (
