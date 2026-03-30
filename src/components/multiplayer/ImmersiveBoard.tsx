@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import {
   IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, PHASES, TILE_TYPES,
   TileType, getTrailPositions, PhaseConfig,
@@ -27,52 +27,50 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
   const trailPositions = useMemo(() => getTrailPositions(), []);
 
   const currentPlayer = players.find(p => p.id === currentTurnId);
+  const activePhase = currentPlayer ? Math.floor(currentPlayer.position / TILES_PER_PHASE) : 0;
 
-  // Phases that need FULL rendering (where any player is, ±1)
-  const fullPhases = useMemo(() => {
+  // Only render current phase ±1 for performance (virtualization)
+  const visiblePhases = useMemo(() => {
     const set = new Set<number>();
-    players.forEach(p => {
-      if (p.finished) return;
-      const ph = Math.floor(p.position / TILES_PER_PHASE);
-      set.add(Math.max(0, ph - 1));
-      set.add(ph);
-      set.add(Math.min(PHASES.length - 1, ph + 1));
-    });
-    // Always include first and last if any player there
-    set.add(0);
+    set.add(Math.max(0, activePhase - 1));
+    set.add(activePhase);
+    set.add(Math.min(PHASES.length - 1, activePhase + 1));
     return set;
-  }, [players]);
+  }, [activePhase]);
 
   useEffect(() => {
     if (!currentPlayer || !boardRef.current) return;
-    const phaseIdx = Math.floor(currentPlayer.position / TILES_PER_PHASE);
-    const phaseEl = boardRef.current.querySelector(`[data-phase="${phaseIdx}"]`);
+    const phaseEl = boardRef.current.querySelector(`[data-phase="${activePhase}"]`);
     if (phaseEl) {
       phaseEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, [currentPlayer?.position]);
+  }, [currentPlayer?.position, activePhase]);
 
   return (
     <div ref={boardRef} className="w-full">
       {PHASES.map((phase, phaseIdx) => (
-        <PhaseSection
-          key={phaseIdx}
-          phase={phase}
-          phaseIdx={phaseIdx}
-          tileTypes={tileTypes}
-          trailPositions={trailPositions}
-          players={players}
-          currentTurnId={currentTurnId}
-          onTileClick={onTileClick}
-          isFullRender={fullPhases.has(phaseIdx)}
-        />
+        visiblePhases.has(phaseIdx) ? (
+          <PhaseSection
+            key={phaseIdx}
+            phase={phase}
+            phaseIdx={phaseIdx}
+            tileTypes={tileTypes}
+            trailPositions={trailPositions}
+            players={players}
+            currentTurnId={currentTurnId}
+            onTileClick={onTileClick}
+          />
+        ) : (
+          // Placeholder for non-visible phases to maintain scroll height
+          <div key={phaseIdx} data-phase={phaseIdx} style={{ minHeight: '200svh' }} />
+        )
       ))}
     </div>
   );
 }
 
 function PhaseSection({
-  phase, phaseIdx, tileTypes, trailPositions, players, currentTurnId, onTileClick, isFullRender,
+  phase, phaseIdx, tileTypes, trailPositions, players, currentTurnId, onTileClick,
 }: {
   phase: PhaseConfig;
   phaseIdx: number;
@@ -81,9 +79,9 @@ function PhaseSection({
   players: Player[];
   currentTurnId?: string;
   onTileClick?: (position: number, tileType: TileType) => void;
-  isFullRender: boolean;
 }) {
   const startIdx = phaseIdx * TILES_PER_PHASE;
+  const charImg = phase.characterKey ? characterImages[phase.characterKey] : null;
 
   return (
     <div
@@ -91,7 +89,7 @@ function PhaseSection({
       className="relative w-full overflow-hidden"
       style={{ minHeight: '200svh' }}
     >
-      {/* Background - always show (just 1 img per phase) */}
+      {/* Background */}
       <div className="absolute inset-0">
         <img
           src={phase.bgImage}
@@ -105,7 +103,7 @@ function PhaseSection({
         }} />
       </div>
 
-      {/* Phase title - always show */}
+      {/* Phase title */}
       <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-center pt-4 pb-2">
         <div className="flex items-center gap-3 px-5 py-3 rounded-xl backdrop-blur-md"
           style={{
@@ -122,37 +120,40 @@ function PhaseSection({
         </div>
       </div>
 
-      {/* Character portrait - only on full render phases */}
-      {isFullRender && phase.characterKey && characterImages[phase.characterKey] && (
+      {/* Character portrait - single per phase */}
+      {charImg && (
         <div className="absolute right-0 top-[15%] w-44 h-56 opacity-40 pointer-events-none z-0"
           style={{
             maskImage: 'linear-gradient(to left, black 40%, transparent 100%)',
             WebkitMaskImage: 'linear-gradient(to left, black 40%, transparent 100%)',
           }}
         >
-          <img src={characterImages[phase.characterKey]} alt={phase.characterName || ''} className="w-full h-full object-cover rounded-l-2xl" loading="lazy"
+          <img src={charImg} alt={phase.characterName || ''} className="w-full h-full object-cover rounded-l-2xl" loading="lazy"
             style={{ filter: 'saturate(1.3) contrast(1.1)' }}
           />
         </div>
       )}
 
-      {/* Trail path SVG - always show */}
+      {/* Trail path SVG */}
       <svg className="absolute inset-0 w-full h-full z-[1] pointer-events-none" preserveAspectRatio="none">
         {trailPositions.map((pos, i) => {
           if (i === 0) return null;
           const prev = trailPositions[i - 1];
           return (
-            <line key={i}
+            <line
+              key={i}
               x1={`${prev.x}%`} y1={`${prev.y}%`}
               x2={`${pos.x}%`} y2={`${pos.y}%`}
               stroke={`hsla(${phase.accentHue} 50% 60% / 0.4)`}
-              strokeWidth="4" strokeDasharray="10 5" strokeLinecap="round"
+              strokeWidth="4"
+              strokeDasharray="10 5"
+              strokeLinecap="round"
             />
           );
         })}
       </svg>
 
-      {/* Tiles - always render but optimize detail level */}
+      {/* Tiles */}
       <div className="relative w-full z-[2]" style={{ minHeight: '200svh' }}>
         {trailPositions.map((pos, localIdx) => {
           const globalIdx = startIdx + localIdx;
@@ -167,9 +168,11 @@ function PhaseSection({
           const isBoss = tileType === 'giant' || tileType === 'challenge';
           const tileSize = isBoss ? 76 : isSpecial ? 68 : 56;
 
-          // Character images on ALL special tiles (like before)
-          const tileCharImg = isSpecial && config.characterKey ? characterImages[config.characterKey!] : null;
+          // Only load character images for boss/important tiles (not every tile)
+          const tileCharKey = isBoss ? config.characterKey : undefined;
+          const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
 
+          // Alternate icon position: even tiles = right, odd tiles = left
           const iconOnRight = localIdx % 2 === 0;
 
           return (
@@ -179,10 +182,27 @@ function PhaseSection({
               style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
               onClick={() => onTileClick?.(globalIdx, tileType)}
             >
+              {/* Container for tile + external icon */}
               <div className="relative flex items-center gap-1">
-                {/* Icon OUTSIDE tile - left */}
+                {/* Icon OUTSIDE tile - left side */}
                 {isSpecial && !iconOnRight && (
-                  <TileIconBadge tileType={tileType} config={config} isBoss={isBoss} />
+                  <div
+                    className="flex-shrink-0 flex items-center justify-center rounded-lg z-10"
+                    style={{
+                      width: isBoss ? 32 : 26,
+                      height: isBoss ? 32 : 26,
+                      background: `radial-gradient(circle, ${config.color}, hsl(0 0% 8%))`,
+                      border: `1.5px solid ${config.color}60`,
+                      boxShadow: `0 0 10px ${config.glowColor}`,
+                    }}
+                  >
+                    <MedievalTileIcon
+                      tileType={tileType}
+                      size={isBoss ? 22 : 18}
+                      color="#fff"
+                      glowColor={config.glowColor}
+                    />
+                  </div>
                 )}
 
                 {/* Tile body */}
@@ -195,46 +215,70 @@ function PhaseSection({
                     width: tileSize,
                     height: tileSize,
                     borderRadius: isBoss ? 18 : isSpecial ? 16 : 12,
-                    // Use CSS background-image instead of <img> for better perf
-                    backgroundImage: tileCharImg ? `url(${tileCharImg})` : undefined,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundColor: !tileCharImg ? undefined : 'hsl(0 0% 12%)',
-                    background: !tileCharImg ? `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))` : undefined,
+                    background: tileCharImg ? 'none' : `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))`,
                     boxShadow: `0 0 ${playersHere.length > 0 ? '30' : '14'}px ${config.glowColor},
+                      inset 0 2px 3px rgba(255,255,255,0.15),
                       0 4px 12px rgba(0,0,0,0.5)`,
                     border: `2.5px solid ${config.color}`,
                   }}
                 >
-                  {/* Dark gradient overlay for tiles with images */}
+                  {/* Character image ONLY for boss tiles */}
                   {tileCharImg && (
-                    <div className="absolute inset-0 rounded-[inherit]" style={{
-                      background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%)',
-                    }} />
+                    <>
+                      <img
+                        src={tileCharImg}
+                        alt={config.label}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        loading="lazy"
+                        style={{ filter: 'saturate(1.3) contrast(1.2)' }}
+                      />
+                      <div className="absolute inset-0" style={{
+                        background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.45) 100%)',
+                      }} />
+                    </>
                   )}
 
-                  {/* Number badge */}
+                  {/* Tile number badge */}
                   <span className="absolute -top-1.5 -left-1.5 text-[8px] font-mono font-bold rounded-full w-5 h-5 flex items-center justify-center z-10"
                     style={{ background: 'rgba(0,0,0,0.9)', color: config.color, border: `1.5px solid ${config.color}50` }}
                   >
                     {globalIdx + 1}
                   </span>
 
-                  {/* Center emoji/icon */}
-                  {!isSpecial && <span className="text-lg opacity-50">·</span>}
-                  {isBoss && <span className="relative z-10 text-2xl drop-shadow-lg">{tileType === 'giant' ? '💀' : '⚔️'}</span>}
-                  {isSpecial && !isBoss && (
-                    <span className="relative z-10 text-xl drop-shadow-lg">{config.emoji}</span>
+                  {/* Emoji for non-special or boss tiles (centered fallback) */}
+                  {!isSpecial && (
+                    <span className="text-lg opacity-50">·</span>
+                  )}
+                  {isBoss && (
+                    <span className="relative z-10 text-2xl drop-shadow-lg">
+                      {tileType === 'giant' ? '💀' : '⚔️'}
+                    </span>
                   )}
                 </div>
 
-                {/* Icon OUTSIDE tile - right */}
+                {/* Icon OUTSIDE tile - right side */}
                 {isSpecial && iconOnRight && (
-                  <TileIconBadge tileType={tileType} config={config} isBoss={isBoss} />
+                  <div
+                    className="flex-shrink-0 flex items-center justify-center rounded-lg z-10"
+                    style={{
+                      width: isBoss ? 32 : 26,
+                      height: isBoss ? 32 : 26,
+                      background: `radial-gradient(circle, ${config.color}, hsl(0 0% 8%))`,
+                      border: `1.5px solid ${config.color}60`,
+                      boxShadow: `0 0 10px ${config.glowColor}`,
+                    }}
+                  >
+                    <MedievalTileIcon
+                      tileType={tileType}
+                      size={isBoss ? 22 : 18}
+                      color="#fff"
+                      glowColor={config.glowColor}
+                    />
+                  </div>
                 )}
               </div>
 
-              {/* Label */}
+              {/* Type label */}
               <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-display font-bold whitespace-nowrap px-2 py-0.5 rounded-md z-10"
                 style={{ background: 'rgba(0,0,0,0.9)', color: config.color, border: `1px solid ${config.color}40`, textShadow: `0 0 8px ${config.glowColor}` }}
               >
@@ -245,7 +289,8 @@ function PhaseSection({
               {playersHere.length > 0 && (
                 <div className="absolute -top-5 left-1/2 -translate-x-1/2 flex gap-0.5 z-20">
                   {playersHere.map(p => (
-                    <div key={p.id}
+                    <div
+                      key={p.id}
                       className="w-6 h-6 rounded-full border-2 border-white/60 shadow-lg"
                       style={{
                         backgroundColor: p.color,
@@ -274,24 +319,6 @@ function PhaseSection({
           }}
         />
       )}
-    </div>
-  );
-}
-
-// Small extracted component to reduce repetition
-function TileIconBadge({ tileType, config, isBoss }: { tileType: TileType; config: typeof TILE_TYPES[TileType]; isBoss: boolean }) {
-  return (
-    <div
-      className="flex-shrink-0 flex items-center justify-center rounded-lg"
-      style={{
-        width: isBoss ? 32 : 26,
-        height: isBoss ? 32 : 26,
-        background: `radial-gradient(circle, ${config.color}, hsl(0 0% 8%))`,
-        border: `1.5px solid ${config.color}60`,
-        boxShadow: `0 0 10px ${config.glowColor}`,
-      }}
-    >
-      <MedievalTileIcon tileType={tileType} size={isBoss ? 22 : 18} color="#fff" glowColor={config.glowColor} />
     </div>
   );
 }
