@@ -124,7 +124,7 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
   // Auto-dismiss after reveal
   useEffect(() => {
     if (!visible || phase !== 'reveal') return;
-    const t = setTimeout(onDismiss, 8000);
+    const t = setTimeout(onDismiss, 11000); // 11s — 3s extra for reading
     return () => clearTimeout(t);
   }, [visible, phase, onDismiss]);
 
