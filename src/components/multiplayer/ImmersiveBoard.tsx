@@ -144,7 +144,7 @@ function PhaseSection({
           const tileImg = tileCharImg || tileEnvImg;
           const isSpecial = tileType !== 'normal';
           const isBoss = tileType === 'giant' || tileType === 'challenge';
-          const tileSize = isBoss ? 80 : isSpecial ? 72 : 60;
+          const tileSize = isBoss ? 88 : isSpecial ? 78 : 66;
 
           return (
             <div
@@ -186,12 +186,10 @@ function PhaseSection({
                   />
                 )}
 
-                {/* Tile number badge */}
-                <span className="absolute -top-1.5 -left-1.5 text-[8px] font-mono font-bold rounded-full w-5 h-5 flex items-center justify-center z-10"
-                  style={{ background: 'rgba(0,0,0,0.9)', color: config.color, border: `1.5px solid ${config.color}50` }}
-                >
-                  {globalIdx + 1}
-                </span>
+                {/* Tile emoji icon overlay for normal tiles */}
+                {!isSpecial && (
+                  <span className="relative z-10 text-lg opacity-60">{config.emoji}</span>
+                )}
               </div>
 
               {/* Medieval icon */}
