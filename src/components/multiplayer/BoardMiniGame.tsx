@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { X, Swords, BookOpen, Skull } from 'lucide-react';
 import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { characterImages } from '@/data/characterImages';
@@ -434,6 +434,267 @@ function TreasureHuntGame({ onResult }: { onResult: (won: boolean) => void }) {
   );
 }
 
+// Quick courage test — hold button under pressure
+function CourageHoldGame({ onResult }: { onResult: (won: boolean) => void }) {
+  const [holding, setHolding] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [done, setDone] = useState(false);
+  const [result, setResult] = useState<boolean | null>(null);
+  const holdGoal = 100;
+  const intervalRef = useRef<number | null>(null);
+
+  const startHold = () => {
+    if (done) return;
+    setHolding(true);
+    if (navigator.vibrate) navigator.vibrate(30);
+  };
+
+  const stopHold = () => {
+    setHolding(false);
+    if (progress < holdGoal && !done) {
+      // Reset progress partially
+      setProgress(p => Math.max(0, p - 15));
+    }
+  };
+
+  useEffect(() => {
+    if (holding && !done) {
+      intervalRef.current = window.setInterval(() => {
+        setProgress(p => {
+          const next = p + 3;
+          if (next >= holdGoal) {
+            setDone(true);
+            setResult(true);
+            setHolding(false);
+            playPositiveEvent();
+            if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+            return holdGoal;
+          }
+          return next;
+        });
+      }, 50);
+    } else {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    }
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, [holding, done]);
+
+  // Timeout
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (!done) {
+        setDone(true);
+        setResult(false);
+        playNegativeEvent();
+      }
+    }, 10000);
+    return () => clearTimeout(t);
+  }, [done]);
+
+  useEffect(() => {
+    if (done && result !== null) {
+      const t = setTimeout(() => onResult(result), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [done, result, onResult]);
+
+  if (done) {
+    return (
+      <div className="text-center p-6 space-y-2">
+        <span className="text-5xl block">{result ? '✅' : '❌'}</span>
+        <p className="text-lg font-display" style={{ color: result ? 'hsl(120 60% 70%)' : 'hsl(0 60% 70%)' }}>
+          {result ? 'Coragem mantida!' : 'Você fraquejou...'}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-4 p-4">
+      <p className="text-sm font-display text-white/70">Segure o botão sem soltar!</p>
+      <div className="w-full h-4 rounded-full overflow-hidden" style={{
+        background: 'hsl(0 0% 15%)',
+        border: '1px solid hsl(0 0% 25%)',
+      }}>
+        <div className="h-full rounded-full transition-all duration-100" style={{
+          width: `${progress}%`,
+          background: `linear-gradient(90deg, hsl(0 60% 45%), hsl(45 70% 55%))`,
+          boxShadow: '0 0 10px hsl(45 70% 55% / 0.5)',
+        }} />
+      </div>
+      <button
+        onMouseDown={startHold}
+        onMouseUp={stopHold}
+        onTouchStart={startHold}
+        onTouchEnd={stopHold}
+        className="w-32 h-32 rounded-full flex items-center justify-center text-4xl transition-transform"
+        style={{
+          background: holding
+            ? 'radial-gradient(circle, hsl(45 60% 35%), hsl(30 40% 15%))'
+            : 'radial-gradient(circle, hsl(0 0% 20%), hsl(0 0% 10%))',
+          border: `3px solid ${holding ? 'hsl(45 60% 50%)' : 'hsl(0 0% 30%)'}`,
+          boxShadow: holding ? '0 0 30px hsl(45 60% 50% / 0.4)' : undefined,
+          transform: holding ? 'scale(0.95)' : 'scale(1)',
+        }}
+      >
+        {holding ? '🔥' : '🛡️'}
+      </button>
+      <p className="text-xs text-white/40">Segure firme para resistir!</p>
+    </div>
+  );
+}
+
+// Quick path choice — choose the right path
+function PathChoiceGame({ onResult }: { onResult: (won: boolean) => void }) {
+  const paths = [
+    { emoji: '🌿', label: 'Caminho Verde', safe: true },
+    { emoji: '🌑', label: 'Caminho Escuro', safe: false },
+    { emoji: '💧', label: 'Caminho do Rio', safe: true },
+    { emoji: '🔥', label: 'Caminho de Fogo', safe: false },
+  ];
+  const [shuffled] = useState(() => [...paths].sort(() => Math.random() - 0.5).slice(0, 3));
+  const [chosen, setChosen] = useState<number | null>(null);
+  const [result, setResult] = useState<boolean | null>(null);
+
+  const handleChoice = (idx: number) => {
+    if (chosen !== null) return;
+    setChosen(idx);
+    const won = shuffled[idx].safe;
+    setResult(won);
+    if (won) playPositiveEvent(); else playNegativeEvent();
+  };
+
+  useEffect(() => {
+    if (result !== null) {
+      const t = setTimeout(() => onResult(result), 1800);
+      return () => clearTimeout(t);
+    }
+  }, [result, onResult]);
+
+  return (
+    <div className="flex flex-col items-center gap-4 p-4">
+      <p className="text-sm font-display text-white/70">Escolha o caminho seguro!</p>
+      <div className="w-full space-y-2">
+        {shuffled.map((path, i) => (
+          <button
+            key={i}
+            onClick={() => handleChoice(i)}
+            disabled={chosen !== null}
+            className="w-full py-4 px-5 rounded-xl flex items-center gap-3 text-left transition-all active:scale-95"
+            style={{
+              background: chosen === i
+                ? (path.safe ? 'hsl(120 30% 15%)' : 'hsl(0 30% 15%)')
+                : 'hsl(0 0% 12%)',
+              border: `2px solid ${chosen === i
+                ? (path.safe ? 'hsl(120 50% 45%)' : 'hsl(0 50% 45%)')
+                : chosen !== null && path.safe ? 'hsl(120 40% 35% / 0.5)' : 'hsl(0 0% 25%)'}`,
+              opacity: chosen !== null && chosen !== i && !path.safe ? 0.4 : 1,
+            }}
+          >
+            <span className="text-3xl">{path.emoji}</span>
+            <span className="text-sm font-display text-white/80">{path.label}</span>
+            {chosen !== null && i === chosen && (
+              <span className="ml-auto text-lg">{path.safe ? '✅' : '❌'}</span>
+            )}
+          </button>
+        ))}
+      </div>
+      {result !== null && (
+        <p className="text-lg font-display" style={{ color: result ? 'hsl(120 60% 70%)' : 'hsl(0 60% 70%)' }}>
+          {result ? 'Caminho seguro!' : 'Caminho perigoso!'}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// Rapid tap countdown
+function RapidTapGame({ onResult }: { onResult: (won: boolean) => void }) {
+  const [taps, setTaps] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(5);
+  const [done, setDone] = useState(false);
+  const [result, setResult] = useState<boolean | null>(null);
+  const goal = 12;
+
+  useEffect(() => {
+    if (done) return;
+    const t = setInterval(() => {
+      setTimeLeft(p => {
+        if (p <= 1) {
+          setDone(true);
+          return 0;
+        }
+        return p - 1;
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, [done]);
+
+  useEffect(() => {
+    if (done && result === null) {
+      const won = taps >= goal;
+      setResult(won);
+      if (won) playPositiveEvent(); else playNegativeEvent();
+    }
+  }, [done, taps, result]);
+
+  useEffect(() => {
+    if (done && result !== null) {
+      const t = setTimeout(() => onResult(result), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [done, result, onResult]);
+
+  const handleTap = () => {
+    if (done) return;
+    setTaps(p => {
+      const next = p + 1;
+      if (next >= goal) {
+        setDone(true);
+      }
+      if (navigator.vibrate) navigator.vibrate(15);
+      return next;
+    });
+  };
+
+  if (done) {
+    return (
+      <div className="text-center p-6 space-y-2">
+        <span className="text-5xl block">{result ? '✅' : '❌'}</span>
+        <p className="text-lg font-display" style={{ color: result ? 'hsl(120 60% 70%)' : 'hsl(0 60% 70%)' }}>
+          {result ? `${taps} toques! Passou!` : `Apenas ${taps}/${goal}...`}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-3 p-4">
+      <p className="text-sm font-display text-white/70">Toque rápido {goal} vezes! ⏱ {timeLeft}s</p>
+      <div className="w-full h-3 rounded-full overflow-hidden" style={{
+        background: 'hsl(0 0% 15%)', border: '1px solid hsl(0 0% 25%)',
+      }}>
+        <div className="h-full rounded-full transition-all duration-150" style={{
+          width: `${(taps / goal) * 100}%`,
+          background: 'linear-gradient(90deg, hsl(195 60% 45%), hsl(45 70% 55%))',
+        }} />
+      </div>
+      <button
+        onClick={handleTap}
+        className="w-28 h-28 rounded-full flex items-center justify-center text-4xl active:scale-90 transition-transform"
+        style={{
+          background: 'radial-gradient(circle, hsl(195 40% 25%), hsl(195 30% 12%))',
+          border: '3px solid hsl(195 50% 45%)',
+          boxShadow: `0 0 ${10 + taps * 2}px hsl(195 50% 45% / ${0.2 + taps * 0.03})`,
+        }}
+      >
+        🌊
+      </button>
+      <p className="text-xs text-white/40">{taps}/{goal}</p>
+    </div>
+  );
+}
+
 export default function BoardMiniGame({ visible, tileType, playerName, onResult }: BoardMiniGameProps) {
   const config = TILE_TYPES[tileType] || TILE_TYPES.normal;
   const charKey = config.characterKey;
@@ -450,11 +711,19 @@ export default function BoardMiniGame({ visible, tileType, playerName, onResult 
   const isGiant = tileType === 'giant';
   const isSurprise = tileType === 'surprise';
   const isBlessing = tileType === 'blessing';
+  const isTrap = tileType === 'trap';
+  const isShield = tileType === 'shield';
+  const isCurrent = tileType === 'current';
+  const isSwap = tileType === 'swap';
   
   const borderColor = isGiant ? 'hsl(0 60% 45%)'
     : tileType === 'scripture' ? 'hsl(210 60% 55%)'
     : isSurprise ? 'hsl(40 70% 50%)'
     : isBlessing ? 'hsl(45 80% 55%)'
+    : isTrap ? 'hsl(270 50% 50%)'
+    : isShield ? 'hsl(0 0% 65%)'
+    : isCurrent ? 'hsl(195 70% 50%)'
+    : isSwap ? 'hsl(330 60% 55%)'
     : 'hsl(25 80% 50%)';
 
   const bgStyle = isGiant
@@ -465,17 +734,29 @@ export default function BoardMiniGame({ visible, tileType, playerName, onResult 
     ? 'linear-gradient(135deg, hsl(40 25% 12%), hsl(35 15% 6%))'
     : isBlessing
     ? 'linear-gradient(135deg, hsl(45 30% 14%), hsl(40 20% 8%))'
+    : isTrap
+    ? 'linear-gradient(135deg, hsl(270 25% 12%), hsl(270 15% 6%))'
+    : isCurrent
+    ? 'linear-gradient(135deg, hsl(195 25% 12%), hsl(195 15% 6%))'
     : 'linear-gradient(135deg, hsl(25 25% 12%), hsl(20 15% 6%))';
 
   const titleText = isGiant ? 'Batalha contra o Gigante!'
     : tileType === 'scripture' ? 'Desafio Bíblico!'
     : isSurprise ? 'Surpresa! Mini-desafio!'
     : isBlessing ? 'Bênção — Caça ao Tesouro!'
+    : isTrap ? 'Armadilha! Escape rápido!'
+    : isShield ? 'Prova de Coragem!'
+    : isCurrent ? 'Correnteza! Nade rápido!'
+    : isSwap ? 'Encruzilhada! Escolha o caminho!'
     : 'Desafio!';
 
   const subtitleText = isGiant ? 'Vença para avançar! Perca e volte...'
     : isSurprise ? 'Discerna o bem do mal para ganhar!'
     : isBlessing ? 'Encontre os tesouros escondidos!'
+    : isTrap ? 'Reaja rápido ou sofra as consequências!'
+    : isShield ? 'Segure firme para receber a armadura!'
+    : isCurrent ? 'Toque rápido para vencer a corrente!'
+    : isSwap ? 'Escolha sabiamente!'
     : 'Prove seu valor, peregrino!';
 
   // Choose mini-game based on tile type
@@ -485,6 +766,10 @@ export default function BoardMiniGame({ visible, tileType, playerName, onResult 
       case 'giant': return <ReactionGame difficulty={difficulty} onResult={handleResult} />;
       case 'surprise': return <SwipeDodgeGame onResult={handleResult} />;
       case 'blessing': return <TreasureHuntGame onResult={handleResult} />;
+      case 'trap': return <ReactionGame difficulty={3} onResult={handleResult} />;
+      case 'shield': return <CourageHoldGame onResult={handleResult} />;
+      case 'current': return <RapidTapGame onResult={handleResult} />;
+      case 'swap': return <PathChoiceGame onResult={handleResult} />;
       default: return <MemoryGame difficulty={difficulty} onResult={handleResult} />;
     }
   };
@@ -503,15 +788,17 @@ export default function BoardMiniGame({ visible, tileType, playerName, onResult 
       >
         {/* Character image header */}
         {charImg && (
-          <div className="relative w-full h-44 overflow-hidden">
-            <img src={charImg} alt={config.label} className="w-full h-full object-cover"
+          <div className="relative w-full h-48 overflow-hidden">
+            <img src={charImg} alt={config.label} className="w-full h-full"
               style={{
-                objectPosition: 'center 15%',
+                objectFit: 'contain',
+                objectPosition: 'center top',
                 filter: isGiant ? 'saturate(1.4) contrast(1.3) brightness(0.8)' : 'saturate(1.2)',
+                background: isGiant ? 'hsl(0 15% 6%)' : 'hsl(25 15% 8%)',
               }}
             />
             <div className="absolute inset-0" style={{
-              background: `linear-gradient(to top, ${isGiant ? 'hsl(0 25% 10%)' : 'hsl(25 25% 12%)'} 0%, transparent 70%)`,
+              background: `linear-gradient(to top, ${isGiant ? 'hsl(0 25% 10%)' : 'hsl(25 25% 12%)'} 0%, transparent 50%)`,
             }} />
             {isGiant && (
               <div className="absolute inset-0 animate-pulse" style={{

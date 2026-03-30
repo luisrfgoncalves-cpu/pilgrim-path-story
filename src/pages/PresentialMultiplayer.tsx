@@ -94,8 +94,8 @@ function createPlayer(index: number, name?: string): LocalPlayer {
   };
 }
 
-// ─── Expanded MINI_GAME_TILES ───
-const EXPANDED_MINI_GAME_TILES: TileType[] = ['giant', 'challenge', 'scripture', 'surprise', 'blessing'];
+// Now ALL special tiles trigger mini-games (more interactive!)
+const EXPANDED_MINI_GAME_TILES: TileType[] = ['giant', 'challenge', 'scripture', 'surprise', 'blessing', 'trap', 'shield', 'current', 'swap'];
 
 // ─── River of Death tiles: last 5 tiles before finish ───
 const RIVER_ZONE_START = IMMERSIVE_BOARD_SIZE - 6; // tiles 114-118 are the river zone
@@ -487,12 +487,8 @@ const PresentialMultiplayer = () => {
         };
       }));
 
-      // Show tile message
-      if (tileType !== 'normal' && tileType !== 'start') {
-        setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
-      } else {
-        nextTurn();
-      }
+      // Show tile message for ALL tiles (every tile opens a popup)
+      setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
     };
 
     // Store pending action — if phase changed, show transition first
