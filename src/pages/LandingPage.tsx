@@ -777,13 +777,13 @@ const LandingPage = () => {
       )}
 
       {/* ══════════ HERO ══════════ */}
-      <section className="relative min-h-[95vh] flex flex-col items-center justify-center px-5 py-16 text-center overflow-hidden">
+      <section className="relative min-h-[95vh] flex flex-col items-center justify-center px-5 py-10 text-center overflow-hidden">
         <div className="absolute inset-0">
           <img src={cidadeDestruicao} alt="Cidade da Destruição" className="w-full h-full object-cover opacity-50" />
           <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/30 to-background" />
         </div>
 
-        <div className="relative z-10 max-w-2xl mx-auto space-y-5">
+        <div className="relative z-10 max-w-2xl mx-auto space-y-3">
           <div
             className="inline-block px-4 py-1.5 rounded-full border border-primary/40 bg-primary/10"
             style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.2)' }}
@@ -796,11 +796,11 @@ const LandingPage = () => {
           <img
             src={logoImg}
             alt="O Peregrino"
-            className="w-64 md:w-80 mx-auto drop-shadow-[0_0_30px_hsl(40_70%_50%/0.4)]"
+            className="w-56 md:w-72 mx-auto drop-shadow-[0_0_30px_hsl(40_70%_50%/0.4)]"
           />
 
           <h1
-            className="font-display text-4xl md:text-6xl text-foreground leading-[1.1] font-bold"
+            className="font-display text-3xl md:text-5xl text-foreground leading-[1.1] font-bold"
             style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 0 40px hsl(40 70% 50% / 0.3)' }}
           >
             Viva a Maior Batalha<br />
@@ -808,15 +808,14 @@ const LandingPage = () => {
           </h1>
 
           <p
-            className="text-base md:text-xl text-foreground/90 leading-relaxed max-w-lg mx-auto font-body"
+            className="text-sm md:text-lg text-foreground/90 leading-relaxed max-w-lg mx-auto font-body"
             style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}
           >
             A obra-prima de <strong>John Bunyan</strong> transformada em uma experiência interativa
             que vai <em>desafiar sua fé, provocar suas emoções</em> e mudar sua perspectiva para sempre.
           </p>
 
-
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <CtaButton onClick={handleBuy} variant="primary">
               <Crown className="w-5 h-5" />
               Garantir por R$67/ano
