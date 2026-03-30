@@ -677,6 +677,7 @@ const PresentialMultiplayer = () => {
         targetPos: prevPosition,
         attrs: { coragem: -1 },
         stats: { currentStreak: 0 },
+        isReturnMove: true, // This is a retreat — don't trigger events at destination
       };
     }
 
