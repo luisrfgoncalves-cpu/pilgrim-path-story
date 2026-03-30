@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ImmersiveBoard from '@/components/multiplayer/ImmersiveBoard';
+import BoardStats from '@/components/multiplayer/BoardStats';
 import { Dice3D } from '@/components/Dice3D';
 import TileEventPopup from '@/components/multiplayer/TileEventPopup';
 import BoardMiniGame from '@/components/multiplayer/BoardMiniGame';
@@ -301,6 +302,7 @@ const PresentialMultiplayer = () => {
   const [miniGame, setMiniGame] = useState<{ tileType: TileType; playerIdx: number; prevPosition: number; newPosition: number } | null>(null);
   const pendingActionRef = useRef<(() => void) | null>(null);
   const [isTokenMoving, setIsTokenMoving] = useState(false);
+  const [showStats, setShowStats] = useState(false);
 
   // New state for phase transitions and River of Death
   const [showPhaseTransition, setShowPhaseTransition] = useState<number | null>(null);
@@ -357,11 +359,16 @@ const PresentialMultiplayer = () => {
   }, [phaseTransitionPendingAction]);
 
   // Called by ImmersiveBoard when token animation finishes
+  // Adds a 1.2s suspense delay before triggering the event popup
   const handleTokenArrived = useCallback(() => {
     setIsTokenMoving(false);
     if (pendingActionRef.current) {
-      pendingActionRef.current();
+      const action = pendingActionRef.current;
       pendingActionRef.current = null;
+      // Suspense delay — player sees the tile, feels the tension
+      setTimeout(() => {
+        action();
+      }, 1200);
     }
   }, []);
 
@@ -807,6 +814,16 @@ const PresentialMultiplayer = () => {
     isStunned: p.isStunned,
   }));
 
+  // Stats overlay
+  if (showStats) {
+    return (
+      <BoardStats
+        players={players}
+        onClose={() => setShowStats(false)}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Phase Transition Cutscene */}
@@ -887,9 +904,12 @@ const PresentialMultiplayer = () => {
               )}
             </div>
           </div>
-          <span className="text-[10px] text-primary font-display bg-card px-2 py-1 rounded-md border border-primary/20">
-            🎲 Presencial
-          </span>
+          <button
+            onClick={() => setShowStats(true)}
+            className="text-[10px] text-primary font-display font-bold bg-card px-3 py-1.5 rounded-lg border border-primary/30 hover:bg-primary/10 active:scale-95 transition-all"
+          >
+            Placar
+          </button>
         </div>
       </header>
 
