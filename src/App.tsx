@@ -96,8 +96,8 @@ const App = () => (
             {/* Auth & public routes — always accessible */}
             <Route path="/auth" element={isPreviewMode ? <PreviewPaywall /> : <AuthPage />} />
             <Route path="/reset-password" element={isPreviewMode ? <PreviewPaywall /> : <ResetPasswordPage />} />
-            <Route path="/vendas" element={<LandingPage />} />
-            <Route path="/landing" element={<LandingPage />} />
+            <Route path="/vendas" element={isInstalledPWA ? <Navigate to="/" replace /> : <LandingPage />} />
+            <Route path="/landing" element={isInstalledPWA ? <Navigate to="/" replace /> : <LandingPage />} />
             <Route path="/obrigado" element={<ThankYouPage />} />
             <Route path="/termos" element={<TermsPage />} />
 
