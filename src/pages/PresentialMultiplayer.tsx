@@ -282,7 +282,9 @@ const PresentialMultiplayer = () => {
     const effect = resolveTileEffect(tileType, player, players, Date.now() + newPos);
 
     let finalPos = newPos;
-    if (effect.resetToCheckpoint) {
+    if (effect.resetToStart) {
+      finalPos = 0;
+    } else if (effect.resetToCheckpoint) {
       finalPos = player.checkpoint;
     } else {
       finalPos = Math.max(0, Math.min(newPos + effect.posAdjust, IMMERSIVE_BOARD_SIZE - 1));
