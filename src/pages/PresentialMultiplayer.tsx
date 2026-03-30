@@ -433,7 +433,7 @@ const PresentialMultiplayer = () => {
               Cada fase ocupa uma tela inteira com cenários e personagens. Role o dado e explore a jornada do Peregrino!
             </p>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              🎮 <strong className="text-foreground">60 casas</strong> em 6 fases: Refúgios, Desafios, Surpresas, Armadilhas, Gigantes e muito mais!
+              🎮 <strong className="text-foreground">120 casas</strong> em 6 fases: Refúgios, Desafios, Surpresas, Armadilhas, Gigantes, Mini-games e muito mais!
             </p>
           </div>
 
