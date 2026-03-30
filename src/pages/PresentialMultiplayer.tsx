@@ -20,22 +20,6 @@ import ScreenHero from '@/components/ScreenHero';
 const COLORS = ['#E8724A', '#4CAF50', '#42A5F5', '#FFD54F', '#AB47BC', '#EF5350', '#26C6DA', '#FF7043'];
 const DEFAULT_NAMES = ['Cristão', 'Fiel', 'Esperança', 'Misericórdia', 'Valente', 'Honesto', 'Prudência', 'Caridade'];
 
-// Power-up types
-type PowerUpType = 'holy_water' | 'angels_wing' | 'prayer_scroll' | 'faith_stone';
-interface PowerUp {
-  type: PowerUpType;
-  label: string;
-  emoji: string;
-  description: string;
-}
-
-const POWER_UPS: Record<PowerUpType, PowerUp> = {
-  holy_water:    { type: 'holy_water',    label: 'Água Sagrada',      emoji: '💧', description: 'Remove stun e cura atributos' },
-  angels_wing:   { type: 'angels_wing',   label: 'Asa de Anjo',       emoji: '🪽', description: 'Avança +3 casas no próximo turno' },
-  prayer_scroll: { type: 'prayer_scroll', label: 'Pergaminho de Oração', emoji: '📜', description: 'Protege contra próxima armadilha' },
-  faith_stone:   { type: 'faith_stone',   label: 'Pedra da Fé',       emoji: '💎', description: 'Dobra bônus do próximo evento positivo' },
-};
-
 interface LocalPlayer {
   id: string;
   name: string;
@@ -50,9 +34,6 @@ interface LocalPlayer {
   hasShield: boolean;
   checkpoint: number;
   extraTurn: boolean;
-  powerUps: PowerUpType[];
-  doubleBonusNext: boolean;
-  bonusMoveNext: number;
 }
 
 function createPlayer(index: number, name?: string): LocalPlayer {
@@ -70,9 +51,6 @@ function createPlayer(index: number, name?: string): LocalPlayer {
     hasShield: false,
     checkpoint: 0,
     extraTurn: false,
-    powerUps: [],
-    doubleBonusNext: false,
-    bonusMoveNext: 0,
   };
 }
 
@@ -97,7 +75,6 @@ function resolveTileEffect(
   resetToStart: boolean;
   message: string;
   emoji: string;
-  powerUpGrant?: PowerUpType;
   collectiveEffect?: { type: 'blessing_all' | 'curse_all'; message: string };
 } {
   const rng = ((seed * 1103515245 + 12345) & 0x7fffffff) % 100;
@@ -107,26 +84,17 @@ function resolveTileEffect(
     resetToCheckpoint: false, resetToStart: false, message: '', emoji: '',
   };
 
-  // Double bonus from faith_stone
-  const bonusMultiplier = player.doubleBonusNext ? 2 : 1;
-
-  // Get phase-specific narrative
   const narrative = getPhaseNarrative(phaseIdx, tileType, seed);
 
   switch (tileType) {
     case 'refuge':
-      result.attrChanges = { fe: 1 * bonusMultiplier, perseveranca: 1 * bonusMultiplier };
+      result.attrChanges = { fe: 1, perseveranca: 1 };
       result.message = narrative || '🏠 Refúgio! Você descansa e recupera forças.';
       result.emoji = '🏠';
-      // 30% chance to grant a power-up at refuge
-      if (rng < 30) {
-        const pups: PowerUpType[] = ['holy_water', 'angels_wing', 'prayer_scroll', 'faith_stone'];
-        result.powerUpGrant = pups[rng % pups.length];
-      }
       break;
     case 'challenge':
       if (rng >= 40) {
-        result.posAdjust = 3 * bonusMultiplier;
+        result.posAdjust = 3;
         result.attrChanges = { coragem: 2 };
         result.message = narrative || '⚔️ Desafio vencido! Avance 3 casas!';
       } else {
@@ -138,10 +106,9 @@ function resolveTileEffect(
       break;
     case 'surprise':
       if (rng >= 50) {
-        result.posAdjust = 2 * bonusMultiplier;
+        result.posAdjust = 2;
         result.attrChanges = { fe: 1 };
         result.message = narrative || '🎁 Surpresa boa! Avance 2 casas!';
-        // 20% chance for collective blessing
         if (rng > 80) {
           result.collectiveEffect = {
             type: 'blessing_all',
@@ -151,11 +118,10 @@ function resolveTileEffect(
       } else {
         result.posAdjust = -1;
         result.message = narrative || '🎁 Surpresa ruim... Recue 1 casa.';
-        // 15% chance for collective curse
         if (rng < 15) {
           result.collectiveEffect = {
             type: 'curse_all',
-            message: '⚠️ Maldição coletiva! Todos os peregrinos perdem -1 Perseverança!',
+            message: '⚠️ Provação coletiva! Todos os peregrinos perdem -1 Perseverança!',
           };
         }
       }
@@ -163,7 +129,7 @@ function resolveTileEffect(
       break;
     case 'scripture':
       if (rng >= 35) {
-        result.posAdjust = 2 * bonusMultiplier;
+        result.posAdjust = 2;
         result.attrChanges = { discernimento: 2, fe: 1 };
         result.message = narrative || '📖 Palavra acertada! Discernimento +2, avance 2!';
       } else {
@@ -201,16 +167,15 @@ function resolveTileEffect(
       break;
     case 'shield':
       result.shield = true;
-      result.attrChanges = { coragem: 1 * bonusMultiplier };
+      result.attrChanges = { coragem: 1 };
       result.message = narrative || '🛡️ Armadura de Deus! Proteção ativada!';
       result.emoji = '🛡️';
       break;
     case 'blessing':
-      result.posAdjust = 4 * bonusMultiplier;
-      result.attrChanges = { fe: 2 * bonusMultiplier };
+      result.posAdjust = 4;
+      result.attrChanges = { fe: 2 };
       result.message = narrative || '⭐ Bênção divina! Avance 4 casas!';
       result.emoji = '⭐';
-      // 25% chance collective blessing
       if (rng < 25) {
         result.collectiveEffect = {
           type: 'blessing_all',
@@ -251,7 +216,7 @@ function resolveTileEffect(
         result.stun = true;
         result.stunTurns = 1;
         result.attrChanges = { coragem: -2, perseveranca: -1 };
-        result.message = '☠️ MALDIÇÃO! Uma força sombria te arrasta de volta ao início da jornada!';
+        result.message = '☠️ PUNIÇÃO! Uma força sombria te arrasta de volta ao início da jornada!';
         result.emoji = '☠️';
       }
       break;
@@ -275,10 +240,9 @@ const PresentialMultiplayer = () => {
   const [turnAnnounce, setTurnAnnounce] = useState<string | null>(null);
   const [finishCount, setFinishCount] = useState(0);
   const [collectiveMsg, setCollectiveMsg] = useState<string | null>(null);
-  // Mini-game state
   const [miniGame, setMiniGame] = useState<{ tileType: TileType; playerIdx: number; prevPosition: number; newPosition: number } | null>(null);
-  // Power-up usage
-  const [showPowerUps, setShowPowerUps] = useState(false);
+  // Pending event to show after token animation delay
+  const [pendingEvent, setPendingEvent] = useState<{ message: string; emoji: string; tileType: TileType; playerName?: string } | null>(null);
 
   const addPlayer = () => {
     if (players.length >= 8) return;
@@ -316,35 +280,6 @@ const PresentialMultiplayer = () => {
     setTurnAnnounce(`Vez de ${finalPlayers[0].name}!`);
   };
 
-  // Use power-up
-  const usePowerUp = useCallback((pType: PowerUpType) => {
-    const player = players[currentTurn];
-    if (!player || !player.powerUps.includes(pType)) return;
-
-    setPlayers(prev => prev.map((p, i) => {
-      if (i !== currentTurn) return p;
-      const newPowerUps = [...p.powerUps];
-      const idx = newPowerUps.indexOf(pType);
-      if (idx !== -1) newPowerUps.splice(idx, 1);
-
-      switch (pType) {
-        case 'holy_water':
-          return { ...p, powerUps: newPowerUps, isStunned: false, stunTurns: 0,
-            attributes: { ...p.attributes, fe: p.attributes.fe + 1, perseveranca: p.attributes.perseveranca + 1 } };
-        case 'angels_wing':
-          return { ...p, powerUps: newPowerUps, bonusMoveNext: 3 };
-        case 'prayer_scroll':
-          return { ...p, powerUps: newPowerUps, hasShield: true };
-        case 'faith_stone':
-          return { ...p, powerUps: newPowerUps, doubleBonusNext: true };
-        default:
-          return { ...p, powerUps: newPowerUps };
-      }
-    }));
-    setShowPowerUps(false);
-    setTurnAnnounce(`${POWER_UPS[pType].emoji} ${player.name} usou ${POWER_UPS[pType].label}!`);
-  }, [players, currentTurn]);
-
   const handleDiceRoll = useCallback((value?: number) => {
     const player = players[currentTurn];
     if (!player || player.finished) return;
@@ -360,21 +295,21 @@ const PresentialMultiplayer = () => {
     }
 
     const diceVal = value || (Math.floor(Math.random() * 6) + 1);
-    const bonusMove = player.bonusMoveNext || 0;
-    let newPos = Math.min(player.position + diceVal + bonusMove, IMMERSIVE_BOARD_SIZE - 1);
+    let newPos = Math.min(player.position + diceVal, IMMERSIVE_BOARD_SIZE - 1);
     playMove();
-
-    // Clear bonus move
-    if (bonusMove > 0) {
-      setPlayers(prev => prev.map((p, i) => i === currentTurn ? { ...p, bonusMoveNext: 0 } : p));
-    }
 
     const tileType = tileTypes[newPos] || 'normal';
 
-    // If it's a mini-game tile, launch mini-game
+    // FIRST: move token visually (position update)
+    setPlayers(prev => prev.map((p, i) => i === currentTurn ? { ...p, position: newPos, lastDice: diceVal } : p));
+
+    // THEN: delay 1.5s so user sees the token moving BEFORE popup/mini-game opens
+    const MOVE_DELAY = 1500;
+
     if (EXPANDED_MINI_GAME_TILES.includes(tileType)) {
-      setMiniGame({ tileType, playerIdx: currentTurn, prevPosition: player.position, newPosition: newPos });
-      setPlayers(prev => prev.map((p, i) => i === currentTurn ? { ...p, position: newPos, lastDice: diceVal } : p));
+      setTimeout(() => {
+        setMiniGame({ tileType, playerIdx: currentTurn, prevPosition: player.position, newPosition: newPos });
+      }, MOVE_DELAY);
       return;
     }
 
@@ -398,58 +333,64 @@ const PresentialMultiplayer = () => {
 
     // Handle collective effects
     if (effect.collectiveEffect) {
-      setCollectiveMsg(effect.collectiveEffect.message);
-      setPlayers(prev => prev.map(p => {
-        if (effect.collectiveEffect!.type === 'blessing_all') {
-          return { ...p, attributes: {
-            fe: p.attributes.fe + 1,
-            perseveranca: p.attributes.perseveranca + 1,
-            discernimento: p.attributes.discernimento + 1,
-            coragem: p.attributes.coragem + 1,
-          }};
-        } else {
-          return { ...p, attributes: {
-            ...p.attributes,
-            perseveranca: Math.max(0, p.attributes.perseveranca - 1),
-          }};
-        }
-      }));
-      setTimeout(() => setCollectiveMsg(null), 4000);
+      setTimeout(() => {
+        setCollectiveMsg(effect.collectiveEffect!.message);
+        setPlayers(prev => prev.map(p => {
+          if (effect.collectiveEffect!.type === 'blessing_all') {
+            return { ...p, attributes: {
+              fe: p.attributes.fe + 1,
+              perseveranca: p.attributes.perseveranca + 1,
+              discernimento: p.attributes.discernimento + 1,
+              coragem: p.attributes.coragem + 1,
+            }};
+          } else {
+            return { ...p, attributes: {
+              ...p.attributes,
+              perseveranca: Math.max(0, p.attributes.perseveranca - 1),
+            }};
+          }
+        }));
+        setTimeout(() => setCollectiveMsg(null), 4000);
+      }, MOVE_DELAY + 2000);
     }
 
-    // Update player
-    setPlayers(prev => prev.map((p, i) => {
-      if (i !== currentTurn) return p;
-      const newAttrs = { ...p.attributes };
-      for (const [key, val] of Object.entries(effect.attrChanges)) {
-        (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+    // Delayed: apply final position adjustment + show popup AFTER token animation
+    setTimeout(() => {
+      // Apply final position (may differ from newPos due to posAdjust)
+      if (finalPos !== newPos) {
+        setPlayers(prev => prev.map((p, i) => {
+          if (i !== currentTurn) return p;
+          return { ...p, position: finalPos };
+        }));
       }
-      const newPowerUps = [...p.powerUps];
-      if (effect.powerUpGrant) newPowerUps.push(effect.powerUpGrant);
 
-      return {
-        ...p,
-        position: finalPos,
-        lastDice: diceVal,
-        finished: isFinished,
-        finishOrder: isFinished ? newFinishCount : null,
-        isStunned: effect.stun,
-        stunTurns: effect.stunTurns,
-        hasShield: effect.shield ? true : (tileType === 'trap' || tileType === 'giant' ? false : p.hasShield),
-        checkpoint: tileType === 'checkpoint' ? finalPos : p.checkpoint,
-        extraTurn: effect.extraTurn,
-        attributes: newAttrs,
-        doubleBonusNext: false, // consumed
-        powerUps: newPowerUps,
-      };
-    }));
+      // Apply attribute changes
+      setPlayers(prev => prev.map((p, i) => {
+        if (i !== currentTurn) return p;
+        const newAttrs = { ...p.attributes };
+        for (const [key, val] of Object.entries(effect.attrChanges)) {
+          (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+        }
+        return {
+          ...p,
+          finished: isFinished,
+          finishOrder: isFinished ? newFinishCount : null,
+          isStunned: effect.stun,
+          stunTurns: effect.stunTurns,
+          hasShield: effect.shield ? true : (tileType === 'trap' || tileType === 'giant' ? false : p.hasShield),
+          checkpoint: tileType === 'checkpoint' ? finalPos : p.checkpoint,
+          extraTurn: effect.extraTurn,
+          attributes: newAttrs,
+        };
+      }));
 
-    // Show tile message
-    if (tileType !== 'normal' && tileType !== 'start') {
-      setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
-    } else {
-      nextTurn();
-    }
+      // Show tile message
+      if (tileType !== 'normal' && tileType !== 'start') {
+        setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
+      } else {
+        nextTurn();
+      }
+    }, MOVE_DELAY);
   }, [players, currentTurn, tileTypes, finishCount]);
 
   const nextTurn = useCallback(() => {
@@ -479,7 +420,6 @@ const PresentialMultiplayer = () => {
     setTileMessage({ message: `Casa ${position + 1}: ${config.label} — ${config.description}`, emoji: config.emoji, tileType });
   };
 
-  // Mini-game result
   const handleMiniGameResult = useCallback((won: boolean) => {
     if (!miniGame) return;
     const { playerIdx, prevPosition, newPosition, tileType } = miniGame;
@@ -572,7 +512,7 @@ const PresentialMultiplayer = () => {
               Cada fase ocupa uma tela inteira com cenários e personagens. Role o dado e explore a jornada do Peregrino!
             </p>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              🎮 <strong className="text-foreground">120 casas</strong> em 6 fases: Refúgios, Desafios, Surpresas, Armadilhas, Gigantes, Mini-games, Power-ups e muito mais!
+              🎮 <strong className="text-foreground">120 casas</strong> em 6 fases: Refúgios, Desafios, Surpresas, Armadilhas, Gigantes, Mini-games e muito mais!
             </p>
           </div>
 
@@ -636,7 +576,6 @@ const PresentialMultiplayer = () => {
     setPhase('finished');
   }
 
-  // ─── EPIC VICTORY SCREEN ───
   if (phase === 'finished') {
     return (
       <EpicVictoryScreen
@@ -720,61 +659,14 @@ const PresentialMultiplayer = () => {
               )}
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Power-ups button */}
-            {currentPlayer && currentPlayer.powerUps.length > 0 && (
-              <button
-                onClick={() => setShowPowerUps(!showPowerUps)}
-                className="relative text-[10px] font-display px-2 py-1 rounded-md border transition-all"
-                style={{
-                  background: 'hsl(270 30% 15%)',
-                  borderColor: 'hsl(270 50% 45% / 0.5)',
-                  color: 'hsl(270 60% 75%)',
-                }}
-              >
-                💎 {currentPlayer.powerUps.length}
-              </button>
-            )}
-            <span className="text-[10px] text-primary font-display bg-card px-2 py-1 rounded-md border border-primary/20">
-              🎲 Presencial
-            </span>
-          </div>
+          <span className="text-[10px] text-primary font-display bg-card px-2 py-1 rounded-md border border-primary/20">
+            🎲 Presencial
+          </span>
         </div>
       </header>
 
-      {/* Power-ups panel */}
-      {showPowerUps && currentPlayer && (
-        <div className="sticky top-[52px] z-30 bg-card/95 backdrop-blur-md border-b border-border px-3 py-2">
-          <div className="max-w-lg mx-auto space-y-1">
-            <p className="text-[10px] text-muted-foreground font-display uppercase tracking-wider">Itens de {currentPlayer.name}</p>
-            <div className="flex gap-2 flex-wrap">
-              {currentPlayer.powerUps.map((pType, i) => {
-                const pu = POWER_UPS[pType];
-                return (
-                  <button
-                    key={`${pType}-${i}`}
-                    onClick={() => usePowerUp(pType)}
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[10px] font-display transition-all active:scale-95"
-                    style={{
-                      background: 'hsl(270 25% 15%)',
-                      borderColor: 'hsl(270 40% 40% / 0.5)',
-                      color: 'hsl(270 50% 75%)',
-                    }}
-                  >
-                    <span>{pu.emoji}</span>
-                    <span>{pu.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Scrollable player bar */}
-      <div className="sticky top-[52px] z-20 bg-card/90 backdrop-blur-sm border-b border-border px-3 py-2 overflow-x-auto"
-        style={{ top: showPowerUps ? '100px' : '52px' }}
-      >
+      <div className="sticky top-[52px] z-20 bg-card/90 backdrop-blur-sm border-b border-border px-3 py-2 overflow-x-auto">
         <div className="flex gap-2 max-w-lg mx-auto">
           {players.map((p, i) => {
             const isTurn = i === currentTurn;
@@ -791,7 +683,6 @@ const PresentialMultiplayer = () => {
                   <p className="text-muted-foreground">
                     {p.finished ? `🏆${p.finishOrder}º` : p.isStunned ? '😵' : `${p.position + 1}`}
                     {p.hasShield && ' 🛡️'}
-                    {p.powerUps.length > 0 && ` 💎${p.powerUps.length}`}
                   </p>
                 </div>
               </div>
@@ -822,17 +713,6 @@ const PresentialMultiplayer = () => {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {/* Bonus move indicator */}
-                  {currentPlayer.bonusMoveNext > 0 && (
-                    <div className="text-center text-xs font-display" style={{ color: 'hsl(270 60% 70%)' }}>
-                      🪽 Bônus: +{currentPlayer.bonusMoveNext} casas neste turno!
-                    </div>
-                  )}
-                  {currentPlayer.doubleBonusNext && (
-                    <div className="text-center text-xs font-display" style={{ color: 'hsl(45 80% 65%)' }}>
-                      💎 Bônus duplo ativado para próximo evento!
-                    </div>
-                  )}
                   {/* 3D Dice */}
                   <div className="flex flex-col items-center gap-2">
                     <button

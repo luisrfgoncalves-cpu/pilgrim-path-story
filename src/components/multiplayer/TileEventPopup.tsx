@@ -205,17 +205,20 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
             <X className="w-4 h-4 text-white/70" />
           </button>
 
-          {/* Character image */}
+          {/* Character image — object-position top to avoid cropping heads */}
           {charImg && (
-            <div className="relative w-full h-44 overflow-hidden">
+            <div className="relative w-full h-52 overflow-hidden">
               <img
                 src={charImg}
                 alt={config.label}
                 className="w-full h-full object-cover"
-                style={{ filter: isNegative ? 'saturate(1.3) contrast(1.1)' : 'saturate(1.2) brightness(1.1)' }}
+                style={{
+                  objectPosition: 'center 15%',
+                  filter: isNegative ? 'saturate(1.3) contrast(1.1)' : 'saturate(1.2) brightness(1.1)',
+                }}
               />
               <div className="absolute inset-0" style={{
-                background: `linear-gradient(to top, ${isNegative ? 'hsl(0 30% 12%)' : isPositive ? 'hsl(40 30% 14%)' : 'hsl(220 20% 14%)'} 0%, transparent 60%)`,
+                background: `linear-gradient(to top, ${isNegative ? 'hsl(0 30% 12%)' : isPositive ? 'hsl(40 30% 14%)' : 'hsl(220 20% 14%)'} 0%, transparent 50%)`,
               }} />
               {isNegative && (
                 <div className="absolute inset-0 animate-pulse" style={{

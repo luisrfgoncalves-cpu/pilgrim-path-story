@@ -217,30 +217,33 @@ function PhaseSection({
                 </div>
               )}
 
-              {/* Type label - prominent speech bubble */}
+              {/* Type label - large, prominent, never cut off */}
               {isSpecial && (
-                <div className="absolute top-1/2 -translate-y-1/2 z-10"
-                  style={{ left: `${tileSize + 8}px` }}
+                <div className="absolute z-10"
+                  style={{
+                    top: `${tileSize + 6}px`,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                  }}
                 >
-                  <div className="relative">
-                    {/* Arrow pointing left */}
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full"
+                  <div className="relative flex flex-col items-center">
+                    {/* Arrow pointing up */}
+                    <div style={{
+                      width: 0, height: 0,
+                      borderLeft: '7px solid transparent',
+                      borderRight: '7px solid transparent',
+                      borderBottom: `7px solid rgba(0,0,0,0.9)`,
+                    }} />
+                    <span className="text-sm font-display font-extrabold whitespace-nowrap px-3 py-1.5 rounded-lg"
                       style={{
-                        width: 0, height: 0,
-                        borderTop: '6px solid transparent',
-                        borderBottom: '6px solid transparent',
-                        borderRight: `6px solid ${config.color}80`,
-                      }}
-                    />
-                    <span className="text-[11px] font-display font-bold whitespace-nowrap px-2.5 py-1 rounded-md"
-                      style={{
-                        background: `linear-gradient(135deg, ${config.color}35, ${config.color}15)`,
-                        color: config.color,
-                        border: `1.5px solid ${config.color}60`,
-                        boxShadow: `0 0 12px ${config.glowColor}, 0 2px 8px rgba(0,0,0,0.5)`,
-                        textShadow: `0 0 8px ${config.glowColor}`,
-                        letterSpacing: '0.03em',
-                        wordSpacing: '0.15em',
+                        background: 'rgba(0,0,0,0.9)',
+                        color: '#FFFFFF',
+                        border: `2px solid ${config.color}`,
+                        boxShadow: `0 0 16px ${config.glowColor}, 0 4px 12px rgba(0,0,0,0.7)`,
+                        textShadow: `0 0 10px ${config.color}, 0 1px 3px rgba(0,0,0,0.8)`,
+                        letterSpacing: '0.06em',
+                        wordSpacing: '0.2em',
+                        fontSize: isBoss ? '15px' : '13px',
                       }}
                     >
                       {config.label}

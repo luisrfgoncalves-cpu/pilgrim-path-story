@@ -503,9 +503,12 @@ export default function BoardMiniGame({ visible, tileType, playerName, onResult 
       >
         {/* Character image header */}
         {charImg && (
-          <div className="relative w-full h-36 overflow-hidden">
+          <div className="relative w-full h-44 overflow-hidden">
             <img src={charImg} alt={config.label} className="w-full h-full object-cover"
-              style={{ filter: isGiant ? 'saturate(1.4) contrast(1.3) brightness(0.8)' : 'saturate(1.2)' }}
+              style={{
+                objectPosition: 'center 15%',
+                filter: isGiant ? 'saturate(1.4) contrast(1.3) brightness(0.8)' : 'saturate(1.2)',
+              }}
             />
             <div className="absolute inset-0" style={{
               background: `linear-gradient(to top, ${isGiant ? 'hsl(0 25% 10%)' : 'hsl(25 25% 12%)'} 0%, transparent 70%)`,
