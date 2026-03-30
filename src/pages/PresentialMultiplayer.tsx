@@ -241,8 +241,9 @@ const PresentialMultiplayer = () => {
   const [finishCount, setFinishCount] = useState(0);
   const [collectiveMsg, setCollectiveMsg] = useState<string | null>(null);
   const [miniGame, setMiniGame] = useState<{ tileType: TileType; playerIdx: number; prevPosition: number; newPosition: number } | null>(null);
-  // Pending event to show after token animation delay
-  const [pendingEvent, setPendingEvent] = useState<{ message: string; emoji: string; tileType: TileType; playerName?: string } | null>(null);
+  // Pending action to execute AFTER token animation completes
+  const pendingActionRef = useRef<(() => void) | null>(null);
+  const [isTokenMoving, setIsTokenMoving] = useState(false);
 
   const addPlayer = () => {
     if (players.length >= 8) return;
@@ -280,9 +281,18 @@ const PresentialMultiplayer = () => {
     setTurnAnnounce(`Vez de ${finalPlayers[0].name}!`);
   };
 
+  // Called by ImmersiveBoard when token animation finishes
+  const handleTokenArrived = useCallback(() => {
+    setIsTokenMoving(false);
+    if (pendingActionRef.current) {
+      pendingActionRef.current();
+      pendingActionRef.current = null;
+    }
+  }, []);
+
   const handleDiceRoll = useCallback((value?: number) => {
     const player = players[currentTurn];
-    if (!player || player.finished) return;
+    if (!player || player.finished || isTokenMoving) return;
 
     if (player.isStunned) {
       setPlayers(prev => prev.map((p, i) => i === currentTurn ? {
@@ -297,44 +307,43 @@ const PresentialMultiplayer = () => {
     const diceVal = value || (Math.floor(Math.random() * 6) + 1);
     let newPos = Math.min(player.position + diceVal, IMMERSIVE_BOARD_SIZE - 1);
     playMove();
+    setIsTokenMoving(true);
 
     const tileType = tileTypes[newPos] || 'normal';
+    const turnIdx = currentTurn; // capture for closure
+    const prevPos = player.position;
 
-    // FIRST: move token visually (position update)
-    setPlayers(prev => prev.map((p, i) => i === currentTurn ? { ...p, position: newPos, lastDice: diceVal } : p));
+    // Move token visually — ImmersiveBoard will animate step-by-step
+    setPlayers(prev => prev.map((p, i) => i === turnIdx ? { ...p, position: newPos, lastDice: diceVal } : p));
 
-    // THEN: delay 1.5s so user sees the token moving BEFORE popup/mini-game opens
-    const MOVE_DELAY = 1500;
+    // Store what to do AFTER animation completes
+    pendingActionRef.current = () => {
+      if (EXPANDED_MINI_GAME_TILES.includes(tileType)) {
+        setMiniGame({ tileType, playerIdx: turnIdx, prevPosition: prevPos, newPosition: newPos });
+        return;
+      }
 
-    if (EXPANDED_MINI_GAME_TILES.includes(tileType)) {
-      setTimeout(() => {
-        setMiniGame({ tileType, playerIdx: currentTurn, prevPosition: player.position, newPosition: newPos });
-      }, MOVE_DELAY);
-      return;
-    }
+      const phaseIdx = Math.floor(newPos / TILES_PER_PHASE);
+      const effect = resolveTileEffect(tileType, player, players, Date.now() + newPos, phaseIdx);
 
-    const phaseIdx = Math.floor(newPos / TILES_PER_PHASE);
-    const effect = resolveTileEffect(tileType, player, players, Date.now() + newPos, phaseIdx);
+      let finalPos = newPos;
+      if (effect.resetToStart) {
+        finalPos = 0;
+      } else if (effect.resetToCheckpoint) {
+        finalPos = player.checkpoint;
+      } else {
+        finalPos = Math.max(0, Math.min(newPos + effect.posAdjust, IMMERSIVE_BOARD_SIZE - 1));
+      }
 
-    let finalPos = newPos;
-    if (effect.resetToStart) {
-      finalPos = 0;
-    } else if (effect.resetToCheckpoint) {
-      finalPos = player.checkpoint;
-    } else {
-      finalPos = Math.max(0, Math.min(newPos + effect.posAdjust, IMMERSIVE_BOARD_SIZE - 1));
-    }
+      const isFinished = finalPos >= IMMERSIVE_BOARD_SIZE - 1;
+      const newFinishCount = isFinished ? finishCount + 1 : finishCount;
+      if (isFinished) {
+        setFinishCount(newFinishCount);
+      }
 
-    const isFinished = finalPos >= IMMERSIVE_BOARD_SIZE - 1;
-    const newFinishCount = isFinished ? finishCount + 1 : finishCount;
-    if (isFinished) {
-      setFinishCount(newFinishCount);
-    }
-
-    // Handle collective effects
-    if (effect.collectiveEffect) {
-      setTimeout(() => {
-        setCollectiveMsg(effect.collectiveEffect!.message);
+      // Handle collective effects
+      if (effect.collectiveEffect) {
+        setCollectiveMsg(effect.collectiveEffect.message);
         setPlayers(prev => prev.map(p => {
           if (effect.collectiveEffect!.type === 'blessing_all') {
             return { ...p, attributes: {
@@ -351,28 +360,18 @@ const PresentialMultiplayer = () => {
           }
         }));
         setTimeout(() => setCollectiveMsg(null), 4000);
-      }, MOVE_DELAY + 2000);
-    }
-
-    // Delayed: apply final position adjustment + show popup AFTER token animation
-    setTimeout(() => {
-      // Apply final position (may differ from newPos due to posAdjust)
-      if (finalPos !== newPos) {
-        setPlayers(prev => prev.map((p, i) => {
-          if (i !== currentTurn) return p;
-          return { ...p, position: finalPos };
-        }));
       }
 
-      // Apply attribute changes
+      // Apply final position + attributes + show popup
       setPlayers(prev => prev.map((p, i) => {
-        if (i !== currentTurn) return p;
+        if (i !== turnIdx) return p;
         const newAttrs = { ...p.attributes };
         for (const [key, val] of Object.entries(effect.attrChanges)) {
           (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
         }
         return {
           ...p,
+          position: finalPos,
           finished: isFinished,
           finishOrder: isFinished ? newFinishCount : null,
           isStunned: effect.stun,
@@ -390,7 +389,7 @@ const PresentialMultiplayer = () => {
       } else {
         nextTurn();
       }
-    }, MOVE_DELAY);
+    };
   }, [players, currentTurn, tileTypes, finishCount]);
 
   const nextTurn = useCallback(() => {
@@ -698,6 +697,7 @@ const PresentialMultiplayer = () => {
           players={boardPlayers}
           currentTurnId={currentPlayer?.id}
           onTileClick={handleTileClick}
+          onTokenArrived={handleTokenArrived}
         />
 
         {/* Dice section */}
@@ -726,14 +726,14 @@ const PresentialMultiplayer = () => {
                         }, 1200);
                       }}
                       className="focus:outline-none active:scale-95 transition-transform"
-                      disabled={diceRolling}
+                      disabled={diceRolling || isTokenMoving}
                     >
                       <Dice3D value={diceValue} rolling={diceRolling} size={90} color="gold" />
                     </button>
                     <p className="text-base font-display font-bold text-foreground tracking-wide"
                       style={{ textShadow: '0 0 10px hsl(40 60% 55% / 0.3)' }}
                     >
-                      {diceRolling ? 'Rolando...' : 'Toque no dado para jogar!'}
+                      {diceRolling ? 'Rolando...' : isTokenMoving ? '🚶 Movendo...' : 'Toque no dado para jogar!'}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
