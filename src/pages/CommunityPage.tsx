@@ -163,6 +163,10 @@ const CommunityPage: React.FC = () => {
       return;
     }
     if (toUserId === user.id) return;
+    if (isRateLimited(`support-${user.id}`, 10, 60000)) {
+      toast.error('Aguarde um momento antes de enviar mais apoio.');
+      return;
+    }
 
     setSending(`${toUserId}-${supportType}`);
     const { error } = await supabase.from('pilgrim_support').insert({
