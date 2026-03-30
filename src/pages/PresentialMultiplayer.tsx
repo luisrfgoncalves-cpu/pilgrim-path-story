@@ -180,6 +180,19 @@ function resolveTileEffect(
       result.message = '🏰 Checkpoint salvo! Perseverança +1.';
       result.emoji = '🏰';
       break;
+    case 'back_to_start':
+      if (player.hasShield) {
+        result.message = '🛡️ Seu escudo te salvou da maldição! Você não voltou ao início!';
+        result.emoji = '🛡️';
+      } else {
+        result.resetToStart = true;
+        result.stun = true;
+        result.stunTurns = 1;
+        result.attrChanges = { coragem: -2, perseveranca: -1 };
+        result.message = '☠️ MALDIÇÃO! Uma força sombria te arrasta de volta ao início da jornada!';
+        result.emoji = '☠️';
+      }
+      break;
     default:
       result.message = 'Caminho tranquilo...';
       result.emoji = '·';
