@@ -400,7 +400,7 @@ const PresentialMultiplayer = () => {
 
   const handleDiceRoll = useCallback((value?: number) => {
     const player = players[currentTurn];
-    if (!player || player.finished || isTokenMoving) return;
+    if (!player || player.finished || isTokenMoving || !!tileMessage || !!miniGame || showRiverOfDeath || showPhaseTransition !== null) return;
 
     if (player.isStunned) {
       setPlayers(prev => prev.map((p, i) => i === currentTurn ? {
@@ -573,7 +573,7 @@ const PresentialMultiplayer = () => {
         postAnimationAction();
       }
     };
-  }, [players, currentTurn, tileTypes, finishCount, isTokenMoving]);
+  }, [players, currentTurn, tileTypes, finishCount, isTokenMoving, tileMessage, miniGame, showRiverOfDeath, showPhaseTransition]);
 
   // River of Death result
   const handleRiverResult = useCallback((passed: boolean) => {
@@ -1099,7 +1099,7 @@ const PresentialMultiplayer = () => {
         />
 
         {/* Dice section */}
-        {phase === 'playing' && !currentPlayer?.finished && (
+        {phase === 'playing' && !currentPlayer?.finished && !tileMessage && !miniGame && !showRiverOfDeath && showPhaseTransition === null && (
           <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background via-background/95 to-transparent pt-10 pb-5 px-4">
             <div className="max-w-lg mx-auto">
               {currentPlayer?.isStunned ? (
@@ -1124,7 +1124,7 @@ const PresentialMultiplayer = () => {
                         }, 1200);
                       }}
                       className="focus:outline-none active:scale-95 transition-transform"
-                      disabled={diceRolling || isTokenMoving}
+                      disabled={diceRolling || isTokenMoving || !!tileMessage || !!miniGame || showRiverOfDeath !== null || showPhaseTransition !== null}
                     >
                       <Dice3D value={diceValue} rolling={diceRolling} size={90} color="gold" />
                     </button>
@@ -1144,7 +1144,8 @@ const PresentialMultiplayer = () => {
                       <button
                         key={n}
                         onClick={() => handleDiceRoll(n)}
-                        className="w-12 h-12 rounded-xl bg-card border-2 border-border text-foreground font-bold text-lg hover:border-primary/40 hover:bg-primary/5 active:scale-95 transition-all font-display"
+                        disabled={diceRolling || isTokenMoving || !!tileMessage || !!miniGame || showRiverOfDeath !== null || showPhaseTransition !== null}
+                        className="w-12 h-12 rounded-xl bg-card border-2 border-border text-foreground font-bold text-lg hover:border-primary/40 hover:bg-primary/5 active:scale-95 transition-all font-display disabled:opacity-40"
                         style={{ boxShadow: '0 3px 8px rgba(0,0,0,0.3)' }}
                       >
                         {n}

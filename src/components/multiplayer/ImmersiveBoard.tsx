@@ -34,23 +34,38 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
   const [animatedPosition, setAnimatedPosition] = useState<number | null>(null);
   const animationRef = useRef<number | null>(null);
 
-  const currentPlayer = players.find(p => p.id === currentTurnId);
   const visiblePhases = useVisiblePhases(players);
   const capability = useDeviceCapability();
 
-  // Detect position changes and animate step-by-step
+  // Track ALL players' position changes — animate whichever player moved
   useEffect(() => {
-    if (!currentPlayer || !boardRef.current) return;
-    const prevPos = prevPositionRef.current[currentPlayer.id] ?? currentPlayer.position;
-    const newPos = currentPlayer.position;
+    if (!boardRef.current) return;
+
+    // Find which player changed position
+    let movedPlayer: Player | null = null;
+    let prevPos = 0;
+    let newPos = 0;
+
+    for (const p of players) {
+      const prev = prevPositionRef.current[p.id] ?? p.position;
+      if (prev !== p.position && !p.finished) {
+        movedPlayer = p;
+        prevPos = prev;
+        newPos = p.position;
+        break; // animate one at a time
+      }
+    }
 
     // Save current positions for all players
     players.forEach(p => { prevPositionRef.current[p.id] = p.position; });
 
-    if (prevPos === newPos) return;
+    if (!movedPlayer || prevPos === newPos) return;
+
+    // Cancel any running animation
+    if (animationRef.current) clearTimeout(animationRef.current);
 
     // Animate step by step
-    const steps = [];
+    const steps: number[] = [];
     if (newPos > prevPos) {
       for (let i = prevPos + 1; i <= newPos; i++) steps.push(i);
     } else {
@@ -59,11 +74,12 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
 
     if (steps.length === 0) return;
 
-    setAnimatingPlayerId(currentPlayer.id);
+    const playerId = movedPlayer.id;
+    setAnimatingPlayerId(playerId);
     setAnimatedPosition(prevPos);
 
     let stepIdx = 0;
-    const STEP_DELAY = 900; // ms per tile — slow, dramatic, cinematic movement
+    const STEP_DELAY = 900;
 
     const doStep = () => {
       if (stepIdx >= steps.length) {
@@ -90,7 +106,8 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
     return () => {
       if (animationRef.current) clearTimeout(animationRef.current);
     };
-  }, [currentPlayer?.position, currentPlayer?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [players.map(p => `${p.id}:${p.position}`).join(',')]);
 
   const getDisplayPosition = (player: Player): number => {
     if (player.id === animatingPlayerId && animatedPosition !== null) {
