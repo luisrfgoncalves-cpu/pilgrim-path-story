@@ -357,11 +357,16 @@ const PresentialMultiplayer = () => {
   }, [phaseTransitionPendingAction]);
 
   // Called by ImmersiveBoard when token animation finishes
+  // Adds a 1.2s suspense delay before triggering the event popup
   const handleTokenArrived = useCallback(() => {
     setIsTokenMoving(false);
     if (pendingActionRef.current) {
-      pendingActionRef.current();
+      const action = pendingActionRef.current;
       pendingActionRef.current = null;
+      // Suspense delay — player sees the tile, feels the tension
+      setTimeout(() => {
+        action();
+      }, 1200);
     }
   }, []);
 
