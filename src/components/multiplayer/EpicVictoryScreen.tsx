@@ -52,7 +52,7 @@ function Firework({ delay, x, y }: { delay: number; x: number; y?: number }) {
 
   return (
     <div className="absolute pointer-events-none" style={{ left: `${x}%`, top: `${y || 15}%` }}>
-      {Array.from({ length: 12 }).map((_, i) => {
+      {Array.from({ length: 8 }).map((_, i) => {
         const angle = (i / 12) * 360;
         const rad = (angle * Math.PI) / 180;
         const dist = 30 + Math.random() * 50;
