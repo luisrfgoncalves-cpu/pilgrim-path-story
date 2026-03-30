@@ -1,13 +1,8 @@
-// Board sound effects using Web Audio API
-const AudioCtx = typeof window !== 'undefined' ? (window.AudioContext || (window as any).webkitAudioContext) : null;
-
-let ctx: AudioContext | null = null;
+// Board sound effects using Web Audio API — uses pre-warmed shared context
+import { getPrewarmedAudioContext } from '@/hooks/useAudioPrewarm';
 
 function getCtx(): AudioContext | null {
-  if (!AudioCtx) return null;
-  if (!ctx || ctx.state === 'closed') ctx = new AudioCtx();
-  if (ctx.state === 'suspended') ctx.resume();
-  return ctx;
+  return getPrewarmedAudioContext();
 }
 
 function playTone(freq: number, duration: number, type: OscillatorType = 'sine', volume = 0.15) {

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect, useState } from 'react';
+import { useMemo, useRef, useEffect, useState, memo } from 'react';
 import {
   IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, PHASES, TILE_TYPES,
   TileType, getTrailPositions, PhaseConfig,
@@ -6,6 +6,8 @@ import {
 import { MedievalTileIcon } from './MedievalTileIcons';
 import { characterImages } from '@/data/characterImages';
 import ContinuousTrail from './ContinuousTrail';
+import { useVisiblePhases } from '@/hooks/useVisiblePhases';
+import { useDeviceCapability } from '@/hooks/useDeviceCapability';
 
 interface Player {
   id: string;
@@ -21,7 +23,7 @@ interface ImmersiveBoardProps {
   players: Player[];
   currentTurnId?: string;
   onTileClick?: (position: number, tileType: TileType) => void;
-  onTokenArrived?: () => void; // called when animated token reaches destination
+  onTokenArrived?: () => void;
 }
 
 export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTileClick, onTokenArrived }: ImmersiveBoardProps) {
@@ -33,6 +35,8 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
   const animationRef = useRef<number | null>(null);
 
   const currentPlayer = players.find(p => p.id === currentTurnId);
+  const visiblePhases = useVisiblePhases(players);
+  const capability = useDeviceCapability();
 
   // Detect position changes and animate step-by-step
   useEffect(() => {
@@ -59,14 +63,12 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
     setAnimatedPosition(prevPos);
 
     let stepIdx = 0;
-    const STEP_DELAY = 650; // ms per tile — very slow, dramatic movement
+    const STEP_DELAY = 650;
 
     const doStep = () => {
       if (stepIdx >= steps.length) {
-        // Animation complete
         setAnimatingPlayerId(null);
         setAnimatedPosition(null);
-        // Notify parent that token has arrived
         onTokenArrived?.();
         return;
       }
@@ -74,9 +76,6 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
       const pos = steps[stepIdx];
       setAnimatedPosition(pos);
 
-      // Auto-scroll to follow the token
-      const phaseIdx = Math.floor(pos / TILES_PER_PHASE);
-      const localIdx = pos % TILES_PER_PHASE;
       const tileEl = boardRef.current?.querySelector(`[data-tile-global="${pos}"]`);
       if (tileEl) {
         tileEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -86,7 +85,6 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
       animationRef.current = window.setTimeout(doStep, STEP_DELAY);
     };
 
-    // Start animation after a brief moment
     animationRef.current = window.setTimeout(doStep, 200);
 
     return () => {
@@ -94,7 +92,6 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
     };
   }, [currentPlayer?.position, currentPlayer?.id]);
 
-  // For rendering: if animating, override the current player's displayed position
   const getDisplayPosition = (player: Player): number => {
     if (player.id === animatingPlayerId && animatedPosition !== null) {
       return animatedPosition;
@@ -104,27 +101,42 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
 
   return (
     <div ref={boardRef} className="w-full">
-      {PHASES.map((phase, phaseIdx) => (
-        <PhaseSection
-          key={phaseIdx}
-          phase={phase}
-          phaseIdx={phaseIdx}
-          tileTypes={tileTypes}
-          trailPositions={trailPositions}
-          players={players}
-          currentTurnId={currentTurnId}
-          onTileClick={onTileClick}
-          getDisplayPosition={getDisplayPosition}
-          animatingPlayerId={animatingPlayerId}
-        />
-      ))}
+      {PHASES.map((phase, phaseIdx) => {
+        // LAZY LOADING: only mount phases that are visible
+        if (!visiblePhases.has(phaseIdx)) {
+          return (
+            <div
+              key={phaseIdx}
+              data-phase={phaseIdx}
+              style={{ minHeight: '500svh' }}
+              className="relative w-full"
+            />
+          );
+        }
+
+        return (
+          <PhaseSection
+            key={phaseIdx}
+            phase={phase}
+            phaseIdx={phaseIdx}
+            tileTypes={tileTypes}
+            trailPositions={trailPositions}
+            players={players}
+            currentTurnId={currentTurnId}
+            onTileClick={onTileClick}
+            getDisplayPosition={getDisplayPosition}
+            animatingPlayerId={animatingPlayerId}
+            capability={capability}
+          />
+        );
+      })}
     </div>
   );
 }
 
-function PhaseSection({
+const PhaseSection = memo(function PhaseSection({
   phase, phaseIdx, tileTypes, trailPositions, players, currentTurnId, onTileClick,
-  getDisplayPosition, animatingPlayerId,
+  getDisplayPosition, animatingPlayerId, capability,
 }: {
   phase: PhaseConfig;
   phaseIdx: number;
@@ -135,17 +147,56 @@ function PhaseSection({
   onTileClick?: (position: number, tileType: TileType) => void;
   getDisplayPosition: (player: Player) => number;
   animatingPlayerId: string | null;
+  capability: ReturnType<typeof useDeviceCapability>;
 }) {
   const startIdx = phaseIdx * TILES_PER_PHASE;
   const charImg = phase.characterKey ? characterImages[phase.characterKey] : null;
 
+  // Virtualization: track which tiles are visible in viewport
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [visibleTileRange, setVisibleTileRange] = useState<[number, number]>([0, TILES_PER_PHASE - 1]);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    // Use IntersectionObserver on the section itself for coarse visibility
+    // For tile-level virtualization, we observe scroll position
+    const BUFFER = 5; // extra tiles above/below viewport
+
+    const updateVisibleRange = () => {
+      const rect = section.getBoundingClientRect();
+      const viewH = window.innerHeight;
+      const sectionH = rect.height;
+
+      if (sectionH === 0) {
+        setVisibleTileRange([0, TILES_PER_PHASE - 1]);
+        return;
+      }
+
+      // What fraction of the section is visible
+      const topVisible = Math.max(0, -rect.top / sectionH);
+      const bottomVisible = Math.min(1, (viewH - rect.top) / sectionH);
+
+      const firstTile = Math.max(0, Math.floor(topVisible * TILES_PER_PHASE) - BUFFER);
+      const lastTile = Math.min(TILES_PER_PHASE - 1, Math.ceil(bottomVisible * TILES_PER_PHASE) + BUFFER);
+
+      setVisibleTileRange([firstTile, lastTile]);
+    };
+
+    updateVisibleRange();
+    window.addEventListener('scroll', updateVisibleRange, { passive: true });
+    return () => window.removeEventListener('scroll', updateVisibleRange);
+  }, []);
+
   return (
     <div
+      ref={sectionRef}
       data-phase={phaseIdx}
       className="relative w-full overflow-hidden"
       style={{ minHeight: '500svh' }}
     >
-      {/* Background - BRIGHT and vivid */}
+      {/* Background */}
       <div className="absolute inset-0">
         <img
           src={phase.bgImage}
@@ -165,7 +216,7 @@ function PhaseSection({
           style={{
             background: `linear-gradient(135deg, hsla(${phase.accentHue} 50% 25% / 0.9), hsla(${phase.accentHue} 40% 15% / 0.95))`,
             border: `1.5px solid hsla(${phase.accentHue} 60% 55% / 0.5)`,
-            boxShadow: `0 0 20px hsla(${phase.accentHue} 60% 50% / 0.2)`,
+            boxShadow: capability.enableComplexShadows ? `0 0 20px hsla(${phase.accentHue} 60% 50% / 0.2)` : undefined,
           }}
         >
           <span className="text-sm">{phase.icon}</span>
@@ -195,17 +246,24 @@ function PhaseSection({
         trailPositions={trailPositions}
         phaseIdx={phaseIdx}
         accentHue={phase.accentHue}
+        enableGlowFilter={capability.enableSvgFilters}
       />
 
-      {/* Tiles */}
+      {/* Tiles — VIRTUALIZED: only render visible ones */}
       <div className="relative w-full z-[2]" style={{ minHeight: '500svh' }}>
         {trailPositions.map((pos, localIdx) => {
           const globalIdx = startIdx + localIdx;
           if (globalIdx >= IMMERSIVE_BOARD_SIZE) return null;
 
+          // VIRTUALIZATION: skip tiles outside visible range
+          // BUT always render tiles that have players on them
+          const hasPlayer = players.some(p => getDisplayPosition(p) === globalIdx && !p.finished);
+          if (!hasPlayer && (localIdx < visibleTileRange[0] || localIdx > visibleTileRange[1])) {
+            return null;
+          }
+
           const tileType = tileTypes[globalIdx] || 'normal';
           const config = TILE_TYPES[tileType];
-          // Use display position (animated) instead of raw position
           const playersHere = players.filter(p => getDisplayPosition(p) === globalIdx && !p.finished);
           const isCurrentPlayerHere = playersHere.some(p => p.id === currentTurnId);
           const isAnimatingHere = playersHere.some(p => p.id === animatingPlayerId);
@@ -218,7 +276,6 @@ function PhaseSection({
           const isBoss = tileType === 'giant' || tileType === 'challenge';
           const tileSize = isBoss ? 88 : isSpecial ? 78 : 66;
 
-          // Determine label side: if tile is left of center (x < 50), label goes RIGHT; otherwise LEFT
           const labelOnRight = pos.x < 50;
 
           return (
@@ -234,7 +291,7 @@ function PhaseSection({
                 className={`relative flex items-center justify-center overflow-hidden
                   ${playersHere.length > 0 ? 'scale-125 ring-2 ring-white/50' : ''}
                   ${isAnimatingHere ? 'ring-4 ring-yellow-400/70' : ''}
-                  ${isCurrentPlayerHere && !isAnimatingHere ? 'animate-pulse' : ''}
+                  ${isCurrentPlayerHere && !isAnimatingHere && capability.enableCssAnimations ? 'animate-pulse' : ''}
                   transition-all duration-300 hover:scale-110
                 `}
                 style={{
@@ -242,13 +299,9 @@ function PhaseSection({
                   height: tileSize,
                   borderRadius: isBoss ? 18 : isSpecial ? 16 : 12,
                   background: tileImg ? 'none' : `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))`,
-                  boxShadow: `
-                    0 0 ${playersHere.length > 0 ? '35' : '18'}px ${config.glowColor},
-                    inset 0 2px 3px rgba(255,255,255,0.2),
-                    inset 0 -2px 4px rgba(0,0,0,0.4),
-                    0 6px 20px rgba(0,0,0,0.7),
-                    0 2px 6px rgba(0,0,0,0.5)
-                  `,
+                  boxShadow: capability.enableComplexShadows
+                    ? `0 0 ${playersHere.length > 0 ? '35' : '18'}px ${config.glowColor}, inset 0 2px 3px rgba(255,255,255,0.2), inset 0 -2px 4px rgba(0,0,0,0.4), 0 6px 20px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.5)`
+                    : `0 0 ${playersHere.length > 0 ? '15' : '8'}px ${config.glowColor}, 0 4px 12px rgba(0,0,0,0.5)`,
                   border: `2.5px solid ${config.color}`,
                 }}
               >
@@ -274,25 +327,30 @@ function PhaseSection({
                   borderRadius: '50%',
                   padding: isBoss ? 5 : 4,
                   border: `2px solid ${config.color}`,
-                  boxShadow: `0 0 10px ${config.glowColor}`,
+                  boxShadow: capability.enableComplexShadows ? `0 0 10px ${config.glowColor}` : undefined,
                 }}
               >
                 <MedievalTileIcon
                   tileType={tileType}
                   size={isBoss ? 18 : isSpecial ? 16 : 14}
                   color={config.color}
-                  glowColor={config.glowColor}
+                  glowColor={capability.enableComplexShadows ? config.glowColor : undefined}
                 />
               </div>
 
               {/* Boss indicator */}
-              {isBoss && (
+              {isBoss && capability.enableCssAnimations && (
                 <div className="absolute -top-2 -right-2 text-xs z-10 animate-bounce">
                   {tileType === 'giant' ? '💀' : '⚔️'}
                 </div>
               )}
+              {isBoss && !capability.enableCssAnimations && (
+                <div className="absolute -top-2 -right-2 text-xs z-10">
+                  {tileType === 'giant' ? '💀' : '⚔️'}
+                </div>
+              )}
 
-              {/* Type label — positioned to LEFT or RIGHT of tile based on trail curve */}
+              {/* Type label */}
               {isSpecial && (
                 <div className="absolute top-1/2 -translate-y-1/2 z-10"
                   style={labelOnRight
@@ -301,7 +359,6 @@ function PhaseSection({
                   }
                 >
                   <div className="relative flex items-center">
-                    {/* Arrow pointing toward the tile */}
                     {labelOnRight ? (
                       <div style={{
                         width: 0, height: 0,
@@ -316,8 +373,12 @@ function PhaseSection({
                         background: 'rgba(0,0,0,0.9)',
                         color: '#FFFFFF',
                         border: `2px solid ${config.color}`,
-                        boxShadow: `0 0 16px ${config.glowColor}, 0 4px 12px rgba(0,0,0,0.7)`,
-                        textShadow: `0 0 10px ${config.color}, 0 1px 3px rgba(0,0,0,0.8)`,
+                        boxShadow: capability.enableComplexShadows
+                          ? `0 0 16px ${config.glowColor}, 0 4px 12px rgba(0,0,0,0.7)`
+                          : `0 2px 8px rgba(0,0,0,0.5)`,
+                        textShadow: capability.enableComplexShadows
+                          ? `0 0 10px ${config.color}, 0 1px 3px rgba(0,0,0,0.8)`
+                          : `0 1px 3px rgba(0,0,0,0.8)`,
                         letterSpacing: '0.06em',
                         wordSpacing: '0.2em',
                         fontSize: isBoss ? '15px' : '13px',
@@ -350,7 +411,7 @@ function PhaseSection({
                         boxShadow: `0 0 ${p.id === animatingPlayerId ? '20' : '12'}px ${p.color}90`,
                         animation: p.id === animatingPlayerId
                           ? 'tokenGlow 0.35s ease-in-out infinite alternate'
-                          : p.id === currentTurnId ? 'bounce 1s infinite' : undefined,
+                          : p.id === currentTurnId && capability.enableCssAnimations ? 'bounce 1s infinite' : undefined,
                       }}
                       title={p.name}
                     />
@@ -382,7 +443,7 @@ function PhaseSection({
               style={{
                 background: `linear-gradient(135deg, hsla(${phase.accentHue} 40% 20% / 0.95), hsla(${PHASES[phaseIdx + 1].accentHue} 40% 20% / 0.95))`,
                 border: `2px solid hsla(${phase.accentHue} 50% 50% / 0.5)`,
-                boxShadow: `0 0 12px hsla(${phase.accentHue} 50% 50% / 0.3)`,
+                boxShadow: capability.enableComplexShadows ? `0 0 12px hsla(${phase.accentHue} 50% 50% / 0.3)` : undefined,
               }}
             >
               <span className="text-xs">{PHASES[phaseIdx + 1].icon}</span>
@@ -400,4 +461,4 @@ function PhaseSection({
       `}</style>
     </div>
   );
-}
+});
