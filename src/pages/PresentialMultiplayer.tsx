@@ -197,7 +197,7 @@ const PresentialMultiplayer = () => {
   const [diceRolling, setDiceRolling] = useState(false);
   const [turnAnnounce, setTurnAnnounce] = useState<string | null>(null);
   const [finishCount, setFinishCount] = useState(0);
-  const [showDice, setShowDice] = useState(true);
+  
 
   const addPlayer = () => {
     if (players.length >= 8) return;
