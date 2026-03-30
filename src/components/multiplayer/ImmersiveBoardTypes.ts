@@ -100,7 +100,7 @@ export function generateImmersiveTiles(seed: number): TileType[] {
   const tiles: TileType[] = [];
   for (let i = 0; i < IMMERSIVE_BOARD_SIZE; i++) {
     const localIdx = i % TILES_PER_PHASE;
-
+    const phaseIdx = Math.floor(i / TILES_PER_PHASE);
     if (i === 0) { tiles.push('start'); continue; }
     if (i === IMMERSIVE_BOARD_SIZE - 1) { tiles.push('finish'); continue; }
 
@@ -122,6 +122,9 @@ export function generateImmersiveTiles(seed: number): TileType[] {
 
     // Strategic trap at penultimate position (18) of each phase
     if (localIdx === 17) { tiles.push('trap'); continue; }
+
+    // Back to start — rare but devastating, once per phase at position 19
+    if (localIdx === 18 && phaseIdx >= 2) { tiles.push('back_to_start'); continue; }
 
     // Scripture near end of phase
     if (localIdx === 15) { tiles.push('scripture'); continue; }

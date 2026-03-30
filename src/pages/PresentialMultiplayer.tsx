@@ -66,6 +66,7 @@ function resolveTileEffect(
   shield: boolean;
   extraTurn: boolean;
   resetToCheckpoint: boolean;
+  resetToStart: boolean;
   message: string;
   emoji: string;
 } {
@@ -73,7 +74,7 @@ function resolveTileEffect(
   const result = {
     posAdjust: 0, attrChanges: {} as Record<string, number>,
     stun: false, stunTurns: 0, shield: false, extraTurn: false,
-    resetToCheckpoint: false, message: '', emoji: '',
+    resetToCheckpoint: false, resetToStart: false, message: '', emoji: '',
   };
 
   switch (tileType) {
