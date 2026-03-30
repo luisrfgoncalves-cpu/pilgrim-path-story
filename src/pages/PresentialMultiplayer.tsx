@@ -631,9 +631,33 @@ const PresentialMultiplayer = () => {
     }));
 
     setMiniGame(null);
+
+    // Context-appropriate messages — never say "venceu a Escritura" (anti-biblical)
+    const winMessages: Record<string, string> = {
+      scripture: `📖 ${player.name} respondeu corretamente a Escritura! A Palavra ilumina o caminho!`,
+      giant: `⚔️ ${player.name} derrotou o ${TILE_TYPES[tileType].label}! Avança para o Refúgio!`,
+      challenge: `⚔️ ${player.name} superou o Desafio com bravura! Avança para o Refúgio!`,
+      surprise: `🎁 ${player.name} discerniu bem a Surpresa! Avança para o Refúgio!`,
+      blessing: `⭐ ${player.name} encontrou a Bênção! Avança para o Refúgio!`,
+      trap: `🔙 ${player.name} escapou da Armadilha a tempo!`,
+      shield: `🛡️ ${player.name} manteve a coragem e recebeu o Escudo!`,
+      current: `🌊 ${player.name} venceu a Correnteza! Avança para o Refúgio!`,
+      swap: `🔄 ${player.name} escolheu o caminho certo na Encruzilhada!`,
+    };
+    const loseMessages: Record<string, string> = {
+      scripture: `📖 ${player.name} errou a resposta... A Palavra é profunda. Volta para a casa ${prevPosition + 1}.`,
+      giant: `💀 ${player.name} foi derrotado pelo Gigante! Volta para a casa ${prevPosition + 1}...`,
+      challenge: `💀 ${player.name} não superou o Desafio... Volta para a casa ${prevPosition + 1}.`,
+      surprise: `🎁 ${player.name} não discerniu bem... Volta para a casa ${prevPosition + 1}.`,
+      blessing: `⭐ ${player.name} não encontrou os tesouros... Volta para a casa ${prevPosition + 1}.`,
+      trap: `🔙 ${player.name} caiu na armadilha! Volta para a casa ${prevPosition + 1}.`,
+      shield: `🛡️ ${player.name} fraquejou... Sem escudo desta vez. Volta para a casa ${prevPosition + 1}.`,
+      current: `🌊 ${player.name} foi levado pela correnteza! Volta para a casa ${prevPosition + 1}.`,
+      swap: `🔄 ${player.name} escolheu o caminho errado! Volta para a casa ${prevPosition + 1}.`,
+    };
     const resultMsg = won
-      ? `⚔️ ${player.name} venceu o ${TILE_TYPES[tileType].label}! Avança para o Refúgio!`
-      : `💀 ${player.name} perdeu! Volta para a casa ${prevPosition + 1}...`;
+      ? (winMessages[tileType] || `✅ ${player.name} venceu! Avança para o Refúgio!`)
+      : (loseMessages[tileType] || `❌ ${player.name} não conseguiu... Volta para a casa ${prevPosition + 1}.`);
     setTileMessage({
       message: resultMsg,
       emoji: won ? '🏆' : '😢',
