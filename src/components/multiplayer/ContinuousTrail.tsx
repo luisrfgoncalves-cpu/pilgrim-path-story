@@ -9,12 +9,12 @@ import trailCelestialImg from '@/assets/board/trail-celestial.jpg';
 
 // Phase-specific trail image
 const PHASE_TRAIL_IMG: Record<number, string> = {
-  0: trailDirtImg,          // Cidade da Destruição - terra batida
-  1: trailSwampImg,         // Pântano - lama
-  2: trailDarkValleyImg,    // Vale da Sombra - rocha escura
-  3: trailFairImg,          // Feira da Vaidade - paralelepípedo
-  4: trailCastleImg,        // Castelo da Dúvida - pedra de castelo
-  5: trailCelestialImg,     // Cidade Celestial - caminho dourado
+  0: trailDirtImg,
+  1: trailSwampImg,
+  2: trailDarkValleyImg,
+  3: trailFairImg,
+  4: trailCastleImg,
+  5: trailCelestialImg,
 };
 
 // Secondary trail for variation (appears in alternating sections)
@@ -32,6 +32,7 @@ interface ContinuousTrailProps {
   phaseIdx: number;
   accentHue: number;
   enableGlowFilter?: boolean;
+  simplified?: boolean;
 }
 
 /**
@@ -40,9 +41,7 @@ interface ContinuousTrailProps {
 function buildSmoothPath(points: { x: number; y: number }[]): string {
   if (points.length < 2) return '';
 
-  // Convert percentage coords to SVG viewBox coords (1000x10000)
   const pts = points.map(p => ({ x: p.x * 10, y: p.y * 100 }));
-
   let d = `M ${pts[0].x} ${pts[0].y}`;
 
   for (let i = 0; i < pts.length - 1; i++) {
@@ -51,7 +50,6 @@ function buildSmoothPath(points: { x: number; y: number }[]): string {
     const p2 = pts[i + 1];
     const p3 = pts[Math.min(pts.length - 1, i + 2)];
 
-    // Catmull-Rom to cubic bezier control points
     const tension = 0.35;
     const cp1x = p1.x + (p2.x - p0.x) * tension;
     const cp1y = p1.y + (p2.y - p0.y) * tension;
@@ -64,7 +62,13 @@ function buildSmoothPath(points: { x: number; y: number }[]): string {
   return d;
 }
 
-export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue, enableGlowFilter = true }: ContinuousTrailProps) {
+export default function ContinuousTrail({
+  trailPositions,
+  phaseIdx,
+  accentHue,
+  enableGlowFilter = true,
+  simplified = false,
+}: ContinuousTrailProps) {
   const pathD = useMemo(() => buildSmoothPath(trailPositions), [trailPositions]);
   const trailImg = PHASE_TRAIL_IMG[phaseIdx] || trailDirtImg;
   const trailAltImg = PHASE_TRAIL_ALT[phaseIdx] || trailStoneImg;
@@ -74,6 +78,34 @@ export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue, e
 
   if (!pathD) return null;
 
+  // Lightweight mode for low-end mobile devices
+  if (simplified) {
+    return (
+      <svg
+        className="absolute inset-0 w-full h-full z-[1] pointer-events-none"
+        viewBox="0 0 1000 10000"
+        preserveAspectRatio="none"
+      >
+        <path
+          d={pathD}
+          fill="none"
+          stroke={`hsla(${accentHue} 35% 18% / 0.45)`}
+          strokeWidth="98"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d={pathD}
+          fill="none"
+          stroke={`hsla(${accentHue} 45% 62% / 0.25)`}
+          strokeWidth="52"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
   return (
     <svg
       className="absolute inset-0 w-full h-full z-[1] pointer-events-none"
@@ -81,37 +113,14 @@ export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue, e
       preserveAspectRatio="none"
     >
       <defs>
-        {/* Main trail texture pattern */}
-        <pattern
-          id={patternId}
-          patternUnits="userSpaceOnUse"
-          width="200"
-          height="400"
-        >
-          <image
-            href={trailImg}
-            x="0" y="0"
-            width="200" height="400"
-            preserveAspectRatio="xMidYMid slice"
-          />
+        <pattern id={patternId} patternUnits="userSpaceOnUse" width="200" height="400">
+          <image href={trailImg} x="0" y="0" width="200" height="400" preserveAspectRatio="xMidYMid slice" />
         </pattern>
 
-        {/* Alt trail texture for variety */}
-        <pattern
-          id={patternAltId}
-          patternUnits="userSpaceOnUse"
-          width="200"
-          height="400"
-        >
-          <image
-            href={trailAltImg}
-            x="0" y="0"
-            width="200" height="400"
-            preserveAspectRatio="xMidYMid slice"
-          />
+        <pattern id={patternAltId} patternUnits="userSpaceOnUse" width="200" height="400">
+          <image href={trailAltImg} x="0" y="0" width="200" height="400" preserveAspectRatio="xMidYMid slice" />
         </pattern>
 
-        {/* Glow filter for luminous edges */}
         <filter id={glowFilterId} x="-20%" y="-5%" width="140%" height="110%">
           <feGaussianBlur stdDeviation="8" result="blur" />
           <feFlood floodColor={`hsl(${accentHue} 50% 55%)`} floodOpacity="0.3" result="color" />
@@ -123,7 +132,6 @@ export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue, e
         </filter>
       </defs>
 
-      {/* Shadow layer - depth effect */}
       <path
         d={pathD}
         fill="none"
@@ -134,7 +142,6 @@ export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue, e
         transform="translate(4, 8)"
       />
 
-      {/* Main trail with image texture */}
       <path
         d={pathD}
         fill="none"
@@ -146,7 +153,6 @@ export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue, e
         opacity="0.9"
       />
 
-      {/* Subtle edge borders for definition */}
       <path
         d={pathD}
         fill="none"
@@ -158,7 +164,6 @@ export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue, e
         style={{ mixBlendMode: 'overlay' }}
       />
 
-      {/* Inner highlight for 3D raised effect */}
       <path
         d={pathD}
         fill="none"

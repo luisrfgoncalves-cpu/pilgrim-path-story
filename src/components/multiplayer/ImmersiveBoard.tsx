@@ -203,50 +203,24 @@ const PhaseSection = memo(function PhaseSection({
           alt={phase.name}
           className="w-full h-full object-cover"
           loading={phaseIdx === 0 ? 'eager' : 'lazy'}
-          style={{ filter: 'brightness(0.85) saturate(1.7) contrast(1.1)' }}
+          style={{
+            filter: capability.tier === 'essential'
+              ? 'brightness(0.9) saturate(1.2) contrast(1.05)'
+              : 'brightness(0.85) saturate(1.7) contrast(1.1)',
+          }}
         />
         <div className="absolute inset-0" style={{
           background: `linear-gradient(to bottom, hsla(${phase.accentHue} 25% 8% / 0.3) 0%, hsla(${phase.accentHue} 15% 5% / 0.15) 50%, hsla(${phase.accentHue} 25% 8% / 0.35) 100%)`,
         }} />
       </div>
-
-      {/* Phase title */}
-      <div className="absolute top-3 left-3 z-10">
-        <div className="relative flex items-center gap-2 px-3 py-1.5 rounded-lg backdrop-blur-md"
-          style={{
-            background: `linear-gradient(135deg, hsla(${phase.accentHue} 50% 25% / 0.9), hsla(${phase.accentHue} 40% 15% / 0.95))`,
-            border: `1.5px solid hsla(${phase.accentHue} 60% 55% / 0.5)`,
-            boxShadow: capability.enableComplexShadows ? `0 0 20px hsla(${phase.accentHue} 60% 50% / 0.2)` : undefined,
-          }}
-        >
-          <span className="text-sm">{phase.icon}</span>
-          <div>
-            <h3 className="text-[11px] font-display font-bold leading-tight" style={{ color: `hsl(${phase.accentHue} 60% 80%)` }}>{phase.name}</h3>
-            <p className="text-[7px] uppercase tracking-wider" style={{ color: `hsl(${phase.accentHue} 40% 65%)` }}>{phase.subtitle}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Character portrait */}
-      {charImg && (
-        <div className="absolute right-0 top-[15%] w-44 h-56 opacity-40 pointer-events-none z-0"
-          style={{
-            maskImage: 'linear-gradient(to left, black 40%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to left, black 40%, transparent 100%)',
-          }}
-        >
-          <img src={charImg} alt={phase.characterName || ''} className="w-full h-full object-cover rounded-l-2xl" loading="lazy"
-            style={{ filter: 'saturate(1.3) contrast(1.1)' }}
-          />
-        </div>
-      )}
-
+...
       {/* Continuous trail path */}
       <ContinuousTrail
         trailPositions={trailPositions}
         phaseIdx={phaseIdx}
         accentHue={phase.accentHue}
         enableGlowFilter={capability.enableSvgFilters}
+        simplified={capability.tier === 'essential'}
       />
 
       {/* Tiles — VIRTUALIZED: only render visible ones */}

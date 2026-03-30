@@ -280,74 +280,40 @@ const ScenePage = () => {
         const char = allChars.find(c => c.id === id);
         const img = characterImages[id];
         if (!char || !img) return null;
-        // Determine character type for sound
         const isVillain = ['apolion', 'gigante_desespero', 'juiz_odio_ao_bem', 'amor_dinheiro', 'hipocrisia', 'formalista', 'ateismo', 'lisonjeiro'].includes(id);
         return { name: char.name, img, role: char.role, isVillain };
       })
       .find(Boolean);
-    
+
     if (revealChar) {
       const delay = setTimeout(() => {
-        // Play entrance sound
         playGameSfx('suspense');
         setTimeout(() => {
           playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
-        }, 400);
+        }, 200);
         setCharReveal(revealChar);
-        // After 8 seconds, dismiss reveal and set persistent portrait
+        // Faster reveal to avoid slow feeling on mobile scenes
         setTimeout(() => {
           setCharReveal(null);
           setCharRevealDone(true);
           setPersistentChar(revealChar);
-        }, 8000);
-      }, 1000);
+        }, 2500);
+      }, 250);
       return () => clearTimeout(delay);
     }
   }, [chapter?.id, transitioning]);
 
-  // Roll for surprise on scene entry
-  useEffect(() => {
-    if (!chapter) return;
-    const s = rollForSurprise(progress.attributes, chapter.id, progress.choicesMade);
-    if (s) {
-      setSurprise(s);
-      setSurpriseShown(true);
-      // No auto-timeout — GameNotification handles it
-      return;
-    } else {
-      setSurprise(null);
-      setSurpriseShown(false);
-    }
-  }, [chapter?.id]);
-
-  // Show support bonus toast
-  useEffect(() => {
-    if (newSupportCount > 0 && !supportToastShown) {
-      setSupportToastShown(true);
-      // GameNotification handles auto-dismiss
-    }
-  }, [newSupportCount, supportToastShown]);
-
-  // Audio: set ambience when scene or emotional state changes
-  useEffect(() => {
-    if (chapter && emotional) {
-      setAmbienceForScene(chapter.id, legacyTone);
-    }
-  }, [chapter?.id, legacyTone, setAmbienceForScene]);
-
-  // Gate choices behind character reveal — don't show until reveal finishes (or no reveal)
   const hasCharReveal = !!charReveal;
-  const canShowChoices = !hasCharReveal; // charReveal is null after dismiss/timeout
+  const canShowChoices = !hasCharReveal;
 
   useEffect(() => {
     if (!chapter) return;
     if (narrativeIndex < fullNarrative.length - 1) {
-      // Slower narrative pacing — give user time to read each paragraph
-      const timer = setTimeout(() => setNarrativeIndex(prev => prev + 1), 800);
+      // Faster pacing to avoid delayed text perception
+      const timer = setTimeout(() => setNarrativeIndex(prev => prev + 1), 320);
       return () => clearTimeout(timer);
     } else if (canShowChoices) {
-      // Only show choices after narrative done AND character reveal finished
-      const timer = setTimeout(() => setShowChoices(true), 600);
+      const timer = setTimeout(() => setShowChoices(true), 180);
       return () => clearTimeout(timer);
     }
   }, [narrativeIndex, chapter, fullNarrative.length, canShowChoices]);

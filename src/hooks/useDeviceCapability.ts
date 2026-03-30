@@ -52,17 +52,25 @@ const ESSENTIAL: DeviceCapability = {
   prefersReducedImages: true,
 };
 
+function isMobileDevice(): boolean {
+  if (typeof window === 'undefined') return false;
+  const ua = navigator.userAgent || '';
+  const mobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+  const touchScreen = navigator.maxTouchPoints > 0 && window.innerWidth <= 1024;
+  return mobileUA || touchScreen;
+}
+
 /**
  * Measures real FPS over a short sample to detect device performance
  */
 function measureFPS(callback: (fps: number) => void) {
   let frames = 0;
-  let start = performance.now();
+  const start = performance.now();
   const sample = () => {
     frames++;
     const elapsed = performance.now() - start;
     if (elapsed >= 1000) {
-      callback(Math.round(frames * 1000 / elapsed));
+      callback(Math.round((frames * 1000) / elapsed));
     } else {
       requestAnimationFrame(sample);
     }
@@ -76,15 +84,21 @@ function getInitialTier(): DeviceTier {
     return 'essential';
   }
 
-  // Use hardware concurrency + device memory as initial heuristic
   const cores = navigator.hardwareConcurrency || 2;
-  const memory = (navigator as any).deviceMemory || 4; // GB, defaults to 4 if unavailable
+  const memory = (navigator as any).deviceMemory || 4;
+  const mobile = isMobileDevice();
+
+  // Mobile guardrail: prevent aggressive auto-upgrade on phones
+  if (mobile) {
+    if (cores <= 4 || memory <= 4) return 'essential';
+    return 'optimized';
+  }
 
   if (cores >= 6 && memory >= 6) return 'premium';
   if (cores >= 4 && memory >= 3) return 'optimized';
   if (cores <= 2 || memory <= 2) return 'essential';
 
-  return 'optimized'; // default safe middle
+  return 'optimized';
 }
 
 /**
@@ -96,30 +110,37 @@ export function useDeviceCapability(): DeviceCapability {
   const hasAdjusted = useRef(false);
 
   useEffect(() => {
-    // After mount, measure actual FPS to refine the tier
     const timer = setTimeout(() => {
       measureFPS((fps) => {
         if (hasAdjusted.current) return;
         hasAdjusted.current = true;
 
         const initial = getInitialTier();
+        const mobile = isMobileDevice();
+
+        if (mobile) {
+          // On mobile, never promote to premium (protect RAM/GPU stability)
+          if (fps >= 45) {
+            setTier(initial === 'essential' ? 'optimized' : 'optimized');
+          } else {
+            setTier('essential');
+          }
+          return;
+        }
 
         if (fps >= 50) {
-          // Device handles well — try promoting
           if (initial === 'essential') setTier('optimized');
           else if (initial === 'optimized') setTier('premium');
           else setTier('premium');
         } else if (fps >= 30) {
-          // Decent — keep current or slight adjust
           if (initial === 'premium' && fps < 40) setTier('optimized');
           else setTier(initial);
         } else {
-          // Struggling — demote with headroom
           if (initial === 'premium') setTier('optimized');
           else setTier('essential');
         }
       });
-    }, 2000); // wait 2s for app to settle before measuring
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, []);
