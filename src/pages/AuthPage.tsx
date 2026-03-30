@@ -51,7 +51,7 @@ const AuthPage: React.FC = () => {
     }
 
     if (mode === 'login') {
-      const { error } = await signIn(email, password);
+      const { error } = await signIn(sanitizeEmail(email), password);
       if (error) {
         toast.error(error.message);
       } else {
