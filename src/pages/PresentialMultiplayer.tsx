@@ -1,13 +1,17 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PremiumBoard from '@/components/multiplayer/PremiumBoard';
+import ImmersiveBoard from '@/components/multiplayer/ImmersiveBoard';
 import PremiumDice from '@/components/multiplayer/PremiumDice';
 import EventReveal from '@/components/multiplayer/EventReveal';
 import GameNotification from '@/components/GameNotification';
-import { BOARD_SIZE, boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
+import { boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
+import {
+  IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, TileType, TILE_TYPES,
+  generateImmersiveTiles,
+} from '@/components/multiplayer/ImmersiveBoardTypes';
 import { playMove, playVictory, playTurnStart } from '@/components/multiplayer/BoardSounds';
 import { playGameSfx } from '@/lib/gameSfx';
-import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown, UserPlus } from 'lucide-react';
+import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown } from 'lucide-react';
 import ScreenHero from '@/components/ScreenHero';
 
 const COLORS = ['#E8724A', '#4CAF50', '#42A5F5', '#FFD54F', '#AB47BC', '#EF5350', '#26C6DA', '#FF7043'];
@@ -24,6 +28,9 @@ interface LocalPlayer {
   finishOrder: number | null;
   isStunned: boolean;
   stunTurns: number;
+  hasShield: boolean;
+  checkpoint: number;
+  extraTurn: boolean;
 }
 
 function createPlayer(index: number, name?: string): LocalPlayer {
@@ -38,20 +45,144 @@ function createPlayer(index: number, name?: string): LocalPlayer {
     finishOrder: null,
     isStunned: false,
     stunTurns: 0,
+    hasShield: false,
+    checkpoint: 0,
+    extraTurn: false,
   };
 }
 
-function generateBoardEvents(): Record<number, string> {
-  const events: Record<number, string> = {};
-  const available = [...boardEvents];
-  for (let i = 2; i < BOARD_SIZE - 1; i++) {
-    if (Math.random() < 0.6 && available.length > 0) {
-      const idx = Math.floor(Math.random() * available.length);
-      events[i] = available[idx].id;
-      available.splice(idx, 1);
-    }
+// ─── Tile effect resolution ───
+function resolveTileEffect(
+  tileType: TileType,
+  player: LocalPlayer,
+  allPlayers: LocalPlayer[],
+  seed: number,
+): {
+  posAdjust: number;
+  attrChanges: Record<string, number>;
+  stun: boolean;
+  stunTurns: number;
+  shield: boolean;
+  extraTurn: boolean;
+  resetToCheckpoint: boolean;
+  message: string;
+  emoji: string;
+} {
+  const rng = ((seed * 1103515245 + 12345) & 0x7fffffff) % 100;
+  const result = {
+    posAdjust: 0, attrChanges: {} as Record<string, number>,
+    stun: false, stunTurns: 0, shield: false, extraTurn: false,
+    resetToCheckpoint: false, message: '', emoji: '',
+  };
+
+  switch (tileType) {
+    case 'refuge':
+      result.attrChanges = { fe: 1, perseveranca: 1 };
+      result.message = '🏠 Refúgio! Você descansa e recupera forças.';
+      result.emoji = '🏠';
+      break;
+    case 'challenge':
+      if (rng >= 40) {
+        result.posAdjust = 3;
+        result.attrChanges = { coragem: 2 };
+        result.message = '⚔️ Desafio vencido! Avance 3 casas!';
+      } else {
+        result.posAdjust = -2;
+        result.attrChanges = { coragem: -1 };
+        result.message = '⚔️ Desafio perdido! Recue 2 casas.';
+      }
+      result.emoji = '⚔️';
+      break;
+    case 'surprise':
+      if (rng >= 50) {
+        result.posAdjust = 2;
+        result.attrChanges = { fe: 1 };
+        result.message = '🎁 Surpresa boa! Avance 2 casas!';
+      } else {
+        result.posAdjust = -1;
+        result.message = '🎁 Surpresa ruim... Recue 1 casa.';
+      }
+      result.emoji = '🎁';
+      break;
+    case 'scripture':
+      if (rng >= 35) {
+        result.posAdjust = 2;
+        result.attrChanges = { discernimento: 2, fe: 1 };
+        result.message = '📖 Palavra acertada! Discernimento +2, avance 2!';
+      } else {
+        result.attrChanges = { discernimento: -1 };
+        result.message = '📖 Resposta errada... Discernimento -1.';
+      }
+      result.emoji = '📖';
+      break;
+    case 'trap':
+      if (player.hasShield) {
+        result.message = '🛡️ Seu escudo te protegeu da armadilha!';
+        result.emoji = '🛡️';
+      } else {
+        result.posAdjust = -3;
+        result.attrChanges = { perseveranca: -1 };
+        result.message = '🔙 Armadilha! Recue 3 casas!';
+        result.emoji = '🔙';
+      }
+      break;
+    case 'giant':
+      if (player.hasShield) {
+        result.message = '🛡️ Seu escudo te protegeu do Gigante!';
+        result.emoji = '🛡️';
+      } else if (rng >= 70) {
+        result.stun = true;
+        result.stunTurns = 1;
+        result.message = '💀 O Gigante te capturou! Perde 1 turno.';
+        result.emoji = '💀';
+      } else {
+        result.resetToCheckpoint = true;
+        result.attrChanges = { coragem: -2 };
+        result.message = '💀 O Gigante te esmaga! Volta ao checkpoint!';
+        result.emoji = '💀';
+      }
+      break;
+    case 'shield':
+      result.shield = true;
+      result.attrChanges = { coragem: 1 };
+      result.message = '🛡️ Armadura de Deus! Proteção ativada!';
+      result.emoji = '🛡️';
+      break;
+    case 'blessing':
+      result.posAdjust = 4;
+      result.attrChanges = { fe: 2 };
+      result.message = '⭐ Bênção divina! Avance 4 casas!';
+      result.emoji = '⭐';
+      break;
+    case 'swap':
+      result.message = '🔄 Troca de caminhos! Posições trocadas!';
+      result.emoji = '🔄';
+      break;
+    case 'double_dice':
+      result.extraTurn = true;
+      result.message = '🎲 Dado duplo! Jogue novamente!';
+      result.emoji = '🎲';
+      break;
+    case 'current':
+      if (rng >= 50) {
+        result.posAdjust = 3;
+        result.message = '🌊 Correnteza favorável! Avance 3!';
+      } else {
+        result.posAdjust = -2;
+        result.message = '🌊 Correnteza adversa! Recue 2!';
+      }
+      result.emoji = '🌊';
+      break;
+    case 'checkpoint':
+      result.attrChanges = { perseveranca: 1 };
+      result.message = '🏰 Checkpoint salvo! Perseverança +1.';
+      result.emoji = '🏰';
+      break;
+    default:
+      result.message = 'Caminho tranquilo...';
+      result.emoji = '·';
   }
-  return events;
+  return result;
 }
 
 const PresentialMultiplayer = () => {
@@ -60,11 +191,11 @@ const PresentialMultiplayer = () => {
   const [players, setPlayers] = useState<LocalPlayer[]>([createPlayer(0), createPlayer(1)]);
   const [editingNames, setEditingNames] = useState<Record<string, string>>({});
   const [currentTurn, setCurrentTurn] = useState(0);
-  const [boardEventsMap, setBoardEventsMap] = useState<Record<number, string>>({});
-  const [revealEvent, setRevealEvent] = useState<{ event: BoardEvent; playerName: string; dice: number; challengeResult?: 'win' | 'fail' | null } | null>(null);
-  const [selectedTile, setSelectedTile] = useState<{ pos: number; event: BoardEvent | undefined } | null>(null);
+  const [tileTypes, setTileTypes] = useState<TileType[]>([]);
+  const [tileMessage, setTileMessage] = useState<{ message: string; emoji: string } | null>(null);
   const [turnAnnounce, setTurnAnnounce] = useState<string | null>(null);
   const [finishCount, setFinishCount] = useState(0);
+  const [showDice, setShowDice] = useState(true);
 
   const addPlayer = () => {
     if (players.length >= 8) return;
@@ -89,13 +220,12 @@ const PresentialMultiplayer = () => {
   };
 
   const startGame = () => {
-    // Commit any pending names
     const finalPlayers = players.map(p => {
       const editName = editingNames[p.id];
       return editName?.trim() ? { ...p, name: editName.trim() } : p;
     });
     setPlayers(finalPlayers);
-    setBoardEventsMap(generateBoardEvents());
+    setTileTypes(generateImmersiveTiles(Date.now()));
     setPhase('playing');
     setCurrentTurn(0);
     playTurnStart();
@@ -107,7 +237,6 @@ const PresentialMultiplayer = () => {
     const player = players[currentTurn];
     if (!player || player.finished) return;
 
-    // If stunned, skip turn
     if (player.isStunned) {
       setPlayers(prev => prev.map((p, i) => i === currentTurn ? {
         ...p,
@@ -119,78 +248,63 @@ const PresentialMultiplayer = () => {
     }
 
     const diceValue = value || (Math.floor(Math.random() * 6) + 1);
-    let newPos = Math.min(player.position + diceValue, BOARD_SIZE - 1);
+    let newPos = Math.min(player.position + diceValue, IMMERSIVE_BOARD_SIZE - 1);
     playMove();
 
-    const eventId = boardEventsMap[newPos];
-    const event = boardEvents.find(e => e.id === eventId);
+    const tileType = tileTypes[newPos] || 'normal';
+    const effect = resolveTileEffect(tileType, player, players, Date.now() + newPos);
 
-    let posAdjust = 0;
-    let attrChanges = { fe: 0, perseveranca: 0, discernimento: 0, coragem: 0 };
-    let stun = false;
-    let stunTurns = 0;
-    let challengeResult: 'win' | 'fail' | null = null;
-
-    if (event) {
-      const eff = event.effect;
-      if (event.type === 'challenge') {
-        const roll = Math.floor(Math.random() * 6) + 1;
-        challengeResult = roll >= 4 ? 'win' : 'fail';
-        if (challengeResult === 'win') {
-          if (eff.attribute) (attrChanges as any)[eff.attribute] = (eff.amount || 1);
-          if (eff.positions) posAdjust = Math.abs(eff.positions);
-        } else {
-          if (eff.attribute) (attrChanges as any)[eff.attribute] = -(eff.amount || 1);
-          if (eff.positions) posAdjust = -(Math.abs(eff.positions));
-        }
-      } else if (event.type === 'advance' || event.type === 'boost') {
-        if (eff.attribute) (attrChanges as any)[eff.attribute] = (eff.amount || 1);
-        posAdjust = eff.positions || 0;
-      } else if (event.type === 'retreat' || event.type === 'steal') {
-        if (eff.attribute) (attrChanges as any)[eff.attribute] = -(eff.amount || 1);
-        posAdjust = eff.positions ? -Math.abs(eff.positions) : 0;
-      } else if (event.type === 'stun') {
-        if (eff.attribute) (attrChanges as any)[eff.attribute] = -(eff.amount || 1);
-        posAdjust = eff.positions ? -Math.abs(eff.positions) : 0;
-        if (eff.stunTurns) { stun = true; stunTurns = eff.stunTurns; }
-      } else if (event.type === 'shield' || event.type === 'safe') {
-        if (eff.attribute) (attrChanges as any)[eff.attribute] = (eff.amount || 1);
-      } else if (event.type === 'swap') {
-        // Swap doesn't affect attributes in local mode
-        if (eff.attribute) (attrChanges as any)[eff.attribute] = -(eff.amount || 0);
-      }
-
-      setRevealEvent({ event, playerName: player.name, dice: diceValue, challengeResult });
+    let finalPos = newPos;
+    if (effect.resetToCheckpoint) {
+      finalPos = player.checkpoint;
+    } else {
+      finalPos = Math.max(0, Math.min(newPos + effect.posAdjust, IMMERSIVE_BOARD_SIZE - 1));
     }
 
-    const finalPos = Math.max(0, Math.min(newPos + posAdjust, BOARD_SIZE - 1));
-    const isFinished = finalPos >= BOARD_SIZE - 1;
+    const isFinished = finalPos >= IMMERSIVE_BOARD_SIZE - 1;
     const newFinishCount = isFinished ? finishCount + 1 : finishCount;
     if (isFinished) {
       setFinishCount(newFinishCount);
       setTimeout(playVictory, 500);
     }
 
-    setPlayers(prev => prev.map((p, i) => i === currentTurn ? {
-      ...p,
-      position: finalPos,
-      lastDice: diceValue,
-      finished: isFinished,
-      finishOrder: isFinished ? newFinishCount : null,
-      isStunned: stun,
-      stunTurns,
-      attributes: {
-        fe: Math.max(0, p.attributes.fe + (attrChanges.fe || 0)),
-        perseveranca: Math.max(0, p.attributes.perseveranca + (attrChanges.perseveranca || 0)),
-        discernimento: Math.max(0, p.attributes.discernimento + (attrChanges.discernimento || 0)),
-        coragem: Math.max(0, p.attributes.coragem + (attrChanges.coragem || 0)),
-      },
-    } : p));
+    // Update player
+    setPlayers(prev => prev.map((p, i) => {
+      if (i !== currentTurn) return p;
+      const newAttrs = { ...p.attributes };
+      for (const [key, val] of Object.entries(effect.attrChanges)) {
+        (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+      }
+      return {
+        ...p,
+        position: finalPos,
+        lastDice: diceValue,
+        finished: isFinished,
+        finishOrder: isFinished ? newFinishCount : null,
+        isStunned: effect.stun,
+        stunTurns: effect.stunTurns,
+        hasShield: effect.shield ? true : (tileType === 'trap' || tileType === 'giant' ? false : p.hasShield),
+        checkpoint: tileType === 'checkpoint' ? finalPos : p.checkpoint,
+        extraTurn: effect.extraTurn,
+        attributes: newAttrs,
+      };
+    }));
 
-    if (!event) {
+    // Show tile message
+    if (tileType !== 'normal' && tileType !== 'start') {
+      setTileMessage({ message: effect.message, emoji: effect.emoji });
+      setTimeout(() => {
+        setTileMessage(null);
+        if (effect.extraTurn) {
+          setTurnAnnounce(`🎲 ${player.name} joga de novo!`);
+        } else {
+          nextTurn();
+        }
+      }, 2500);
+    } else {
       nextTurn();
     }
-  }, [players, currentTurn, boardEventsMap, finishCount]);
+  }, [players, currentTurn, tileTypes, finishCount]);
 
   const nextTurn = useCallback(() => {
     setPlayers(current => {
@@ -214,44 +328,20 @@ const PresentialMultiplayer = () => {
     });
   }, [currentTurn]);
 
-  const handleEventClose = () => {
-    setRevealEvent(null);
-    nextTurn();
-  };
-
-  const handleTileClick = (pos: number, event: BoardEvent | undefined) => {
-    setSelectedTile({ pos, event });
-    setTimeout(() => setSelectedTile(null), 3000);
+  const handleTileClick = (position: number, tileType: TileType) => {
+    const config = TILE_TYPES[tileType];
+    setTileMessage({ message: `Casa ${position + 1}: ${config.label} — ${config.description}`, emoji: config.emoji });
+    setTimeout(() => setTileMessage(null), 3000);
   };
 
   const resetGame = () => {
     setPlayers(prev => prev.map((p, i) => createPlayer(i, p.name)));
     setCurrentTurn(0);
     setFinishCount(0);
-    setBoardEventsMap(generateBoardEvents());
+    setTileTypes(generateImmersiveTiles(Date.now()));
     setPhase('playing');
     playGameSfx('gameStart');
   };
-
-  // Build room-like object for PremiumBoard
-  const fakeRoom = {
-    code: 'LOCAL',
-    status: phase === 'finished' ? 'finished' : 'playing',
-    current_turn_player_id: players[currentTurn]?.id || '',
-    host_id: players[0]?.id || '',
-    board_events: boardEventsMap,
-  };
-
-  const fakePlayers = players.map(p => ({
-    ...p,
-    id: p.id,
-    user_id: p.id,
-    display_name: p.name,
-    last_dice_roll: p.lastDice,
-    finish_order: p.finishOrder,
-    is_stunned: p.isStunned,
-    stun_turns: p.stunTurns,
-  }));
 
   // ─── SETUP ───
   if (phase === 'setup') {
@@ -277,9 +367,11 @@ const PresentialMultiplayer = () => {
 
           <div className="bg-card/50 border border-border rounded-xl p-4 space-y-2">
             <p className="text-xs text-muted-foreground leading-relaxed">
-              📜 <strong className="text-foreground">Como funciona:</strong> Um celular serve como tabuleiro digital.
-              Os jogadores passam o celular entre si ou usam um dado físico real. 
-              Cada jogador clica no dado digital ou informa o resultado do dado físico na sua vez.
+              📜 <strong className="text-foreground">Como funciona:</strong> Um celular serve como tabuleiro digital imersivo.
+              Cada fase ocupa uma tela inteira com cenários e personagens. Role o dado e explore a jornada do Peregrino!
+            </p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              🎮 <strong className="text-foreground">60 casas</strong> em 6 fases: Refúgios, Desafios, Surpresas, Armadilhas, Gigantes e muito mais!
             </p>
           </div>
 
@@ -291,16 +383,13 @@ const PresentialMultiplayer = () => {
                 Jogadores ({players.length}/8)
               </span>
               {players.length < 8 && (
-                <button
-                  onClick={addPlayer}
-                  className="flex items-center gap-1 text-xs text-primary hover:underline"
-                >
+                <button onClick={addPlayer} className="flex items-center gap-1 text-xs text-primary hover:underline">
                   <Plus className="w-3 h-3" /> Adicionar
                 </button>
               )}
             </div>
 
-            {players.map((p, i) => (
+            {players.map((p) => (
               <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl bg-card/60 border border-border">
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold flex-shrink-0"
@@ -347,9 +436,18 @@ const PresentialMultiplayer = () => {
     setPhase('finished');
   }
 
+  const boardPlayers = players.map(p => ({
+    id: p.id,
+    name: p.name,
+    color: p.color,
+    position: p.position,
+    finished: p.finished,
+    isStunned: p.isStunned,
+  }));
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <GameNotification visible={!!turnAnnounce} onDismiss={() => setTurnAnnounce(null)} duration={6000} position="top-offset">
+      <GameNotification visible={!!turnAnnounce} onDismiss={() => setTurnAnnounce(null)} duration={4000} position="top-offset">
         <div className="px-6 py-3 rounded-2xl font-display text-lg" style={{
           background: 'linear-gradient(135deg, hsl(40 60% 20%), hsl(40 50% 15%))',
           border: '1px solid hsl(40 60% 55% / 0.5)',
@@ -360,17 +458,21 @@ const PresentialMultiplayer = () => {
         </div>
       </GameNotification>
 
-      {revealEvent && (
-        <EventReveal
-          event={revealEvent.event}
-          playerName={revealEvent.playerName}
-          diceValue={revealEvent.dice}
-          challengeResult={revealEvent.challengeResult}
-          onClose={handleEventClose}
-        />
-      )}
+      {/* Tile event message */}
+      <GameNotification visible={!!tileMessage} onDismiss={() => setTileMessage(null)} duration={2500} position="top-offset">
+        <div className="px-6 py-4 rounded-2xl font-display text-base max-w-xs text-center" style={{
+          background: 'linear-gradient(135deg, hsl(0 0% 12%), hsl(0 0% 8%))',
+          border: '1px solid hsl(0 0% 30% / 0.5)',
+          color: 'hsl(0 0% 90%)',
+          boxShadow: '0 0 30px rgba(0,0,0,0.5)',
+        }}>
+          <span className="text-2xl block mb-1">{tileMessage?.emoji}</span>
+          {tileMessage?.message}
+        </div>
+      </GameNotification>
 
-      <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-3">
+      {/* Sticky header with current player info */}
+      <header className="sticky top-0 z-20 bg-card/95 backdrop-blur-md border-b border-border px-4 py-2">
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate('/multiplayer')} className="text-muted-foreground hover:text-foreground">
@@ -384,7 +486,7 @@ const PresentialMultiplayer = () => {
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: currentPlayer.color }} />
                   <span className="text-[9px] text-muted-foreground">
-                    Casa {currentPlayer.position + 1}/{BOARD_SIZE}
+                    Casa {currentPlayer.position + 1}/{IMMERSIVE_BOARD_SIZE} · Fase {Math.floor(currentPlayer.position / TILES_PER_PHASE) + 1}/6
                   </span>
                 </div>
               )}
@@ -396,104 +498,80 @@ const PresentialMultiplayer = () => {
         </div>
       </header>
 
-      <main className="flex-1 max-w-lg mx-auto w-full px-4 py-4 space-y-4 overflow-y-auto">
-        <PremiumBoard
-          room={fakeRoom as any}
-          players={fakePlayers as any}
-          myPlayerId={currentPlayer?.id}
-          onTileClick={handleTileClick}
-        />
-
-        {selectedTile?.event && (
-          <div className="p-3 rounded-xl bg-card/80 border border-border space-y-1 animate-fade-in">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">{selectedTile.event.emoji}</span>
-              <div>
-                <p className="text-xs font-display text-foreground">{selectedTile.event.title}</p>
-                <p className="text-[10px] text-muted-foreground">{selectedTile.event.description}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Player cards */}
-        <div className="grid grid-cols-2 gap-2">
+      {/* Scrollable player bar */}
+      <div className="sticky top-[52px] z-20 bg-card/90 backdrop-blur-sm border-b border-border px-3 py-2 overflow-x-auto">
+        <div className="flex gap-2 max-w-lg mx-auto">
           {players.map((p, i) => {
             const isTurn = i === currentTurn;
             return (
               <div
                 key={p.id}
-                className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${
-                  isTurn ? 'bg-primary/8 border-primary/30' : p.finished ? 'bg-card/30 border-border/50 opacity-60' : 'bg-card/50 border-border'
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border shrink-0 transition-all ${
+                  isTurn ? 'bg-primary/10 border-primary/30' : p.finished ? 'opacity-50 border-border/50' : 'border-border'
                 }`}
               >
-                <div
-                  className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-xs font-bold"
-                  style={{ backgroundColor: p.color + '25', border: `1.5px solid ${p.color}50`, color: p.color }}
-                >
-                  {p.name.charAt(0)}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1">
-                    <p className="text-[11px] font-medium text-foreground truncate">{p.name}</p>
-                    {isTurn && !p.finished && <span className="text-[8px] text-primary">◀</span>}
-                  </div>
-                  <div className="flex items-center gap-1.5 text-[8px] text-muted-foreground">
-                    {p.finished ? (
-                      <span className="text-primary flex items-center gap-0.5"><Trophy className="w-2.5 h-2.5" /> {p.finishOrder}º</span>
-                    ) : p.isStunned ? (
-                      <span className="text-destructive">😵 paralisado</span>
-                    ) : (
-                      <><span>{p.position + 1}/{BOARD_SIZE}</span>{p.lastDice && <span>🎲{p.lastDice}</span>}</>
-                    )}
-                  </div>
-                </div>
-                <div className="text-[7px] text-muted-foreground/60 text-right leading-relaxed">
-                  <div>🔥{p.attributes.fe} 🛡{p.attributes.coragem}</div>
-                  <div>⛰{p.attributes.perseveranca} 👁{p.attributes.discernimento}</div>
+                <div className="w-5 h-5 rounded-full shrink-0" style={{ backgroundColor: p.color, border: `2px solid ${p.color}80` }} />
+                <div className="text-[9px] leading-tight">
+                  <p className="font-medium text-foreground">{p.name}</p>
+                  <p className="text-muted-foreground">
+                    {p.finished ? `🏆${p.finishOrder}º` : p.isStunned ? '😵' : `${p.position + 1}`}
+                    {p.hasShield && ' 🛡️'}
+                  </p>
                 </div>
               </div>
             );
           })}
         </div>
+      </div>
 
-        {/* Dice — or manual input for physical dice */}
+      {/* Immersive Board */}
+      <main className="flex-1 w-full">
+        <ImmersiveBoard
+          tileTypes={tileTypes}
+          players={boardPlayers}
+          currentTurnId={currentPlayer?.id}
+          onTileClick={handleTileClick}
+        />
+
+        {/* Dice section — fixed at bottom */}
         {phase === 'playing' && !currentPlayer?.finished && (
-          <div className="space-y-3 py-4">
-            {currentPlayer?.isStunned ? (
-              <div className="text-center p-3 rounded-xl bg-destructive/10 border border-destructive/20">
-                <p className="text-sm text-destructive font-display">😵 {currentPlayer.name} está paralisado!</p>
-                <button onClick={() => handleDiceRoll(0)} className="mt-2 px-4 py-2 rounded-lg bg-card border border-border text-xs text-foreground">
-                  Passar a vez
-                </button>
-              </div>
-            ) : (
-              <>
-                <PremiumDice onRoll={handleDiceRoll} disabled={false} isMyTurn={true} />
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 h-px bg-border/30" />
-                  <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">ou dado físico</span>
-                  <div className="flex-1 h-px bg-border/30" />
+          <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background via-background/95 to-transparent pt-8 pb-4 px-4">
+            <div className="max-w-lg mx-auto">
+              {currentPlayer?.isStunned ? (
+                <div className="text-center p-3 rounded-xl bg-destructive/10 border border-destructive/20">
+                  <p className="text-sm text-destructive font-display">😵 {currentPlayer.name} está paralisado!</p>
+                  <button onClick={() => handleDiceRoll(0)} className="mt-2 px-4 py-2 rounded-lg bg-card border border-border text-xs text-foreground">
+                    Passar a vez
+                  </button>
                 </div>
-                <div className="flex justify-center gap-2">
-                  {[1, 2, 3, 4, 5, 6].map(n => (
-                    <button
-                      key={n}
-                      onClick={() => handleDiceRoll(n)}
-                      className="w-11 h-11 rounded-xl bg-card border border-border text-foreground font-bold text-lg hover:border-primary/40 hover:bg-primary/5 active:scale-95 transition-all"
-                    >
-                      {n}
-                    </button>
-                  ))}
+              ) : (
+                <div className="space-y-2">
+                  <PremiumDice onRoll={handleDiceRoll} disabled={false} isMyTurn={true} />
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-px bg-border/30" />
+                    <span className="text-[8px] uppercase tracking-[0.2em] text-muted-foreground/50">dado físico</span>
+                    <div className="flex-1 h-px bg-border/30" />
+                  </div>
+                  <div className="flex justify-center gap-1.5">
+                    {[1, 2, 3, 4, 5, 6].map(n => (
+                      <button
+                        key={n}
+                        onClick={() => handleDiceRoll(n)}
+                        className="w-10 h-10 rounded-xl bg-card border border-border text-foreground font-bold text-base hover:border-primary/40 hover:bg-primary/5 active:scale-95 transition-all"
+                      >
+                        {n}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </>
-            )}
+              )}
+            </div>
           </div>
         )}
 
         {/* Game Over */}
         {phase === 'finished' && (
-          <div className="space-y-4 py-4 animate-fade-in">
+          <div className="max-w-lg mx-auto px-4 space-y-4 py-8 animate-fade-in">
             <div className="text-center space-y-3">
               <span className="text-5xl block" style={{ animation: 'pulse 2s infinite' }}>🏆</span>
               <h2 className="font-display text-2xl" style={{ color: 'hsl(40 80% 70%)', textShadow: '0 0 20px hsl(40 60% 55% / 0.3)' }}>
