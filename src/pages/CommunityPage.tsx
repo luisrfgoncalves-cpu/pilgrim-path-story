@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { isRateLimited, escapeHtml } from '@/lib/sanitize';
 import { ArrowLeft, Heart, HandHeart, Sparkles, MapPin, Users, MessageCircle, Activity, ChevronRight, Trophy, Clock, Target, Gift } from 'lucide-react';
 import { useCollectiveEvent } from '@/hooks/useCollectiveEvent';
 import { Progress } from '@/components/ui/progress';
@@ -162,6 +163,10 @@ const CommunityPage: React.FC = () => {
       return;
     }
     if (toUserId === user.id) return;
+    if (isRateLimited(`support-${user.id}`, 10, 60000)) {
+      toast.error('Aguarde um momento antes de enviar mais apoio.');
+      return;
+    }
 
     setSending(`${toUserId}-${supportType}`);
     const { error } = await supabase.from('pilgrim_support').insert({
@@ -183,6 +188,10 @@ const CommunityPage: React.FC = () => {
   const sendQuickMessage = async (content: string) => {
     if (!user) {
       toast.error('Faça login para enviar mensagens');
+      return;
+    }
+    if (isRateLimited(`msg-${user.id}`, 5, 60000)) {
+      toast.error('Aguarde um momento antes de enviar outra mensagem.');
       return;
     }
     const { error } = await supabase.from('pilgrim_messages').insert({

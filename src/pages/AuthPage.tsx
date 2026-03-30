@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 import { isEmailAllowed } from '@/data/allowedEmails';
+import { sanitizeDisplayName, sanitizeEmail, isRateLimited } from '@/lib/sanitize';
 import { User, LogIn, UserPlus, KeyRound, Smartphone, Share2 } from 'lucide-react';
 
 const AuthPage: React.FC = () => {
@@ -25,6 +26,10 @@ const AuthPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isRateLimited('auth-submit', 5, 60000)) {
+      toast.error('Muitas tentativas. Aguarde um momento.');
+      return;
+    }
     setSubmitting(true);
 
     if (mode === 'forgot') {
@@ -46,7 +51,7 @@ const AuthPage: React.FC = () => {
     }
 
     if (mode === 'login') {
-      const { error } = await signIn(email, password);
+      const { error } = await signIn(sanitizeEmail(email), password);
       if (error) {
         toast.error(error.message);
       } else {
@@ -54,19 +59,21 @@ const AuthPage: React.FC = () => {
         navigate('/');
       }
     } else {
-      if (!displayName.trim()) {
-        toast.error('Escolha um nome para o seu peregrino');
+      const cleanName = sanitizeDisplayName(displayName);
+      if (!cleanName) {
+        toast.error('Escolha um nome válido para o seu peregrino');
         setSubmitting(false);
         return;
       }
+      const cleanEmail = sanitizeEmail(email);
       // Verificar se o email está na lista de acessos autorizados
-      const emailCheck = await isEmailAllowed(email);
+      const emailCheck = await isEmailAllowed(cleanEmail);
       if (!emailCheck.allowed) {
         toast.error(emailCheck.reason || 'Email não autorizado.');
         setSubmitting(false);
         return;
       }
-      const { error } = await signUp(email, password, displayName);
+      const { error } = await signUp(cleanEmail, password, cleanName);
       if (error) {
         toast.error(error.message);
       } else {
