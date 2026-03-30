@@ -783,7 +783,7 @@ const LandingPage = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/30 to-background" />
         </div>
 
-        <div className="relative z-10 max-w-2xl mx-auto space-y-3">
+        <div className="relative z-10 max-w-2xl mx-auto space-y-2">
           <div
             className="inline-block px-4 py-1.5 rounded-full border border-primary/40 bg-primary/10"
             style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.2)' }}
