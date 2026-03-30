@@ -299,9 +299,6 @@ const PresentialMultiplayer = () => {
     } else {
       nextTurn();
     }
-    } else {
-      nextTurn();
-    }
   }, [players, currentTurn, tileTypes, finishCount]);
 
   const nextTurn = useCallback(() => {
