@@ -190,6 +190,10 @@ const CommunityPage: React.FC = () => {
       toast.error('Faça login para enviar mensagens');
       return;
     }
+    if (isRateLimited(`msg-${user.id}`, 5, 60000)) {
+      toast.error('Aguarde um momento antes de enviar outra mensagem.');
+      return;
+    }
     const { error } = await supabase.from('pilgrim_messages').insert({
       user_id: user.id,
       content,

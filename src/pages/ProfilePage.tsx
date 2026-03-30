@@ -26,10 +26,16 @@ const ProfilePage: React.FC = () => {
   const [notifEnabled, setNotifEnabled] = useState(isNotificationsEnabled());
 
   const handleSave = async () => {
+    const cleanName = sanitizeDisplayName(displayName);
+    const cleanBio = sanitizeText(bio, 200);
+    if (!cleanName) {
+      toast.error('Nome inválido');
+      return;
+    }
     setSaving(true);
     const { error } = await updateProfile({
-      display_name: displayName,
-      bio,
+      display_name: cleanName,
+      bio: cleanBio,
       avatar_style: avatarStyle,
       journey_preference: journeyPref,
     });
