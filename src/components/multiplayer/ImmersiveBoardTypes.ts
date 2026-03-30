@@ -147,17 +147,30 @@ export function generateImmersiveTiles(seed: number): TileType[] {
   return tiles;
 }
 
+// Height per phase in svh units (4 phone screens per phase for spacing)
+export const PHASE_HEIGHT_SVH = 400;
+
 // ─── Trail coordinates for winding path within each phase ───
-// 20 tiles spanning ~200svh (2 phone screens per phase)
+// 20 tiles spanning ~400svh (4 phone screens per phase — plenty of room)
 export function getTrailPositions(tilesCount: number = TILES_PER_PHASE): { x: number; y: number }[] {
   const positions: { x: number; y: number }[] = [];
   for (let i = 0; i < tilesCount; i++) {
     const t = i / (tilesCount - 1);
-    const y = 4 + t * 92; // 4% to 96% vertical
-    // Serpentine: alternates left-right with more pronounced waves
-    const wave = Math.sin(t * Math.PI * 3.5) * 30;
+    const y = 3 + t * 94; // 3% to 97% vertical
+    // Serpentine: alternates left-right with wider curves
+    const wave = Math.sin(t * Math.PI * 3) * 28;
     const x = 50 + wave;
-    positions.push({ x: Math.max(14, Math.min(86, x)), y });
+    positions.push({ x: Math.max(16, Math.min(84, x)), y });
   }
   return positions;
 }
+
+// Trail color configs per style
+export const TRAIL_STYLES: Record<string, { pathColor: string; pathStroke: string; pathWidth: number }> = {
+  stone:  { pathColor: 'rgba(139, 119, 101, 0.7)', pathStroke: 'rgba(101, 82, 65, 0.9)',  pathWidth: 28 },
+  dirt:   { pathColor: 'rgba(120, 100, 60, 0.65)',  pathStroke: 'rgba(90, 70, 40, 0.8)',   pathWidth: 26 },
+  forest: { pathColor: 'rgba(60, 90, 50, 0.6)',     pathStroke: 'rgba(40, 70, 30, 0.8)',   pathWidth: 26 },
+  dark:   { pathColor: 'rgba(50, 40, 60, 0.7)',     pathStroke: 'rgba(80, 50, 100, 0.6)',  pathWidth: 24 },
+  golden: { pathColor: 'rgba(180, 150, 80, 0.6)',   pathStroke: 'rgba(200, 170, 50, 0.5)', pathWidth: 28 },
+  mystic: { pathColor: 'rgba(80, 50, 120, 0.6)',    pathStroke: 'rgba(120, 70, 160, 0.5)', pathWidth: 24 },
+};
