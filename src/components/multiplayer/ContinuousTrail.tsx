@@ -127,10 +127,10 @@ export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue }:
         d={pathD}
         fill="none"
         stroke="rgba(0,0,0,0.5)"
-        strokeWidth="62"
+        strokeWidth="124"
         strokeLinecap="round"
         strokeLinejoin="round"
-        transform="translate(3, 6)"
+        transform="translate(4, 8)"
       />
 
       {/* Main trail with image texture */}
@@ -138,11 +138,11 @@ export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue }:
         d={pathD}
         fill="none"
         stroke={`url(#${patternId})`}
-        strokeWidth="56"
+        strokeWidth="112"
         strokeLinecap="round"
         strokeLinejoin="round"
         filter={`url(#${glowFilterId})`}
-        opacity="0.88"
+        opacity="0.9"
       />
 
       {/* Subtle edge borders for definition */}
@@ -150,7 +150,7 @@ export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue }:
         d={pathD}
         fill="none"
         stroke={`hsla(${accentHue} 40% 45% / 0.35)`}
-        strokeWidth="60"
+        strokeWidth="118"
         strokeLinecap="round"
         strokeLinejoin="round"
         opacity="0.5"
@@ -162,7 +162,7 @@ export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue }:
         d={pathD}
         fill="none"
         stroke="rgba(255,255,255,0.06)"
-        strokeWidth="36"
+        strokeWidth="72"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
