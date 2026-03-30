@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 import { isEmailAllowed } from '@/data/allowedEmails';
+import { sanitizeDisplayName, sanitizeEmail, isRateLimited } from '@/lib/sanitize';
 import { User, LogIn, UserPlus, KeyRound, Smartphone, Share2 } from 'lucide-react';
 
 const AuthPage: React.FC = () => {
