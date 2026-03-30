@@ -103,6 +103,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <ScrollToTop />
+          <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Auth & public routes — always accessible */}
             <Route path="/auth" element={isPreviewMode ? <PreviewPaywall /> : <AuthPage />} />
@@ -134,6 +135,7 @@ const App = () => (
             <Route path="/multiplayer/presencial" element={isPreviewMode ? <PreviewPaywall /> : <PresentialMultiplayer />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </Suspense>
         </BrowserRouter>
       </TooltipProvider>
       </ThemeProvider>
