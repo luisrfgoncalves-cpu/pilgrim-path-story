@@ -71,11 +71,25 @@ function playSoundForTile(tileType: TileType) {
   }
 }
 
-// Suspense sound — building tension
-function playSuspenseSound() {
+// Singleton AudioContext — prevents memory leak from creating new contexts every popup
+let _sharedAudioCtx: AudioContext | null = null;
+function getSharedAudioCtx(): AudioContext | null {
   const AudioCtx = typeof window !== 'undefined' ? (window.AudioContext || (window as any).webkitAudioContext) : null;
-  if (!AudioCtx) return;
-  const ctx = new AudioCtx();
+  if (!AudioCtx) return null;
+  if (!_sharedAudioCtx || _sharedAudioCtx.state === 'closed') {
+    _sharedAudioCtx = new AudioCtx();
+  }
+  // Resume if suspended (browser autoplay policy)
+  if (_sharedAudioCtx.state === 'suspended') {
+    _sharedAudioCtx.resume().catch(() => {});
+  }
+  return _sharedAudioCtx;
+}
+
+// Suspense sound — building tension (uses singleton AudioContext)
+function playSuspenseSound() {
+  const ctx = getSharedAudioCtx();
+  if (!ctx) return;
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.type = 'sine';
@@ -88,6 +102,8 @@ function playSuspenseSound() {
   gain.connect(ctx.destination);
   osc.start(ctx.currentTime);
   osc.stop(ctx.currentTime + 1.3);
+  // Clean up nodes after playback (prevent node accumulation)
+  osc.onended = () => { osc.disconnect(); gain.disconnect(); };
 }
 
 interface TileEventPopupProps {

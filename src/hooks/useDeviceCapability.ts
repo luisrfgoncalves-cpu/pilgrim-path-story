@@ -84,15 +84,16 @@ function getInitialTier(): DeviceTier {
     return 'essential';
   }
 
-  const cores = navigator.hardwareConcurrency || 2;
-  const memory = (navigator as any).deviceMemory || 4;
   const mobile = isMobileDevice();
 
-  // Mobile guardrail: prevent aggressive auto-upgrade on phones
+  // CRITICAL FIX: Mobile always starts as 'essential' to prevent OOM crash
+  // during the ~2s before FPS measurement completes. Can upgrade after measurement.
   if (mobile) {
-    if (cores <= 4 || memory <= 4) return 'essential';
-    return 'optimized';
+    return 'essential';
   }
+
+  const cores = navigator.hardwareConcurrency || 2;
+  const memory = (navigator as any).deviceMemory || 4;
 
   if (cores >= 6 && memory >= 6) return 'premium';
   if (cores >= 4 && memory >= 3) return 'optimized';

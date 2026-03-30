@@ -101,6 +101,13 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
 
   return (
     <div ref={boardRef} className="w-full">
+      {/* Single global tokenGlow keyframe — avoids duplicating per phase */}
+      <style>{`
+        @keyframes tokenGlow {
+          0% { transform: scale(1); }
+          100% { transform: scale(1.3); }
+        }
+      `}</style>
       {PHASES.map((phase, phaseIdx) => {
         // LAZY LOADING: only mount phases that are visible
         if (!visiblePhases.has(phaseIdx)) {
