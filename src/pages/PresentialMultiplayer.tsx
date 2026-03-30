@@ -1144,7 +1144,8 @@ const PresentialMultiplayer = () => {
                       <button
                         key={n}
                         onClick={() => handleDiceRoll(n)}
-                        className="w-12 h-12 rounded-xl bg-card border-2 border-border text-foreground font-bold text-lg hover:border-primary/40 hover:bg-primary/5 active:scale-95 transition-all font-display"
+                        disabled={diceRolling || isTokenMoving || !!tileMessage || !!miniGame || showRiverOfDeath !== null || showPhaseTransition !== null}
+                        className="w-12 h-12 rounded-xl bg-card border-2 border-border text-foreground font-bold text-lg hover:border-primary/40 hover:bg-primary/5 active:scale-95 transition-all font-display disabled:opacity-40"
                         style={{ boxShadow: '0 3px 8px rgba(0,0,0,0.3)' }}
                       >
                         {n}
