@@ -1,6 +1,6 @@
 import { useMemo, useRef, useEffect } from 'react';
 import {
-  IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, PHASES, TILE_TYPES,
+  IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, PHASES, TILE_TYPES, PHASE_HEIGHT_SVH, TRAIL_STYLES,
   TileType, getTrailPositions, PhaseConfig,
 } from './ImmersiveBoardTypes';
 import { MedievalTileIcon } from './MedievalTileIcons';
@@ -54,6 +54,74 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
   );
 }
 
+/* ─── Medieval trail path SVG ─── */
+function TrailPath({ positions, phase }: { positions: { x: number; y: number }[]; phase: PhaseConfig }) {
+  const style = TRAIL_STYLES[phase.trailStyle] || TRAIL_STYLES.stone;
+
+  // Build a smooth curve through all points
+  const buildPath = () => {
+    if (positions.length < 2) return '';
+    let d = `M ${positions[0].x} ${positions[0].y}`;
+    for (let i = 1; i < positions.length; i++) {
+      const prev = positions[i - 1];
+      const curr = positions[i];
+      const cpX = (prev.x + curr.x) / 2;
+      const cpY1 = prev.y + (curr.y - prev.y) * 0.4;
+      const cpY2 = prev.y + (curr.y - prev.y) * 0.6;
+      d += ` C ${cpX} ${cpY1}, ${cpX} ${cpY2}, ${curr.x} ${curr.y}`;
+    }
+    return d;
+  };
+
+  const pathD = buildPath();
+
+  return (
+    <svg
+      className="absolute inset-0 w-full h-full z-[1] pointer-events-none"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+    >
+      {/* Trail shadow */}
+      <path
+        d={pathD}
+        fill="none"
+        stroke="rgba(0,0,0,0.4)"
+        strokeWidth={style.pathWidth + 6}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Main path body */}
+      <path
+        d={pathD}
+        fill="none"
+        stroke={style.pathColor}
+        strokeWidth={style.pathWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Path border/edge lines */}
+      <path
+        d={pathD}
+        fill="none"
+        stroke={style.pathStroke}
+        strokeWidth={style.pathWidth + 2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity={0.3}
+      />
+      {/* Center detail line (stone cracks / dirt texture) */}
+      <path
+        d={pathD}
+        fill="none"
+        stroke="rgba(255,255,255,0.08)"
+        strokeWidth={2}
+        strokeDasharray="4 8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 function PhaseSection({
   phase, phaseIdx, tileTypes, trailPositions, players, currentTurnId, onTileClick,
 }: {
@@ -67,29 +135,46 @@ function PhaseSection({
 }) {
   const startIdx = phaseIdx * TILES_PER_PHASE;
   const charImg = phase.characterKey ? characterImages[phase.characterKey] : null;
+  const phaseHeight = `${PHASE_HEIGHT_SVH}svh`;
 
   return (
     <div
       data-phase={phaseIdx}
       className="relative w-full overflow-hidden"
-      style={{ minHeight: '200svh' }} // 2 phone screens per phase
+      style={{ minHeight: phaseHeight }}
     >
-      {/* Background - BRIGHT and vivid */}
+      {/* Dual backgrounds - top half and bottom half to avoid stretching */}
       <div className="absolute inset-0">
-        <img
-          src={phase.bgImage}
-          alt={phase.name}
-          className="w-full h-full object-cover"
-          loading={phaseIdx === 0 ? 'eager' : 'lazy'}
-          style={{ filter: 'brightness(0.85) saturate(1.7) contrast(1.1)' }}
-        />
-        {/* Light overlay - minimal darkening */}
-        <div className="absolute inset-0" style={{
-          background: `linear-gradient(to bottom, hsla(${phase.accentHue} 25% 8% / 0.3) 0%, hsla(${phase.accentHue} 15% 5% / 0.15) 50%, hsla(${phase.accentHue} 25% 8% / 0.35) 100%)`,
+        <div className="absolute top-0 left-0 right-0" style={{ height: '50%' }}>
+          <img
+            src={phase.bgImage}
+            alt={phase.name}
+            className="w-full h-full object-cover"
+            loading={phaseIdx === 0 ? 'eager' : 'lazy'}
+            style={{ filter: 'brightness(0.9) saturate(1.6) contrast(1.1)' }}
+          />
+        </div>
+        <div className="absolute left-0 right-0" style={{ top: '50%', height: '50%' }}>
+          <img
+            src={phase.bgImage2}
+            alt={`${phase.name} continuação`}
+            className="w-full h-full object-cover"
+            loading="lazy"
+            style={{ filter: 'brightness(0.9) saturate(1.6) contrast(1.1)' }}
+          />
+        </div>
+        {/* Blend seam between the two images */}
+        <div className="absolute left-0 right-0 z-[1]" style={{
+          top: '47%', height: '6%',
+          background: `linear-gradient(to bottom, transparent, hsla(${phase.accentHue} 20% 10% / 0.5), transparent)`,
+        }} />
+        {/* Light overlay */}
+        <div className="absolute inset-0 z-[2]" style={{
+          background: `linear-gradient(to bottom, hsla(${phase.accentHue} 25% 8% / 0.2) 0%, hsla(${phase.accentHue} 15% 5% / 0.1) 50%, hsla(${phase.accentHue} 25% 8% / 0.25) 100%)`,
         }} />
       </div>
 
-      {/* Phase title - side bubble style, not covering the board */}
+      {/* Phase title - compact side bubble */}
       <div className="absolute top-3 left-3 z-10">
         <div className="relative flex items-center gap-2 px-3 py-1.5 rounded-lg backdrop-blur-md"
           style={{
@@ -120,27 +205,11 @@ function PhaseSection({
         </div>
       )}
 
-      {/* Trail path SVG */}
-      <svg className="absolute inset-0 w-full h-full z-[1] pointer-events-none" preserveAspectRatio="none">
-        {trailPositions.map((pos, i) => {
-          if (i === 0) return null;
-          const prev = trailPositions[i - 1];
-          return (
-            <line
-              key={i}
-              x1={`${prev.x}%`} y1={`${prev.y}%`}
-              x2={`${pos.x}%`} y2={`${pos.y}%`}
-              stroke={`hsla(${phase.accentHue} 50% 60% / 0.4)`}
-              strokeWidth="4"
-              strokeDasharray="10 5"
-              strokeLinecap="round"
-            />
-          );
-        })}
-      </svg>
+      {/* Medieval trail path */}
+      <TrailPath positions={trailPositions} phase={phase} />
 
       {/* Tiles */}
-      <div className="relative w-full z-[2]" style={{ minHeight: '200svh' }}>
+      <div className="relative w-full z-[2]" style={{ minHeight: phaseHeight }}>
         {trailPositions.map((pos, localIdx) => {
           const globalIdx = startIdx + localIdx;
           if (globalIdx >= IMMERSIVE_BOARD_SIZE) return null;
@@ -150,11 +219,10 @@ function PhaseSection({
           const playersHere = players.filter(p => p.position === globalIdx && !p.finished);
           const isCurrentPlayerHere = playersHere.some(p => p.id === currentTurnId);
 
-          // Get tile image: character image for character tiles, environment image for context tiles
           const tileCharKey = config.characterKey;
           const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
           const tileEnvImg = config.tileImage || null;
-          const tileImg = tileCharImg || tileEnvImg; // character takes priority
+          const tileImg = tileCharImg || tileEnvImg;
           const isSpecial = tileType !== 'normal';
           const isBoss = tileType === 'giant' || tileType === 'challenge';
           const tileSize = isBoss ? 76 : isSpecial ? 68 : 56;
@@ -166,7 +234,7 @@ function PhaseSection({
               style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
               onClick={() => onTileClick?.(globalIdx, tileType)}
             >
-              {/* Tile body with image background */}
+              {/* Tile body */}
               <div
                 className={`relative flex items-center justify-center overflow-hidden
                   ${playersHere.length > 0 ? 'scale-125 ring-2 ring-white/50' : ''}
@@ -184,7 +252,6 @@ function PhaseSection({
                   border: `2.5px solid ${config.color}`,
                 }}
               >
-                {/* Image filling the tile */}
                 {tileImg && isSpecial && (
                   <img
                     src={tileImg}
@@ -201,10 +268,9 @@ function PhaseSection({
                 >
                   {globalIdx + 1}
                 </span>
-
               </div>
 
-              {/* Medieval icon - outside the card, on the left edge */}
+              {/* Medieval icon - outside card, left edge */}
               <div className="absolute -left-4 top-1/2 -translate-y-1/2 z-10"
                 style={{
                   background: 'rgba(0,0,0,0.85)',
@@ -222,20 +288,19 @@ function PhaseSection({
                 />
               </div>
 
-              {/* Boss indicator - outside top-right */}
+              {/* Boss indicator */}
               {isBoss && (
                 <div className="absolute -top-2 -right-2 text-xs z-10 animate-bounce">
                   {tileType === 'giant' ? '💀' : '⚔️'}
                 </div>
               )}
 
-              {/* Type label - speech bubble style, to the right */}
+              {/* Type label - speech bubble to the right */}
               {isSpecial && (
                 <div className="absolute top-1/2 -translate-y-1/2 z-10"
                   style={{ left: `${tileSize + 6}px` }}
                 >
                   <div className="relative">
-                    {/* Arrow pointing left */}
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full"
                       style={{
                         width: 0, height: 0,
@@ -279,7 +344,7 @@ function PhaseSection({
         })}
       </div>
 
-      {/* Phase transition */}
+      {/* Phase transition gradient */}
       {phaseIdx < PHASES.length - 1 && (
         <div className="absolute bottom-0 left-0 right-0 h-24 z-[5]"
           style={{
