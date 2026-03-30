@@ -33,6 +33,8 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
   const [animatingPlayerId, setAnimatingPlayerId] = useState<string | null>(null);
   const [animatedPosition, setAnimatedPosition] = useState<number | null>(null);
   const animationRef = useRef<number | null>(null);
+  const onTokenArrivedRef = useRef(onTokenArrived);
+  onTokenArrivedRef.current = onTokenArrived;
 
   const visiblePhases = useVisiblePhases(players);
   const capability = useDeviceCapability();
@@ -61,8 +63,17 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
 
     if (!movedPlayer || prevPos === newPos) return;
 
-    // Cancel any running animation
-    if (animationRef.current) clearTimeout(animationRef.current);
+    // Cancel any running animation — call onTokenArrived so state doesn't get stuck
+    if (animationRef.current) {
+      clearTimeout(animationRef.current);
+      animationRef.current = null;
+      // If we were already animating, fire the callback to clean up
+      if (animatingPlayerId) {
+        setAnimatingPlayerId(null);
+        setAnimatedPosition(null);
+        // Don't call onTokenArrived here — the new animation replaces the old one
+      }
+    }
 
     // Animate step by step
     const steps: number[] = [];
@@ -72,20 +83,32 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
       for (let i = prevPos - 1; i >= newPos; i--) steps.push(i);
     }
 
-    if (steps.length === 0) return;
+    if (steps.length === 0) {
+      onTokenArrivedRef.current?.();
+      return;
+    }
 
     const playerId = movedPlayer.id;
     setAnimatingPlayerId(playerId);
     setAnimatedPosition(prevPos);
 
+    // Scroll to starting position first so user sees the token
+    const startTileEl = boardRef.current?.querySelector(`[data-tile-global="${prevPos}"]`);
+    if (startTileEl) {
+      startTileEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
     let stepIdx = 0;
-    const STEP_DELAY = 900;
+    // Speed up for long return moves (more than 5 tiles)
+    const STEP_DELAY = steps.length > 5 ? 500 : 900;
+    let cancelled = false;
 
     const doStep = () => {
+      if (cancelled) return;
       if (stepIdx >= steps.length) {
         setAnimatingPlayerId(null);
         setAnimatedPosition(null);
-        onTokenArrived?.();
+        onTokenArrivedRef.current?.();
         return;
       }
 
@@ -101,10 +124,29 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
       animationRef.current = window.setTimeout(doStep, STEP_DELAY);
     };
 
-    animationRef.current = window.setTimeout(doStep, 200);
+    // Small delay to let React render the target phase before animating
+    animationRef.current = window.setTimeout(doStep, 350);
+
+    // Safety fallback: if animation doesn't complete in reasonable time, force-complete it
+    const maxTime = 350 + steps.length * STEP_DELAY + 2000;
+    const safetyTimer = window.setTimeout(() => {
+      if (!cancelled && animationRef.current) {
+        clearTimeout(animationRef.current);
+        animationRef.current = null;
+        setAnimatingPlayerId(null);
+        setAnimatedPosition(null);
+        onTokenArrivedRef.current?.();
+      }
+    }, maxTime);
 
     return () => {
+      cancelled = true;
       if (animationRef.current) clearTimeout(animationRef.current);
+      clearTimeout(safetyTimer);
+      // On cleanup (effect re-run), force-call onTokenArrived to prevent stuck state
+      setAnimatingPlayerId(null);
+      setAnimatedPosition(null);
+      onTokenArrivedRef.current?.();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [players.map(p => `${p.id}:${p.position}`).join(',')]);

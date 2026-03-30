@@ -302,7 +302,9 @@ const PresentialMultiplayer = () => {
   const [miniGame, setMiniGame] = useState<{ tileType: TileType; playerIdx: number; prevPosition: number; newPosition: number } | null>(null);
   const pendingActionRef = useRef<(() => void) | null>(null);
   const [isTokenMoving, setIsTokenMoving] = useState(false);
+  const [returnMoveInfo, setReturnMoveInfo] = useState<string | null>(null); // show "Voltando X casas..."
   const [showStats, setShowStats] = useState(false);
+  const tokenMovingTimerRef = useRef<number | null>(null);
 
   // Deferred move after mini-game popup closes
   const pendingMoveAfterPopup = useRef<{
@@ -313,6 +315,32 @@ const PresentialMultiplayer = () => {
     stats: Partial<PlayerStats>;
     isReturnMove?: boolean; // true = retreat/penalty move, don't trigger tile events at destination
   } | null>(null);
+
+  // Safety: auto-reset isTokenMoving if stuck for too long
+  useEffect(() => {
+    if (isTokenMoving) {
+      if (tokenMovingTimerRef.current) clearTimeout(tokenMovingTimerRef.current);
+      tokenMovingTimerRef.current = window.setTimeout(() => {
+        setIsTokenMoving(false);
+        setReturnMoveInfo(null);
+        // If there's a pending action, execute it
+        if (pendingActionRef.current) {
+          const action = pendingActionRef.current;
+          pendingActionRef.current = null;
+          action();
+        }
+      }, 20000); // 20s max
+    } else {
+      if (tokenMovingTimerRef.current) {
+        clearTimeout(tokenMovingTimerRef.current);
+        tokenMovingTimerRef.current = null;
+      }
+      setReturnMoveInfo(null);
+    }
+    return () => {
+      if (tokenMovingTimerRef.current) clearTimeout(tokenMovingTimerRef.current);
+    };
+  }, [isTokenMoving]);
 
   // New state for phase transitions and River of Death
   const [showPhaseTransition, setShowPhaseTransition] = useState<number | null>(null);
@@ -728,6 +756,13 @@ const PresentialMultiplayer = () => {
       pendingMoveAfterPopup.current = null;
       const { playerIdx, targetPos, attrs, stats, shield, isReturnMove } = pendingMove;
 
+      // Show return move info for user feedback
+      if (isReturnMove) {
+        const currentPos = players[playerIdx]?.position ?? 0;
+        const casasDiff = Math.abs(currentPos - targetPos);
+        setReturnMoveInfo(`↩️ Voltando ${casasDiff} casa${casasDiff > 1 ? 's' : ''}...`);
+      }
+
       // Move the token visually
       setIsTokenMoving(true);
       setPlayers(prev => prev.map((p, i) => {
@@ -1131,7 +1166,7 @@ const PresentialMultiplayer = () => {
                     <p className="text-base font-display font-bold text-foreground tracking-wide"
                       style={{ textShadow: '0 0 10px hsl(40 60% 55% / 0.3)' }}
                     >
-                      {diceRolling ? 'Rolando...' : isTokenMoving ? '🚶 Movendo...' : 'Toque no dado para jogar!'}
+                      {diceRolling ? 'Rolando...' : isTokenMoving ? (returnMoveInfo || '🚶 Movendo...') : 'Toque no dado para jogar!'}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
