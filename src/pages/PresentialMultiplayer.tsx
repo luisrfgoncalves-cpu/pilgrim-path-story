@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ImmersiveBoard from '@/components/multiplayer/ImmersiveBoard';
+import BoardStats from '@/components/multiplayer/BoardStats';
 import { Dice3D } from '@/components/Dice3D';
 import TileEventPopup from '@/components/multiplayer/TileEventPopup';
 import BoardMiniGame from '@/components/multiplayer/BoardMiniGame';
