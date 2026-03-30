@@ -81,6 +81,8 @@ const ScenePage = () => {
   const [miniGameResult, setMiniGameResult] = useState<MiniGameResult | null>(null);
   const [showMiniGameResult, setShowMiniGameResult] = useState(false);
   const [miniGameReady, setMiniGameReady] = useState(false);
+  const [miniGameButtonVisible, setMiniGameButtonVisible] = useState(false);
+  const [miniGameAutoPopup, setMiniGameAutoPopup] = useState(false);
   // Character entrance reveal
   const [charReveal, setCharReveal] = useState<{ name: string; img: string; role?: string } | null>(null);
   const [charRevealDone, setCharRevealDone] = useState(false); // After reveal, show persistent portrait
