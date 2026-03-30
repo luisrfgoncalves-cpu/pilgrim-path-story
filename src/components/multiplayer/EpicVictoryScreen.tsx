@@ -4,6 +4,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Crown, Trophy } from 'lucide-react';
 import { playVictory, playPhaseTransitionSound } from './BoardSounds';
+import { useDeviceCapability } from '@/hooks/useDeviceCapability';
 
 interface PlayerStats {
   trapsHit: number;
