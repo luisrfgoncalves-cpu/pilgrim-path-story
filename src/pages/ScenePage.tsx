@@ -740,17 +740,37 @@ const ScenePage = () => {
             </>
           )}
 
-          {/* ═══ MINI-GAME TRIGGER BUTTON ═══ */}
-          {showChoices && !miniGameDone && miniGameMappings[chapter.id] && !miniGameReady && (
+          {/* ═══ MINI-GAME AUTO-POPUP (after 30s inactivity) ═══ */}
+          <GameNotification visible={miniGameAutoPopup && !miniGameDone && !miniGameReady && !!miniGameMappings[chapter.id]} onDismiss={() => setMiniGameAutoPopup(false)} duration={0} persistent position="center">
+            <div className="bg-card border-2 border-primary/40 rounded-2xl p-5 text-center space-y-3 shadow-2xl">
+              <span className="text-4xl">⚔️</span>
+              <p className="font-display text-lg text-primary">Desafio Disponível!</p>
+              <p className="text-sm text-muted-foreground">Há um desafio esperando por você nesta cena.</p>
+              <button
+                onClick={() => {
+                  setMiniGameAutoPopup(false);
+                  window.scrollTo(0, 0);
+                  setMiniGameReady(true);
+                  requestAnimationFrame(() => window.scrollTo(0, 0));
+                }}
+                className="btn-medieval w-full flex items-center justify-center gap-2"
+              >
+                <Zap className="w-5 h-5" />
+                Iniciar Desafio
+              </button>
+            </div>
+          </GameNotification>
+
+          {/* ═══ MINI-GAME TRIGGER BUTTON (appears after 12s delay) ═══ */}
+          {showChoices && !miniGameDone && miniGameMappings[chapter.id] && !miniGameReady && miniGameButtonVisible && (
             <div className="mb-5 animate-scale-in" id="minigame-trigger">
               <button
                 onClick={() => {
-                  // Force scroll to absolute top before showing mini-game
+                  setMiniGameAutoPopup(false);
                   window.scrollTo(0, 0);
                   document.documentElement.scrollTop = 0;
                   document.body.scrollTop = 0;
                   setMiniGameReady(true);
-                  // Multiple scroll attempts to ensure it works
                   requestAnimationFrame(() => {
                     window.scrollTo(0, 0);
                     document.documentElement.scrollTop = 0;
