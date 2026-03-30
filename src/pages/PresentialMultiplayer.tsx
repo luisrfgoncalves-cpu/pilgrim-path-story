@@ -198,7 +198,8 @@ const PresentialMultiplayer = () => {
   const [diceRolling, setDiceRolling] = useState(false);
   const [turnAnnounce, setTurnAnnounce] = useState<string | null>(null);
   const [finishCount, setFinishCount] = useState(0);
-  
+  // Mini-game state
+  const [miniGame, setMiniGame] = useState<{ tileType: TileType; playerIdx: number; prevPosition: number; newPosition: number } | null>(null);
 
   const addPlayer = () => {
     if (players.length >= 8) return;
