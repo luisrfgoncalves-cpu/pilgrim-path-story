@@ -7,9 +7,9 @@ import phase4Bg from '@/assets/board/phase4-feira-vaidade.jpg';
 import phase5Bg from '@/assets/board/phase5-castelo-duvida.jpg';
 import phase6Bg from '@/assets/board/phase6-cidade-celestial.jpg';
 
-// 60 tiles total, 10 per phase
-export const IMMERSIVE_BOARD_SIZE = 60;
-export const TILES_PER_PHASE = 10;
+// 120 tiles total, 20 per phase (each phase = ~2 phone screens)
+export const IMMERSIVE_BOARD_SIZE = 120;
+export const TILES_PER_PHASE = 20;
 
 // ─── 12 Tile Types ───
 export type TileType =
@@ -27,25 +27,29 @@ export interface TileConfig {
   glowColor: string;    // glow rgba
   description: string;
   sfx?: string;
+  characterKey?: string; // character image for this tile type
 }
 
 export const TILE_TYPES: Record<TileType, TileConfig> = {
-  start:       { type: 'start',       label: 'Partida',        emoji: '🏠', color: 'hsl(40 70% 50%)',  glowColor: 'rgba(212,175,55,0.4)', description: 'Início da jornada', sfx: 'gameStart' },
-  finish:      { type: 'finish',      label: 'Chegada',        emoji: '🏰', color: 'hsl(40 80% 60%)',  glowColor: 'rgba(255,215,0,0.5)',  description: 'Cidade Celestial!', sfx: 'victory' },
-  refuge:      { type: 'refuge',      label: 'Refúgio',        emoji: '🏠', color: 'hsl(140 50% 40%)', glowColor: 'rgba(76,175,80,0.3)',  description: 'Recupera +2 pontos de atributo', sfx: 'heal' },
-  challenge:   { type: 'challenge',   label: 'Desafio',        emoji: '⚔️', color: 'hsl(0 60% 50%)',   glowColor: 'rgba(239,83,80,0.4)',  description: 'Mini-game obrigatório!', sfx: 'challenge' },
-  surprise:    { type: 'surprise',    label: 'Surpresa',       emoji: '🎁', color: 'hsl(40 80% 55%)',  glowColor: 'rgba(255,213,79,0.4)', description: 'Efeito aleatório — bom ou ruim', sfx: 'surprise' },
-  scripture:   { type: 'scripture',   label: 'Escritura',      emoji: '📖', color: 'hsl(210 60% 50%)', glowColor: 'rgba(66,165,245,0.3)', description: 'Pergunta bíblica — acertou = bônus!', sfx: 'scripture' },
-  trap:        { type: 'trap',        label: 'Armadilha',      emoji: '🔙', color: 'hsl(270 50% 45%)', glowColor: 'rgba(171,71,188,0.3)', description: 'Volta X casas!', sfx: 'trap' },
-  giant:       { type: 'giant',       label: 'Gigante',        emoji: '💀', color: 'hsl(0 0% 25%)',    glowColor: 'rgba(0,0,0,0.5)',      description: 'Perde turno ou volta ao início da fase!', sfx: 'giant' },
-  shield:      { type: 'shield',      label: 'Escudo',         emoji: '🛡️', color: 'hsl(0 0% 70%)',   glowColor: 'rgba(192,192,192,0.3)',description: 'Proteção contra próxima armadilha', sfx: 'shield' },
-  blessing:    { type: 'blessing',    label: 'Bênção',         emoji: '⭐', color: 'hsl(45 90% 55%)',  glowColor: 'rgba(255,215,0,0.4)',  description: 'Avança X casas extras!', sfx: 'blessing' },
-  swap:        { type: 'swap',        label: 'Troca',          emoji: '🔄', color: 'hsl(330 60% 55%)', glowColor: 'rgba(233,30,99,0.3)',  description: 'Troca posição com outro jogador!', sfx: 'swap' },
-  double_dice: { type: 'double_dice', label: 'Dado Duplo',     emoji: '🎲', color: 'hsl(25 80% 55%)', glowColor: 'rgba(255,112,67,0.3)', description: 'Joga novamente!', sfx: 'dice' },
-  current:     { type: 'current',     label: 'Correnteza',     emoji: '🌊', color: 'hsl(195 70% 50%)',glowColor: 'rgba(38,198,218,0.3)', description: 'Arrasta para frente ou trás aleatoriamente', sfx: 'water' },
-  checkpoint:  { type: 'checkpoint',  label: 'Checkpoint',     emoji: '🏰', color: 'hsl(35 70% 45%)', glowColor: 'rgba(212,175,55,0.3)', description: 'Salva posição — não volta antes daqui!', sfx: 'checkpoint' },
+  start:       { type: 'start',       label: 'Partida',        emoji: '🏠', color: 'hsl(40 70% 50%)',  glowColor: 'rgba(212,175,55,0.4)', description: 'Início da jornada', sfx: 'gameStart', characterKey: 'cristao' },
+  finish:      { type: 'finish',      label: 'Chegada',        emoji: '🏰', color: 'hsl(40 80% 60%)',  glowColor: 'rgba(255,215,0,0.5)',  description: 'Cidade Celestial!', sfx: 'victory', characterKey: 'esperanca' },
+  refuge:      { type: 'refuge',      label: 'Refúgio',        emoji: '🏠', color: 'hsl(140 50% 40%)', glowColor: 'rgba(76,175,80,0.3)',  description: 'Recupera +2 pontos de atributo', sfx: 'heal', characterKey: 'auxilio' },
+  challenge:   { type: 'challenge',   label: 'Desafio',        emoji: '⚔️', color: 'hsl(0 60% 50%)',   glowColor: 'rgba(239,83,80,0.4)',  description: 'Mini-game obrigatório!', sfx: 'challenge', characterKey: 'apolion' },
+  surprise:    { type: 'surprise',    label: 'Surpresa',       emoji: '🎁', color: 'hsl(40 80% 55%)',  glowColor: 'rgba(255,213,79,0.4)', description: 'Efeito aleatório — bom ou ruim', sfx: 'surprise', characterKey: 'falador' },
+  scripture:   { type: 'scripture',   label: 'Escritura',      emoji: '📖', color: 'hsl(210 60% 50%)', glowColor: 'rgba(66,165,245,0.3)', description: 'Pergunta bíblica — acertou = bônus!', sfx: 'scripture', characterKey: 'interprete' },
+  trap:        { type: 'trap',        label: 'Armadilha',      emoji: '🔙', color: 'hsl(270 50% 45%)', glowColor: 'rgba(171,71,188,0.3)', description: 'Volta X casas!', sfx: 'trap', characterKey: 'desconfianca' },
+  giant:       { type: 'giant',       label: 'Gigante',        emoji: '💀', color: 'hsl(0 0% 25%)',    glowColor: 'rgba(0,0,0,0.5)',      description: 'Derrote o Gigante ou sofra!', sfx: 'giant', characterKey: 'gigante_desespero' },
+  shield:      { type: 'shield',      label: 'Escudo',         emoji: '🛡️', color: 'hsl(0 0% 70%)',   glowColor: 'rgba(192,192,192,0.3)',description: 'Proteção contra próxima armadilha', sfx: 'shield', characterKey: 'grande_coracao' },
+  blessing:    { type: 'blessing',    label: 'Bênção',         emoji: '⭐', color: 'hsl(45 90% 55%)',  glowColor: 'rgba(255,215,0,0.4)',  description: 'Avança X casas extras!', sfx: 'blessing', characterKey: 'evangelista' },
+  swap:        { type: 'swap',        label: 'Troca',          emoji: '🔄', color: 'hsl(330 60% 55%)', glowColor: 'rgba(233,30,99,0.3)',  description: 'Troca posição com outro jogador!', sfx: 'swap', characterKey: 'fiel' },
+  double_dice: { type: 'double_dice', label: 'Dado Duplo',     emoji: '🎲', color: 'hsl(25 80% 55%)', glowColor: 'rgba(255,112,67,0.3)', description: 'Joga novamente!', sfx: 'dice', characterKey: 'esperanca' },
+  current:     { type: 'current',     label: 'Correnteza',     emoji: '🌊', color: 'hsl(195 70% 50%)',glowColor: 'rgba(38,198,218,0.3)', description: 'Arrasta para frente ou trás aleatoriamente', sfx: 'water', characterKey: 'cristao' },
+  checkpoint:  { type: 'checkpoint',  label: 'Checkpoint',     emoji: '🏰', color: 'hsl(35 70% 45%)', glowColor: 'rgba(212,175,55,0.3)', description: 'Salva posição — não volta antes daqui!', sfx: 'checkpoint', characterKey: 'pastores' },
   normal:      { type: 'normal',      label: 'Caminho',        emoji: '·',  color: 'hsl(0 0% 40%)',   glowColor: 'rgba(100,100,100,0.1)',description: 'Siga em frente', sfx: undefined },
 };
+
+// Tiles that trigger mini-games (boss/challenge encounters)
+export const MINI_GAME_TILES: TileType[] = ['giant', 'challenge', 'scripture'];
 
 // ─── Phase definitions ───
 export interface PhaseConfig {
@@ -55,7 +59,7 @@ export interface PhaseConfig {
   icon: string;
   bgImage: string;
   accentHue: number;
-  characterKey?: string;   // key in characterImages
+  characterKey?: string;
   characterName?: string;
 }
 
@@ -69,34 +73,50 @@ export const PHASES: PhaseConfig[] = [
 ];
 
 // ─── Generate immersive board tile types ───
+// Strategic placement: traps at positions 6 and 18 (penultimate) of each phase,
+// giants at position 13, refuges right after giants/challenges
 export function generateImmersiveTiles(seed: number): TileType[] {
   const rng = (s: number) => ((s * 1103515245 + 12345) & 0x7fffffff);
   let s = seed;
 
-  const tilePool: TileType[] = [
-    'refuge', 'challenge', 'surprise', 'scripture', 'trap', 'giant',
-    'shield', 'blessing', 'swap', 'double_dice', 'current', 'checkpoint',
-  ];
-
   const tiles: TileType[] = [];
   for (let i = 0; i < IMMERSIVE_BOARD_SIZE; i++) {
+    const localIdx = i % TILES_PER_PHASE;
+
     if (i === 0) { tiles.push('start'); continue; }
     if (i === IMMERSIVE_BOARD_SIZE - 1) { tiles.push('finish'); continue; }
 
-    // Checkpoints at phase boundaries
-    if (i % TILES_PER_PHASE === 0) { tiles.push('checkpoint'); continue; }
+    // Checkpoints at phase boundaries (every 20 tiles)
+    if (localIdx === 0) { tiles.push('checkpoint'); continue; }
 
-    // Giants appear once per phase (position 7 of each phase)
-    if (i % TILES_PER_PHASE === 7) { tiles.push('giant'); continue; }
+    // Strategic trap at position 6 of each phase (catches players who roll 6 twice)
+    if (localIdx === 5) { tiles.push('trap'); continue; }
 
-    // ~70% chance of special tile, 30% normal
+    // Challenge/scripture at position 10 (midpoint of each phase)
+    if (localIdx === 9) { tiles.push('challenge'); continue; }
+    // Refuge right after challenge (win reward)
+    if (localIdx === 10) { tiles.push('refuge'); continue; }
+
+    // Giant at position 14 of each phase
+    if (localIdx === 13) { tiles.push('giant'); continue; }
+    // Refuge right after giant (win reward)
+    if (localIdx === 14) { tiles.push('refuge'); continue; }
+
+    // Strategic trap at penultimate position (18) of each phase
+    if (localIdx === 17) { tiles.push('trap'); continue; }
+
+    // Scripture near end of phase
+    if (localIdx === 15) { tiles.push('scripture'); continue; }
+
+    // Shield early in phase
+    if (localIdx === 3) { tiles.push('shield'); continue; }
+
+    // ~65% chance of special tile, 35% normal
     s = rng(s);
-    if ((s % 100) < 70) {
+    if ((s % 100) < 65) {
       s = rng(s);
-      const idx = s % (tilePool.length - 2); // exclude giant and checkpoint from random pool
-      const pool: TileType[] = ['refuge', 'challenge', 'surprise', 'scripture', 'trap',
-        'shield', 'blessing', 'swap', 'double_dice', 'current'];
-      tiles.push(pool[idx % pool.length]);
+      const pool: TileType[] = ['surprise', 'blessing', 'swap', 'double_dice', 'current', 'scripture', 'challenge'];
+      tiles.push(pool[s % pool.length]);
     } else {
       tiles.push('normal');
     }
@@ -105,16 +125,16 @@ export function generateImmersiveTiles(seed: number): TileType[] {
 }
 
 // ─── Trail coordinates for winding path within each phase ───
-// Returns CSS positions (%) for each tile within a phase viewport
+// 20 tiles spanning ~200svh (2 phone screens per phase)
 export function getTrailPositions(tilesCount: number = TILES_PER_PHASE): { x: number; y: number }[] {
   const positions: { x: number; y: number }[] = [];
   for (let i = 0; i < tilesCount; i++) {
     const t = i / (tilesCount - 1);
-    const y = 8 + t * 82; // 8% to 90% vertical
-    // Serpentine: alternates left-right
-    const wave = Math.sin(t * Math.PI * 2.5) * 28;
+    const y = 4 + t * 92; // 4% to 96% vertical
+    // Serpentine: alternates left-right with more pronounced waves
+    const wave = Math.sin(t * Math.PI * 3.5) * 30;
     const x = 50 + wave;
-    positions.push({ x: Math.max(12, Math.min(88, x)), y });
+    positions.push({ x: Math.max(14, Math.min(86, x)), y });
   }
   return positions;
 }
