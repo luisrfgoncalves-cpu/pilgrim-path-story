@@ -19,6 +19,7 @@ import {
   playPhaseAmbient, playPhaseTransitionSound,
 } from '@/components/multiplayer/BoardSounds';
 import { playGameSfx } from '@/lib/gameSfx';
+import { useAudioPrewarm } from '@/hooks/useAudioPrewarm';
 import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown } from 'lucide-react';
 import ScreenHero from '@/components/ScreenHero';
 
@@ -285,6 +286,7 @@ function resolveTileEffect(
 
 const PresentialMultiplayer = () => {
   const navigate = useNavigate();
+  useAudioPrewarm(); // Pre-warm audio engine for zero-delay sounds
   const [phase, setPhase] = useState<'setup' | 'playing' | 'finished'>('setup');
   const [players, setPlayers] = useState<LocalPlayer[]>([createPlayer(0), createPlayer(1)]);
   const [editingNames, setEditingNames] = useState<Record<string, string>>({});
