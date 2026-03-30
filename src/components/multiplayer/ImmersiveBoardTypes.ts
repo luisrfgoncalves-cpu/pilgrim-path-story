@@ -140,14 +140,14 @@ export function generateImmersiveTiles(seed: number): TileType[] {
 }
 
 // ─── Trail coordinates for winding path within each phase ───
-// 20 tiles spanning ~200svh (2 phone screens per phase)
+// 20 tiles spanning ~350svh (3.5 phone screens per phase) for better spacing
 export function getTrailPositions(tilesCount: number = TILES_PER_PHASE): { x: number; y: number }[] {
   const positions: { x: number; y: number }[] = [];
   for (let i = 0; i < tilesCount; i++) {
     const t = i / (tilesCount - 1);
-    const y = 4 + t * 92; // 4% to 96% vertical
+    const y = 3 + t * 94; // 3% to 97% vertical
     // Serpentine: alternates left-right with more pronounced waves
-    const wave = Math.sin(t * Math.PI * 3.5) * 30;
+    const wave = Math.sin(t * Math.PI * 3.5) * 28;
     const x = 50 + wave;
     positions.push({ x: Math.max(14, Math.min(86, x)), y });
   }

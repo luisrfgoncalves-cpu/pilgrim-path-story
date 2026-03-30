@@ -5,6 +5,8 @@ import {
 } from './ImmersiveBoardTypes';
 import { MedievalTileIcon } from './MedievalTileIcons';
 import { characterImages } from '@/data/characterImages';
+import trailStoneImg from '@/assets/board/trail-stone.jpg';
+import trailDirtImg from '@/assets/board/trail-dirt.jpg';
 
 interface Player {
   id: string;
