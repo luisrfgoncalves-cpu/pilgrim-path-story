@@ -174,7 +174,6 @@ const PhaseSection = memo(function PhaseSection({
         return;
       }
 
-      // What fraction of the section is visible
       const topVisible = Math.max(0, -rect.top / sectionH);
       const bottomVisible = Math.min(1, (viewH - rect.top) / sectionH);
 
@@ -185,8 +184,20 @@ const PhaseSection = memo(function PhaseSection({
     };
 
     updateVisibleRange();
-    window.addEventListener('scroll', updateVisibleRange, { passive: true });
-    return () => window.removeEventListener('scroll', updateVisibleRange);
+
+    // THROTTLED scroll listener — prevents excessive recalculations on mobile
+    let ticking = false;
+    const throttledUpdate = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        updateVisibleRange();
+        ticking = false;
+      });
+    };
+
+    window.addEventListener('scroll', throttledUpdate, { passive: true });
+    return () => window.removeEventListener('scroll', throttledUpdate);
   }, []);
 
   return (
