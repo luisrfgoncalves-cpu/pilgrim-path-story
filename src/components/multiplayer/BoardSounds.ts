@@ -93,3 +93,82 @@ export function playTurnStart() {
   playTone(880, 0.08, 'sine', 0.1);
   setTimeout(() => playTone(1100, 0.12, 'sine', 0.12), 60);
 }
+
+// ─── Per-phase ambient drones ───
+// Each phase has a distinct ambient tone/chord that plays briefly when entering
+
+const PHASE_AMBIENTS: { freq: number; freq2: number; type: OscillatorType; vol: number }[] = [
+  { freq: 220, freq2: 330, type: 'sine', vol: 0.04 },      // Phase 0 — warm, hopeful
+  { freq: 196, freq2: 294, type: 'triangle', vol: 0.04 },   // Phase 1 — mysterious swamp
+  { freq: 146, freq2: 185, type: 'sawtooth', vol: 0.03 },   // Phase 2 — dark valley
+  { freq: 262, freq2: 392, type: 'sine', vol: 0.04 },       // Phase 3 — bustling fair
+  { freq: 165, freq2: 208, type: 'sawtooth', vol: 0.03 },   // Phase 4 — ominous castle
+  { freq: 330, freq2: 440, type: 'sine', vol: 0.05 },       // Phase 5 — celestial glory
+];
+
+let currentAmbientOsc: OscillatorNode[] = [];
+
+export function playPhaseAmbient(phaseIdx: number) {
+  stopPhaseAmbient();
+  const c = getCtx();
+  if (!c) return;
+  const cfg = PHASE_AMBIENTS[phaseIdx] || PHASE_AMBIENTS[0];
+
+  const createDrone = (freq: number) => {
+    const osc = c.createOscillator();
+    const gain = c.createGain();
+    osc.type = cfg.type;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0, c.currentTime);
+    gain.gain.linearRampToValueAtTime(cfg.vol, c.currentTime + 1.5);
+    gain.gain.linearRampToValueAtTime(cfg.vol * 0.6, c.currentTime + 6);
+    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 8);
+    osc.connect(gain);
+    gain.connect(c.destination);
+    osc.start(c.currentTime);
+    osc.stop(c.currentTime + 8);
+    return osc;
+  };
+
+  currentAmbientOsc = [createDrone(cfg.freq), createDrone(cfg.freq2)];
+}
+
+export function stopPhaseAmbient() {
+  currentAmbientOsc.forEach(osc => {
+    try { osc.stop(); } catch {}
+  });
+  currentAmbientOsc = [];
+}
+
+// Phase transition dramatic sound
+export function playPhaseTransitionSound(phaseIdx: number) {
+  const c = getCtx();
+  if (!c) return;
+  // Deep drum hit
+  playTone(80, 0.5, 'sine', 0.15);
+  setTimeout(() => playTone(60, 0.8, 'sine', 0.12), 200);
+  // Ethereal chime
+  setTimeout(() => {
+    const freq = 400 + phaseIdx * 80;
+    playTone(freq, 0.4, 'sine', 0.08);
+    setTimeout(() => playTone(freq * 1.5, 0.5, 'sine', 0.06), 150);
+  }, 500);
+}
+
+// River of Death ambient
+export function playRiverAmbient() {
+  const c = getCtx();
+  if (!c) return;
+  // Low rumble
+  const osc = c.createOscillator();
+  const gain = c.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.value = 55;
+  gain.gain.setValueAtTime(0.03, c.currentTime);
+  gain.gain.linearRampToValueAtTime(0.06, c.currentTime + 3);
+  gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 10);
+  osc.connect(gain);
+  gain.connect(c.destination);
+  osc.start(c.currentTime);
+  osc.stop(c.currentTime + 10);
+}

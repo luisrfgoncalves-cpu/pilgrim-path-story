@@ -1,7 +1,25 @@
-// Epic Victory Screen component with fireworks and dramatic animation
+// Epic Victory Screen with fireworks, stats, and dramatic animation
 import { useEffect, useState, useRef } from 'react';
 import { Crown, Trophy, Star, Sparkles } from 'lucide-react';
 import { playVictory } from './BoardSounds';
+
+interface PlayerStats {
+  trapsHit: number;
+  challengesWon: number;
+  challengesLost: number;
+  blessingsReceived: number;
+  giantsDefeated: number;
+  giantsLost: number;
+  scripturesCorrect: number;
+  scripturesWrong: number;
+  tilesVisited: number;
+  maxStreak: number;
+  backToStartCount: number;
+  shieldsGained: number;
+  swapsTriggered: number;
+  phasesCompleted: number;
+  riverCrossed: boolean;
+}
 
 interface VictoryPlayer {
   id: string;
@@ -9,6 +27,7 @@ interface VictoryPlayer {
   color: string;
   finishOrder: number | null;
   attributes: { fe: number; perseveranca: number; discernimento: number; coragem: number };
+  stats?: PlayerStats;
 }
 
 interface EpicVictoryScreenProps {
@@ -17,7 +36,6 @@ interface EpicVictoryScreenProps {
   onExit: () => void;
 }
 
-// Simple firework particle
 function Firework({ delay, x }: { delay: number; x: number }) {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
@@ -25,12 +43,12 @@ function Firework({ delay, x }: { delay: number; x: number }) {
     return () => clearTimeout(t);
   }, [delay]);
   if (!visible) return null;
-  
+
   const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#FF9FF3', '#FECA57', '#FF6348'];
   const color = colors[Math.floor(Math.random() * colors.length)];
-  
+
   return (
-    <div className="absolute pointer-events-none" style={{ left: `${x}%`, top: '20%' }}>
+    <div className="absolute pointer-events-none" style={{ left: `${x}%`, top: '15%' }}>
       {Array.from({ length: 12 }).map((_, i) => {
         const angle = (i / 12) * 360;
         const rad = (angle * Math.PI) / 180;
@@ -42,9 +60,9 @@ function Firework({ delay, x }: { delay: number; x: number }) {
             style={{
               backgroundColor: color,
               boxShadow: `0 0 8px ${color}, 0 0 16px ${color}`,
-              animation: `fireworkParticle 1.5s ease-out forwards`,
+              animation: `fireworkBurst 1.5s ease-out forwards`,
               transform: `translate(${Math.cos(rad) * dist}px, ${Math.sin(rad) * dist}px)`,
-              opacity: 0,
+              animationDelay: `${i * 0.03}s`,
             }}
           />
         );
@@ -54,46 +72,62 @@ function Firework({ delay, x }: { delay: number; x: number }) {
 }
 
 export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: EpicVictoryScreenProps) {
-  const [phase, setPhase] = useState<'buildup' | 'reveal' | 'rankings'>('buildup');
+  const [phase, setPhase] = useState<'buildup' | 'reveal' | 'rankings' | 'stats'>('buildup');
   const [showFireworks, setShowFireworks] = useState(false);
   const hasPlayed = useRef(false);
-  
+
   const sorted = [...players]
     .filter(p => p.finishOrder !== null)
     .sort((a, b) => (a.finishOrder || 99) - (b.finishOrder || 99));
-  
+
   const winner = sorted[0];
-  
+
   useEffect(() => {
-    // Buildup phase
     const t1 = setTimeout(() => {
       setPhase('reveal');
       setShowFireworks(true);
       if (!hasPlayed.current) {
         hasPlayed.current = true;
         playVictory();
-        // Haptic celebration
         if (navigator.vibrate) navigator.vibrate([50, 30, 50, 30, 100, 50, 200]);
       }
-    }, 2000);
-    
-    const t2 = setTimeout(() => setPhase('rankings'), 4500);
-    
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+    }, 2500);
+
+    const t2 = setTimeout(() => setPhase('rankings'), 5000);
+    const t3 = setTimeout(() => setPhase('stats'), 8000);
+
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
-  
+
   const totalAttr = (p: VictoryPlayer) =>
     p.attributes.fe + p.attributes.perseveranca + p.attributes.discernimento + p.attributes.coragem;
-  
+
+  // Generate stat highlights for winner
+  const getStatHighlights = (p: VictoryPlayer) => {
+    const s = p.stats;
+    if (!s) return [];
+    const highlights: { icon: string; label: string; value: string }[] = [];
+    if (s.giantsDefeated > 0) highlights.push({ icon: '💀', label: 'Gigantes derrotados', value: `${s.giantsDefeated}` });
+    if (s.challengesWon > 0) highlights.push({ icon: '⚔️', label: 'Desafios vencidos', value: `${s.challengesWon}` });
+    if (s.scripturesCorrect > 0) highlights.push({ icon: '📖', label: 'Escrituras acertadas', value: `${s.scripturesCorrect}` });
+    if (s.blessingsReceived > 0) highlights.push({ icon: '⭐', label: 'Bênçãos recebidas', value: `${s.blessingsReceived}` });
+    if (s.trapsHit > 0) highlights.push({ icon: '🔙', label: 'Armadilhas sofridas', value: `${s.trapsHit}` });
+    if (s.shieldsGained > 0) highlights.push({ icon: '🛡️', label: 'Escudos obtidos', value: `${s.shieldsGained}` });
+    if (s.maxStreak > 1) highlights.push({ icon: '🔥', label: 'Melhor sequência', value: `${s.maxStreak}x` });
+    if (s.backToStartCount > 0) highlights.push({ icon: '☠️', label: 'Voltas ao início', value: `${s.backToStartCount}` });
+    if (s.riverCrossed) highlights.push({ icon: '🌊', label: 'Rio da Morte', value: 'Atravessou!' });
+    return highlights;
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0" style={{
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+      {/* Background */}
+      <div className="fixed inset-0" style={{
         background: 'radial-gradient(ellipse at 50% 30%, hsl(45 60% 15%), hsl(30 20% 5%) 70%)',
       }} />
-      
+
       {/* Light rays */}
-      <div className="absolute inset-0 overflow-hidden opacity-30">
+      <div className="fixed inset-0 overflow-hidden opacity-30 pointer-events-none">
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
@@ -108,27 +142,32 @@ export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: Epic
           />
         ))}
       </div>
-      
+
       {/* Fireworks */}
       {showFireworks && (
-        <>
-          {Array.from({ length: 8 }).map((_, i) => (
-            <Firework key={i} delay={i * 400} x={10 + Math.random() * 80} />
+        <div className="fixed inset-0 pointer-events-none">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <Firework key={i} delay={i * 500} x={10 + Math.random() * 80} />
           ))}
-        </>
+        </div>
       )}
-      
+
       {/* Content */}
-      <div className="relative z-10 w-full max-w-sm px-4 space-y-6">
+      <div className="relative z-10 w-full max-w-sm px-4 py-10 space-y-6">
         {/* BUILDUP */}
         {phase === 'buildup' && (
-          <div className="text-center space-y-4 animate-pulse">
-            <div className="text-6xl" style={{
+          <div className="text-center space-y-4 min-h-[60vh] flex flex-col items-center justify-center">
+            <div className="text-7xl" style={{
               animation: 'spin 2s linear infinite',
-              filter: 'drop-shadow(0 0 30px rgba(255,215,0,0.5))',
+              filter: 'drop-shadow(0 0 40px rgba(255,215,0,0.6))',
             }}>
               ⭐
             </div>
+            <p className="text-lg font-display uppercase tracking-[0.25em] animate-pulse"
+              style={{ color: 'hsl(45 60% 60%)', textShadow: '0 0 20px rgba(255,215,0,0.3)' }}
+            >
+              A jornada chegou ao fim...
+            </p>
             <p className="text-2xl font-display font-bold uppercase tracking-[0.3em]"
               style={{ color: 'hsl(45 80% 70%)', textShadow: '0 0 30px rgba(255,215,0,0.4)' }}
             >
@@ -136,32 +175,32 @@ export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: Epic
             </p>
           </div>
         )}
-        
-        {/* REVEAL */}
-        {(phase === 'reveal' || phase === 'rankings') && winner && (
+
+        {/* REVEAL + RANKINGS + STATS */}
+        {(phase === 'reveal' || phase === 'rankings' || phase === 'stats') && winner && (
           <>
             {/* Winner card */}
             <div className="text-center space-y-3" style={{
               animation: phase === 'reveal' ? 'victoryReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' : undefined,
             }}>
               <div className="relative inline-block">
-                <Crown className="w-12 h-12 mx-auto text-yellow-400 mb-2" style={{
-                  filter: 'drop-shadow(0 0 20px rgba(255,215,0,0.6))',
+                <Crown className="w-14 h-14 mx-auto text-yellow-400 mb-2" style={{
+                  filter: 'drop-shadow(0 0 25px rgba(255,215,0,0.7))',
                   animation: 'bounce 1s infinite',
                 }} />
                 <div
-                  className="w-24 h-24 rounded-2xl mx-auto flex items-center justify-center text-4xl font-bold"
+                  className="w-28 h-28 rounded-2xl mx-auto flex items-center justify-center text-5xl font-bold"
                   style={{
                     backgroundColor: winner.color + '30',
                     border: `4px solid ${winner.color}`,
                     color: winner.color,
-                    boxShadow: `0 0 40px ${winner.color}80, 0 0 80px ${winner.color}40`,
+                    boxShadow: `0 0 50px ${winner.color}80, 0 0 100px ${winner.color}40`,
                   }}
                 >
                   {winner.name.charAt(0)}
                 </div>
               </div>
-              
+
               <h2 className="text-3xl font-display font-bold"
                 style={{ color: 'hsl(45 90% 75%)', textShadow: '0 0 30px rgba(255,215,0,0.5)' }}
               >
@@ -170,8 +209,8 @@ export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: Epic
               <p className="text-sm font-display" style={{ color: 'hsl(45 60% 60%)' }}>
                 🏆 Alcançou a Cidade Celestial!
               </p>
-              
-              {/* Winner stats */}
+
+              {/* Winner attributes */}
               <div className="flex justify-center gap-4 text-sm" style={{ color: 'hsl(45 40% 60%)' }}>
                 <span>🔥 {winner.attributes.fe}</span>
                 <span>⛰️ {winner.attributes.perseveranca}</span>
@@ -182,14 +221,14 @@ export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: Epic
                 Total: {totalAttr(winner)} pontos de atributo
               </p>
             </div>
-            
+
             {/* Rankings */}
-            {phase === 'rankings' && (
+            {(phase === 'rankings' || phase === 'stats') && (
               <div className="space-y-2 animate-fade-in">
                 <h3 className="text-center text-sm font-display uppercase tracking-widest"
                   style={{ color: 'hsl(45 40% 50%)' }}
                 >
-                  Classificação
+                  Classificação Final
                 </h3>
                 {sorted.map((p, i) => (
                   <div
@@ -231,7 +270,74 @@ export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: Epic
                     </div>
                   </div>
                 ))}
-                
+              </div>
+            )}
+
+            {/* STATS — detailed journey statistics */}
+            {phase === 'stats' && winner.stats && (
+              <div className="space-y-3 animate-fade-in pt-2">
+                <h3 className="text-center text-sm font-display uppercase tracking-widest"
+                  style={{ color: 'hsl(45 40% 50%)' }}
+                >
+                  📊 Estatísticas da Jornada
+                </h3>
+
+                {/* Winner stats highlights */}
+                <div className="rounded-xl p-4 space-y-2" style={{
+                  background: 'hsl(40 20% 10% / 0.8)',
+                  border: '1px solid hsl(45 40% 30% / 0.5)',
+                }}>
+                  <p className="text-xs font-display font-bold" style={{ color: 'hsl(45 60% 65%)' }}>
+                    {winner.name} — Resumo
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {getStatHighlights(winner).map((h, i) => (
+                      <div key={i} className="flex items-center gap-2 text-[11px]"
+                        style={{
+                          animation: `slideInRank 0.3s ease-out ${i * 0.1}s both`,
+                        }}
+                      >
+                        <span className="text-base">{h.icon}</span>
+                        <div>
+                          <p style={{ color: 'hsl(0 0% 65%)' }}>{h.label}</p>
+                          <p className="font-bold" style={{ color: 'hsl(45 60% 70%)' }}>{h.value}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* All players comparison */}
+                {sorted.length > 1 && (
+                  <div className="rounded-xl p-4 space-y-2" style={{
+                    background: 'hsl(30 10% 10% / 0.6)',
+                    border: '1px solid hsl(0 0% 20% / 0.5)',
+                  }}>
+                    <p className="text-xs font-display font-bold" style={{ color: 'hsl(0 0% 60%)' }}>
+                      Comparativo
+                    </p>
+                    {sorted.map((p, i) => {
+                      const s = p.stats;
+                      if (!s) return null;
+                      return (
+                        <div key={p.id} className="flex items-center gap-2 text-[10px]" style={{
+                          animation: `slideInRank 0.3s ease-out ${i * 0.1 + 0.5}s both`,
+                        }}>
+                          <div className="w-4 h-4 rounded-full shrink-0" style={{ backgroundColor: p.color }} />
+                          <span className="font-medium w-16 truncate" style={{ color: 'hsl(0 0% 70%)' }}>{p.name}</span>
+                          <div className="flex gap-2 flex-wrap" style={{ color: 'hsl(0 0% 50%)' }}>
+                            <span>⚔{s.challengesWon}</span>
+                            <span>💀{s.giantsDefeated}</span>
+                            <span>📖{s.scripturesCorrect}</span>
+                            <span>⭐{s.blessingsReceived}</span>
+                            <span>🔙{s.trapsHit}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
                 {/* Buttons */}
                 <div className="space-y-2 pt-4">
                   <button
@@ -263,12 +369,12 @@ export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: Epic
           </>
         )}
       </div>
-      
+
       {/* CSS animations */}
       <style>{`
-        @keyframes fireworkParticle {
-          0% { opacity: 1; transform: translate(0, 0) scale(1); }
-          100% { opacity: 0; transform: translate(var(--tx, 50px), var(--ty, -80px)) scale(0.2); }
+        @keyframes fireworkBurst {
+          0% { opacity: 1; transform: scale(1) translate(0, 0); }
+          100% { opacity: 0; transform: scale(0.3) translate(var(--tx, 0), var(--ty, -50px)); }
         }
         @keyframes victoryReveal {
           0% { transform: scale(0.3) translateY(50px); opacity: 0; }
