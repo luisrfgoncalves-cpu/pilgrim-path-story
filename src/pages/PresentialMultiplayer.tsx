@@ -530,6 +530,14 @@ const PresentialMultiplayer = () => {
         onDismiss={handleTilePopupDismiss}
       />
 
+      {/* Board Mini-Game overlay */}
+      <BoardMiniGame
+        visible={!!miniGame}
+        tileType={miniGame?.tileType || 'normal'}
+        playerName={players[miniGame?.playerIdx || 0]?.name || ''}
+        onResult={handleMiniGameResult}
+      />
+
       {/* Sticky header with current player info */}
       <header className="sticky top-0 z-20 bg-card/95 backdrop-blur-md border-b border-border px-4 py-2">
         <div className="max-w-lg mx-auto flex items-center justify-between">
