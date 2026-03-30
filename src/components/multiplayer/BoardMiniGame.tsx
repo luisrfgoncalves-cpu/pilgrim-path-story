@@ -199,19 +199,54 @@ function MemoryGame({ difficulty, onResult }: { difficulty: number; onResult: (w
 // Scripture quiz
 function ScriptureQuiz({ onResult }: { onResult: (won: boolean) => void }) {
   const questions = [
-    { q: 'Quem enfrentou Golias?', options: ['Moisés', 'Davi', 'Saul', 'Josué'], correct: 1 },
-    { q: 'Quantos dias Noé ficou na arca durante o dilúvio?', options: ['7', '40', '100', '150'], correct: 1 },
+    // Antigo Testamento
+    { q: 'Quem enfrentou Golias com uma funda e cinco pedras?', options: ['Moisés', 'Davi', 'Saul', 'Josué'], correct: 1 },
+    { q: 'Quantos dias e noites durou o dilúvio de chuva?', options: ['7', '40', '100', '150'], correct: 1 },
     { q: 'Quem foi jogado na cova dos leões?', options: ['Jonas', 'Daniel', 'Elias', 'Samuel'], correct: 1 },
-    { q: 'Qual fruto a serpente ofereceu?', options: ['Maçã', 'Uva', 'Fruto proibido', 'Figo'], correct: 2 },
-    { q: 'Quantos discípulos Jesus teve?', options: ['7', '10', '12', '15'], correct: 2 },
-    { q: 'Quem batizou Jesus?', options: ['Pedro', 'João Batista', 'Paulo', 'Tiago'], correct: 1 },
+    { q: 'Quantos discípulos Jesus escolheu?', options: ['7', '10', '12', '15'], correct: 2 },
+    { q: 'Quem batizou Jesus no rio Jordão?', options: ['Pedro', 'João Batista', 'Paulo', 'Tiago'], correct: 1 },
     { q: 'Qual o primeiro livro da Bíblia?', options: ['Êxodo', 'Gênesis', 'Levítico', 'Salmos'], correct: 1 },
     { q: 'Quem construiu a arca?', options: ['Abraão', 'Moisés', 'Noé', 'Davi'], correct: 2 },
+    { q: 'Quem libertou o povo de Israel do Egito?', options: ['Abraão', 'Moisés', 'José', 'Josué'], correct: 1 },
+    { q: 'Quantos mandamentos Deus deu a Moisés?', options: ['5', '7', '10', '12'], correct: 2 },
+    { q: 'Quem foi vendido como escravo pelos próprios irmãos?', options: ['Davi', 'Moisés', 'José', 'Daniel'], correct: 2 },
+    { q: 'Quem foi engolido por um grande peixe?', options: ['Jonas', 'Pedro', 'Paulo', 'Elias'], correct: 0 },
+    { q: 'Quantos dias Jesus ficou no deserto sendo tentado?', options: ['7', '21', '30', '40'], correct: 3 },
+    { q: 'Quem negou Jesus três vezes?', options: ['Judas', 'Tomé', 'Pedro', 'João'], correct: 2 },
+    { q: 'Qual era a profissão de Jesus antes do ministério?', options: ['Pescador', 'Carpinteiro', 'Pastor', 'Agricultor'], correct: 1 },
+    { q: 'Em que cidade Jesus nasceu?', options: ['Nazaré', 'Jerusalém', 'Belém', 'Cafarnaum'], correct: 2 },
+    { q: 'Quem traiu Jesus por trinta moedas de prata?', options: ['Pedro', 'Judas', 'Tomé', 'Tiago'], correct: 1 },
+    { q: 'Quantos livros tem a Bíblia?', options: ['39', '52', '66', '73'], correct: 2 },
+    { q: 'Qual o menor livro da Bíblia?', options: ['Judas', '3 João', '2 João', 'Filemom'], correct: 2 },
+    { q: 'Quem escreveu a maioria das epístolas do Novo Testamento?', options: ['Pedro', 'João', 'Paulo', 'Tiago'], correct: 2 },
+    { q: 'Qual o último livro da Bíblia?', options: ['Judas', 'Atos', 'Apocalipse', 'Malaquias'], correct: 2 },
+    { q: 'Quem matou o gigante Golias?', options: ['Sansão', 'Josué', 'Davi', 'Saul'], correct: 2 },
+    { q: 'Em qual monte Moisés recebeu os Dez Mandamentos?', options: ['Carmelo', 'Sinai', 'Sião', 'Nebo'], correct: 1 },
+    { q: 'Quem era o irmão de Moisés?', options: ['Arão', 'Calebe', 'Josué', 'Levi'], correct: 0 },
+    { q: 'Quantos filhos Jacó teve?', options: ['7', '10', '12', '14'], correct: 2 },
+    { q: 'Quem foi o primeiro rei de Israel?', options: ['Davi', 'Saul', 'Salomão', 'Samuel'], correct: 1 },
+    { q: 'Quem escreveu o livro de Provérbios?', options: ['Davi', 'Moisés', 'Salomão', 'Isaías'], correct: 2 },
+    { q: 'Qual profeta enfrentou os profetas de Baal no Monte Carmelo?', options: ['Eliseu', 'Elias', 'Isaías', 'Jeremias'], correct: 1 },
+    { q: 'Jesus transformou água em vinho em qual cidade?', options: ['Belém', 'Caná', 'Nazaré', 'Jerusalém'], correct: 1 },
+    { q: 'Quantos pães e peixes Jesus usou para alimentar 5000?', options: ['3 pães e 2 peixes', '5 pães e 2 peixes', '7 pães e 3 peixes', '2 pães e 5 peixes'], correct: 1 },
+    { q: 'Quem disse: "Eu sou o caminho, a verdade e a vida"?', options: ['Moisés', 'Paulo', 'Jesus', 'Pedro'], correct: 2 },
+    // Peregrino de Bunyan
+    { q: 'No livro O Peregrino, de onde Cristão fugiu?', options: ['Cidade Celestial', 'Feira da Vaidade', 'Cidade da Destruição', 'Vale da Morte'], correct: 2 },
+    { q: 'Quem orientou Cristão a buscar a Porta Estreita?', options: ['Fiel', 'Evangelista', 'Grande-Coração', 'Intérprete'], correct: 1 },
+    { q: 'Em qual lugar o fardo de Cristão caiu de suas costas?', options: ['Porta Estreita', 'Ao pé da Cruz', 'Palácio Belo', 'Casa do Intérprete'], correct: 1 },
+    { q: 'Quem foi companheiro de Cristão na Feira da Vaidade?', options: ['Esperança', 'Fiel', 'Grande-Coração', 'Misericórdia'], correct: 1 },
+    { q: 'Qual gigante prendeu Cristão no Castelo da Dúvida?', options: ['Golias', 'Gigante Orgulho', 'Gigante Desespero', 'Gigante Medo'], correct: 2 },
+    { q: 'Com que chave Cristão escapou do Castelo da Dúvida?', options: ['Chave de Ouro', 'Chave da Fé', 'Chave da Promessa', 'Chave da Esperança'], correct: 2 },
+    { q: 'Qual era o último obstáculo antes da Cidade Celestial?', options: ['A Feira', 'O Vale', 'O Rio da Morte', 'O Castelo'], correct: 2 },
   ];
-  const [qIdx] = useState(() => Math.floor(Math.random() * questions.length));
+  const [usedQuestions] = useState(() => {
+    // Pick 1 random question from the pool
+    const shuffled = [...questions].sort(() => Math.random() - 0.5);
+    return shuffled[0];
+  });
   const [answered, setAnswered] = useState<number | null>(null);
   const [result, setResult] = useState<boolean | null>(null);
-  const question = questions[qIdx];
+  const question = usedQuestions;
 
   const handleAnswer = (idx: number) => {
     if (answered !== null) return;
@@ -252,7 +287,7 @@ function ScriptureQuiz({ onResult }: { onResult: (won: boolean) => void }) {
       </div>
       {result !== null && (
         <p className="text-lg font-display mt-2" style={{ color: result ? 'hsl(120 60% 70%)' : 'hsl(0 60% 70%)' }}>
-          {result ? '✅ Correto!' : '❌ Errado!'}
+          {result ? '✅ Correto! A Palavra ilumina o caminho!' : '❌ A resposta correta era outra...'}
         </p>
       )}
     </div>
