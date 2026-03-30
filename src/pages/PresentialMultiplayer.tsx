@@ -677,6 +677,98 @@ const PresentialMultiplayer = () => {
   const handleTilePopupDismiss = useCallback(() => {
     const currentMsg = tileMessage;
     setTileMessage(null);
+
+    // If there's a pending move from a mini-game, apply it NOW (after popup closed)
+    const pendingMove = pendingMoveAfterPopup.current;
+    if (pendingMove) {
+      pendingMoveAfterPopup.current = null;
+      const { playerIdx, targetPos, attrs, stats, shield } = pendingMove;
+
+      // Move the token visually
+      setIsTokenMoving(true);
+      setPlayers(prev => prev.map((p, i) => {
+        if (i !== playerIdx) return p;
+        const newAttrs = { ...p.attributes };
+        for (const [key, val] of Object.entries(attrs)) {
+          (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+        }
+        return {
+          ...p,
+          position: targetPos,
+          attributes: newAttrs,
+          hasShield: shield !== undefined ? shield : p.hasShield,
+          stats: { ...p.stats, ...stats },
+        };
+      }));
+
+      // After token arrives, check if the new tile has an event
+      pendingActionRef.current = () => {
+        const newTileType = tileTypes[targetPos] || 'normal';
+
+        // If new tile is a mini-game tile, trigger it
+        if (EXPANDED_MINI_GAME_TILES.includes(newTileType)) {
+          setMiniGame({ tileType: newTileType, playerIdx, prevPosition: targetPos, newPosition: targetPos });
+          return;
+        }
+
+        // If new tile has a non-normal event, show its popup
+        if (newTileType !== 'normal' && newTileType !== 'start') {
+          const phaseIdx = Math.floor(targetPos / TILES_PER_PHASE);
+          const player = players[playerIdx];
+          const effect = resolveTileEffect(newTileType, player, players, Date.now() + targetPos, phaseIdx);
+
+          // Apply secondary tile effects (position adjustments, etc.)
+          let finalPos = targetPos;
+          if (effect.resetToStart) finalPos = 0;
+          else if (effect.resetToCheckpoint) finalPos = player.checkpoint;
+          else finalPos = Math.max(0, Math.min(targetPos + effect.posAdjust, IMMERSIVE_BOARD_SIZE - 1));
+
+          if (finalPos !== targetPos) {
+            // Store another pending move for after THIS popup closes
+            pendingMoveAfterPopup.current = {
+              playerIdx,
+              targetPos: finalPos,
+              attrs: effect.attrChanges,
+              shield: effect.shield ? true : undefined,
+              stats: effect.statUpdate,
+            };
+          } else {
+            // Apply attr changes in place
+            updatePlayerStats(playerIdx, effect.statUpdate);
+            setPlayers(prev => prev.map((p, i) => {
+              if (i !== playerIdx) return p;
+              const newAttrs = { ...p.attributes };
+              for (const [key, val] of Object.entries(effect.attrChanges)) {
+                (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+              }
+              return {
+                ...p,
+                isStunned: effect.stun,
+                stunTurns: effect.stunTurns,
+                hasShield: effect.shield ? true : (newTileType === 'trap' || newTileType === 'giant' ? false : p.hasShield),
+                checkpoint: newTileType === 'checkpoint' ? targetPos : p.checkpoint,
+                extraTurn: effect.extraTurn,
+                attributes: newAttrs,
+              };
+            }));
+          }
+
+          setTileMessage({ message: effect.message, emoji: effect.emoji, tileType: newTileType, playerName: players[playerIdx]?.name });
+          return;
+        }
+
+        // Normal tile — just go to next turn
+        const p = players[playerIdx];
+        if (p?.extraTurn) {
+          setTurnAnnounce(`🎲 ${p.name} joga de novo!`);
+        } else {
+          nextTurn();
+        }
+      };
+      return;
+    }
+
+    // No pending move — standard dismiss behavior
     if (currentMsg) {
       const p = players[currentTurn];
       if (p?.extraTurn) {
@@ -685,7 +777,7 @@ const PresentialMultiplayer = () => {
         nextTurn();
       }
     }
-  }, [tileMessage, players, currentTurn, nextTurn]);
+  }, [tileMessage, players, currentTurn, nextTurn, tileTypes]);
 
   const resetGame = () => {
     setPlayers(prev => prev.map((p, i) => createPlayer(i, p.name)));
