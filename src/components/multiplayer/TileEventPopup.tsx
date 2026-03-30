@@ -57,19 +57,30 @@ function triggerHaptic(pattern: 'negative' | 'stun' | 'positive') {
 }
 
 function playSoundForTile(tileType: TileType) {
-  const cat = TILE_SOUND_MAP[tileType] || 'neutral';
   // Haptic feedback
+  const cat = TILE_SOUND_MAP[tileType] || 'neutral';
   if (cat === 'stun') triggerHaptic('stun');
   else if (cat === 'negative') triggerHaptic('negative');
   else if (cat === 'positive') triggerHaptic('positive');
 
-  switch (cat) {
-    case 'positive': playPositiveEvent(); break;
-    case 'negative': playNegativeEvent(); break;
-    case 'challenge': playChallengeEvent(); break;
-    case 'stun': playStun(); break;
-    case 'victory': playVictory(); break;
-    default: playMove(); break;
+  // Per-tile-type specific sounds for maximum distinction
+  switch (tileType) {
+    case 'shield': playShieldAcquired(); break;
+    case 'swap': playSwapEvent(); break;
+    case 'current': playCurrentEvent(); break;
+    case 'surprise': playSurpriseEvent(); break;
+    case 'checkpoint': playCheckpointEvent(); break;
+    case 'back_to_start': playBackToStartEvent(); break;
+    case 'finish': playVictory(); break;
+    default:
+      // Fallback to category-based sounds
+      switch (cat) {
+        case 'positive': playPositiveEvent(); break;
+        case 'negative': playNegativeEvent(); break;
+        case 'challenge': playChallengeEvent(); break;
+        case 'stun': playStun(); break;
+        default: playMove(); break;
+      }
   }
 }
 
