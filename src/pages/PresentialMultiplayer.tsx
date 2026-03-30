@@ -697,6 +697,7 @@ const PresentialMultiplayer = () => {
           players={boardPlayers}
           currentTurnId={currentPlayer?.id}
           onTileClick={handleTileClick}
+          onTokenArrived={handleTokenArrived}
         />
 
         {/* Dice section */}
