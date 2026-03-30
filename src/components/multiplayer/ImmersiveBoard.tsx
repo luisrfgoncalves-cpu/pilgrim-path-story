@@ -211,30 +211,56 @@ function PhaseSection({
                   {globalIdx + 1}
                 </span>
 
-                {/* Medieval icon - overlaid on character image */}
-                <div className="relative z-10">
-                  <MedievalTileIcon
-                    tileType={tileType}
-                    size={isBoss ? 34 : isSpecial ? 28 : 22}
-                    color={tileCharImg && isSpecial ? '#fff' : config.color}
-                    glowColor={config.glowColor}
-                  />
-                </div>
-
-                {/* Boss indicator */}
-                {isBoss && (
-                  <div className="absolute top-0.5 right-0.5 text-xs z-10 animate-bounce">
-                    {tileType === 'giant' ? '💀' : '⚔️'}
-                  </div>
-                )}
               </div>
 
-              {/* Type label */}
-              <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-display font-bold whitespace-nowrap px-2 py-0.5 rounded-md z-10"
-                style={{ background: 'rgba(0,0,0,0.9)', color: config.color, border: `1px solid ${config.color}40`, textShadow: `0 0 8px ${config.glowColor}` }}
+              {/* Medieval icon - outside the card, on the left edge */}
+              <div className="absolute -left-4 top-1/2 -translate-y-1/2 z-10"
+                style={{
+                  background: 'rgba(0,0,0,0.85)',
+                  borderRadius: '50%',
+                  padding: isBoss ? 5 : 4,
+                  border: `2px solid ${config.color}`,
+                  boxShadow: `0 0 10px ${config.glowColor}`,
+                }}
               >
-                {config.label}
-              </span>
+                <MedievalTileIcon
+                  tileType={tileType}
+                  size={isBoss ? 18 : isSpecial ? 16 : 14}
+                  color={config.color}
+                  glowColor={config.glowColor}
+                />
+              </div>
+
+              {/* Boss indicator - outside top-right */}
+              {isBoss && (
+                <div className="absolute -top-2 -right-2 text-xs z-10 animate-bounce">
+                  {tileType === 'giant' ? '💀' : '⚔️'}
+                </div>
+              )}
+
+              {/* Type label - speech bubble style, to the right */}
+              {isSpecial && (
+                <div className="absolute top-1/2 -translate-y-1/2 z-10"
+                  style={{ left: `${tileSize + 6}px` }}
+                >
+                  <div className="relative">
+                    {/* Arrow pointing left */}
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full"
+                      style={{
+                        width: 0, height: 0,
+                        borderTop: '4px solid transparent',
+                        borderBottom: '4px solid transparent',
+                        borderRight: `4px solid ${config.color}60`,
+                      }}
+                    />
+                    <span className="text-[7px] font-display font-bold whitespace-nowrap px-1.5 py-0.5 rounded"
+                      style={{ background: `${config.color}20`, color: config.color, border: `1px solid ${config.color}40` }}
+                    >
+                      {config.label}
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {/* Player tokens */}
               {playersHere.length > 0 && (
