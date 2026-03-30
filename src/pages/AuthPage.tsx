@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 import { isEmailAllowed } from '@/data/allowedEmails';
-import { User, LogIn, UserPlus, KeyRound } from 'lucide-react';
+import { User, LogIn, UserPlus, KeyRound, Smartphone, Share2 } from 'lucide-react';
 
 const AuthPage: React.FC = () => {
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login');
