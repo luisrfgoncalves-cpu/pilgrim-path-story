@@ -467,17 +467,50 @@ const MedievalCard = ({ children, className = '', glow = false }: {
   glow?: boolean;
 }) => (
   <div
-    className={`rounded-xl border bg-card/80 backdrop-blur-sm p-6 relative ${glow ? 'border-primary/40' : 'border-border'} ${className}`}
+    className={`rounded-xl border bg-card/80 backdrop-blur-sm p-6 relative overflow-hidden transition-all duration-300 hover:scale-[1.01] ${
+      glow ? 'border-primary/50' : 'border-primary/20'
+    } ${className}`}
     style={{
       boxShadow: glow
-        ? '0 0 25px hsl(40 70% 50% / 0.3), 0 0 50px hsl(40 70% 50% / 0.1), 0 8px 30px rgba(0,0,0,0.5), inset 0 1px 0 hsl(40 80% 75% / 0.1), inset 0 -1px 0 hsl(40 50% 20% / 0.2)'
-        : '0 4px 20px rgba(0,0,0,0.4), 0 0 10px hsl(40 70% 50% / 0.05), inset 0 1px 0 hsl(40 80% 75% / 0.05), inset 0 -1px 0 hsl(40 50% 20% / 0.15)',
+        ? '0 0 30px hsl(40 70% 50% / 0.35), 0 0 60px hsl(40 70% 50% / 0.12), 0 8px 30px rgba(0,0,0,0.5), inset 0 1px 0 hsl(40 80% 75% / 0.15), inset 0 -1px 0 hsl(40 50% 20% / 0.3)'
+        : '0 0 15px hsl(40 70% 50% / 0.1), 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 hsl(40 80% 75% / 0.08), inset 0 -1px 0 hsl(40 50% 20% / 0.2)',
+      background: glow
+        ? 'linear-gradient(145deg, hsl(40 25% 12%), hsl(40 15% 7%))'
+        : 'linear-gradient(145deg, hsl(40 15% 10%), hsl(40 10% 6%))',
     }}
   >
+    {/* Top neon edge */}
+    <span
+      className="absolute top-0 left-[15%] right-[15%] h-[1px] pointer-events-none"
+      style={{
+        background: glow
+          ? 'linear-gradient(90deg, transparent, hsl(40 90% 65% / 0.6), transparent)'
+          : 'linear-gradient(90deg, transparent, hsl(40 70% 50% / 0.25), transparent)',
+      }}
+    />
+    {/* Bottom neon edge */}
+    <span
+      className="absolute bottom-0 left-[20%] right-[20%] h-[1px] pointer-events-none"
+      style={{
+        background: glow
+          ? 'linear-gradient(90deg, transparent, hsl(40 80% 55% / 0.3), transparent)'
+          : 'linear-gradient(90deg, transparent, hsl(40 60% 40% / 0.15), transparent)',
+      }}
+    />
+    {/* Inner radial glow */}
     {glow && (
       <div className="absolute inset-0 rounded-xl pointer-events-none" style={{
-        background: 'radial-gradient(ellipse at top center, hsl(40 70% 50% / 0.06), transparent 70%)',
+        background: 'radial-gradient(ellipse at top center, hsl(40 70% 50% / 0.08), transparent 60%)',
       }} />
+    )}
+    {/* Corner ornaments for glow cards */}
+    {glow && (
+      <>
+        <span className="absolute top-1.5 left-2 text-primary/20 text-[10px] pointer-events-none">✦</span>
+        <span className="absolute top-1.5 right-2 text-primary/20 text-[10px] pointer-events-none">✦</span>
+        <span className="absolute bottom-1.5 left-2 text-primary/20 text-[10px] pointer-events-none">✦</span>
+        <span className="absolute bottom-1.5 right-2 text-primary/20 text-[10px] pointer-events-none">✦</span>
+      </>
     )}
     <div className="relative">{children}</div>
   </div>

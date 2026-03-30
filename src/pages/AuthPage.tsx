@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 import { isEmailAllowed } from '@/data/allowedEmails';
-import { User, LogIn, UserPlus, KeyRound } from 'lucide-react';
+import { User, LogIn, UserPlus, KeyRound, Smartphone, Share2 } from 'lucide-react';
 
 const AuthPage: React.FC = () => {
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login');
@@ -189,8 +189,97 @@ const AuthPage: React.FC = () => {
             </>
           )}
         </div>
+
+        {/* iOS Install Banner */}
+        <IOSInstallBanner />
       </div>
     </div>
+  );
+};
+
+/** Shows install instructions for iOS users who haven't installed the PWA */
+const IOSInstallBanner = () => {
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true;
+  const [dismissed, setDismissed] = useState(false);
+  const [showSteps, setShowSteps] = useState(false);
+
+  if (!isIOS || isStandalone || dismissed || sessionStorage.getItem('ios_install_dismissed') === '1') return null;
+
+  return (
+    <>
+      <div
+        className="mt-6 rounded-xl border border-primary/30 p-4 text-center space-y-2"
+        style={{
+          background: 'linear-gradient(135deg, hsl(40 20% 10%), hsl(40 10% 6%))',
+          boxShadow: '0 0 20px hsl(40 70% 50% / 0.15)',
+        }}
+      >
+        <div className="flex items-center justify-center gap-2 text-primary">
+          <Smartphone className="w-5 h-5" />
+          <span className="font-display text-sm font-bold">Instale o App no iPhone!</span>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Adicione à sua tela inicial para uma experiência completa
+        </p>
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={() => setShowSteps(true)}
+            className="px-4 py-2 text-xs font-display font-bold rounded-lg bg-primary text-primary-foreground hover:scale-105 transition-transform"
+            style={{ boxShadow: '0 0 12px hsl(40 70% 50% / 0.3)' }}
+          >
+            Como Instalar
+          </button>
+          <button
+            onClick={() => {
+              setDismissed(true);
+              sessionStorage.setItem('ios_install_dismissed', '1');
+            }}
+            className="px-3 py-2 text-xs text-muted-foreground hover:text-foreground"
+          >
+            Agora não
+          </button>
+        </div>
+      </div>
+
+      {showSteps && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-6"
+          onClick={() => setShowSteps(false)}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl border border-primary/30 p-6 space-y-4"
+            style={{ background: 'linear-gradient(180deg, hsl(40 20% 10%), hsl(40 10% 6%))' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3">
+              <Smartphone className="w-6 h-6 text-primary" />
+              <h3 className="font-display text-lg text-foreground font-bold">Instalar no iPhone</h3>
+            </div>
+            <div className="space-y-3 text-sm text-foreground/80">
+              <div className="flex items-start gap-3">
+                <span className="text-primary font-bold">1.</span>
+                <p>Toque no ícone de <strong className="text-foreground">Compartilhar</strong> <Share2 className="w-4 h-4 inline text-primary" /> na barra do Safari</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-primary font-bold">2.</span>
+                <p>Role e toque em <strong className="text-foreground">"Adicionar à Tela de Início"</strong></p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-primary font-bold">3.</span>
+                <p>Toque em <strong className="text-foreground">"Adicionar"</strong> no canto superior direito</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowSteps(false)}
+              className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-display font-bold text-sm hover:scale-[1.02] transition-transform"
+            >
+              Entendi!
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import ScrollToTop from "@/components/ScrollToTop";
 import PreviewPaywall from "@/components/PreviewPaywall";
+import PreviewTrialGate from "@/components/PreviewTrialGate";
 import { lazy, Suspense } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -110,26 +111,42 @@ const App = () => (
             <Route path="/obrigado" element={<ThankYouPage />} />
             <Route path="/termos" element={<TermsPage />} />
 
-            {/* Protected routes — require auth when installed as PWA */}
-            <Route path="/" element={<AuthGate><Index /></AuthGate>} />
-            <Route path="/jornada" element={<AuthGate><JourneysPage /></AuthGate>} />
-            <Route path="/personagens" element={<AuthGate><CharactersPage /></AuthGate>} />
-            <Route path="/reflexoes" element={<AuthGate><ReflectionsPage /></AuthGate>} />
-            <Route path="/comunidade" element={<AuthGate><CommunityPage /></AuthGate>} />
-            <Route path="/progresso" element={<AuthGate><ProgressPage /></AuthGate>} />
-            <Route path="/multiplayer" element={isPreviewMode ? <PreviewPaywall /> : <MultiplayerPage />} />
+            {/* Protected routes — require auth (preview mode uses 3-min trial) */}
+            <Route path="/" element={
+              isPreviewMode ? <PreviewTrialGate><Index /></PreviewTrialGate> : <AuthGate><Index /></AuthGate>
+            } />
+            <Route path="/jornada" element={
+              isPreviewMode ? <PreviewTrialGate><JourneysPage /></PreviewTrialGate> : <AuthGate><JourneysPage /></AuthGate>
+            } />
+            <Route path="/personagens" element={
+              isPreviewMode ? <PreviewTrialGate><CharactersPage /></PreviewTrialGate> : <AuthGate><CharactersPage /></AuthGate>
+            } />
+            <Route path="/reflexoes" element={
+              isPreviewMode ? <PreviewTrialGate><ReflectionsPage /></PreviewTrialGate> : <AuthGate><ReflectionsPage /></AuthGate>
+            } />
+            <Route path="/comunidade" element={
+              isPreviewMode ? <PreviewTrialGate><CommunityPage /></PreviewTrialGate> : <AuthGate><CommunityPage /></AuthGate>
+            } />
+            <Route path="/progresso" element={
+              isPreviewMode ? <PreviewTrialGate><ProgressPage /></PreviewTrialGate> : <AuthGate><ProgressPage /></AuthGate>
+            } />
+            <Route path="/multiplayer" element={
+              isPreviewMode ? <PreviewTrialGate><MultiplayerPage /></PreviewTrialGate> : <AuthGate><MultiplayerPage /></AuthGate>
+            } />
             <Route path="/cena" element={
               isPreviewMode
-                ? <PreviewSceneGate><ScenePage /></PreviewSceneGate>
+                ? <PreviewTrialGate><PreviewSceneGate><ScenePage /></PreviewSceneGate></PreviewTrialGate>
                 : <AuthGate><ScenePage /></AuthGate>
             } />
             <Route path="/resultado" element={
               isPreviewMode
-                ? <PreviewResultGate><ResultPage /></PreviewResultGate>
+                ? <PreviewTrialGate><PreviewResultGate><ResultPage /></PreviewResultGate></PreviewTrialGate>
                 : <AuthGate><ResultPage /></AuthGate>
             } />
             <Route path="/perfil" element={isPreviewMode ? <PreviewPaywall /> : <AuthGate><ProfilePage /></AuthGate>} />
-            <Route path="/multiplayer/presencial" element={isPreviewMode ? <PreviewPaywall /> : <PresentialMultiplayer />} />
+            <Route path="/multiplayer/presencial" element={
+              isPreviewMode ? <PreviewTrialGate><PresentialMultiplayer /></PreviewTrialGate> : <AuthGate><PresentialMultiplayer /></AuthGate>
+            } />
             <Route path="*" element={<NotFound />} />
           </Routes>
           </Suspense>
