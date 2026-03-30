@@ -1086,12 +1086,14 @@ function RapidTapGame({ onResult }: { onResult: (won: boolean) => void }) {
   );
 }
 
-export default function BoardMiniGame({ visible, tileType, playerName, onResult }: BoardMiniGameProps) {
+export default function BoardMiniGame({ visible, tileType, playerName, onResult, phaseIdx = 0 }: BoardMiniGameProps & { phaseIdx?: number }) {
   const config = TILE_TYPES[tileType] || TILE_TYPES.normal;
   const charKey = config.characterKey;
   const charImg = charKey ? characterImages[charKey] : null;
 
-  const difficulty = tileType === 'giant' ? 3 : tileType === 'challenge' ? 2 : 1;
+  // Difficulty scales with phase: phases 0-1 = easy, 2-3 = medium, 4-5 = hard
+  const baseDifficulty = tileType === 'giant' ? 3 : tileType === 'challenge' ? 2 : 1;
+  const difficulty = Math.min(baseDifficulty + Math.floor(phaseIdx / 2), 5);
 
   const handleResult = useCallback((won: boolean) => {
     onResult(won);
