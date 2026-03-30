@@ -38,7 +38,7 @@ import valentePelaVerdade from '@/assets/characters/valente-pela-verdade.jpg';
 
 import sealImg from '@/assets/medieval-seal.png';
 import logoImg from '@/assets/logo-peregrino.png';
-import pilgrimHero from '@/assets/pilgrim-hero-nobg.png';
+import pilgrimStanding from '@/assets/pilgrim-standing.png';
 
 const SALE_URL = 'https://pay.kiwify.com.br/TZv1sS9';
 
@@ -777,85 +777,64 @@ const LandingPage = () => {
       )}
 
       {/* ══════════ HERO ══════════ */}
-      <section className="relative min-h-[100svh] flex flex-col items-center justify-start px-5 pt-4 pb-8 text-center overflow-hidden">
+      <section className="relative min-h-[95vh] flex flex-col items-center justify-center px-5 py-16 text-center overflow-hidden">
         <div className="absolute inset-0">
           <img src={cidadeDestruicao} alt="Cidade da Destruição" className="w-full h-full object-cover opacity-50" />
           <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/30 to-background" />
         </div>
 
-        <div className="relative z-10 max-w-2xl mx-auto space-y-2.5 flex flex-col items-center">
+        <div className="relative z-10 max-w-2xl mx-auto space-y-5">
+          <div
+            className="inline-block px-4 py-1.5 rounded-full border border-primary/40 bg-primary/10"
+            style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.2)' }}
+          >
+            <span className="text-xs uppercase tracking-[0.3em] text-primary font-display font-bold flex items-center gap-2">
+              <Flame className="w-3.5 h-3.5" /> Jornada Interativa Épica
+            </span>
+          </div>
 
-          {/* Logo "O Peregrino" — grande, colado no topo */}
-          <img
-            src={logoImg}
-            alt="O Peregrino"
-            className="h-24 md:h-36 object-contain drop-shadow-[0_6px_40px_hsl(40_70%_50%/0.6)]"
-          />
-
-          {/* Headline */}
           <h1
-            className="font-display text-2xl md:text-5xl text-foreground leading-[1.1] font-bold"
+            className="font-display text-4xl md:text-6xl text-foreground leading-[1.1] font-bold"
             style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 0 40px hsl(40 70% 50% / 0.3)' }}
           >
             Viva a Maior Batalha<br />
             <span className="text-primary">Espiritual</span> de Todos os Tempos
           </h1>
 
-          {/* Subheadline */}
           <p
-            className="text-sm md:text-xl text-foreground/90 leading-relaxed max-w-lg mx-auto font-body"
+            className="text-base md:text-xl text-foreground/90 leading-relaxed max-w-lg mx-auto font-body"
             style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}
           >
             A obra-prima de <strong>John Bunyan</strong> transformada em uma experiência interativa
             que vai <em>desafiar sua fé, provocar suas emoções</em> e mudar sua perspectiva para sempre.
           </p>
 
-          {/* CTA */}
-          <div className="flex flex-col gap-2 justify-center items-center pt-1 w-full">
+          <p className="text-sm text-primary font-display tracking-wide" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+            ⚔️ Mais de 30 capítulos · 9 tipos de desafios · Múltiplos finais
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
             <CtaButton onClick={handleBuy} variant="primary">
               <Crown className="w-5 h-5" />
               Garantir por R$67/ano
             </CtaButton>
-
-            <p className="text-xs text-destructive font-display font-bold animate-pulse">
-              ⚠️ Preço de lançamento! De <span className="line-through">R$197</span> por apenas R$67/ano
-            </p>
-
-            <div className="flex items-center justify-center gap-3 text-[11px] text-foreground/70 flex-wrap" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
-              <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> Garantia 7 dias</span>
-              <span>•</span>
-              <span className="flex items-center gap-1"><Smartphone className="w-3 h-3" /> Instale no celular</span>
-              <span>•</span>
-              <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> Pagamento seguro</span>
-            </div>
           </div>
-        </div>
 
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="w-5 h-5 text-primary/50" />
-        </div>
-      </section>
-
-      {/* ══════════ PILGRIM HERO IMAGE ══════════ */}
-      <section className="relative px-5 py-12 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-card/40 to-background" />
-        <div className="relative z-10 flex flex-col items-center gap-4 max-w-lg mx-auto">
-          <div className="relative">
-            <img
-              src={pilgrimHero}
-              alt="O Peregrino — protagonista da jornada"
-              className="h-72 md:h-96 object-contain drop-shadow-[0_12px_50px_hsl(40_70%_50%/0.5)]"
-            />
-            {/* Glow aura */}
-            <div
-              className="absolute inset-0 -z-10 blur-3xl bg-primary/20 rounded-full scale-150"
-              style={{ animation: 'screenHeroGlow 3s ease-in-out infinite' }}
-            />
-          </div>
-          <p className="text-sm text-primary font-display tracking-wide text-center" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
-            ⚔️ Mais de 30 capítulos · 9 tipos de desafios · Múltiplos finais
+          <p className="text-xs text-destructive font-display font-bold animate-pulse">
+            ⚠️ Preço de lançamento! De <span className="line-through">R$197</span> por apenas R$67/ano
           </p>
-          <MedievalOrnament size="md" />
+
+          <div className="flex items-center justify-center gap-4 pt-1 text-xs text-foreground/70 flex-wrap" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+            <span className="flex items-center gap-1"><Shield className="w-3.5 h-3.5" /> Garantia 7 dias</span>
+            <span>•</span>
+            <span className="flex items-center gap-1"><Smartphone className="w-3.5 h-3.5" /> Instale no celular</span>
+            <span>•</span>
+            <span className="flex items-center gap-1"><Lock className="w-3.5 h-3.5" /> Pagamento seguro</span>
+          </div>
+        </div>
+
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce">
+          <ChevronDown className="w-6 h-6 text-primary/50" />
         </div>
       </section>
 
