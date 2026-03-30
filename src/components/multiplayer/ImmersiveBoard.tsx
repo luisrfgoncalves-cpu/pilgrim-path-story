@@ -89,7 +89,7 @@ function PhaseSection({
     <div
       data-phase={phaseIdx}
       className="relative w-full overflow-hidden"
-      style={{ minHeight: '350svh' }} // 3.5 phone screens per phase for spacing
+      style={{ minHeight: '420svh' }} // ~4 phone screens per phase for proper spacing
     >
       {/* Background - BRIGHT and vivid */}
       <div className="absolute inset-0">
@@ -137,25 +137,24 @@ function PhaseSection({
         </div>
       )}
 
-      {/* Trail segments between tiles - narrow medieval paths */}
+      {/* Trail segments between tiles - phase-contextual medieval paths */}
       <div className="absolute inset-0 z-[1] pointer-events-none">
         {trailPositions.map((pos, i) => {
           if (i === 0) return null;
           const prev = trailPositions[i - 1];
-          // Calculate segment position & angle
-          const x1Pct = prev.x;
-          const y1Pct = prev.y;
-          const x2Pct = pos.x;
-          const y2Pct = pos.y;
-          const midX = (x1Pct + x2Pct) / 2;
-          const midY = (y1Pct + y2Pct) / 2;
-          // Use percentages for length calculation (approximate with aspect ratio)
-          const dx = (x2Pct - x1Pct) * 3.5; // account for tall container
-          const dy = (y2Pct - y1Pct);
-          const length = Math.sqrt(dx * dx + dy * dy);
-          const angle = Math.atan2(y2Pct - y1Pct, (x2Pct - x1Pct) * 3.5) * (180 / Math.PI);
-          // Alternate between stone and dirt trail
-          const trailImg = i % 2 === 0 ? trailStoneImg : trailDirtImg;
+          const midX = (prev.x + pos.x) / 2;
+          const midY = (prev.y + pos.y) / 2;
+          // Container is ~420svh tall, ~390px wide on mobile
+          // Convert % differences to approximate pixel ratios
+          const aspectRatio = 4.2 * (674 / 390); // height/width ratio of container
+          const dx = (pos.x - prev.x);
+          const dy = (pos.y - prev.y) * aspectRatio;
+          const lengthPx = Math.sqrt(dx * dx + dy * dy);
+          const angle = Math.atan2((pos.y - prev.y) * aspectRatio, (pos.x - prev.x)) * (180 / Math.PI);
+          
+          // Phase-contextual trail image - alternate between the two for the phase
+          const phaseTrails = PHASE_TRAILS[phaseIdx] || [trailStoneImg, trailDirtImg];
+          const trailImg = i % 2 === 0 ? phaseTrails[0] : phaseTrails[1];
 
           return (
             <div
@@ -164,11 +163,13 @@ function PhaseSection({
               style={{
                 left: `${midX}%`,
                 top: `${midY}%`,
-                width: `${length * 0.3}%`,
-                height: '28px',
+                width: `${lengthPx * 0.38}%`,
+                height: '36px',
                 transform: `translate(-50%, -50%) rotate(${angle}deg)`,
-                borderRadius: '14px',
-                opacity: 0.75,
+                borderRadius: '18px',
+                opacity: 0.9,
+                boxShadow: '0 2px 12px rgba(0,0,0,0.5)',
+                border: '1px solid rgba(255,255,255,0.1)',
               }}
             >
               <img
@@ -176,7 +177,7 @@ function PhaseSection({
                 alt=""
                 className="w-full h-full object-cover"
                 loading="lazy"
-                style={{ filter: 'brightness(0.9) saturate(1.2)' }}
+                style={{ filter: 'brightness(0.95) saturate(1.3)' }}
               />
             </div>
           );
@@ -184,7 +185,7 @@ function PhaseSection({
       </div>
 
       {/* Tiles */}
-      <div className="relative w-full z-[2]" style={{ minHeight: '350svh' }}>
+      <div className="relative w-full z-[2]" style={{ minHeight: '420svh' }}>
         {trailPositions.map((pos, localIdx) => {
           const globalIdx = startIdx + localIdx;
           if (globalIdx >= IMMERSIVE_BOARD_SIZE) return null;
