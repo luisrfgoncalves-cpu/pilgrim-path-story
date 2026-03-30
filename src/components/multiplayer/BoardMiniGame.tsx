@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { X, Swords, BookOpen, Skull } from 'lucide-react';
 import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { characterImages } from '@/data/characterImages';
