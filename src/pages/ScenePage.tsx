@@ -712,11 +712,8 @@ const ScenePage = () => {
             ))}
           </div>
 
-          {/* Scene events — delayed 3s after choices appear for reading time */}
-          {chapter.sceneEvent && !sceneEventDone && showChoices && (() => {
-            // Scene events are rendered via a delayed check
-            return true;
-          })() && (
+          {/* Scene events */}
+          {chapter.sceneEvent && !sceneEventDone && showChoices && (
             <>
               {chapter.sceneEvent.type === 'sinking' && (
                 <div className="mb-5">
