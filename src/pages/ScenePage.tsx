@@ -81,6 +81,8 @@ const ScenePage = () => {
   const [miniGameResult, setMiniGameResult] = useState<MiniGameResult | null>(null);
   const [showMiniGameResult, setShowMiniGameResult] = useState(false);
   const [miniGameReady, setMiniGameReady] = useState(false);
+  const [miniGameButtonVisible, setMiniGameButtonVisible] = useState(false);
+  const [miniGameAutoPopup, setMiniGameAutoPopup] = useState(false);
   // Character entrance reveal
   const [charReveal, setCharReveal] = useState<{ name: string; img: string; role?: string } | null>(null);
   const [charRevealDone, setCharRevealDone] = useState(false); // After reveal, show persistent portrait
@@ -249,6 +251,8 @@ const ScenePage = () => {
     setMiniGameDone(false);
     setMiniGameResult(null);
     setShowMiniGameResult(false);
+    setMiniGameButtonVisible(false);
+    setMiniGameAutoPopup(false);
     setCharReveal(null);
     setCharRevealDone(false);
     setPersistentChar(null);
@@ -330,16 +334,31 @@ const ScenePage = () => {
     }
   }, [chapter?.id, legacyTone, setAmbienceForScene]);
 
+  // Gate choices behind character reveal — don't show until reveal finishes (or no reveal)
+  const hasCharReveal = !!charReveal;
+  const canShowChoices = !hasCharReveal; // charReveal is null after dismiss/timeout
+
   useEffect(() => {
     if (!chapter) return;
     if (narrativeIndex < fullNarrative.length - 1) {
-      const timer = setTimeout(() => setNarrativeIndex(prev => prev + 1), 200);
+      // Slower narrative pacing — give user time to read each paragraph
+      const timer = setTimeout(() => setNarrativeIndex(prev => prev + 1), 800);
       return () => clearTimeout(timer);
-    } else {
-      const timer = setTimeout(() => setShowChoices(true), 400);
+    } else if (canShowChoices) {
+      // Only show choices after narrative done AND character reveal finished
+      const timer = setTimeout(() => setShowChoices(true), 600);
       return () => clearTimeout(timer);
     }
-  }, [narrativeIndex, chapter, fullNarrative.length]);
+  }, [narrativeIndex, chapter, fullNarrative.length, canShowChoices]);
+
+  // Delayed mini-game trigger button — appears 12s after choices show
+  // Auto-popup notification after 30s if user hasn't clicked the button
+  useEffect(() => {
+    if (!showChoices || miniGameDone || !miniGameMappings[chapter?.id || '']) return;
+    const btnTimer = setTimeout(() => setMiniGameButtonVisible(true), 12000);
+    const popupTimer = setTimeout(() => setMiniGameAutoPopup(true), 30000);
+    return () => { clearTimeout(btnTimer); clearTimeout(popupTimer); };
+  }, [showChoices, miniGameDone, chapter?.id]);
 
   const executeChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
     // Apply adaptive intensity based on replay history
@@ -721,17 +740,37 @@ const ScenePage = () => {
             </>
           )}
 
-          {/* ═══ MINI-GAME TRIGGER BUTTON ═══ */}
-          {showChoices && !miniGameDone && miniGameMappings[chapter.id] && !miniGameReady && (
+          {/* ═══ MINI-GAME AUTO-POPUP (after 30s inactivity) ═══ */}
+          <GameNotification visible={miniGameAutoPopup && !miniGameDone && !miniGameReady && !!miniGameMappings[chapter.id]} onDismiss={() => setMiniGameAutoPopup(false)} duration={0} persistent position="center">
+            <div className="bg-card border-2 border-primary/40 rounded-2xl p-5 text-center space-y-3 shadow-2xl">
+              <span className="text-4xl">⚔️</span>
+              <p className="font-display text-lg text-primary">Desafio Disponível!</p>
+              <p className="text-sm text-muted-foreground">Há um desafio esperando por você nesta cena.</p>
+              <button
+                onClick={() => {
+                  setMiniGameAutoPopup(false);
+                  window.scrollTo(0, 0);
+                  setMiniGameReady(true);
+                  requestAnimationFrame(() => window.scrollTo(0, 0));
+                }}
+                className="btn-medieval w-full flex items-center justify-center gap-2"
+              >
+                <Zap className="w-5 h-5" />
+                Iniciar Desafio
+              </button>
+            </div>
+          </GameNotification>
+
+          {/* ═══ MINI-GAME TRIGGER BUTTON (appears after 12s delay) ═══ */}
+          {showChoices && !miniGameDone && miniGameMappings[chapter.id] && !miniGameReady && miniGameButtonVisible && (
             <div className="mb-5 animate-scale-in" id="minigame-trigger">
               <button
                 onClick={() => {
-                  // Force scroll to absolute top before showing mini-game
+                  setMiniGameAutoPopup(false);
                   window.scrollTo(0, 0);
                   document.documentElement.scrollTop = 0;
                   document.body.scrollTop = 0;
                   setMiniGameReady(true);
-                  // Multiple scroll attempts to ensure it works
                   requestAnimationFrame(() => {
                     window.scrollTo(0, 0);
                     document.documentElement.scrollTop = 0;
