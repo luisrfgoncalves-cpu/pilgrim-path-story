@@ -5,6 +5,8 @@ import { characterImages } from '@/data/characterImages';
 import {
   playPositiveEvent, playNegativeEvent, playChallengeEvent,
   playStun, playMove, playVictory,
+  playShieldAcquired, playSwapEvent, playCurrentEvent,
+  playSurpriseEvent, playCheckpointEvent, playBackToStartEvent,
 } from './BoardSounds';
 
 // Map tile types to character images
