@@ -150,9 +150,11 @@ function PhaseSection({
           const playersHere = players.filter(p => p.position === globalIdx && !p.finished);
           const isCurrentPlayerHere = playersHere.some(p => p.id === currentTurnId);
 
-          // Get character image for this tile
+          // Get tile image: character image for character tiles, environment image for context tiles
           const tileCharKey = config.characterKey;
           const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
+          const tileEnvImg = config.tileImage || null;
+          const tileImg = tileCharImg || tileEnvImg; // character takes priority
           const isSpecial = tileType !== 'normal';
           const isBoss = tileType === 'giant' || tileType === 'challenge';
           const tileSize = isBoss ? 76 : isSpecial ? 68 : 56;
@@ -164,7 +166,7 @@ function PhaseSection({
               style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
               onClick={() => onTileClick?.(globalIdx, tileType)}
             >
-              {/* Tile body with character image background */}
+              {/* Tile body with image background */}
               <div
                 className={`relative flex items-center justify-center overflow-hidden
                   ${playersHere.length > 0 ? 'scale-125 ring-2 ring-white/50' : ''}
@@ -175,33 +177,22 @@ function PhaseSection({
                   width: tileSize,
                   height: tileSize,
                   borderRadius: isBoss ? 18 : isSpecial ? 16 : 12,
-                  background: tileCharImg ? 'none' : `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))`,
+                  background: tileImg ? 'none' : `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))`,
                   boxShadow: `0 0 ${playersHere.length > 0 ? '35' : '18'}px ${config.glowColor},
                     inset 0 2px 3px rgba(255,255,255,0.15),
                     0 4px 14px rgba(0,0,0,0.5)`,
                   border: `2.5px solid ${config.color}`,
                 }}
               >
-                {/* Character image filling the tile */}
-                {tileCharImg && isSpecial && (
-                  <>
-                    <img
-                      src={tileCharImg}
-                      alt={config.label}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      style={{ filter: isBoss ? 'saturate(1.4) contrast(1.2)' : 'saturate(1.2) brightness(0.9)' }}
-                    />
-                    {/* Dark overlay for readability */}
-                    <div className="absolute inset-0" style={{
-                      background: `linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.25) 100%)`,
-                    }} />
-                    {/* Color tint */}
-                    <div className="absolute inset-0" style={{
-                      background: `${config.color}`,
-                      opacity: 0.15,
-                      mixBlendMode: 'overlay',
-                    }} />
-                  </>
+                {/* Image filling the tile */}
+                {tileImg && isSpecial && (
+                  <img
+                    src={tileImg}
+                    alt={config.label}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    style={{ filter: isBoss ? 'saturate(1.4) contrast(1.2)' : 'saturate(1.2)' }}
+                    loading="lazy"
+                  />
                 )}
 
                 {/* Tile number badge */}
