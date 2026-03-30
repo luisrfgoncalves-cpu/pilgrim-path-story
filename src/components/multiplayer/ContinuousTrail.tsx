@@ -142,7 +142,7 @@ export default function ContinuousTrail({ trailPositions, phaseIdx, accentHue, e
         strokeWidth="112"
         strokeLinecap="round"
         strokeLinejoin="round"
-        filter={`url(#${glowFilterId})`}
+        filter={enableGlowFilter ? `url(#${glowFilterId})` : undefined}
         opacity="0.9"
       />
 
