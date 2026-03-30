@@ -1,11 +1,17 @@
 // ─── Immersive Board Types & Data ───
 
 import phase1Bg from '@/assets/board/phase1-cidade-destruicao.jpg';
+import phase1bBg from '@/assets/board/phase1b-cidade-destruicao.jpg';
 import phase2Bg from '@/assets/board/phase2-pantano-caminho.jpg';
+import phase2bBg from '@/assets/board/phase2b-pantano-caminho.jpg';
 import phase3Bg from '@/assets/board/phase3-vale-sombra.jpg';
+import phase3bBg from '@/assets/board/phase3b-vale-sombra.jpg';
 import phase4Bg from '@/assets/board/phase4-feira-vaidade.jpg';
+import phase4bBg from '@/assets/board/phase4b-feira-vaidade.jpg';
 import phase5Bg from '@/assets/board/phase5-castelo-duvida.jpg';
+import phase5bBg from '@/assets/board/phase5b-castelo-duvida.jpg';
 import phase6Bg from '@/assets/board/phase6-cidade-celestial.jpg';
+import phase6bBg from '@/assets/board/phase6b-cidade-celestial.jpg';
 
 // Tile-specific images (environments & contexts)
 import tileStart from '@/assets/board/tile-start.jpg';
