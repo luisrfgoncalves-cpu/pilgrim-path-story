@@ -294,15 +294,11 @@ const PresentialMultiplayer = () => {
 
     // Show tile message
     if (tileType !== 'normal' && tileType !== 'start') {
-      setTileMessage({ message: effect.message, emoji: effect.emoji });
-      setTimeout(() => {
-        setTileMessage(null);
-        if (effect.extraTurn) {
-          setTurnAnnounce(`🎲 ${player.name} joga de novo!`);
-        } else {
-          nextTurn();
-        }
-      }, 2500);
+      setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
+      // Don't auto-dismiss - let popup handle its own timing
+    } else {
+      nextTurn();
+    }
     } else {
       nextTurn();
     }
@@ -332,9 +328,21 @@ const PresentialMultiplayer = () => {
 
   const handleTileClick = (position: number, tileType: TileType) => {
     const config = TILE_TYPES[tileType];
-    setTileMessage({ message: `Casa ${position + 1}: ${config.label} — ${config.description}`, emoji: config.emoji });
-    setTimeout(() => setTileMessage(null), 3000);
+    setTileMessage({ message: `Casa ${position + 1}: ${config.label} — ${config.description}`, emoji: config.emoji, tileType });
   };
+
+  const handleTilePopupDismiss = useCallback(() => {
+    const currentMsg = tileMessage;
+    setTileMessage(null);
+    if (currentMsg) {
+      const p = players[currentTurn];
+      if (p?.extraTurn) {
+        setTurnAnnounce(`🎲 ${p.name} joga de novo!`);
+      } else {
+        nextTurn();
+      }
+    }
+  }, [tileMessage, players, currentTurn, nextTurn]);
 
   const resetGame = () => {
     setPlayers(prev => prev.map((p, i) => createPlayer(i, p.name)));
@@ -460,18 +468,15 @@ const PresentialMultiplayer = () => {
         </div>
       </GameNotification>
 
-      {/* Tile event message */}
-      <GameNotification visible={!!tileMessage} onDismiss={() => setTileMessage(null)} duration={2500} position="top-offset">
-        <div className="px-6 py-4 rounded-2xl font-display text-base max-w-xs text-center" style={{
-          background: 'linear-gradient(135deg, hsl(0 0% 12%), hsl(0 0% 8%))',
-          border: '1px solid hsl(0 0% 30% / 0.5)',
-          color: 'hsl(0 0% 90%)',
-          boxShadow: '0 0 30px rgba(0,0,0,0.5)',
-        }}>
-          <span className="text-2xl block mb-1">{tileMessage?.emoji}</span>
-          {tileMessage?.message}
-        </div>
-      </GameNotification>
+      {/* Tile event popup - large with character images */}
+      <TileEventPopup
+        visible={!!tileMessage}
+        tileType={tileMessage?.tileType || 'normal'}
+        message={tileMessage?.message || ''}
+        emoji={tileMessage?.emoji || ''}
+        playerName={tileMessage?.playerName}
+        onDismiss={handleTilePopupDismiss}
+      />
 
       {/* Sticky header with current player info */}
       <header className="sticky top-0 z-20 bg-card/95 backdrop-blur-md border-b border-border px-4 py-2">
