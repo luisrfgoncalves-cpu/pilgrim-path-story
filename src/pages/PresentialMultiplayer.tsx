@@ -617,40 +617,30 @@ const PresentialMultiplayer = () => {
       updatePlayerStats(playerIdx, won ? { scripturesCorrect: 1 } : { scripturesWrong: 1 });
     }
 
-    setPlayers(prev => prev.map((p, i) => {
-      if (i !== playerIdx) return p;
-      if (won) {
-        const refugePos = Math.min(newPosition + 1, IMMERSIVE_BOARD_SIZE - 1);
-        return {
-          ...p,
-          position: refugePos,
-          attributes: {
-            ...p.attributes,
-            coragem: p.attributes.coragem + 2,
-            fe: p.attributes.fe + 1,
-          },
-          stats: {
-            ...p.stats,
-            currentStreak: p.stats.currentStreak + 1,
-            maxStreak: Math.max(p.stats.maxStreak, p.stats.currentStreak + 1),
-          },
-        };
-      } else {
-        return {
-          ...p,
-          position: prevPosition,
-          attributes: {
-            ...p.attributes,
-            coragem: Math.max(0, p.attributes.coragem - 1),
-          },
-          stats: { ...p.stats, currentStreak: 0 },
-        };
-      }
-    }));
+    // DON'T move the token yet — defer until popup closes
+    if (won) {
+      const refugePos = Math.min(newPosition + 1, IMMERSIVE_BOARD_SIZE - 1);
+      pendingMoveAfterPopup.current = {
+        playerIdx,
+        targetPos: refugePos,
+        attrs: { coragem: 2, fe: 1 },
+        stats: {
+          currentStreak: (player.stats.currentStreak || 0) + 1,
+          maxStreak: Math.max(player.stats.maxStreak, (player.stats.currentStreak || 0) + 1),
+        },
+      };
+    } else {
+      pendingMoveAfterPopup.current = {
+        playerIdx,
+        targetPos: prevPosition,
+        attrs: { coragem: -1 },
+        stats: { currentStreak: 0 },
+      };
+    }
 
     setMiniGame(null);
 
-    // Context-appropriate messages — never say "venceu a Escritura" (anti-biblical)
+    // Context-appropriate messages
     const winMessages: Record<string, string> = {
       scripture: `📖 ${player.name} respondeu corretamente a Escritura! A Palavra ilumina o caminho!`,
       giant: `⚔️ ${player.name} derrotou o ${TILE_TYPES[tileType].label}! Avança para o Refúgio!`,
