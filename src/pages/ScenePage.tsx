@@ -251,6 +251,8 @@ const ScenePage = () => {
     setMiniGameDone(false);
     setMiniGameResult(null);
     setShowMiniGameResult(false);
+    setMiniGameButtonVisible(false);
+    setMiniGameAutoPopup(false);
     setCharReveal(null);
     setCharRevealDone(false);
     setPersistentChar(null);
@@ -332,16 +334,31 @@ const ScenePage = () => {
     }
   }, [chapter?.id, legacyTone, setAmbienceForScene]);
 
+  // Gate choices behind character reveal — don't show until reveal finishes (or no reveal)
+  const hasCharReveal = !!charReveal;
+  const canShowChoices = !hasCharReveal; // charReveal is null after dismiss/timeout
+
   useEffect(() => {
     if (!chapter) return;
     if (narrativeIndex < fullNarrative.length - 1) {
-      const timer = setTimeout(() => setNarrativeIndex(prev => prev + 1), 200);
+      // Slower narrative pacing — give user time to read each paragraph
+      const timer = setTimeout(() => setNarrativeIndex(prev => prev + 1), 800);
       return () => clearTimeout(timer);
-    } else {
-      const timer = setTimeout(() => setShowChoices(true), 400);
+    } else if (canShowChoices) {
+      // Only show choices after narrative done AND character reveal finished
+      const timer = setTimeout(() => setShowChoices(true), 600);
       return () => clearTimeout(timer);
     }
-  }, [narrativeIndex, chapter, fullNarrative.length]);
+  }, [narrativeIndex, chapter, fullNarrative.length, canShowChoices]);
+
+  // Delayed mini-game trigger button — appears 12s after choices show
+  // Auto-popup notification after 30s if user hasn't clicked the button
+  useEffect(() => {
+    if (!showChoices || miniGameDone || !miniGameMappings[chapter?.id || '']) return;
+    const btnTimer = setTimeout(() => setMiniGameButtonVisible(true), 12000);
+    const popupTimer = setTimeout(() => setMiniGameAutoPopup(true), 30000);
+    return () => { clearTimeout(btnTimer); clearTimeout(popupTimer); };
+  }, [showChoices, miniGameDone, chapter?.id]);
 
   const executeChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
     // Apply adaptive intensity based on replay history
