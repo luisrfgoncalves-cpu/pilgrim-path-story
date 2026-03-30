@@ -59,19 +59,21 @@ const AuthPage: React.FC = () => {
         navigate('/');
       }
     } else {
-      if (!displayName.trim()) {
-        toast.error('Escolha um nome para o seu peregrino');
+      const cleanName = sanitizeDisplayName(displayName);
+      if (!cleanName) {
+        toast.error('Escolha um nome válido para o seu peregrino');
         setSubmitting(false);
         return;
       }
+      const cleanEmail = sanitizeEmail(email);
       // Verificar se o email está na lista de acessos autorizados
-      const emailCheck = await isEmailAllowed(email);
+      const emailCheck = await isEmailAllowed(cleanEmail);
       if (!emailCheck.allowed) {
         toast.error(emailCheck.reason || 'Email não autorizado.');
         setSubmitting(false);
         return;
       }
-      const { error } = await signUp(email, password, displayName);
+      const { error } = await signUp(cleanEmail, password, cleanName);
       if (error) {
         toast.error(error.message);
       } else {
