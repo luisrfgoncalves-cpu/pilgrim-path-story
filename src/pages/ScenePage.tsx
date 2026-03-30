@@ -356,7 +356,7 @@ const ScenePage = () => {
   useEffect(() => {
     if (!showChoices || miniGameDone || !miniGameMappings[chapter?.id || '']) return;
     const btnTimer = setTimeout(() => setMiniGameButtonVisible(true), 12000);
-    const popupTimer = setTimeout(() => setMiniGameAutoPopup(true), 30000);
+    const popupTimer = setTimeout(() => setMiniGameAutoPopup(true), 15000);
     return () => { clearTimeout(btnTimer); clearTimeout(popupTimer); };
   }, [showChoices, miniGameDone, chapter?.id]);
 
