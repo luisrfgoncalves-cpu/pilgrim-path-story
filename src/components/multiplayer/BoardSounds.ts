@@ -79,6 +79,53 @@ export function playMove() {
   playTone(600, 0.06, 'triangle', 0.1);
 }
 
+// Shield acquired — bright ascending chime
+export function playShieldAcquired() {
+  playTone(660, 0.12, 'sine', 0.12);
+  setTimeout(() => playTone(880, 0.12, 'sine', 0.12), 80);
+  setTimeout(() => playTone(1100, 0.15, 'sine', 0.15), 160);
+}
+
+// Swap event — swirling descend-ascend
+export function playSwapEvent() {
+  playTone(800, 0.1, 'triangle', 0.1);
+  setTimeout(() => playTone(400, 0.1, 'triangle', 0.1), 100);
+  setTimeout(() => playTone(600, 0.1, 'triangle', 0.1), 200);
+  setTimeout(() => playTone(900, 0.15, 'triangle', 0.12), 300);
+}
+
+// Current/water — wavy tones
+export function playCurrentEvent() {
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      playTone(300 + Math.sin(i * 1.5) * 150, 0.15, 'sine', 0.08);
+    }, i * 120);
+  }
+}
+
+// Surprise — mystery chime
+export function playSurpriseEvent() {
+  playTone(440, 0.08, 'sine', 0.1);
+  setTimeout(() => playTone(554, 0.08, 'sine', 0.1), 100);
+  setTimeout(() => playTone(659, 0.08, 'sine', 0.1), 200);
+  setTimeout(() => playTone(880, 0.2, 'sine', 0.12), 350);
+}
+
+// Checkpoint saved — warm confirmation
+export function playCheckpointEvent() {
+  playTone(523, 0.12, 'sine', 0.1);
+  setTimeout(() => playTone(659, 0.12, 'sine', 0.1), 100);
+  setTimeout(() => playTone(784, 0.2, 'sine', 0.12), 200);
+}
+
+// Back to start — dramatic doom
+export function playBackToStartEvent() {
+  playTone(200, 0.4, 'sawtooth', 0.1);
+  setTimeout(() => playTone(150, 0.4, 'sawtooth', 0.08), 200);
+  setTimeout(() => playTone(100, 0.6, 'sawtooth', 0.06), 400);
+  setTimeout(() => playTone(60, 0.8, 'sawtooth', 0.05), 650);
+}
+
 export function playStun() {
   playTone(150, 0.5, 'sawtooth', 0.06);
   setTimeout(() => playTone(120, 0.5, 'sawtooth', 0.05), 200);

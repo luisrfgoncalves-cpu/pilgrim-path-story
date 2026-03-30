@@ -5,6 +5,8 @@ import { characterImages } from '@/data/characterImages';
 import {
   playPositiveEvent, playNegativeEvent, playChallengeEvent,
   playStun, playMove, playVictory,
+  playShieldAcquired, playSwapEvent, playCurrentEvent,
+  playSurpriseEvent, playCheckpointEvent, playBackToStartEvent,
 } from './BoardSounds';
 
 // Map tile types to character images
@@ -55,19 +57,30 @@ function triggerHaptic(pattern: 'negative' | 'stun' | 'positive') {
 }
 
 function playSoundForTile(tileType: TileType) {
-  const cat = TILE_SOUND_MAP[tileType] || 'neutral';
   // Haptic feedback
+  const cat = TILE_SOUND_MAP[tileType] || 'neutral';
   if (cat === 'stun') triggerHaptic('stun');
   else if (cat === 'negative') triggerHaptic('negative');
   else if (cat === 'positive') triggerHaptic('positive');
 
-  switch (cat) {
-    case 'positive': playPositiveEvent(); break;
-    case 'negative': playNegativeEvent(); break;
-    case 'challenge': playChallengeEvent(); break;
-    case 'stun': playStun(); break;
-    case 'victory': playVictory(); break;
-    default: playMove(); break;
+  // Per-tile-type specific sounds for maximum distinction
+  switch (tileType) {
+    case 'shield': playShieldAcquired(); break;
+    case 'swap': playSwapEvent(); break;
+    case 'current': playCurrentEvent(); break;
+    case 'surprise': playSurpriseEvent(); break;
+    case 'checkpoint': playCheckpointEvent(); break;
+    case 'back_to_start': playBackToStartEvent(); break;
+    case 'finish': playVictory(); break;
+    default:
+      // Fallback to category-based sounds
+      switch (cat) {
+        case 'positive': playPositiveEvent(); break;
+        case 'negative': playNegativeEvent(); break;
+        case 'challenge': playChallengeEvent(); break;
+        case 'stun': playStun(); break;
+        default: playMove(); break;
+      }
   }
 }
 
@@ -177,15 +190,41 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
 
+      {/* Screen flash for negative events */}
+      {phase === 'reveal' && isNegative && (
+        <div className="absolute inset-0 pointer-events-none" style={{
+          animation: 'screenFlash 0.6s ease-out forwards',
+          background: 'radial-gradient(circle, rgba(200,0,0,0.3), transparent 70%)',
+        }} />
+      )}
+      {/* Golden glow for positive events */}
+      {phase === 'reveal' && isPositive && (
+        <div className="absolute inset-0 pointer-events-none" style={{
+          animation: 'goldenGlow 1.5s ease-out forwards',
+          background: 'radial-gradient(circle, rgba(255,215,0,0.15), transparent 60%)',
+        }} />
+      )}
+
       {/* SUSPENSE PHASE — dramatic buildup */}
       {phase === 'suspense' && (
-        <div className="relative z-10 flex flex-col items-center gap-4 animate-pulse">
-          {/* Shaking emoji */}
-          <div className="text-7xl" style={{
-            animation: 'shake 0.15s infinite alternate',
-            filter: `drop-shadow(0 0 30px ${glowColor})`,
-          }}>
-            {emoji}
+        <div className="relative z-10 flex flex-col items-center gap-4">
+          {/* Shaking emoji with pulse ring */}
+          <div className="relative">
+            <div className="text-7xl" style={{
+              animation: 'shake 0.15s infinite alternate',
+              filter: `drop-shadow(0 0 30px ${glowColor})`,
+            }}>
+              {emoji}
+            </div>
+            {/* Multiple pulsing rings */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-32 h-32 rounded-full border-2 animate-ping opacity-30"
+                style={{ borderColor }} />
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-40 h-40 rounded-full border animate-ping opacity-20"
+                style={{ borderColor, animationDelay: '0.3s' }} />
+            </div>
           </div>
           {/* Suspense text */}
           <p className="text-lg font-display font-bold tracking-wider uppercase animate-pulse"
@@ -193,10 +232,6 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
           >
             {isNegative ? '⚠️ Perigo...' : isChallenge ? '⚔️ Desafio...' : isPositive ? '✨ Algo acontece...' : '🔮 O destino decide...'}
           </p>
-          {/* Pulsing ring */}
-          <div className="absolute w-40 h-40 rounded-full border-2 animate-ping opacity-30"
-            style={{ borderColor }}
-          />
         </div>
       )}
 
@@ -221,7 +256,7 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
             <X className="w-4 h-4 text-white/70" />
           </button>
 
-          {/* Character image — object-position top to avoid cropping heads */}
+          {/* Character image */}
           {charImg && (
             <div className="relative w-full h-56 overflow-hidden">
               <img
@@ -246,11 +281,28 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
             </div>
           )}
 
+          {/* Tile context image (for non-character tiles) */}
+          {!charImg && config.tileImage && (
+            <div className="relative w-full h-40 overflow-hidden">
+              <img
+                src={config.tileImage}
+                alt={config.label}
+                className="w-full h-full object-cover"
+                style={{
+                  filter: isNegative ? 'saturate(1.2) contrast(1.1) brightness(0.9)' : 'saturate(1.1) brightness(1.05)',
+                }}
+              />
+              <div className="absolute inset-0" style={{
+                background: `linear-gradient(to top, ${isNegative ? 'hsl(0 30% 12%)' : isPositive ? 'hsl(40 30% 14%)' : 'hsl(220 20% 14%)'} 0%, transparent 50%)`,
+              }} />
+            </div>
+          )}
+
           {/* Content */}
           <div className="p-5 text-center space-y-3">
             <div className="text-5xl" style={{
               filter: `drop-shadow(0 0 12px ${glowColor})`,
-              animation: isNegative ? 'shake 0.3s infinite alternate' : isPositive ? 'bounce 2s infinite' : undefined,
+              animation: isNegative ? 'shake 0.3s infinite alternate' : isPositive ? 'floatEmoji 2s ease-in-out infinite' : undefined,
             }}>
               {emoji}
             </div>
@@ -289,6 +341,19 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
         @keyframes scaleReveal {
           0% { transform: scale(0.3) rotate(-5deg); opacity: 0; }
           100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        @keyframes screenFlash {
+          0% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+        @keyframes goldenGlow {
+          0% { opacity: 0; }
+          30% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+        @keyframes floatEmoji {
+          0%, 100% { transform: translateY(0) scale(1); }
+          50% { transform: translateY(-8px) scale(1.1); }
         }
       `}</style>
     </div>
