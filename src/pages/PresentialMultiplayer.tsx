@@ -725,7 +725,7 @@ const PresentialMultiplayer = () => {
     const pendingMove = pendingMoveAfterPopup.current;
     if (pendingMove) {
       pendingMoveAfterPopup.current = null;
-      const { playerIdx, targetPos, attrs, stats, shield } = pendingMove;
+      const { playerIdx, targetPos, attrs, stats, shield, isReturnMove } = pendingMove;
 
       // Move the token visually
       setIsTokenMoving(true);
@@ -744,8 +744,20 @@ const PresentialMultiplayer = () => {
         };
       }));
 
-      // After token arrives, check if the new tile has an event
+      // After token arrives at destination
       pendingActionRef.current = () => {
+        // RETURN MOVES (retreat after losing) — just go to next turn, no tile events
+        if (isReturnMove) {
+          const p = players[playerIdx];
+          if (p?.extraTurn) {
+            setTurnAnnounce(`🎲 ${p.name} joga de novo!`);
+          } else {
+            nextTurn();
+          }
+          return;
+        }
+
+        // FORWARD MOVES (advance after winning) — check destination tile
         const newTileType = tileTypes[targetPos] || 'normal';
 
         // If new tile is a mini-game tile, trigger it
@@ -774,6 +786,7 @@ const PresentialMultiplayer = () => {
               attrs: effect.attrChanges,
               shield: effect.shield ? true : undefined,
               stats: effect.statUpdate,
+              isReturnMove: finalPos < targetPos, // retreating = return move
             };
           } else {
             // Apply attr changes in place
