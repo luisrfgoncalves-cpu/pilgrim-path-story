@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import ImmersiveBoard from '@/components/multiplayer/ImmersiveBoard';
 import { Dice3D } from '@/components/Dice3D';
 import TileEventPopup from '@/components/multiplayer/TileEventPopup';
+import BoardMiniGame from '@/components/multiplayer/BoardMiniGame';
 import GameNotification from '@/components/GameNotification';
 import { boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
 import {
   IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, TileType, TILE_TYPES,
-  generateImmersiveTiles,
+  MINI_GAME_TILES, generateImmersiveTiles,
 } from '@/components/multiplayer/ImmersiveBoardTypes';
 import { playMove, playVictory, playTurnStart } from '@/components/multiplayer/BoardSounds';
 import { playGameSfx } from '@/lib/gameSfx';
@@ -197,7 +198,8 @@ const PresentialMultiplayer = () => {
   const [diceRolling, setDiceRolling] = useState(false);
   const [turnAnnounce, setTurnAnnounce] = useState<string | null>(null);
   const [finishCount, setFinishCount] = useState(0);
-  
+  // Mini-game state
+  const [miniGame, setMiniGame] = useState<{ tileType: TileType; playerIdx: number; prevPosition: number; newPosition: number } | null>(null);
 
   const addPlayer = () => {
     if (players.length >= 8) return;
@@ -249,11 +251,20 @@ const PresentialMultiplayer = () => {
       return;
     }
 
-    const diceValue = value || (Math.floor(Math.random() * 6) + 1);
-    let newPos = Math.min(player.position + diceValue, IMMERSIVE_BOARD_SIZE - 1);
+    const diceVal = value || (Math.floor(Math.random() * 6) + 1);
+    let newPos = Math.min(player.position + diceVal, IMMERSIVE_BOARD_SIZE - 1);
     playMove();
 
     const tileType = tileTypes[newPos] || 'normal';
+
+    // If it's a mini-game tile, launch mini-game instead of resolving immediately
+    if (MINI_GAME_TILES.includes(tileType)) {
+      setMiniGame({ tileType, playerIdx: currentTurn, prevPosition: player.position, newPosition: newPos });
+      // Move player to the tile visually
+      setPlayers(prev => prev.map((p, i) => i === currentTurn ? { ...p, position: newPos, lastDice: diceVal } : p));
+      return;
+    }
+
     const effect = resolveTileEffect(tileType, player, players, Date.now() + newPos);
 
     let finalPos = newPos;
@@ -280,7 +291,7 @@ const PresentialMultiplayer = () => {
       return {
         ...p,
         position: finalPos,
-        lastDice: diceValue,
+        lastDice: diceVal,
         finished: isFinished,
         finishOrder: isFinished ? newFinishCount : null,
         isStunned: effect.stun,
@@ -295,7 +306,6 @@ const PresentialMultiplayer = () => {
     // Show tile message
     if (tileType !== 'normal' && tileType !== 'start') {
       setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
-      // Don't auto-dismiss - let popup handle its own timing
     } else {
       nextTurn();
     }
@@ -327,6 +337,51 @@ const PresentialMultiplayer = () => {
     const config = TILE_TYPES[tileType];
     setTileMessage({ message: `Casa ${position + 1}: ${config.label} — ${config.description}`, emoji: config.emoji, tileType });
   };
+
+  // Mini-game result: win = advance 1 to refuge, lose = go back to previous position
+  const handleMiniGameResult = useCallback((won: boolean) => {
+    if (!miniGame) return;
+    const { playerIdx, prevPosition, newPosition, tileType } = miniGame;
+    const player = players[playerIdx];
+
+    setPlayers(prev => prev.map((p, i) => {
+      if (i !== playerIdx) return p;
+      if (won) {
+        // Win: stay at new position +1 (refuge tile)
+        const refugePos = Math.min(newPosition + 1, IMMERSIVE_BOARD_SIZE - 1);
+        return {
+          ...p,
+          position: refugePos,
+          attributes: {
+            ...p.attributes,
+            coragem: p.attributes.coragem + 2,
+            fe: p.attributes.fe + 1,
+          },
+        };
+      } else {
+        // Lose: go back to previous position
+        return {
+          ...p,
+          position: prevPosition,
+          attributes: {
+            ...p.attributes,
+            coragem: Math.max(0, p.attributes.coragem - 1),
+          },
+        };
+      }
+    }));
+
+    setMiniGame(null);
+    const resultMsg = won
+      ? `⚔️ ${player.name} venceu o ${TILE_TYPES[tileType].label}! Avança para o Refúgio!`
+      : `💀 ${player.name} perdeu! Volta para a casa ${prevPosition + 1}...`;
+    setTileMessage({
+      message: resultMsg,
+      emoji: won ? '🏆' : '😢',
+      tileType,
+      playerName: player.name,
+    });
+  }, [miniGame, players]);
 
   const handleTilePopupDismiss = useCallback(() => {
     const currentMsg = tileMessage;
@@ -378,7 +433,7 @@ const PresentialMultiplayer = () => {
               Cada fase ocupa uma tela inteira com cenários e personagens. Role o dado e explore a jornada do Peregrino!
             </p>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              🎮 <strong className="text-foreground">60 casas</strong> em 6 fases: Refúgios, Desafios, Surpresas, Armadilhas, Gigantes e muito mais!
+              🎮 <strong className="text-foreground">120 casas</strong> em 6 fases: Refúgios, Desafios, Surpresas, Armadilhas, Gigantes, Mini-games e muito mais!
             </p>
           </div>
 
@@ -473,6 +528,14 @@ const PresentialMultiplayer = () => {
         emoji={tileMessage?.emoji || ''}
         playerName={tileMessage?.playerName}
         onDismiss={handleTilePopupDismiss}
+      />
+
+      {/* Board Mini-Game overlay */}
+      <BoardMiniGame
+        visible={!!miniGame}
+        tileType={miniGame?.tileType || 'normal'}
+        playerName={players[miniGame?.playerIdx || 0]?.name || ''}
+        onResult={handleMiniGameResult}
       />
 
       {/* Sticky header with current player info */}

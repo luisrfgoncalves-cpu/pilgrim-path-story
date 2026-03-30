@@ -72,30 +72,30 @@ function PhaseSection({
     <div
       data-phase={phaseIdx}
       className="relative w-full overflow-hidden"
-      style={{ minHeight: '100svh' }}
+      style={{ minHeight: '200svh' }} // 2 phone screens per phase
     >
-      {/* Background - BRIGHTER with vivid colors */}
+      {/* Background - BRIGHT and vivid */}
       <div className="absolute inset-0">
         <img
           src={phase.bgImage}
           alt={phase.name}
           className="w-full h-full object-cover"
           loading={phaseIdx === 0 ? 'eager' : 'lazy'}
-          style={{ filter: 'brightness(0.75) saturate(1.6) contrast(1.1)' }}
+          style={{ filter: 'brightness(0.85) saturate(1.7) contrast(1.1)' }}
         />
-        {/* Lighter overlay - tinted with phase color */}
+        {/* Light overlay - minimal darkening */}
         <div className="absolute inset-0" style={{
-          background: `linear-gradient(to bottom, hsla(${phase.accentHue} 30% 8% / 0.4) 0%, hsla(${phase.accentHue} 20% 5% / 0.25) 50%, hsla(${phase.accentHue} 30% 8% / 0.5) 100%)`,
+          background: `linear-gradient(to bottom, hsla(${phase.accentHue} 25% 8% / 0.3) 0%, hsla(${phase.accentHue} 15% 5% / 0.15) 50%, hsla(${phase.accentHue} 25% 8% / 0.35) 100%)`,
         }} />
       </div>
 
-      {/* Phase title - larger and more visible */}
+      {/* Phase title */}
       <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-center pt-4 pb-2">
         <div className="flex items-center gap-3 px-5 py-3 rounded-xl backdrop-blur-md"
           style={{
             background: `linear-gradient(135deg, hsla(${phase.accentHue} 50% 25% / 0.85), hsla(${phase.accentHue} 40% 15% / 0.9))`,
             border: `2px solid hsla(${phase.accentHue} 60% 55% / 0.5)`,
-            boxShadow: `0 0 40px hsla(${phase.accentHue} 60% 50% / 0.3), inset 0 1px 0 hsla(${phase.accentHue} 60% 80% / 0.15)`,
+            boxShadow: `0 0 40px hsla(${phase.accentHue} 60% 50% / 0.3)`,
           }}
         >
           <span className="text-2xl">{phase.icon}</span>
@@ -106,9 +106,9 @@ function PhaseSection({
         </div>
       </div>
 
-      {/* Character portrait - more visible */}
+      {/* Character portrait */}
       {charImg && (
-        <div className="absolute right-0 top-1/4 w-40 h-52 opacity-35 pointer-events-none z-0"
+        <div className="absolute right-0 top-[15%] w-44 h-56 opacity-40 pointer-events-none z-0"
           style={{
             maskImage: 'linear-gradient(to left, black 40%, transparent 100%)',
             WebkitMaskImage: 'linear-gradient(to left, black 40%, transparent 100%)',
@@ -139,8 +139,8 @@ function PhaseSection({
         })}
       </svg>
 
-      {/* Tiles - BIGGER */}
-      <div className="relative w-full z-[2]" style={{ minHeight: '100svh' }}>
+      {/* Tiles */}
+      <div className="relative w-full z-[2]" style={{ minHeight: '200svh' }}>
         {trailPositions.map((pos, localIdx) => {
           const globalIdx = startIdx + localIdx;
           if (globalIdx >= IMMERSIVE_BOARD_SIZE) return null;
@@ -150,6 +150,13 @@ function PhaseSection({
           const playersHere = players.filter(p => p.position === globalIdx && !p.finished);
           const isCurrentPlayerHere = playersHere.some(p => p.id === currentTurnId);
 
+          // Get character image for this tile
+          const tileCharKey = config.characterKey;
+          const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
+          const isSpecial = tileType !== 'normal';
+          const isBoss = tileType === 'giant' || tileType === 'challenge';
+          const tileSize = isBoss ? 76 : isSpecial ? 68 : 56;
+
           return (
             <div
               key={globalIdx}
@@ -157,58 +164,88 @@ function PhaseSection({
               style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
               onClick={() => onTileClick?.(globalIdx, tileType)}
             >
-              {/* Tile body - BIGGER: 56px → 64px for specials, 52px for normal */}
+              {/* Tile body with character image background */}
               <div
-                className={`relative flex items-center justify-center
-                  ${playersHere.length > 0 ? 'scale-125 ring-2 ring-white/40' : ''}
+                className={`relative flex items-center justify-center overflow-hidden
+                  ${playersHere.length > 0 ? 'scale-125 ring-2 ring-white/50' : ''}
                   ${isCurrentPlayerHere ? 'animate-pulse' : ''}
-                  transition-all duration-300 hover:scale-115
+                  transition-all duration-300 hover:scale-110
                 `}
                 style={{
-                  width: tileType === 'normal' ? 52 : 64,
-                  height: tileType === 'normal' ? 52 : 64,
-                  borderRadius: tileType === 'checkpoint' || tileType === 'start' || tileType === 'finish' ? 16 : 14,
-                  background: `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))`,
-                  boxShadow: `0 0 ${playersHere.length > 0 ? '30' : '16'}px ${config.glowColor},
-                    inset 0 2px 3px rgba(255,255,255,0.2),
-                    inset 0 -3px 6px rgba(0,0,0,0.5),
-                    0 4px 12px rgba(0,0,0,0.4)`,
+                  width: tileSize,
+                  height: tileSize,
+                  borderRadius: isBoss ? 18 : isSpecial ? 16 : 12,
+                  background: tileCharImg ? 'none' : `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))`,
+                  boxShadow: `0 0 ${playersHere.length > 0 ? '35' : '18'}px ${config.glowColor},
+                    inset 0 2px 3px rgba(255,255,255,0.15),
+                    0 4px 14px rgba(0,0,0,0.5)`,
                   border: `2.5px solid ${config.color}`,
                 }}
               >
+                {/* Character image filling the tile */}
+                {tileCharImg && isSpecial && (
+                  <>
+                    <img
+                      src={tileCharImg}
+                      alt={config.label}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      style={{ filter: isBoss ? 'saturate(1.4) contrast(1.2)' : 'saturate(1.2) brightness(0.9)' }}
+                    />
+                    {/* Dark overlay for readability */}
+                    <div className="absolute inset-0" style={{
+                      background: `linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.5) 100%)`,
+                    }} />
+                    {/* Color tint */}
+                    <div className="absolute inset-0" style={{
+                      background: `${config.color}`,
+                      opacity: 0.15,
+                      mixBlendMode: 'overlay',
+                    }} />
+                  </>
+                )}
+
                 {/* Tile number badge */}
-                <span className="absolute -top-1.5 -left-1.5 text-[8px] font-mono font-bold rounded-full w-5 h-5 flex items-center justify-center"
-                  style={{ background: 'rgba(0,0,0,0.85)', color: config.color, border: `1.5px solid ${config.color}50` }}
+                <span className="absolute -top-1.5 -left-1.5 text-[8px] font-mono font-bold rounded-full w-5 h-5 flex items-center justify-center z-10"
+                  style={{ background: 'rgba(0,0,0,0.9)', color: config.color, border: `1.5px solid ${config.color}50` }}
                 >
                   {globalIdx + 1}
                 </span>
 
-                {/* Medieval icon */}
-                <MedievalTileIcon
-                  tileType={tileType}
-                  size={tileType === 'normal' ? 24 : 30}
-                  color={config.color}
-                  glowColor={config.glowColor}
-                />
+                {/* Medieval icon - overlaid on character image */}
+                <div className="relative z-10">
+                  <MedievalTileIcon
+                    tileType={tileType}
+                    size={isBoss ? 34 : isSpecial ? 28 : 22}
+                    color={tileCharImg && isSpecial ? '#fff' : config.color}
+                    glowColor={config.glowColor}
+                  />
+                </div>
 
-                {/* Type label - bigger */}
-                <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-display font-bold whitespace-nowrap px-2 py-0.5 rounded-md"
-                  style={{ background: 'rgba(0,0,0,0.85)', color: config.color, border: `1px solid ${config.color}40`, textShadow: `0 0 8px ${config.glowColor}` }}
-                >
-                  {config.label}
-                </span>
+                {/* Boss indicator */}
+                {isBoss && (
+                  <div className="absolute top-0.5 right-0.5 text-xs z-10 animate-bounce">
+                    {tileType === 'giant' ? '💀' : '⚔️'}
+                  </div>
+                )}
               </div>
+
+              {/* Type label */}
+              <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-display font-bold whitespace-nowrap px-2 py-0.5 rounded-md z-10"
+                style={{ background: 'rgba(0,0,0,0.9)', color: config.color, border: `1px solid ${config.color}40`, textShadow: `0 0 8px ${config.glowColor}` }}
+              >
+                {config.label}
+              </span>
 
               {/* Player tokens */}
               {playersHere.length > 0 && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex gap-0.5">
+                <div className="absolute -top-5 left-1/2 -translate-x-1/2 flex gap-0.5 z-20">
                   {playersHere.map(p => (
                     <div
                       key={p.id}
                       className="w-6 h-6 rounded-full border-2 border-white/60 shadow-lg"
                       style={{
                         backgroundColor: p.color,
-                        boxShadow: `0 0 12px ${p.color}90, inset 0 -2px 4px rgba(0,0,0,0.3)`,
+                        boxShadow: `0 0 12px ${p.color}90`,
                         animation: p.id === currentTurnId ? 'bounce 1s infinite' : undefined,
                       }}
                       title={p.name}
@@ -218,7 +255,7 @@ function PhaseSection({
               )}
 
               {playersHere.some(p => p.isStunned) && (
-                <div className="absolute -top-6 right-0 text-base animate-bounce">😵</div>
+                <div className="absolute -top-7 right-0 text-base animate-bounce z-20">😵</div>
               )}
             </div>
           );
@@ -227,7 +264,7 @@ function PhaseSection({
 
       {/* Phase transition */}
       {phaseIdx < PHASES.length - 1 && (
-        <div className="absolute bottom-0 left-0 right-0 h-20 z-[5]"
+        <div className="absolute bottom-0 left-0 right-0 h-24 z-[5]"
           style={{
             background: `linear-gradient(to bottom, transparent, hsla(${PHASES[phaseIdx + 1].accentHue} 25% 8% / 0.85))`,
           }}
