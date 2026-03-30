@@ -784,17 +784,18 @@ const LandingPage = () => {
         </div>
 
         <div className="relative z-10 max-w-2xl mx-auto space-y-5">
-          <div
-            className="inline-block px-4 py-1.5 rounded-full border border-primary/40 bg-primary/10"
-            style={{ boxShadow: '0 0 20px hsl(40 70% 50% / 0.2)' }}
-          >
-            <span className="text-xs uppercase tracking-[0.3em] text-primary font-display font-bold flex items-center gap-2">
-              <Flame className="w-3.5 h-3.5" /> Jornada Interativa Épica
-            </span>
+
+          {/* Logo "O Peregrino" */}
+          <div className="flex justify-center">
+            <img
+              src={logoImg}
+              alt="O Peregrino"
+              className="h-20 md:h-28 object-contain drop-shadow-[0_4px_30px_hsl(40_70%_50%/0.5)]"
+            />
           </div>
 
           <h1
-            className="font-display text-4xl md:text-6xl text-foreground leading-[1.1] font-bold"
+            className="font-display text-3xl md:text-5xl text-foreground leading-[1.1] font-bold"
             style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 0 40px hsl(40 70% 50% / 0.3)' }}
           >
             Viva a Maior Batalha<br />
@@ -809,11 +810,27 @@ const LandingPage = () => {
             que vai <em>desafiar sua fé, provocar suas emoções</em> e mudar sua perspectiva para sempre.
           </p>
 
+          {/* Avatar do Peregrino */}
+          <div className="flex justify-center py-2">
+            <div className="relative">
+              <img
+                src={pilgrimStanding}
+                alt="O Peregrino"
+                className="h-44 md:h-56 object-contain drop-shadow-[0_8px_40px_hsl(40_70%_50%/0.4)]"
+              />
+              {/* Glow aura */}
+              <div
+                className="absolute inset-0 -z-10 blur-3xl bg-primary/15 rounded-full scale-150"
+                style={{ animation: 'screenHeroGlow 3s ease-in-out infinite' }}
+              />
+            </div>
+          </div>
+
           <p className="text-sm text-primary font-display tracking-wide" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
             ⚔️ Mais de 30 capítulos · 9 tipos de desafios · Múltiplos finais
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <CtaButton onClick={handleBuy} variant="primary">
               <Crown className="w-5 h-5" />
               Garantir por R$67/ano
