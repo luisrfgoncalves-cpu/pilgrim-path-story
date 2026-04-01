@@ -1161,6 +1161,7 @@ const PresentialMultiplayer = () => {
                   <div className="flex flex-col items-center gap-2">
                     <button
                       onClick={() => {
+                        playGameSfx('diceRoll');
                         setDiceRolling(true);
                         const result = Math.floor(Math.random() * 6) + 1;
                         setDiceValue(result);
