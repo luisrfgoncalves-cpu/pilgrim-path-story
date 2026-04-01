@@ -690,16 +690,26 @@ const PresentialMultiplayer = () => {
 
     // DON'T move the token yet — defer until popup closes
     if (won) {
-      const refugePos = Math.min(newPosition + 1, IMMERSIVE_BOARD_SIZE - 1);
-      pendingMoveAfterPopup.current = {
-        playerIdx,
-        targetPos: refugePos,
-        attrs: { coragem: 2, fe: 1 },
-        stats: {
-          currentStreak: (player.stats.currentStreak || 0) + 1,
-          maxStreak: Math.max(player.stats.maxStreak, (player.stats.currentStreak || 0) + 1),
-        },
-      };
+      // Player STAYS on current tile after winning — like a real board game
+      // Apply attribute bonuses without moving
+      setPlayers(prev => prev.map((p, i) => {
+        if (i !== playerIdx) return p;
+        return {
+          ...p,
+          attributes: {
+            ...p.attributes,
+            coragem: p.attributes.coragem + 2,
+            fe: p.attributes.fe + 1,
+          },
+          stats: {
+            ...p.stats,
+            currentStreak: (p.stats.currentStreak || 0) + 1,
+            maxStreak: Math.max(p.stats.maxStreak, (p.stats.currentStreak || 0) + 1),
+          },
+        };
+      }));
+      // No pending move — turn ends after popup
+      pendingMoveAfterPopup.current = null;
     } else {
       pendingMoveAfterPopup.current = {
         playerIdx,
