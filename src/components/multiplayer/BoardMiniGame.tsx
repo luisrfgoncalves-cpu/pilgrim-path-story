@@ -1490,37 +1490,53 @@ export default function BoardMiniGame({ visible, tileType, playerName, onResult,
     switch (tileType) {
       case 'scripture': return <ScriptureQuiz onResult={handleResult} />;
       case 'giant':
-        // Alternate between reaction and simon says per phase
-        return phaseIdx % 2 === 0
-          ? <ReactionGame difficulty={difficulty} onResult={handleResult} />
-          : <SimonSaysGame difficulty={difficulty} onResult={handleResult} />;
+        // Rotate: reaction, simon says, duel, fortress defense
+        if (phaseIdx % 4 === 0) return <ReactionGame difficulty={difficulty} onResult={handleResult} />;
+        if (phaseIdx % 4 === 1) return <SimonSaysGame difficulty={difficulty} onResult={handleResult} />;
+        if (phaseIdx % 4 === 2) return <DuelGame onResult={handleResult} />;
+        return <FortressDefenseGame difficulty={difficulty} onResult={handleResult} />;
       case 'challenge':
-        // Rotate between memory, word scramble, and timing bar
-        if (phaseIdx % 3 === 0) return <MemoryGame difficulty={difficulty} onResult={handleResult} />;
-        if (phaseIdx % 3 === 1) return <WordScrambleGame difficulty={difficulty} onResult={handleResult} />;
-        return <TimingBarGame difficulty={difficulty} onResult={handleResult} />;
+        // Rotate between memory, word scramble, timing bar, group vote
+        if (phaseIdx % 4 === 0) return <MemoryGame difficulty={difficulty} onResult={handleResult} />;
+        if (phaseIdx % 4 === 1) return <WordScrambleGame difficulty={difficulty} onResult={handleResult} />;
+        if (phaseIdx % 4 === 2) return <TimingBarGame difficulty={difficulty} onResult={handleResult} />;
+        return <GroupVoteGame onResult={handleResult} />;
       case 'surprise':
-        return phaseIdx % 2 === 0
-          ? <SwipeDodgeGame onResult={handleResult} />
-          : <WordScrambleGame difficulty={difficulty} onResult={handleResult} />;
-      case 'blessing':
-        return phaseIdx % 2 === 0
-          ? <TreasureHuntGame onResult={handleResult} />
-          : <SimonSaysGame difficulty={Math.max(1, difficulty - 1)} onResult={handleResult} />;
-      case 'trap':
         return phaseIdx % 3 === 0
-          ? <ReactionGame difficulty={Math.min(difficulty + 1, 5)} onResult={handleResult} />
+          ? <SwipeDodgeGame onResult={handleResult} />
           : phaseIdx % 3 === 1
+          ? <WordScrambleGame difficulty={difficulty} onResult={handleResult} />
+          : <BibleRiddleGame onResult={handleResult} />;
+      case 'blessing':
+        return phaseIdx % 3 === 0
+          ? <TreasureHuntGame onResult={handleResult} />
+          : phaseIdx % 3 === 1
+          ? <SimonSaysGame difficulty={Math.max(1, difficulty - 1)} onResult={handleResult} />
+          : <BibleRiddleGame onResult={handleResult} />;
+      case 'trap':
+        return phaseIdx % 4 === 0
+          ? <ReactionGame difficulty={Math.min(difficulty + 1, 5)} onResult={handleResult} />
+          : phaseIdx % 4 === 1
           ? <TimingBarGame difficulty={Math.min(difficulty + 1, 5)} onResult={handleResult} />
-          : <RapidTapGame onResult={handleResult} />;
-      case 'shield': return <CourageHoldGame onResult={handleResult} />;
-      case 'current':
-        return phaseIdx % 2 === 0
+          : phaseIdx % 4 === 2
           ? <RapidTapGame onResult={handleResult} />
-          : <TimingBarGame difficulty={difficulty} onResult={handleResult} />;
-      case 'swap':
+          : <FortressDefenseGame difficulty={Math.min(difficulty + 1, 5)} onResult={handleResult} />;
+      case 'shield':
+        // Bible riddle or fortress defense instead of simple hold
         return phaseIdx % 2 === 0
+          ? <BibleRiddleGame onResult={handleResult} />
+          : <FortressDefenseGame difficulty={difficulty} onResult={handleResult} />;
+      case 'current':
+        return phaseIdx % 3 === 0
+          ? <RapidTapGame onResult={handleResult} />
+          : phaseIdx % 3 === 1
+          ? <TimingBarGame difficulty={difficulty} onResult={handleResult} />
+          : <DuelGame onResult={handleResult} />;
+      case 'swap':
+        return phaseIdx % 3 === 0
           ? <PathChoiceGame onResult={handleResult} />
+          : phaseIdx % 3 === 1
+          ? <GroupVoteGame onResult={handleResult} />
           : <WordScrambleGame difficulty={difficulty} onResult={handleResult} />;
       default: return <MemoryGame difficulty={difficulty} onResult={handleResult} />;
     }
