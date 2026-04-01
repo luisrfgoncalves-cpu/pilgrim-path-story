@@ -143,10 +143,10 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
       cancelled = true;
       if (animationRef.current) clearTimeout(animationRef.current);
       clearTimeout(safetyTimer);
-      // On cleanup (effect re-run), force-call onTokenArrived to prevent stuck state
+      // On cleanup, reset visual state but do NOT call onTokenArrived
+      // (that would trigger popups prematurely when the effect re-runs)
       setAnimatingPlayerId(null);
       setAnimatedPosition(null);
-      onTokenArrivedRef.current?.();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [players.map(p => `${p.id}:${p.position}`).join(',')]);

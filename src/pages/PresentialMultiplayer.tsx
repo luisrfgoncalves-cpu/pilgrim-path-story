@@ -453,6 +453,7 @@ const PresentialMultiplayer = () => {
 
     // Move token visually
     setPlayers(prev => prev.map((p, i) => i === turnIdx ? { ...p, position: newPos, lastDice: diceVal } : p));
+    playGameSfx('diceRoll');
 
     // Build the post-animation action
     const postAnimationAction = () => {
