@@ -78,7 +78,7 @@ export default function PhaseTransition({ phaseIdx, onComplete }: PhaseTransitio
     // Fade in
     const fadeIn = setTimeout(() => setOpacity(1), 100);
 
-    // Advance lines
+    // Advance lines automatically
     const timers: number[] = [];
     narrative.lines.forEach((_, i) => {
       if (i > 0) {
@@ -86,17 +86,11 @@ export default function PhaseTransition({ phaseIdx, onComplete }: PhaseTransitio
       }
     });
 
-    // Exit after all lines shown
-    const exitDelay = narrative.lines.length * 2200 + 1500;
-    const exitTimer = window.setTimeout(() => {
-      setExiting(true);
-      setTimeout(onComplete, 800);
-    }, exitDelay);
+    // Do NOT auto-close — user must close manually
 
     return () => {
       clearTimeout(fadeIn);
       timers.forEach(clearTimeout);
-      clearTimeout(exitTimer);
     };
   }, []);
 
