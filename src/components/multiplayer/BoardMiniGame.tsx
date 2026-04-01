@@ -469,62 +469,59 @@ function TreasureHuntGame({ onResult }: { onResult: (won: boolean) => void }) {
   );
 }
 
-// Quick courage test — hold button under pressure
-function CourageHoldGame({ onResult }: { onResult: (won: boolean) => void }) {
-  const [holding, setHolding] = useState(false);
-  const [progress, setProgress] = useState(0);
+// Fortress Defense — tap enemies approaching from different directions (replaces simple hold)
+function FortressDefenseGame({ difficulty, onResult }: { difficulty: number; onResult: (won: boolean) => void }) {
+  const totalEnemies = 6 + difficulty * 2;
+  const [enemies, setEnemies] = useState<{ id: number; side: 'left' | 'right' | 'center'; emoji: string; alive: boolean }[]>([]);
+  const [wave, setWave] = useState(0);
+  const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
   const [result, setResult] = useState<boolean | null>(null);
-  const holdGoal = 100;
-  const intervalRef = useRef<number | null>(null);
+  const spawnTimer = useRef<number | null>(null);
 
-  const startHold = () => {
-    if (done) return;
-    setHolding(true);
-    if (navigator.vibrate) navigator.vibrate(30);
-  };
-
-  const stopHold = () => {
-    setHolding(false);
-    if (progress < holdGoal && !done) {
-      // Reset progress partially
-      setProgress(p => Math.max(0, p - 15));
-    }
-  };
+  const enemyTypes = ['🐍', '🦇', '🐺', '👹', '💀', '🕷️', '☠️', '🔥'];
 
   useEffect(() => {
-    if (holding && !done) {
-      intervalRef.current = window.setInterval(() => {
-        setProgress(p => {
-          const next = p + 3;
-          if (next >= holdGoal) {
-            setDone(true);
-            setResult(true);
-            setHolding(false);
-            playPositiveEvent();
-            if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
-            return holdGoal;
-          }
-          return next;
-        });
-      }, 50);
-    } else {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    }
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [holding, done]);
+    let spawned = 0;
+    const spawn = () => {
+      if (spawned >= totalEnemies || done) return;
+      const sides: ('left' | 'right' | 'center')[] = ['left', 'right', 'center'];
+      const enemy = {
+        id: spawned,
+        side: sides[Math.floor(Math.random() * 3)],
+        emoji: enemyTypes[Math.floor(Math.random() * enemyTypes.length)],
+        alive: true,
+      };
+      setEnemies(prev => [...prev.slice(-5), enemy]);
+      setWave(spawned + 1);
+      spawned++;
+      const delay = Math.max(600, 1500 - difficulty * 150);
+      spawnTimer.current = window.setTimeout(spawn, delay);
+    };
+    spawn();
+    return () => { if (spawnTimer.current) clearTimeout(spawnTimer.current); };
+  }, [totalEnemies, difficulty, done]);
 
-  // Timeout
+  // Auto-end after all spawned + grace period
   useEffect(() => {
-    const t = setTimeout(() => {
-      if (!done) {
+    if (wave >= totalEnemies && !done) {
+      const t = setTimeout(() => {
         setDone(true);
-        setResult(false);
-        playNegativeEvent();
-      }
-    }, 10000);
-    return () => clearTimeout(t);
-  }, [done]);
+        const won = score >= Math.ceil(totalEnemies * 0.6);
+        setResult(won);
+        if (won) playPositiveEvent(); else playNegativeEvent();
+      }, 2000);
+      return () => clearTimeout(t);
+    }
+  }, [wave, totalEnemies, done, score]);
+
+  const handleTapEnemy = (id: number) => {
+    if (done) return;
+    setEnemies(prev => prev.map(e => e.id === id ? { ...e, alive: false } : e));
+    setScore(s => s + 1);
+    playChallengeEvent();
+    if (navigator.vibrate) navigator.vibrate(20);
+  };
 
   useEffect(() => {
     if (done && result !== null) {
@@ -538,43 +535,379 @@ function CourageHoldGame({ onResult }: { onResult: (won: boolean) => void }) {
       <div className="text-center p-6 space-y-2">
         <span className="text-5xl block">{result ? '✅' : '❌'}</span>
         <p className="text-lg font-display" style={{ color: result ? 'hsl(120 60% 70%)' : 'hsl(0 60% 70%)' }}>
-          {result ? 'Coragem mantida!' : 'Você fraquejou...'}
+          {result ? `Fortaleza defendida! ${score}/${totalEnemies}` : `Fortaleza caiu... ${score}/${totalEnemies}`}
         </p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
-      <p className="text-sm font-display text-white/70">Segure o botão sem soltar!</p>
-      <div className="w-full h-4 rounded-full overflow-hidden" style={{
-        background: 'hsl(0 0% 15%)',
-        border: '1px solid hsl(0 0% 25%)',
+    <div className="flex flex-col items-center gap-3 p-4">
+      <p className="text-sm font-display text-white/70">🏰 Defenda a Fortaleza! Toque nos inimigos!</p>
+      <p className="text-xs text-white/40">Derrotados: {score} · Onda: {wave}/{totalEnemies}</p>
+      <div className="relative w-full h-40 rounded-xl overflow-hidden" style={{
+        background: 'linear-gradient(180deg, hsl(220 20% 12%), hsl(220 15% 8%))',
+        border: '2px solid hsl(0 0% 25%)',
       }}>
-        <div className="h-full rounded-full transition-all duration-100" style={{
-          width: `${progress}%`,
-          background: `linear-gradient(90deg, hsl(0 60% 45%), hsl(45 70% 55%))`,
-          boxShadow: '0 0 10px hsl(45 70% 55% / 0.5)',
-        }} />
+        {/* Castle */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-4xl">🏰</div>
+        {/* Enemies */}
+        {enemies.filter(e => e.alive).map(e => (
+          <button
+            key={e.id}
+            onClick={() => handleTapEnemy(e.id)}
+            className="absolute text-3xl transition-all active:scale-75"
+            style={{
+              left: e.side === 'left' ? '10%' : e.side === 'right' ? '75%' : '42%',
+              top: `${15 + (e.id % 3) * 25}%`,
+              animation: 'bounce 0.8s infinite',
+            }}
+          >
+            {e.emoji}
+          </button>
+        ))}
       </div>
-      <button
-        onMouseDown={startHold}
-        onMouseUp={stopHold}
-        onTouchStart={startHold}
-        onTouchEnd={stopHold}
-        className="w-32 h-32 rounded-full flex items-center justify-center text-4xl transition-transform"
-        style={{
-          background: holding
-            ? 'radial-gradient(circle, hsl(45 60% 35%), hsl(30 40% 15%))'
-            : 'radial-gradient(circle, hsl(0 0% 20%), hsl(0 0% 10%))',
-          border: `3px solid ${holding ? 'hsl(45 60% 50%)' : 'hsl(0 0% 30%)'}`,
-          boxShadow: holding ? '0 0 30px hsl(45 60% 50% / 0.4)' : undefined,
-          transform: holding ? 'scale(0.95)' : 'scale(1)',
-        }}
-      >
-        {holding ? '🔥' : '🛡️'}
-      </button>
-      <p className="text-xs text-white/40">Segure firme para resistir!</p>
+    </div>
+  );
+}
+
+// Group Vote Game — all players vote, majority wins (GROUP RPG MECHANIC)
+function GroupVoteGame({ onResult }: { onResult: (won: boolean) => void }) {
+  const dilemmas = [
+    {
+      situation: 'Um estranho na estrada pede ajuda. Parece ferido, mas pode ser uma armadilha.',
+      optionA: { text: 'Ajudar o estranho', emoji: '🤝', biblical: true },
+      optionB: { text: 'Seguir em frente', emoji: '🚶', biblical: false },
+      verse: 'Mateus 25:40',
+    },
+    {
+      situation: 'O rei oferece riquezas em troca de negar sua fé publicamente.',
+      optionA: { text: 'Aceitar as riquezas', emoji: '💰', biblical: false },
+      optionB: { text: 'Recusar com firmeza', emoji: '✝️', biblical: true },
+      verse: 'Mateus 6:24',
+    },
+    {
+      situation: 'Seus companheiros querem usar um atalho proibido pelo mapa.',
+      optionA: { text: 'Seguir pelo atalho', emoji: '⚡', biblical: false },
+      optionB: { text: 'Manter o caminho certo', emoji: '🛤️', biblical: true },
+      verse: 'Provérbios 14:12',
+    },
+    {
+      situation: 'Um prisioneiro implora para ser solto. O guarda está dormindo.',
+      optionA: { text: 'Soltar o prisioneiro', emoji: '🔓', biblical: true },
+      optionB: { text: 'Não interferir', emoji: '🤷', biblical: false },
+      verse: 'Isaías 61:1',
+    },
+    {
+      situation: 'Na Feira da Vaidade, vendem um mapa que promete mostrar a Cidade Celestial.',
+      optionA: { text: 'Comprar o mapa', emoji: '🗺️', biblical: false },
+      optionB: { text: 'Confiar na Palavra', emoji: '📖', biblical: true },
+      verse: 'Salmos 119:105',
+    },
+  ];
+
+  const [dilemma] = useState(() => dilemmas[Math.floor(Math.random() * dilemmas.length)]);
+  const [votes, setVotes] = useState<Record<string, 'A' | 'B'>>({});
+  const [phase, setPhase] = useState<'discuss' | 'vote' | 'result'>('discuss');
+  const [result, setResult] = useState<boolean | null>(null);
+  const [countdown, setCountdown] = useState(15);
+
+  // Discussion countdown
+  useEffect(() => {
+    if (phase !== 'discuss') return;
+    const t = setInterval(() => {
+      setCountdown(p => {
+        if (p <= 1) { setPhase('vote'); return 20; }
+        return p - 1;
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, [phase]);
+
+  // Vote countdown
+  useEffect(() => {
+    if (phase !== 'vote') return;
+    const t = setInterval(() => {
+      setCountdown(p => {
+        if (p <= 1) {
+          // Auto-resolve
+          const votesA = Object.values(votes).filter(v => v === 'A').length;
+          const votesB = Object.values(votes).filter(v => v === 'B').length;
+          const majorityA = votesA >= votesB;
+          const won = majorityA ? dilemma.optionA.biblical : dilemma.optionB.biblical;
+          setResult(won);
+          setPhase('result');
+          if (won) playPositiveEvent(); else playNegativeEvent();
+          return 0;
+        }
+        return p - 1;
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, [phase, votes, dilemma]);
+
+  const handleVote = (choice: 'A' | 'B', voterIdx: number) => {
+    if (phase !== 'vote') return;
+    setVotes(prev => ({ ...prev, [`p${voterIdx}`]: choice }));
+    if (navigator.vibrate) navigator.vibrate(20);
+  };
+
+  const handleResolve = () => {
+    const votesA = Object.values(votes).filter(v => v === 'A').length;
+    const votesB = Object.values(votes).filter(v => v === 'B').length;
+    const majorityA = votesA >= votesB;
+    const won = majorityA ? dilemma.optionA.biblical : dilemma.optionB.biblical;
+    setResult(won);
+    setPhase('result');
+    if (won) playPositiveEvent(); else playNegativeEvent();
+  };
+
+  useEffect(() => {
+    if (phase === 'result' && result !== null) {
+      const t = setTimeout(() => onResult(result), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [phase, result, onResult]);
+
+  return (
+    <div className="flex flex-col items-center gap-3 p-4">
+      {phase === 'discuss' && (
+        <>
+          <p className="text-xs font-display text-amber-400 uppercase tracking-widest">⚖️ Dilema Moral</p>
+          <p className="text-sm font-display text-white/90 text-center leading-relaxed">{dilemma.situation}</p>
+          <p className="text-xs text-white/40 italic">Discutam em grupo! ⏱ {countdown}s</p>
+          <div className="w-full space-y-2 mt-2">
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-center">
+              <span className="text-2xl">{dilemma.optionA.emoji}</span>
+              <p className="text-xs text-white/70 mt-1">{dilemma.optionA.text}</p>
+            </div>
+            <p className="text-center text-xs text-white/30">— ou —</p>
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-center">
+              <span className="text-2xl">{dilemma.optionB.emoji}</span>
+              <p className="text-xs text-white/70 mt-1">{dilemma.optionB.text}</p>
+            </div>
+          </div>
+          <button onClick={() => { setPhase('vote'); setCountdown(20); }} className="mt-2 px-6 py-2 rounded-lg bg-primary/20 border border-primary/40 text-sm font-display text-primary active:scale-95 transition-transform">
+            Votar agora
+          </button>
+        </>
+      )}
+      {phase === 'vote' && (
+        <>
+          <p className="text-xs font-display text-amber-400 uppercase tracking-widest">🗳️ Hora de votar! ⏱ {countdown}s</p>
+          <p className="text-xs text-white/50">Cada jogador toque em sua escolha:</p>
+          <div className="w-full grid grid-cols-2 gap-3 mt-2">
+            <button onClick={() => handleVote('A', Object.keys(votes).length)} className="py-4 rounded-xl bg-blue-900/30 border-2 border-blue-500/40 text-center active:scale-95 transition-all">
+              <span className="text-3xl block">{dilemma.optionA.emoji}</span>
+              <p className="text-xs text-white/70 mt-1">{dilemma.optionA.text}</p>
+              <p className="text-xs text-blue-300 mt-1">{Object.values(votes).filter(v => v === 'A').length} voto(s)</p>
+            </button>
+            <button onClick={() => handleVote('B', Object.keys(votes).length)} className="py-4 rounded-xl bg-purple-900/30 border-2 border-purple-500/40 text-center active:scale-95 transition-all">
+              <span className="text-3xl block">{dilemma.optionB.emoji}</span>
+              <p className="text-xs text-white/70 mt-1">{dilemma.optionB.text}</p>
+              <p className="text-xs text-purple-300 mt-1">{Object.values(votes).filter(v => v === 'B').length} voto(s)</p>
+            </button>
+          </div>
+          {Object.keys(votes).length >= 2 && (
+            <button onClick={handleResolve} className="mt-2 px-6 py-2 rounded-lg bg-amber-900/30 border border-amber-500/40 text-sm font-display text-amber-300 active:scale-95">
+              Revelar resultado
+            </button>
+          )}
+        </>
+      )}
+      {phase === 'result' && (
+        <div className="text-center space-y-3">
+          <span className="text-5xl block">{result ? '✅' : '❌'}</span>
+          <p className="text-lg font-display" style={{ color: result ? 'hsl(120 60% 70%)' : 'hsl(0 60% 70%)' }}>
+            {result ? 'O grupo escolheu com sabedoria!' : 'O grupo se desviou do caminho...'}
+          </p>
+          <p className="text-xs text-white/50 italic">📖 {dilemma.verse}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Duel Game — two players compete in quick reflex (GROUP RPG MECHANIC)
+function DuelGame({ onResult }: { onResult: (won: boolean) => void }) {
+  const [phase, setPhase] = useState<'ready' | 'wait' | 'strike' | 'done'>('ready');
+  const [striker, setStriker] = useState<'left' | 'right' | null>(null);
+  const [result, setResult] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (phase === 'ready') {
+      const t = setTimeout(() => setPhase('wait'), 2000);
+      return () => clearTimeout(t);
+    }
+    if (phase === 'wait') {
+      const delay = 1500 + Math.random() * 3000;
+      const t = setTimeout(() => setPhase('strike'), delay);
+      return () => clearTimeout(t);
+    }
+    if (phase === 'strike') {
+      // Auto-timeout — nobody struck in time
+      const t = setTimeout(() => {
+        setPhase('done');
+        setResult(false);
+        playNegativeEvent();
+      }, 2000);
+      return () => clearTimeout(t);
+    }
+  }, [phase]);
+
+  const handleStrike = (side: 'left' | 'right') => {
+    if (phase === 'wait') {
+      // Too early — penalty
+      setPhase('done');
+      setStriker(side);
+      setResult(false);
+      playNegativeEvent();
+      return;
+    }
+    if (phase === 'strike') {
+      setPhase('done');
+      setStriker(side);
+      setResult(true); // First to tap wins
+      playPositiveEvent();
+      if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+    }
+  };
+
+  useEffect(() => {
+    if (phase === 'done' && result !== null) {
+      const t = setTimeout(() => onResult(result), 2000);
+      return () => clearTimeout(t);
+    }
+  }, [phase, result, onResult]);
+
+  return (
+    <div className="flex flex-col items-center gap-4 p-4">
+      <p className="text-xs font-display text-red-400 uppercase tracking-widest">⚔️ Duelo de Reflexo!</p>
+      <p className="text-xs text-white/50">Dois jogadores: cada um toca um lado. Primeiro a tocar quando aparecer ⚔️ vence!</p>
+      
+      {phase === 'ready' && (
+        <p className="text-lg font-display text-white/80 animate-pulse">Preparem-se...</p>
+      )}
+      
+      <div className="w-full flex gap-3">
+        <button
+          onClick={() => handleStrike('left')}
+          disabled={phase === 'done'}
+          className="flex-1 h-32 rounded-2xl flex items-center justify-center text-4xl transition-all active:scale-90"
+          style={{
+            background: phase === 'strike' ? 'hsl(120 40% 20%)' : phase === 'wait' ? 'hsl(0 40% 15%)' : 'hsl(0 0% 12%)',
+            border: `3px solid ${phase === 'strike' ? 'hsl(120 50% 45%)' : phase === 'wait' ? 'hsl(0 50% 40%)' : 'hsl(0 0% 25%)'}`,
+            boxShadow: phase === 'strike' ? '0 0 30px hsl(120 50% 45% / 0.4)' : undefined,
+          }}
+        >
+          {phase === 'strike' ? '⚔️' : phase === 'wait' ? '🛑' : '🗡️'}
+        </button>
+        <button
+          onClick={() => handleStrike('right')}
+          disabled={phase === 'done'}
+          className="flex-1 h-32 rounded-2xl flex items-center justify-center text-4xl transition-all active:scale-90"
+          style={{
+            background: phase === 'strike' ? 'hsl(120 40% 20%)' : phase === 'wait' ? 'hsl(0 40% 15%)' : 'hsl(0 0% 12%)',
+            border: `3px solid ${phase === 'strike' ? 'hsl(120 50% 45%)' : phase === 'wait' ? 'hsl(0 50% 40%)' : 'hsl(0 0% 25%)'}`,
+            boxShadow: phase === 'strike' ? '0 0 30px hsl(120 50% 45% / 0.4)' : undefined,
+          }}
+        >
+          {phase === 'strike' ? '⚔️' : phase === 'wait' ? '🛑' : '🗡️'}
+        </button>
+      </div>
+
+      {phase === 'wait' && <p className="text-sm text-red-300 font-display animate-pulse">ESPEREM... Não toquem ainda!</p>}
+      {phase === 'strike' && <p className="text-lg text-green-300 font-display font-bold animate-bounce">⚔️ AGORA! TOQUEM!</p>}
+      
+      {phase === 'done' && (
+        <div className="text-center space-y-2">
+          <span className="text-5xl block">{result ? '✅' : '❌'}</span>
+          <p className="text-lg font-display" style={{ color: result ? 'hsl(120 60% 70%)' : 'hsl(0 60% 70%)' }}>
+            {result
+              ? `${striker === 'left' ? 'Jogador da esquerda' : 'Jogador da direita'} venceu o duelo!`
+              : striker ? 'Tocou cedo demais! Penalidade!' : 'Ninguém reagiu a tempo!'
+            }
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Riddle Game — biblical riddle with timer (more engaging than hold)
+function BibleRiddleGame({ onResult }: { onResult: (won: boolean) => void }) {
+  const riddles = [
+    { riddle: 'Tenho espada mas não sou guerreiro. Sou mais afiado que qualquer lâmina. O que sou?', answer: 'A Palavra de Deus', options: ['A Palavra de Deus', 'Um anjo', 'O vento', 'Uma rocha'] },
+    { riddle: 'Sou estreita e poucos me encontram, mas levo à vida eterna. O que sou?', answer: 'A Porta Estreita', options: ['A Porta Estreita', 'O Rio Jordão', 'A Escada de Jacó', 'O Monte Sinai'] },
+    { riddle: 'Caí de suas costas ao pé de um madeiro. Pesava mais que o mundo. O que sou?', answer: 'O fardo do pecado', options: ['Uma pedra', 'O fardo do pecado', 'Uma armadura', 'Um livro'] },
+    { riddle: 'Prendo com correntes de dúvida e moro num castelo sombrio. Quem sou?', answer: 'Gigante Desespero', options: ['Apolion', 'Gigante Desespero', 'O Dragão', 'Rei Herodes'] },
+    { riddle: 'Abro todas as portas, inclusive calabouços. Sou feita de palavras divinas. O que sou?', answer: 'A Chave da Promessa', options: ['A Espada', 'O Escudo', 'A Chave da Promessa', 'A Coroa'] },
+    { riddle: 'Tudo parece brilhante e desejável em mim, mas sou apenas vaidade. Onde estou?', answer: 'Feira da Vaidade', options: ['Cidade Celestial', 'Feira da Vaidade', 'Jardim do Éden', 'Palácio do Rei'] },
+  ];
+
+  const [riddle] = useState(() => riddles[Math.floor(Math.random() * riddles.length)]);
+  const [shuffledOptions] = useState(() => [...riddle.options].sort(() => Math.random() - 0.5));
+  const [chosen, setChosen] = useState<number | null>(null);
+  const [result, setResult] = useState<boolean | null>(null);
+  const [timeLeft, setTimeLeft] = useState(20);
+
+  useEffect(() => {
+    if (result !== null) return;
+    const t = setInterval(() => {
+      setTimeLeft(p => {
+        if (p <= 1) { setResult(false); playNegativeEvent(); return 0; }
+        return p - 1;
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, [result]);
+
+  const handleAnswer = (idx: number) => {
+    if (chosen !== null) return;
+    setChosen(idx);
+    const won = shuffledOptions[idx] === riddle.answer;
+    setResult(won);
+    if (won) playPositiveEvent(); else playNegativeEvent();
+  };
+
+  useEffect(() => {
+    if (result !== null) {
+      const t = setTimeout(() => onResult(result), 2000);
+      return () => clearTimeout(t);
+    }
+  }, [result, onResult]);
+
+  return (
+    <div className="flex flex-col items-center gap-3 p-4">
+      <p className="text-xs font-display text-amber-400 uppercase tracking-widest">🧩 Enigma Bíblico · ⏱ {timeLeft}s</p>
+      <p className="text-sm font-display text-white/90 text-center leading-relaxed italic">"{riddle.riddle}"</p>
+      <div className="w-full space-y-2 mt-2">
+        {shuffledOptions.map((opt, i) => (
+          <button
+            key={i}
+            onClick={() => handleAnswer(i)}
+            disabled={chosen !== null}
+            className="w-full py-3 px-4 rounded-xl text-sm font-display transition-all active:scale-95"
+            style={{
+              background: chosen === i
+                ? (opt === riddle.answer ? 'hsl(120 30% 15%)' : 'hsl(0 30% 15%)')
+                : 'hsl(0 0% 12%)',
+              border: `2px solid ${chosen === i
+                ? (opt === riddle.answer ? 'hsl(120 50% 45%)' : 'hsl(0 50% 45%)')
+                : chosen !== null && opt === riddle.answer ? 'hsl(120 40% 35% / 0.5)' : 'hsl(0 0% 25%)'}`,
+              opacity: chosen !== null && i !== chosen && opt !== riddle.answer ? 0.4 : 1,
+            }}
+          >
+            {opt}
+            {chosen !== null && opt === riddle.answer && <span className="ml-2">✅</span>}
+          </button>
+        ))}
+      </div>
+      {result !== null && (
+        <p className="text-base font-display mt-1" style={{ color: result ? 'hsl(120 60% 70%)' : 'hsl(0 60% 70%)' }}>
+          {result ? '🧠 Sabedoria revelada!' : `A resposta era: "${riddle.answer}"`}
+        </p>
+      )}
     </div>
   );
 }
