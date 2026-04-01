@@ -397,16 +397,16 @@ const PresentialMultiplayer = () => {
   }, [phaseTransitionPendingAction]);
 
   // Called by ImmersiveBoard when token animation finishes
-  // Adds a 1.2s suspense delay before triggering the event popup
+  // Adds a 2s suspense delay before triggering the event popup
   const handleTokenArrived = useCallback(() => {
     setIsTokenMoving(false);
     if (pendingActionRef.current) {
       const action = pendingActionRef.current;
       pendingActionRef.current = null;
-      // Suspense delay — player sees the tile, feels the tension
+      // 2 second suspense delay — player sees the tile, feels the tension
       setTimeout(() => {
         action();
-      }, 1200);
+      }, 2000);
     }
   }, []);
 
@@ -453,6 +453,7 @@ const PresentialMultiplayer = () => {
 
     // Move token visually
     setPlayers(prev => prev.map((p, i) => i === turnIdx ? { ...p, position: newPos, lastDice: diceVal } : p));
+    playGameSfx('diceRoll');
 
     // Build the post-animation action
     const postAnimationAction = () => {
@@ -690,16 +691,26 @@ const PresentialMultiplayer = () => {
 
     // DON'T move the token yet — defer until popup closes
     if (won) {
-      const refugePos = Math.min(newPosition + 1, IMMERSIVE_BOARD_SIZE - 1);
-      pendingMoveAfterPopup.current = {
-        playerIdx,
-        targetPos: refugePos,
-        attrs: { coragem: 2, fe: 1 },
-        stats: {
-          currentStreak: (player.stats.currentStreak || 0) + 1,
-          maxStreak: Math.max(player.stats.maxStreak, (player.stats.currentStreak || 0) + 1),
-        },
-      };
+      // Player STAYS on current tile after winning — like a real board game
+      // Apply attribute bonuses without moving
+      setPlayers(prev => prev.map((p, i) => {
+        if (i !== playerIdx) return p;
+        return {
+          ...p,
+          attributes: {
+            ...p.attributes,
+            coragem: p.attributes.coragem + 2,
+            fe: p.attributes.fe + 1,
+          },
+          stats: {
+            ...p.stats,
+            currentStreak: (p.stats.currentStreak || 0) + 1,
+            maxStreak: Math.max(p.stats.maxStreak, (p.stats.currentStreak || 0) + 1),
+          },
+        };
+      }));
+      // No pending move — turn ends after popup
+      pendingMoveAfterPopup.current = null;
     } else {
       pendingMoveAfterPopup.current = {
         playerIdx,
@@ -1150,6 +1161,7 @@ const PresentialMultiplayer = () => {
                   <div className="flex flex-col items-center gap-2">
                     <button
                       onClick={() => {
+                        playGameSfx('diceRoll');
                         setDiceRolling(true);
                         const result = Math.floor(Math.random() * 6) + 1;
                         setDiceValue(result);

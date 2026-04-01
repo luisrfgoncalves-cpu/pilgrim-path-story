@@ -78,7 +78,7 @@ export default function PhaseTransition({ phaseIdx, onComplete }: PhaseTransitio
     // Fade in
     const fadeIn = setTimeout(() => setOpacity(1), 100);
 
-    // Advance lines
+    // Advance lines automatically
     const timers: number[] = [];
     narrative.lines.forEach((_, i) => {
       if (i > 0) {
@@ -86,17 +86,11 @@ export default function PhaseTransition({ phaseIdx, onComplete }: PhaseTransitio
       }
     });
 
-    // Exit after all lines shown
-    const exitDelay = narrative.lines.length * 2200 + 1500;
-    const exitTimer = window.setTimeout(() => {
-      setExiting(true);
-      setTimeout(onComplete, 800);
-    }, exitDelay);
+    // Do NOT auto-close — user must close manually
 
     return () => {
       clearTimeout(fadeIn);
       timers.forEach(clearTimeout);
-      clearTimeout(exitTimer);
     };
   }, []);
 
@@ -189,12 +183,18 @@ export default function PhaseTransition({ phaseIdx, onComplete }: PhaseTransitio
           ))}
         </div>
 
-        {/* Skip button */}
+        {/* Close button — always visible */}
         <button
           onClick={() => { setExiting(true); setTimeout(onComplete, 400); }}
-          className="text-[10px] text-white/30 uppercase tracking-widest hover:text-white/60 transition-colors"
+          className="mt-4 px-8 py-3 rounded-xl font-display text-sm font-bold uppercase tracking-widest transition-all active:scale-95"
+          style={{
+            background: `linear-gradient(135deg, hsl(${phase?.accentHue || 45} 50% 30%), hsl(${phase?.accentHue || 45} 40% 20%))`,
+            border: `2px solid hsl(${phase?.accentHue || 45} 60% 50% / 0.6)`,
+            color: `hsl(${phase?.accentHue || 45} 60% 80%)`,
+            boxShadow: `0 0 20px hsl(${phase?.accentHue || 45} 60% 50% / 0.3)`,
+          }}
         >
-          Toque para pular ▸
+          Iniciar Fase ▸
         </button>
       </div>
     </div>
