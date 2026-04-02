@@ -2343,9 +2343,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "esperanca"],
     sceneEvent: { type: 'suspense', duration: 3000, message: 'O ar pesado te envolve...' },
     narrative: [
-      "O caminho entra numa região estranha. O ar é pesado, perfumado, intoxicante. Cada passo exige mais esforço. As pálpebras pesam como chumbo.",
-      "A Terra Encantada — Bunyan a descreve como um lugar onde o próprio ar faz os peregrinos adormecerem para sempre. Quem dorme aqui, nunca mais acorda.",
-      "Esperança começa a cambalear: \"Cristão... estou tão cansado... apenas um momento de descanso...\""
+      "{{fade}}O caminho entra numa região estranha. O ar é pesado, perfumado, intoxicante.{{/fade}} {{whisper}}Cada passo exige mais esforço. As pálpebras pesam como chumbo.{{/whisper}}",
+      "{{emphasis}}A Terra Encantada{{/emphasis}} — Bunyan a descreve como um lugar onde o próprio ar faz os peregrinos adormecerem para sempre. {{villain}}Quem dorme aqui, nunca mais acorda.{{/villain}}",
+      "{{heart}}Esperança começa a cambalear:{{/heart}} {{dialog}}\"Cristão... estou tão cansado... apenas um momento de descanso...\"{{/dialog}}"
     ],
     toneNarrative: [
       { attr: "perseveranca", highThreshold: 7, highText: "Sua perseverança acumulada te mantém acordado. Cada passo do pântano, cada noite no castelo construiu resistência contra este sono.", lowThreshold: 3, lowText: "O sono é irresistível. As flores ao redor exalam um perfume que adormece a alma. Seus olhos se fecham..." },
