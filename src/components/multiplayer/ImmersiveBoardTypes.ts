@@ -23,11 +23,11 @@ import tileCheckpoint from '@/assets/board/tile-checkpoint.jpg';
 import tileNormal from '@/assets/board/tile-normal.jpg';
 import tileBackToStart from '@/assets/board/tile-back-to-start.jpg';
 
-// 120 tiles total, 20 per phase (each phase = ~2 phone screens)
-export const IMMERSIVE_BOARD_SIZE = 120;
-export const TILES_PER_PHASE = 20;
+// 210 tiles total, 35 per phase (richer narrative, slower progression)
+export const IMMERSIVE_BOARD_SIZE = 210;
+export const TILES_PER_PHASE = 35;
 
-// ─── 20+ Tile Types (including narrative locations) ───
+// ─── 30+ Tile Types (gameplay + narrative locations) ───
 export type TileType =
   | 'start' | 'finish'
   | 'refuge' | 'challenge' | 'surprise' | 'scripture'
@@ -38,7 +38,12 @@ export type TileType =
   | 'wicket_gate' | 'interpreter_house' | 'hill_difficulty'
   | 'palace_beautiful' | 'valley_humiliation' | 'valley_shadow'
   | 'vanity_fair' | 'doubting_castle' | 'delectable_mountains'
-  | 'enchanted_ground' | 'beulah_land';
+  | 'enchanted_ground' | 'beulah_land'
+  // NEW narrative locations for richer storytelling
+  | 'slough_despond' | 'cross_sepulchre' | 'simple_sloth_presumption'
+  | 'hill_lucre' | 'by_path_meadow' | 'flatterer_net'
+  | 'atheist_encounter' | 'ignorance_path' | 'little_faith'
+  | 'river_of_life';
 
 export interface TileConfig {
   type: TileType;
@@ -83,6 +88,17 @@ export const TILE_TYPES: Record<TileType, TileConfig> = {
   delectable_mountains:{ type: 'delectable_mountains', label: 'Montanhas Deleitosas',    emoji: '🏔️', color: 'hsl(140 40% 45%)', glowColor: 'rgba(60,160,80,0.4)',   description: 'Pastores mostram visões da Cidade Celestial', isNarrative: true, tileImage: tileBlessing },
   enchanted_ground:    { type: 'enchanted_ground',     label: 'Terra Encantada',         emoji: '😴', color: 'hsl(270 30% 40%)', glowColor: 'rgba(120,80,150,0.3)',  description: 'Cuidado! O sono aqui é fatal — mantenham-se acordados!', isNarrative: true, tileImage: tileSurprise },
   beulah_land:         { type: 'beulah_land',          label: 'Terra de Beulá',          emoji: '🌸', color: 'hsl(320 50% 55%)', glowColor: 'rgba(200,100,150,0.4)', description: 'Ar doce, flores eternas — a Cidade está próxima!', isNarrative: true, tileImage: tileBlessing },
+  // NEW narrative tiles
+  slough_despond:             { type: 'slough_despond',             label: 'Pântano do Desânimo',     emoji: '🏚️', color: 'hsl(120 20% 30%)',  glowColor: 'rgba(80,100,60,0.4)',   description: 'Lama espessa puxa para baixo — não desista!', isNarrative: true, tileImage: tileTrap },
+  cross_sepulchre:            { type: 'cross_sepulchre',            label: 'Cruz e Sepulcro',         emoji: '✝️',  color: 'hsl(45 70% 55%)',   glowColor: 'rgba(200,180,60,0.5)',  description: 'A carga cai aos pés da Cruz — liberdade!', isNarrative: true, tileImage: tileBlessing },
+  simple_sloth_presumption:   { type: 'simple_sloth_presumption',   label: 'Dormentes do Caminho',    emoji: '😴', color: 'hsl(30 40% 35%)',   glowColor: 'rgba(150,110,70,0.3)',  description: 'Simples, Preguiça e Presunção dormem acorrentados', isNarrative: true, tileImage: tileNormal },
+  hill_lucre:                 { type: 'hill_lucre',                 label: 'Mina de Demas',           emoji: '💰', color: 'hsl(40 60% 45%)',   glowColor: 'rgba(180,160,60,0.4)',  description: 'A prata reluz, mas o chão é traiçoeiro!', isNarrative: true, tileImage: tileTrap },
+  by_path_meadow:             { type: 'by_path_meadow',             label: 'Prado do Atalho',         emoji: '🌿', color: 'hsl(110 40% 40%)',  glowColor: 'rgba(80,150,60,0.3)',   description: 'O caminho parece fácil, mas leva ao perigo!', isNarrative: true, tileImage: tileSurprise },
+  flatterer_net:              { type: 'flatterer_net',              label: 'Rede do Lisonjeiro',      emoji: '🕸️', color: 'hsl(300 30% 40%)',  glowColor: 'rgba(150,60,130,0.3)',  description: 'Palavras doces escondem uma armadilha!', isNarrative: true, tileImage: tileTrap },
+  atheist_encounter:          { type: 'atheist_encounter',          label: 'O Ateu',                  emoji: '🤷', color: 'hsl(0 0% 45%)',     glowColor: 'rgba(120,120,120,0.3)', description: 'O Ateu zomba da jornada — mantenha a fé!', isNarrative: true, tileImage: tileNormal },
+  ignorance_path:             { type: 'ignorance_path',             label: 'Ignorância',              emoji: '🚶', color: 'hsl(30 30% 40%)',   glowColor: 'rgba(140,120,90,0.3)',  description: 'Ignorância segue seu próprio caminho tortuoso', isNarrative: true, tileImage: tileNormal },
+  little_faith:               { type: 'little_faith',               label: 'Pouca-Fé',               emoji: '😰', color: 'hsl(200 30% 40%)',  glowColor: 'rgba(80,120,150,0.3)',  description: 'Ladrões roubaram sua paz — mas não a salvação!', isNarrative: true, tileImage: tileSurprise },
+  river_of_life:              { type: 'river_of_life',              label: 'Rio da Vida',             emoji: '💧', color: 'hsl(195 60% 50%)',  glowColor: 'rgba(60,180,200,0.4)',  description: 'Águas cristalinas que restauram a alma!', isNarrative: true, tileImage: tileRefuge },
 };
 
 // Tiles that trigger mini-games (boss/challenge encounters)
@@ -110,33 +126,43 @@ export const PHASES: PhaseConfig[] = [
 ];
 
 // ─── Generate immersive board tile types ───
-// Strategic placement: traps at positions 6 and 18 (penultimate) of each phase,
-// giants at position 13, refuges right after giants/challenges
+// Strategic placement across 210 tiles (35 per phase) for richer narrative pacing
 export function generateImmersiveTiles(seed: number): TileType[] {
   const rng = (s: number) => ((s * 1103515245 + 12345) & 0x7fffffff);
   let s = seed;
 
   const tiles: TileType[] = [];
 
-  // Fixed narrative tile positions (story-accurate order across 120 tiles)
+  // Fixed narrative tile positions (story-accurate order across 210 tiles)
   const NARRATIVE_TILES: Record<number, TileType> = {
     0: 'start',
-    4: 'wicket_gate',           // Phase 0: Porta Estreita (Boa Vontade)
-    8: 'interpreter_house',     // Phase 0: Casa do Intérprete
-    14: 'hill_difficulty',       // Phase 0: Monte Dificuldade
-    19: 'palace_beautiful',      // Phase 0→1: Palácio Formoso (checkpoint)
-    24: 'valley_humiliation',    // Phase 1: Vale da Humilhação (Apolião)
-    33: 'valley_shadow',         // Phase 1: Vale da Sombra da Morte
-    40: 'checkpoint',            // Phase 2 boundary
-    48: 'vanity_fair',           // Phase 2: Feira da Vaidade
-    60: 'checkpoint',            // Phase 3 boundary
-    68: 'doubting_castle',       // Phase 3: Castelo da Dúvida (Gigante Desespero)
-    80: 'checkpoint',            // Phase 4 boundary
-    85: 'delectable_mountains',  // Phase 4: Montanhas Deleitosas
-    95: 'enchanted_ground',      // Phase 4: Terra Encantada
-    100: 'checkpoint',           // Phase 5 boundary
-    108: 'beulah_land',          // Phase 5: Terra de Beulá
-    119: 'finish',               // Cidade Celestial
+    5: 'slough_despond',              // Phase 0: Pântano do Desânimo
+    12: 'cross_sepulchre',            // Phase 0: Cruz e Sepulcro
+    17: 'wicket_gate',                // Phase 0: Porta Estreita
+    22: 'interpreter_house',          // Phase 0: Casa do Intérprete
+    27: 'simple_sloth_presumption',   // Phase 0: Dormentes do Caminho
+    30: 'hill_difficulty',            // Phase 0: Monte Dificuldade
+    34: 'palace_beautiful',           // Phase 0→1: Palácio Formoso
+    35: 'checkpoint',                 // Phase 1 start
+    42: 'valley_humiliation',         // Phase 1: Vale da Humilhação
+    50: 'little_faith',              // Phase 1: Pouca-Fé
+    58: 'valley_shadow',             // Phase 1: Vale da Sombra da Morte
+    65: 'river_of_life',             // Phase 1: Rio da Vida
+    70: 'checkpoint',                // Phase 2 start
+    78: 'vanity_fair',               // Phase 2: Feira da Vaidade
+    88: 'hill_lucre',                // Phase 2: Mina de Demas
+    98: 'by_path_meadow',            // Phase 2: Prado do Atalho
+    105: 'checkpoint',               // Phase 3 start
+    115: 'doubting_castle',           // Phase 3: Castelo da Dúvida
+    140: 'checkpoint',               // Phase 4 start
+    148: 'delectable_mountains',      // Phase 4: Montanhas Deleitosas
+    155: 'flatterer_net',             // Phase 4: Rede do Lisonjeiro
+    162: 'enchanted_ground',          // Phase 4: Terra Encantada
+    168: 'atheist_encounter',         // Phase 4: O Ateu
+    175: 'checkpoint',               // Phase 5 start
+    185: 'ignorance_path',            // Phase 5: Ignorância
+    195: 'beulah_land',               // Phase 5: Terra de Beulá
+    209: 'finish',                    // Cidade Celestial
   };
 
   for (let i = 0; i < IMMERSIVE_BOARD_SIZE; i++) {
@@ -152,34 +178,35 @@ export function generateImmersiveTiles(seed: number): TileType[] {
     // Checkpoints at phase boundaries
     if (localIdx === 0) { tiles.push('checkpoint'); continue; }
 
-    // Strategic trap at position 6 of each phase
-    if (localIdx === 5) { tiles.push('trap'); continue; }
+    // Strategic trap early in phase
+    if (localIdx === 6) { tiles.push('trap'); continue; }
 
-    // Challenge at midpoint (position 10)
-    if (localIdx === 9) { tiles.push('challenge'); continue; }
+    // Shield early
+    if (localIdx === 4) { tiles.push('shield'); continue; }
+
+    // Scripture questions spread through phase
+    if (localIdx === 10) { tiles.push('scripture'); continue; }
+    if (localIdx === 24) { tiles.push('scripture'); continue; }
+
+    // Challenge at midpoint
+    if (localIdx === 15) { tiles.push('challenge'); continue; }
     // Refuge right after challenge
-    if (localIdx === 10) { tiles.push('refuge'); continue; }
+    if (localIdx === 16) { tiles.push('refuge'); continue; }
 
-    // Giant at position 14
-    if (localIdx === 13) { tiles.push('giant'); continue; }
+    // Giant encounter
+    if (localIdx === 22) { tiles.push('giant'); continue; }
     // Refuge right after giant
-    if (localIdx === 14) { tiles.push('refuge'); continue; }
+    if (localIdx === 23) { tiles.push('refuge'); continue; }
 
-    // Strategic trap at penultimate position (18)
-    if (localIdx === 17) { tiles.push('trap'); continue; }
+    // Strategic trap near end
+    if (localIdx === 30) { tiles.push('trap'); continue; }
 
     // Back to start — rare, from phase 2 onward
-    if (localIdx === 18 && phaseIdx >= 2) { tiles.push('back_to_start'); continue; }
+    if (localIdx === 32 && phaseIdx >= 2) { tiles.push('back_to_start'); continue; }
 
-    // Scripture near end of phase
-    if (localIdx === 15) { tiles.push('scripture'); continue; }
-
-    // Shield early in phase
-    if (localIdx === 3) { tiles.push('shield'); continue; }
-
-    // ~60% chance of special tile, 40% normal (more normal = better spacing)
+    // ~50% chance of special tile, 50% normal (more breathing room)
     s = rng(s);
-    if ((s % 100) < 55) {
+    if ((s % 100) < 45) {
       s = rng(s);
       const pool: TileType[] = ['surprise', 'blessing', 'swap', 'double_dice', 'current', 'scripture', 'challenge', 'normal'];
       tiles.push(pool[s % pool.length]);
@@ -191,14 +218,13 @@ export function generateImmersiveTiles(seed: number): TileType[] {
 }
 
 // ─── Trail coordinates for winding path within each phase ───
-// 20 tiles spanning ~500svh (~5 phone screens per phase) for generous card spacing
+// 35 tiles per phase for generous card spacing
 export function getTrailPositions(tilesCount: number = TILES_PER_PHASE): { x: number; y: number }[] {
   const positions: { x: number; y: number }[] = [];
   for (let i = 0; i < tilesCount; i++) {
     const t = i / (tilesCount - 1);
-    const y = 3 + t * 94; // 3% to 97% — safe margin to stay inside phase
-    // Serpentine: alternates left-right
-    const wave = Math.sin(t * Math.PI * 3.5) * 26;
+    const y = 3 + t * 94; // 3% to 97% — safe margin
+    const wave = Math.sin(t * Math.PI * 5) * 26;
     const x = 50 + wave;
     positions.push({ x: Math.max(16, Math.min(84, x)), y });
   }

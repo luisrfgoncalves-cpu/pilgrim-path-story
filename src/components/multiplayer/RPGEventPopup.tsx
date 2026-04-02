@@ -71,6 +71,7 @@ export default function RPGEventPopup({
   const [bossPhaseIdx, setBossPhaseIdx] = useState(0);
   const [bossWins, setBossWins] = useState(0);
   const [hintIndex, setHintIndex] = useState(0);
+  const [riddleAnswerRevealed, setRiddleAnswerRevealed] = useState(false);
 
   const timerRef = useRef<number | null>(null);
   const narratedKeyRef = useRef('');
@@ -89,6 +90,7 @@ export default function RPGEventPopup({
     setResultData(null);
     setTimerActive(false);
     setHintIndex(0);
+    setRiddleAnswerRevealed(false);
     setBossPhaseIdx(0);
     setBossWins(0);
     narratedKeyRef.current = '';
@@ -247,6 +249,12 @@ export default function RPGEventPopup({
   }, [timerActive]);
 
   const handleTimeUp = useCallback(() => {
+    // For riddles: reveal the answer instead of auto-failing
+    if (riddle) {
+      setRiddleAnswerRevealed(true);
+      narrate(`Tempo esgotado! A resposta correta é: ${riddle.answer}. ${riddle.explanation}`, { style: 'calm', force: true });
+      return;
+    }
     playGameSfx(rpgSfx('trap'));
     setShowResult(true);
     setResultData({
@@ -254,7 +262,7 @@ export default function RPGEventPopup({
       message: '⏰ Tempo esgotado! A resposta não veio a tempo...',
       emoji: '⏰',
     });
-  }, []);
+  }, [riddle]);
 
   const startTimer = useCallback((seconds: number) => {
     setTotalTime(seconds);
@@ -617,32 +625,57 @@ export default function RPGEventPopup({
                     💡 Dica {i + 1}: {hint}
                   </div>
                 ))}
-                {hintIndex < riddle.hints.length - 1 && (
+                {hintIndex < riddle.hints.length - 1 && !riddleAnswerRevealed && (
                   <button onClick={() => setHintIndex(prev => prev + 1)}
                     className="w-full py-2 rounded-lg border border-border text-xs text-muted-foreground hover:text-foreground">
                     Pedir dica ({riddle.hints.length - hintIndex - 1} restantes)
                   </button>
                 )}
               </div>
-              {/* Answer buttons */}
+              {/* Answer revealed (after timer or manual reveal) */}
+              {riddleAnswerRevealed && (
+                <div className="p-4 rounded-xl bg-blue-500/15 border border-blue-500/30 text-center space-y-2">
+                  <p className="text-xs text-blue-300 font-display">📜 A resposta correta é:</p>
+                  <p className="text-lg font-display font-bold text-foreground">"{riddle.answer}"</p>
+                  <p className="text-xs text-muted-foreground italic">{riddle.explanation}</p>
+                  <p className="text-xs text-muted-foreground">📖 {riddle.bibleReference}</p>
+                </div>
+              )}
+              {/* Reveal answer button (phone holder can reveal early) */}
+              {!riddleAnswerRevealed && (
+                <button
+                  onClick={() => {
+                    setRiddleAnswerRevealed(true);
+                    setTimerActive(false);
+                    if (timerRef.current) clearInterval(timerRef.current);
+                    narrate(`A resposta correta é: ${riddle.answer}. ${riddle.explanation}`, { style: 'calm', force: true });
+                  }}
+                  className="w-full py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-sm text-blue-300 font-display hover:bg-blue-500/30 transition-all"
+                >
+                  👁️ Revelar Resposta
+                </button>
+              )}
+              {/* Acertou / Errou buttons */}
               <div className="grid grid-cols-2 gap-2">
                 <button onClick={() => {
                   playGameSfx(rpgSfx('blessing'));
                   setShowResult(true);
                   setResultData({ success: true, message: `✅ Correto! A resposta é: "${riddle.answer}"\n\n${riddle.explanation}`, emoji: '✅' });
-                }} className="py-3 rounded-xl bg-green-500/20 border border-green-500/30 text-sm font-display font-bold text-green-400">
+                }} className="py-3 rounded-xl bg-green-500/20 border border-green-500/30 text-sm font-display font-bold text-green-400 hover:bg-green-500/30 transition-all">
                   ✅ Acertou!
                 </button>
                 <button onClick={() => {
                   playGameSfx(rpgSfx('trap'));
                   setShowResult(true);
                   setResultData({ success: false, message: `❌ Não acertaram. A resposta era: "${riddle.answer}"\n\n${riddle.explanation}`, emoji: '❌' });
-                }} className="py-3 rounded-xl bg-red-500/20 border border-red-500/30 text-sm font-display font-bold text-red-400">
+                }} className="py-3 rounded-xl bg-red-500/20 border border-red-500/30 text-sm font-display font-bold text-red-400 hover:bg-red-500/30 transition-all">
                   ❌ Errou
                 </button>
               </div>
               <p className="text-[10px] text-muted-foreground text-center">
-                O Mestre (quem segura o celular) julga se a resposta está correta.
+                {riddleAnswerRevealed
+                  ? 'Alguém acertou? O Mestre julga e clica acima.'
+                  : 'Clique em "Revelar Resposta" ou espere o tempo acabar para ver a resposta.'}
               </p>
             </div>
           )}
