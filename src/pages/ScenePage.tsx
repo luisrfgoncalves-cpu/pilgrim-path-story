@@ -1400,16 +1400,7 @@ const ScenePage = () => {
         </div>
       )}
 
-      {/* ═══ STREAK BURST ═══ */}
-      <GameNotification visible={showStreakBurst && streak >= 3} onDismiss={() => setShowStreakBurst(false)} duration={8000} position="top-offset">
-        <div className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-primary/90 text-primary-foreground shadow-xl">
-          <Zap className="w-5 h-5" />
-          <span className="font-display text-lg">{streak}x Combo!</span>
-          <span className="text-sm opacity-80">
-            {lastStreakEffect === 'positive' ? '🔥 Em chamas!' : '💔 Sequência sombria'}
-          </span>
-        </div>
-      </GameNotification>
+      {/* Streak popup removed — was distracting from the narrative */}
 
       {/* ═══ CHARACTER ENTRANCE REVEAL — 3D style, no circle ═══ */}
       {charReveal && (
