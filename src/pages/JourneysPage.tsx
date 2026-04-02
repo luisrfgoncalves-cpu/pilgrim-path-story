@@ -171,11 +171,11 @@ const JourneysPage = () => {
   const total = chapterOrder.length + part2ChapterOrder.length;
 
   const isPhaseVisited = (phaseId: string, campaign: 'part1' | 'part2') =>
-    getPhaseChapterIds(phaseId, campaign).some(id => progress.visitedChapters.includes(id));
+    isOwner || getPhaseChapterIds(phaseId, campaign).some(id => progress.visitedChapters.includes(id));
 
   const isPhaseComplete = (phaseId: string, campaign: 'part1' | 'part2') => {
     const phaseChapters = getPhaseChapterIds(phaseId, campaign);
-    return phaseChapters.length > 0 && phaseChapters.every(id => progress.visitedChapters.includes(id));
+    return phaseChapters.length > 0 && (isOwner || phaseChapters.every(id => progress.visitedChapters.includes(id)));
   };
 
   const isCurrentPhase = (phaseId: string) => {
