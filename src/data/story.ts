@@ -125,6 +125,11 @@ export const characters: Character[] = [
   { id: "demas", name: "Demas", description: "Descendente de Geazi (servo de Eliseu) e parente de Judas Iscariotes. Fica ao lado de uma mina de prata na Colina de Lucro, chamando peregrinos para se desviarem por ganância. Muitos que entraram na mina nunca mais saíram.", role: "Tentador", unlockedAtChapter: "fase4-cena10" },
   { id: "timidez_desconfianca", name: "Timidez e Desconfiança", description: "Dois homens que fogem dos leões acorrentados no caminho do Palácio Belo. Representam os que abandonam a jornada por medo de perigos que, na verdade, estão sob controle.", role: "Advertência", unlockedAtChapter: "fase2-cena14" },
   { id: "vigilante", name: "Vigilante", description: "O porteiro do Palácio Belo que encoraja Cristão a passar entre os leões acorrentados, revelando que eles não podem alcançar quem se mantém no centro do caminho.", role: "Guia", unlockedAtChapter: "fase2-cena14" },
+  { id: "demas", name: "Demas", description: "Descendente de Geazi e parente de Judas Iscariotes. Fica ao lado de uma mina de prata chamando peregrinos para se desviarem por ganância.", role: "Tentador", unlockedAtChapter: "fase4-cena10" },
+
+  // ── Personagens sem nome (ilustrativos) ──
+  { id: "esposa_cristao", name: "Esposa de Cristão", description: "A mulher de Cristão que, na Parte I, não compreende o desespero do marido e pede que ele volte a dormir. Na Parte II (como Cristã), ela se arrepende e faz a mesma jornada.", role: "Família", unlockedAtChapter: "cena1" },
+  { id: "vizinhos", name: "Vizinhos da Cidade", description: "Os moradores da Cidade da Destruição que zombam de Cristão, fecham as janelas e riem do homem que chora em público. Representam a indiferença do mundo diante do chamado divino.", role: "Ambiente", unlockedAtChapter: "cena1b" },
 
   // ── Parte II — Novos personagens ──
   { id: "crista", name: "Cristã", description: "Esposa de Cristão e protagonista da Parte II. Arrependida por não ter acompanhado o marido, decide seguir o mesmo caminho até a Cidade Celestial, levando seus quatro filhos: Mateus, Tiago, Samuel e José.", role: "Protagonista (Parte II)", unlockedAtChapter: "cena1" },
