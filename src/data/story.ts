@@ -1826,10 +1826,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Preso na Feira",
     location: "Feira da Vaidade",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 1, duration: 3000, message: 'Os dias se perdem na feira...' },
     narrative: [
-      "Um dia se torna dois. Dois se tornam uma semana. As barracas se tornam familiares. O caminho se torna uma memória distante.",
-      "O pergaminho no seu bolso parece mais leve — não porque o destino está mais perto, mas porque você quase esqueceu que ele existe.",
-      "Uma noite, acordando em suor, as palavras do livro queimam novamente na sua mente: \"Fugi da ira vindoura.\""
+      "{{fade}}Um dia se torna dois. Dois se tornam uma semana.{{/fade}} As barracas se tornam familiares. O caminho se torna uma memória distante.",
+      "{{whisper}}O pergaminho no seu bolso parece mais leve — não porque o destino está mais perto, mas porque você quase esqueceu que ele existe.{{/whisper}}",
+      "{{tremor}}Uma noite, acordando em suor, as palavras do livro queimam novamente na sua mente:{{/tremor}} {{divine}}\"Fugi da ira vindoura.\"{{/divine}}"
     ],
     flagNarrative: [
       { flag: "pediu_ajuda_pantano", text: "No pântano, você aprendeu a pedir ajuda. Talvez precise fazer isso novamente — antes que a gaiola de ferro se feche." }
