@@ -822,13 +822,23 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     failurePenalty: { discernimento: -1 },
   },
 
-  // Cena 2 — Vale da Sombra: Stealth (atravessar com o pilar de fogo)
+  // Cena 2 — Vale da Sombra: Discernir vozes nas trevas (versão Cristã)
   'p2-fase3-cena2': {
-    type: 'stealth',
+    type: 'swipe',
     difficulty: 'hard',
-    intro: 'O Vale da Sombra da Morte é escuro. Siga o pilar de fogo e proteja as crianças dos sussurros!',
-    successBonus: { coragem: 1, perseveranca: 1 },
+    intro: 'O Vale da Sombra tenta amedrontar as crianças. Ensine-lhes a diferença entre as mentiras dos demônios e as promessas do pilar de fogo!',
+    successBonus: { coragem: 1, fe: 1 },
     failurePenalty: { coragem: -1 },
+    swipeItems: [
+      { text: '"As crianças vão morrer"', emoji: '💀', good: false },
+      { text: '"O pilar de fogo nos guia"', emoji: '🔥', good: true },
+      { text: '"Não há saída do vale"', emoji: '🌑', good: false },
+      { text: '"O Senhor é meu pastor"', emoji: '🐑', good: true },
+      { text: '"Seus filhos serão órfãos"', emoji: '😱', good: false },
+      { text: '"Grande-Coração nos protege"', emoji: '⚔️', good: true },
+      { text: '"A escuridão é eterna"', emoji: '🌊', good: false },
+      { text: '"A manhã virá"', emoji: '🌅', good: true },
+    ],
   },
 
   // Cena 3 — Gigante Maul: Duelo de Dados
