@@ -2372,10 +2372,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "País de Beulá",
     characters: ["cristao", "esperanca"],
     reflection: "r13",
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 4000, message: 'Uma paz sobrenatural enche o ar...' },
     narrative: [
-      "Além da Terra Encantada, tudo muda. O ar se torna doce — não intoxicante, mas revigorante. Flores de todas as cores cobrem os campos. Árvores carregadas de frutos dourados bordam o caminho.",
-      "Este é o País de Beulá — a terra onde o sol nunca se põe, onde os pássaros cantam sem cessar, e onde o perfume das flores vem do próprio jardim do Rei.",
-      "Bunyan escreveu que aqui os peregrinos ouviam continuamente vozes cantando: 'Dize à filha de Sião: Eis que vem o teu Salvador.' A Cidade Celestial brilha no horizonte, tão perto que seus portões são visíveis a olho nu."
+      "{{divine}}Além da Terra Encantada, tudo muda. O ar se torna doce — não intoxicante, mas revigorante.{{/divine}} Flores de todas as cores cobrem os campos. {{heart}}Árvores carregadas de frutos dourados bordam o caminho.{{/heart}}",
+      "Este é o {{emphasis}}País de Beulá{{/emphasis}} — a terra onde o sol nunca se põe, onde os pássaros cantam sem cessar, e onde o perfume das flores vem do próprio jardim do Rei.",
+      "{{divine}}Bunyan escreveu que aqui os peregrinos ouviam continuamente vozes cantando: 'Dize à filha de Sião: Eis que vem o teu Salvador.'{{/divine}} {{heart}}A Cidade Celestial brilha no horizonte, tão perto que seus portões são visíveis a olho nu.{{/heart}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "As lágrimas rolam livremente. Não de dor — de alegria absoluta. Tudo pelo que você lutou está diante de seus olhos. A fé virou quase visão.", lowThreshold: 4, lowText: "A beleza é avassaladora. Você não sabia que algo assim era possível. A dúvida se dissolve como névoa ao sol." }
