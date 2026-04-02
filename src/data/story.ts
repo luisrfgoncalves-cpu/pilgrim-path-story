@@ -642,7 +642,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "O caminho sobe uma colina. No topo, uma visão te paralisa: uma cruz de madeira, erguida contra o céu. Ao seu pé, um sepulcro aberto.",
       "Ao olhar para a cruz, algo acontece. As cordas que prendiam o fardo às suas costas se soltam. O fardo desliza, cai, e rola colina abaixo até desaparecer dentro do sepulcro. A boca do túmulo se fecha.",
-      "Pela primeira vez desde que abriu o livro, você está de pé sem peso. Lágrimas escorrem, mas não são de dor — são de alívio. Três Seres Resplandecentes aparecem. O primeiro diz: \"Seus pecados são perdoados.\" O segundo remove seus trapos e lhe veste roupas novas. O terceiro coloca um selo na sua testa e lhe entrega um pergaminho com um selo: sua garantia de entrada na Cidade Celestial.",
+      "Pela primeira vez desde que abriu o livro, você está de pé sem peso. Lágrimas escorrem, mas não são de dor — são de alívio. Três Seres Resplandecentes aparecem — mensageiros enviados pelo Senhor. O primeiro anuncia: \"Deus perdoou os teus pecados.\" O segundo remove seus trapos e lhe veste roupas novas. O terceiro coloca um selo na sua testa e lhe entrega um pergaminho selado: sua garantia de entrada na Cidade Celestial.",
       "A jornada continua. Mas agora, sem o fardo."
     ],
     choices: [
