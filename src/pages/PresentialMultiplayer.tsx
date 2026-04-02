@@ -460,6 +460,8 @@ const PresentialMultiplayer = () => {
   const [rpgGameMode, setRpgGameMode] = useState<GameMode>('cooperative');
   const [rpgHostIndex, setRpgHostIndex] = useState(0);
   const rotationStateRef = useRef<RotationState>(createRotationState());
+  const chainStateRef = useRef<ChainState>(createChainState());
+  const [streakAnnounce, setStreakAnnounce] = useState<string | null>(null);
   const [rpgEvent, setRpgEvent] = useState<{
     tileType: RPGTileEventType;
     sourceTileType: TileType;
