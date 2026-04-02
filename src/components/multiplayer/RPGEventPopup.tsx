@@ -9,6 +9,7 @@ import {
 } from '@/data/rpg/rotationEngine';
 import { TileEventType } from '@/data/rpg/types';
 import { playGameSfx, GameSfx } from '@/lib/gameSfx';
+import { narrate, stopNarration, getNarrationStyle } from '@/lib/narrator';
 import { Clock, PlayCircle } from 'lucide-react';
 
 // Map RPG sound intents to available GameSfx types
@@ -144,9 +145,30 @@ export default function RPGEventPopup({
         emoji: tileEventType === 'refuge' ? '🏠' : '⚡',
       });
     }
+
+    // Auto-narrate context when popup opens (delayed slightly for visual)
+    setTimeout(() => {
+      const contextText = 
+        question?.context || riddle?.context || dilemma?.context || challenge?.context
+        || boss?.narrative || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative;
+      if (contextText) {
+        narrate(contextText, { style: getNarrationStyle(tileEventType) });
+      }
+    }, 500);
+
+    return () => stopNarration();
   }, [visible, tileEventType, difficulty, playerNames, rotationState]);
 
-  // Timer countdown
+  // Narrate results when they appear
+  useEffect(() => {
+    if (showResult && resultData) {
+      stopNarration();
+      setTimeout(() => narrate(resultData.message.replace(/[✅❌🏆😔⏰✨]/g, '').trim(), {
+        style: resultData.success ? 'triumphant' : 'whisper',
+      }), 300);
+    }
+  }, [showResult, resultData]);
+
   useEffect(() => {
     if (!timerActive || timeLeft <= 0) return;
     timerRef.current = window.setInterval(() => {

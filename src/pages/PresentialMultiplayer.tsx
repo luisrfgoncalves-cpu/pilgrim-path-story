@@ -25,6 +25,7 @@ import {
 } from '@/components/multiplayer/BoardSounds';
 import { playGameSfx } from '@/lib/gameSfx';
 import { useAudioPrewarm } from '@/hooks/useAudioPrewarm';
+import { prewarmNarrator } from '@/lib/narrator';
 import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown } from 'lucide-react';
 import ScreenHero from '@/components/ScreenHero';
 
@@ -111,10 +112,19 @@ const TILE_TO_RPG_EVENT: Partial<Record<TileType, RPGTileEventType>> = {
   surprise: 'special',
   blessing: 'refuge',
   trap: 'trap',
+  // Narrative story tiles → RPG events based on story context
+  wicket_gate: 'scripture',
+  interpreter_house: 'riddle',
+  hill_difficulty: 'challenge',
+  palace_beautiful: 'refuge',
+  valley_humiliation: 'boss',
+  valley_shadow: 'dilemma',
+  vanity_fair: 'dilemma',
+  doubting_castle: 'boss',
+  delectable_mountains: 'refuge',
+  enchanted_ground: 'trap',
+  beulah_land: 'special',
 };
-
-// Tiles that should use the RPG popup instead of the old mini-game
-const RPG_TILE_TYPES: TileType[] = ['scripture', 'challenge', 'giant', 'surprise', 'blessing', 'trap'];
 
 // ─── River of Death tiles: last 5 tiles before finish ───
 const RIVER_ZONE_START = IMMERSIVE_BOARD_SIZE - 6; // tiles 114-118 are the river zone
@@ -295,6 +305,32 @@ function resolveTileEffect(
         result.statUpdate.backToStartCount = 1;
       }
       break;
+    // Narrative story tiles — handled by RPG popup, but fallback here
+    case 'wicket_gate':
+      result.attrChanges = { fe: 1 }; result.message = '🚪 A Porta Estreita! Boa Vontade os recebe.'; result.emoji = '🚪'; break;
+    case 'interpreter_house':
+      result.attrChanges = { discernimento: 2 }; result.message = '🏛️ O Intérprete revela verdades profundas!'; result.emoji = '🏛️'; break;
+    case 'hill_difficulty':
+      result.attrChanges = { perseveranca: 1 }; result.message = '⛰️ Monte Dificuldade — a subida fortalece!'; result.emoji = '⛰️'; break;
+    case 'palace_beautiful':
+      result.attrChanges = { fe: 1, coragem: 1 }; result.message = '🏰 Palácio Formoso! Prudência, Piedade e Caridade acolhem vocês.'; result.emoji = '🏰'; break;
+    case 'valley_humiliation':
+      result.attrChanges = { coragem: -1 }; result.message = '⚔️ Vale da Humilhação — Apolião se aproxima!'; result.emoji = '⚔️'; break;
+    case 'valley_shadow':
+      result.attrChanges = { fe: -1 }; result.message = '💀 Vale da Sombra da Morte — trevas envolvem!'; result.emoji = '💀'; break;
+    case 'vanity_fair':
+      result.message = '🎪 Feira da Vaidade — tentações por toda parte!'; result.emoji = '🎪'; break;
+    case 'doubting_castle':
+      result.attrChanges = { coragem: -2 }; result.stun = true; result.stunTurns = 1;
+      result.message = '🏴 Castelo da Dúvida — Gigante Desespero captura os peregrinos!'; result.emoji = '🏴'; break;
+    case 'delectable_mountains':
+      result.attrChanges = { fe: 2, discernimento: 1 }; result.message = '🏔️ Montanhas Deleitosas! Os pastores mostram a Cidade Celestial ao longe.'; result.emoji = '🏔️'; break;
+    case 'enchanted_ground':
+      result.stun = true; result.stunTurns = 1;
+      result.message = '😴 Terra Encantada — o sono tenta vencê-los!'; result.emoji = '😴'; break;
+    case 'beulah_land':
+      result.attrChanges = { fe: 2, coragem: 2, perseveranca: 1 };
+      result.message = '🌸 Terra de Beulá! Ar doce, flores eternas — a Cidade está próxima!'; result.emoji = '🌸'; break;
     default:
       result.message = 'Caminho tranquilo...';
       result.emoji = '·';
@@ -304,7 +340,8 @@ function resolveTileEffect(
 
 const PresentialMultiplayer = () => {
   const navigate = useNavigate();
-  useAudioPrewarm(); // Pre-warm audio engine for zero-delay sounds
+  useAudioPrewarm();
+  prewarmNarrator();
   const [phase, setPhase] = useState<'setup' | 'playing' | 'finished'>('setup');
   const [players, setPlayers] = useState<LocalPlayer[]>([createPlayer(0), createPlayer(1)]);
   const [editingNames, setEditingNames] = useState<Record<string, string>>({});
@@ -489,8 +526,12 @@ const PresentialMultiplayer = () => {
     const prevPhase = Math.floor(prevPos / TILES_PER_PHASE);
     const newPhase = Math.floor(newPos / TILES_PER_PHASE);
 
-    // Move token visually
-    setPlayers(prev => prev.map((p, i) => i === turnIdx ? { ...p, position: newPos, lastDice: diceVal } : p));
+    // Move token(s) visually — cooperative = ALL move together
+    if (rpgGameMode === 'cooperative') {
+      setPlayers(prev => prev.map(p => ({ ...p, position: newPos, lastDice: diceVal })));
+    } else {
+      setPlayers(prev => prev.map((p, i) => i === turnIdx ? { ...p, position: newPos, lastDice: diceVal } : p));
+    }
     playGameSfx('diceRoll');
 
     // Build the post-animation action
@@ -570,14 +611,14 @@ const PresentialMultiplayer = () => {
       if (finalPos !== newPos) {
         // Apply attrs and state at CURRENT position, defer movement
         setPlayers(prev => prev.map((p, i) => {
-          if (i !== turnIdx) return p;
+          const shouldApply = rpgGameMode === 'cooperative' || i === turnIdx;
+          if (!shouldApply) return p;
           const newAttrs = { ...p.attributes };
           for (const [key, val] of Object.entries(effect.attrChanges)) {
             (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
           }
           return {
             ...p,
-            // Keep position at newPos — will move after popup
             isStunned: effect.stun,
             stunTurns: effect.stunTurns,
             hasShield: effect.shield ? true : (tileType === 'trap' || tileType === 'giant' ? false : p.hasShield),
@@ -601,15 +642,21 @@ const PresentialMultiplayer = () => {
         };
         // Also handle finish after move
         if (isFinished) {
-          setPlayers(prev => prev.map((p, i) => {
-            if (i !== turnIdx) return p;
-            return { ...p, finished: true, finishOrder: newFinishCount };
-          }));
+          if (rpgGameMode === 'cooperative') {
+            // All finish together
+            setPlayers(prev => prev.map((p, i) => ({ ...p, finished: true, finishOrder: 1 })));
+          } else {
+            setPlayers(prev => prev.map((p, i) => {
+              if (i !== turnIdx) return p;
+              return { ...p, finished: true, finishOrder: newFinishCount };
+            }));
+          }
         }
       } else {
         // No position change — apply everything now
         setPlayers(prev => prev.map((p, i) => {
-          if (i !== turnIdx) return p;
+          const shouldApply = rpgGameMode === 'cooperative' || i === turnIdx;
+          if (!shouldApply) return p;
           const newAttrs = { ...p.attributes };
           for (const [key, val] of Object.entries(effect.attrChanges)) {
             (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
@@ -618,7 +665,7 @@ const PresentialMultiplayer = () => {
             ...p,
             position: finalPos,
             finished: isFinished,
-            finishOrder: isFinished ? newFinishCount : null,
+            finishOrder: isFinished ? (rpgGameMode === 'cooperative' ? 1 : newFinishCount) : null,
             isStunned: effect.stun,
             stunTurns: effect.stunTurns,
             hasShield: effect.shield ? true : (tileType === 'trap' || tileType === 'giant' ? false : p.hasShield),
@@ -830,10 +877,11 @@ const PresentialMultiplayer = () => {
         setReturnMoveInfo(`↩️ Voltando ${casasDiff} casa${casasDiff > 1 ? 's' : ''}...`);
       }
 
-      // Move the token visually
+      // Move the token visually — cooperative = ALL move
       setIsTokenMoving(true);
       setPlayers(prev => prev.map((p, i) => {
-        if (i !== playerIdx) return p;
+        const shouldMove = rpgGameMode === 'cooperative' || i === playerIdx;
+        if (!shouldMove) return p;
         const newAttrs = { ...p.attributes };
         for (const [key, val] of Object.entries(attrs)) {
           (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);

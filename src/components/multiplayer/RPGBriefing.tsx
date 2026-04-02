@@ -267,7 +267,7 @@ export default function RPGBriefing({ onStart, onBack }: RPGBriefingProps) {
             >
               <span className="text-2xl">🏃</span>
               <div className="flex-1">
-                <span className="font-display font-bold text-sm text-foreground">Livre Arbítrio</span>
+                <span className="font-display font-bold text-sm text-foreground">Cada Um Por Si</span>
                 <p className="text-[11px] text-muted-foreground">Cada peregrino tem seu próprio caminho. Suas decisões afetam só a você — ou ao grupo!</p>
               </div>
               {gameMode === 'individual' && <div className="w-3 h-3 rounded-full bg-primary" />}

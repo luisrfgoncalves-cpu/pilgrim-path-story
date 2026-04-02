@@ -228,8 +228,20 @@ const ICON_MAP: Record<TileType, (p: IconProps) => JSX.Element> = {
   double_dice: DoubleDiceIcon,
   current: CurrentIcon,
   checkpoint: CheckpointIcon,
-  back_to_start: TrapIcon, // reuse trap icon with skull
+  back_to_start: TrapIcon,
   normal: NormalIcon,
+  // Narrative story tiles — reuse thematic icons
+  wicket_gate: StartIcon,
+  interpreter_house: ScriptureIcon,
+  hill_difficulty: ChallengeIcon,
+  palace_beautiful: RefugeIcon,
+  valley_humiliation: ChallengeIcon,
+  valley_shadow: GiantIcon,
+  vanity_fair: SurpriseIcon,
+  doubting_castle: GiantIcon,
+  delectable_mountains: BlessingIcon,
+  enchanted_ground: TrapIcon,
+  beulah_land: BlessingIcon,
 };
 
 export function MedievalTileIcon({ tileType, size = 28, color, glowColor }: { tileType: TileType } & IconProps) {
