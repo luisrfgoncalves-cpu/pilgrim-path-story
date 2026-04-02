@@ -609,14 +609,14 @@ const PresentialMultiplayer = () => {
       if (finalPos !== newPos) {
         // Apply attrs and state at CURRENT position, defer movement
         setPlayers(prev => prev.map((p, i) => {
-          if (i !== turnIdx) return p;
+          const shouldApply = rpgGameMode === 'cooperative' || i === turnIdx;
+          if (!shouldApply) return p;
           const newAttrs = { ...p.attributes };
           for (const [key, val] of Object.entries(effect.attrChanges)) {
             (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
           }
           return {
             ...p,
-            // Keep position at newPos — will move after popup
             isStunned: effect.stun,
             stunTurns: effect.stunTurns,
             hasShield: effect.shield ? true : (tileType === 'trap' || tileType === 'giant' ? false : p.hasShield),
