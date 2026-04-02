@@ -1912,9 +1912,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Estrada além da Feira",
     characters: ["cristao", "esperanca", "interesses"],
     narrative: [
-      "Na estrada, um homem bem-vestido se junta a vocês. Seu nome é Interesses, da cidade de Bom-Discurso. Ele é primo do Sr. Volta-Suave e sobrinho do Sr. Duas-Línguas.",
-      "\"Também sou peregrino!\", diz ele sorrindo. \"Mas confesso que prefiro seguir a religião quando ela caminha com chinelos de prata — sob o sol, com aplausos do povo.\"",
-      "Esperança te cutuca: \"Pergunte a ele se seguiria a religião descalço, na chuva, sem plateia.\""
+      "Na estrada, um homem bem-vestido se junta a vocês. Seu nome é {{emphasis}}Interesses{{/emphasis}}, da cidade de Bom-Discurso. Ele é primo do Sr. Volta-Suave e sobrinho do Sr. Duas-Línguas.",
+      "{{dialog}}\"Também sou peregrino!\"{{/dialog}}, diz ele sorrindo. {{villain}}\"Mas confesso que prefiro seguir a religião quando ela caminha com chinelos de prata — sob o sol, com aplausos do povo.\"{{/villain}}",
+      "{{whisper}}Esperança te cutuca: \"Pergunte a ele se seguiria a religião descalço, na chuva, sem plateia.\"{{/whisper}}"
     ],
     toneNarrative: [
       { attr: "discernimento", highThreshold: 7, highText: "Você reconhece o tipo. Interesses ama a religião como ornamento, não como sacrifício. Sua fé é uma roupa para dias de sol.", lowThreshold: 3, lowText: "O homem parece razoável. Por que sofrer quando se pode servir a Deus com conforto?" }
