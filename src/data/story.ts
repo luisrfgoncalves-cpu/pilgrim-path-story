@@ -2638,7 +2638,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Orar juntos e entrar no rio com fé",
-        nextChapterId: "fase6-cena2",
+        nextChapterId: "fase6-cena4",
         effects: { fe: 1, perseveranca: 1 },
         consequence: "A oração antes da travessia é preparo espiritual. Filipenses 4:6: 'Não estejais inquietos por coisa alguma; antes sejam os vossos pedidos conhecidos diante de Deus pela oração.'",
         flag: "orou_antes_rio"
