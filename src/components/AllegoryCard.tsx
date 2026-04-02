@@ -130,13 +130,9 @@ export function AllegoryCard({ characterId, onDismiss }: AllegoryCardProps) {
 
   useEffect(() => {
     const enterTimer = setTimeout(() => setPhase('visible'), 300);
-    // Auto-dismiss after 12 seconds but user can tap to dismiss
-    const autoTimer = setTimeout(() => {
-      setPhase('exit');
-      setTimeout(onDismiss, 500);
-    }, 12000);
-    return () => { clearTimeout(enterTimer); clearTimeout(autoTimer); };
-  }, [onDismiss]);
+    // NO auto-dismiss — user must tap/click to close
+    return () => { clearTimeout(enterTimer); };
+  }, []);
 
   if (!char || !img) return null;
 
