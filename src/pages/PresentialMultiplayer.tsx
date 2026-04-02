@@ -695,6 +695,7 @@ const PresentialMultiplayer = () => {
         // Play phase ambient and transition sound
         playPhaseTransitionSound(newPhase);
         playPhaseAmbient(newPhase);
+        updateAmbientPhase(newPhase);
         lastPhaseAmbientRef.current = newPhase;
         // Update player's lastPhase
         setPlayers(prev => prev.map((p, i) => i === turnIdx ? { ...p, lastPhase: newPhase } : p));
