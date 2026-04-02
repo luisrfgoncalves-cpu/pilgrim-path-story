@@ -932,7 +932,7 @@ export default function RPGEventPopup({
             <div className="space-y-4">
               <div className="text-center text-6xl mb-2">{resultData.emoji}</div>
               <div className={`p-4 rounded-xl border ${resultData.success ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-                <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">{resultData.message}</p>
+                <p className="text-base text-foreground leading-relaxed whitespace-pre-line" style={{ lineHeight: '1.7' }}>{resultData.message}</p>
               </div>
               {/* Revelation button — only on success */}
               {resultData.success && getRevelation(getContentId()) && (
