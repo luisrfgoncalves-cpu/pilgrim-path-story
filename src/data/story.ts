@@ -130,6 +130,7 @@ export const characters: Character[] = [
   // ── Personagens sem nome (ilustrativos) ──
   { id: "esposa_cristao", name: "Esposa de Cristão", description: "A mulher de Cristão que, na Parte I, não compreende o desespero do marido e pede que ele volte a dormir. Na Parte II (como Cristã), ela se arrepende e faz a mesma jornada.", role: "Família", unlockedAtChapter: "cena1" },
   { id: "vizinhos", name: "Vizinhos da Cidade", description: "Os moradores da Cidade da Destruição que zombam de Cristão, fecham as janelas e riem do homem que chora em público. Representam a indiferença do mundo diante do chamado divino.", role: "Ambiente", unlockedAtChapter: "cena1b" },
+  { id: "livro_antigo", name: "O Livro", description: "O livro que Cristão abre e que revela a condenação da Cidade da Destruição. Representa a Bíblia — a Palavra de Deus que desperta a consciência do pecador.", role: "Símbolo", unlockedAtChapter: "cena1" },
 
   // ── Parte II — Novos personagens ──
   { id: "crista", name: "Cristã", description: "Esposa de Cristão e protagonista da Parte II. Arrependida por não ter acompanhado o marido, decide seguir o mesmo caminho até a Cidade Celestial, levando seus quatro filhos: Mateus, Tiago, Samuel e José.", role: "Protagonista (Parte II)", unlockedAtChapter: "cena1" },
@@ -194,15 +195,15 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena1",
     title: "O Livro e o Fardo",
     location: "Cidade da Destruição",
-    characters: ["cristao", "esposa_cristao"],
+    characters: ["cristao", "esposa_cristao", "livro_antigo"],
     sceneEvent: { type: 'tension', intensity: 1, duration: 3000, message: 'Um peso esmagador cai sobre seus ombros...' },
     narrative: [
       "Você está em casa, na Cidade da Destruição, quando abre um livro antigo.",
-      "As palavras falam de juízo. De uma cidade condenada. {{emphasis}}Da sua cidade.{{/emphasis}}",
-      "Suas mãos tremem.",
+      "{{tremor}}As palavras falam de juízo. De uma cidade condenada. {{emphasis}}Da sua cidade.{{/emphasis}}{{/tremor}}",
+      "Suas mãos tremem. As páginas parecem brilhar com uma luz própria.",
       "{{tremor}}Um peso surge nas suas costas, como se cada frase virasse pedra.{{/tremor}}",
-      "Você tenta arrancá-lo. Não consegue.",
-      "À noite, uma frase não sai da sua cabeça: {{heart}}\"Fugi da ira vindoura.\"{{/heart}}"
+      "Você tenta arrancá-lo. Não consegue. {{heart}}O fardo é real.{{/heart}}",
+      "{{fade}}À noite, uma frase não sai da sua cabeça:{{/fade}} {{divine}}\"Fugi da ira vindoura.\"{{/divine}}"
     ],
     replayNarrative: [
       "O livro está aqui de novo. O fardo, também. Mas desta vez você sabe — sabe que há uma porta, um caminho, e que cada escolha adiante moldará quem você se tornará."
@@ -235,9 +236,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     reflection: "r2",
     narrative: [
       "Você tenta agir como se nada tivesse acontecido, mas o fardo continua ali.",
-      "Obstinado percebe primeiro. {{villain}}\"Você enlouqueceu. Volte ao normal.\"{{/villain}}",
-      "Flexível não ri. {{dialog}}\"E se ele estiver certo?\"{{/dialog}}",
-      "Os dois esperam sua resposta. Um te puxa para trás. O outro olha para a estrada."
+      "{{villain}}Obstinado percebe primeiro. \"Você enlouqueceu. Volte ao normal.\"{{/villain}}",
+      "{{tremor}}Ele te segura pelo braço com força.{{/tremor}}",
+      "Flexível não ri. {{dialog}}\"E se ele estiver certo? E se a cidade realmente for destruída?\"{{/dialog}}",
+      "Os dois esperam sua resposta. {{heart}}Um te puxa para trás. O outro olha para a estrada.{{/heart}}"
     ],
     choices: [
       {
@@ -264,10 +266,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "flexivel"],
     reflection: "r3",
     narrative: [
-      "Você corre para fora da cidade com o livro apertado no peito.",
+      "{{tremor}}Você corre para fora da cidade com o livro apertado no peito.{{/tremor}}",
       "Para não ouvir os gritos atrás de você, tapa os próprios ouvidos.",
       "{{shout}}\"Vida! Vida eterna!\"{{/shout}}",
-      "A cidade fica menor. O campo à frente parece imenso. {{whisper}}E sem direção.{{/whisper}}"
+      "{{fade}}A cidade fica menor. O campo à frente parece imenso.{{/fade}} {{whisper}}E sem direção.{{/whisper}}"
     ],
     flagNarrative: [
       { flag: "convidou_flexivel", text: "Flexível corre ao seu lado, ofegante: \"Onde vamos? Mostre-me esse lugar de que você fala!\" Sua companhia é reconfortante, mas será que ele aguentará o caminho?" }
@@ -298,11 +300,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     timeoutChoiceIndex: 1,
     sceneEvent: { type: 'tension', intensity: 2, duration: 3000 },
     narrative: [
-      "Você volta para casa, mas o peso só aumenta.",
+      "{{tremor}}Você volta para casa, mas o peso só aumenta.{{/tremor}}",
       "{{tremor}}À noite, as paredes parecem se fechar em volta de você.{{/tremor}}",
       "As palavras do livro queimam na mente: {{heart}}\"A ira vindoura...\"{{/heart}}",
-      "Sua família percebe que algo se rompeu dentro de você.",
-      "{{emphasis}}Ficar dói. Partir também.{{/emphasis}}"
+      "{{fade}}Sua família percebe que algo se rompeu dentro de você.{{/fade}}",
+      "{{emphasis}}Ficar dói. Partir também. Mas só um dos caminhos tem esperança.{{/emphasis}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 6, highText: "No fundo da agonia, uma voz mansa sussurra: \"Há uma saída. Busque-a.\"", lowThreshold: 3, lowText: "O desespero é tão espesso que você mal consegue respirar. Será que existe saída, ou o fardo é para sempre?" }
@@ -330,10 +332,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "evangelista"],
     narrative: [
       "No meio do campo, um homem alto cruza seu caminho.",
-      "O nome dele é {{emphasis}}Evangelista{{/emphasis}}.",
+      "O nome dele é {{emphasis}}Evangelista{{/emphasis}}. {{divine}}Seu rosto irradia uma paz que você nunca viu.{{/divine}}",
       "Ele aponta para uma luz distante: {{dialog}}\"Siga naquela direção. Lá está a Porta Estreita.\"{{/dialog}}",
       "Depois coloca um pergaminho na sua mão. Uma única palavra brilha nele: {{divine}}FUJA{{/divine}}.",
-      "Antes de partir, ele avisa: {{dialog}}\"Não olhe para trás.\"{{/dialog}}"
+      "{{whisper}}Antes de partir, ele avisa: \"Não olhe para trás.\"{{/whisper}}"
     ],
     flagNarrative: [
       { flag: "convidou_flexivel", text: "Flexível olha para Evangelista com desconfiança: \"Esse caminho parece perigoso. Tem certeza?\" Evangelista o ignora e fala diretamente com você." }

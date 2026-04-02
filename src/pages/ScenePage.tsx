@@ -617,7 +617,7 @@ const ScenePage = () => {
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Back to previous scene */}
+            {/* Back to previous scene — always visible */}
             {progress.visitedChapters.length > 1 && (
               <button
                 onClick={() => {
@@ -628,10 +628,11 @@ const ScenePage = () => {
                     goToChapter(prevId);
                   }
                 }}
-                className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95"
+                className="btn-medieval-icon !px-3 !py-2 !rounded-lg flex items-center justify-center gap-1.5 active:scale-95"
                 aria-label="Cena anterior"
               >
-                <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+                <ArrowLeft className="w-4 h-4 text-primary" />
+                <span className="text-[10px] font-display text-primary uppercase tracking-wider hidden sm:inline">Voltar</span>
               </button>
             )}
             <button
@@ -849,17 +850,28 @@ const ScenePage = () => {
             )}
 
             {fullNarrative.length > 0 && !showChoices && (
-              <div className="flex items-center justify-between gap-3 rounded-xl border border-border/50 bg-card/40 px-4 py-3">
-                <p className="text-[11px] font-display uppercase tracking-[0.2em] text-muted-foreground">
-                  Trecho {Math.min(narrativeIndex + 1, fullNarrative.length)} de {fullNarrative.length}
-                </p>
-                <button
-                  onClick={handleAdvanceNarrative}
-                  disabled={!hasMoreNarrative && !canShowChoices}
-                  className="btn-medieval-secondary min-w-[132px] px-4 py-2 text-xs disabled:pointer-events-none disabled:opacity-60"
-                >
-                  {hasMoreNarrative ? 'Continuar' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'}
-                </button>
+              <div className="space-y-2">
+                {/* Back to previous beat */}
+                {narrativeIndex > 0 && (
+                  <button
+                    onClick={() => setNarrativeIndex(prev => Math.max(0, prev - 1))}
+                    className="flex items-center gap-2 text-[11px] font-display text-primary/70 hover:text-primary transition-colors uppercase tracking-wider"
+                  >
+                    <ArrowLeft className="w-3 h-3" /> Reler trecho anterior
+                  </button>
+                )}
+                <div className="flex items-center justify-between gap-3 rounded-xl border border-border/50 bg-card/40 px-4 py-3">
+                  <p className="text-[11px] font-display uppercase tracking-[0.2em] text-muted-foreground">
+                    Trecho {Math.min(narrativeIndex + 1, fullNarrative.length)} de {fullNarrative.length}
+                  </p>
+                  <button
+                    onClick={handleAdvanceNarrative}
+                    disabled={!hasMoreNarrative && !canShowChoices}
+                    className="btn-medieval-secondary min-w-[132px] px-4 py-2 text-xs disabled:pointer-events-none disabled:opacity-60"
+                  >
+                    {hasMoreNarrative ? 'Continuar' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'}
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -1110,7 +1122,33 @@ const ScenePage = () => {
                 </div>
               ) : (
                 <>
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3 font-display">Escolha seu caminho</p>
+                  {/* Re-read narrative + back to previous scene */}
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-display">Escolha seu caminho</p>
+                    <div className="flex items-center gap-2">
+                      {fullNarrative.length > 0 && (
+                        <button
+                          onClick={() => { setShowChoices(false); setNarrativeIndex(0); }}
+                          className="flex items-center gap-1 text-[10px] font-display text-primary/70 hover:text-primary transition-colors uppercase tracking-wider"
+                        >
+                          <ArrowLeft className="w-3 h-3" /> Reler
+                        </button>
+                      )}
+                      {progress.visitedChapters.length > 1 && (
+                        <button
+                          onClick={() => {
+                            const visited = progress.visitedChapters;
+                            const currentIdx = visited.indexOf(progress.currentChapterId);
+                            const prevId = currentIdx > 0 ? visited[currentIdx - 1] : visited[visited.length - 2];
+                            if (prevId && prevId !== progress.currentChapterId) goToChapter(prevId);
+                          }}
+                          className="flex items-center gap-1 text-[10px] font-display text-muted-foreground hover:text-primary transition-colors uppercase tracking-wider"
+                        >
+                          <ArrowLeft className="w-3 h-3" /> Cena anterior
+                        </button>
+                      )}
+                    </div>
+                  </div>
 
                   {chapter.interactionType === 'drag' && availableChoices.length >= 2 ? (
                     <DragToChoose

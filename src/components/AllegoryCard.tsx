@@ -114,8 +114,12 @@ const allegoryMeanings: Record<string, { meaning: string; verse?: string; type: 
     verse: '1 Timóteo 6:10 — "O amor ao dinheiro é raiz de todos os males."',
     type: 'villain',
   },
+  livro_antigo: {
+    meaning: 'O Livro que Cristão abre representa a Bíblia — a Palavra de Deus que revela a verdade sobre o pecado e a condenação. É o instrumento que desperta a consciência adormecida.',
+    verse: 'Hebreus 4:12 — "A palavra de Deus é viva e eficaz, e mais penetrante do que qualquer espada de dois gumes."',
+    type: 'divine',
+  },
 };
-
 interface AllegoryCardProps {
   characterId: string;
   onDismiss: () => void;
@@ -130,13 +134,9 @@ export function AllegoryCard({ characterId, onDismiss }: AllegoryCardProps) {
 
   useEffect(() => {
     const enterTimer = setTimeout(() => setPhase('visible'), 300);
-    // Auto-dismiss after 12 seconds but user can tap to dismiss
-    const autoTimer = setTimeout(() => {
-      setPhase('exit');
-      setTimeout(onDismiss, 500);
-    }, 12000);
-    return () => { clearTimeout(enterTimer); clearTimeout(autoTimer); };
-  }, [onDismiss]);
+    // NO auto-dismiss — user must tap/click to close
+    return () => { clearTimeout(enterTimer); };
+  }, []);
 
   if (!char || !img) return null;
 
@@ -226,9 +226,24 @@ export function AllegoryCard({ characterId, onDismiss }: AllegoryCardProps) {
             </>
           )}
 
-          {/* Tap hint */}
-          <p className="text-[10px] text-muted-foreground/50 text-center mt-4 font-display uppercase tracking-widest">
-            Toque para continuar
+          {/* Dismiss button — clear and prominent */}
+          <button
+            className="mt-4 w-full py-3 rounded-xl text-sm font-display font-bold uppercase tracking-wider transition-all"
+            style={{
+              background: colors.badge,
+              color: colors.badgeText,
+              border: `1px solid ${colors.border}`,
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setPhase('exit');
+              setTimeout(onDismiss, 500);
+            }}
+          >
+            Entendi — Continuar
+          </button>
+          <p className="text-[10px] text-muted-foreground/50 text-center mt-2 font-display uppercase tracking-widest">
+            Toque no botão acima para continuar
           </p>
         </div>
       </div>
