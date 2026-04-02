@@ -92,7 +92,7 @@ const ScenePage = () => {
   const { triggerChoiceEffect, triggerSceneEntryVFX } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
-  const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
+  const { setAmbienceForScene, sfxForChoice, playSfx, toggleAudio, stopAmbience } = useAudioEngine();
   // Recent decision effects for trend analysis
   const recentEffects = useMemo(() => {
     return (progress as any).decisions?.slice(-5)?.map((d: any) => d.effects || {}) || [];
