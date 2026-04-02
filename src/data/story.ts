@@ -2013,10 +2013,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Perdidos no Prado",
     location: "Prado Agradável",
     characters: ["cristao", "esperanca", "gigante_desespero"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Mãos brutais sacodem vocês!' },
     narrative: [
-      "A noite cai. A chuva começa. Trovões rasgam o céu. O prado se transforma em lamaçal. Vocês tentam voltar ao caminho, mas a cerca desapareceu na escuridão.",
-      "Perdidos e encharcados, vocês tropeçam até que o sono vence. Deitam-se no chão encharcado.",
-      "Pela manhã, mãos brutais os sacodem. O Gigante Desespero está de pé sobre vocês. \"Vocês estão na minha terra. São meus prisioneiros.\""
+      "{{tremor}}A noite cai. A chuva começa. Trovões rasgam o céu.{{/tremor}} O prado se transforma em lamaçal. Vocês tentam voltar ao caminho, mas {{fade}}a cerca desapareceu na escuridão.{{/fade}}",
+      "{{whisper}}Perdidos e encharcados, vocês tropeçam até que o sono vence.{{/whisper}} Deitam-se no chão encharcado.",
+      "{{villain}}Pela manhã, mãos brutais os sacodem. O Gigante Desespero está de pé sobre vocês.{{/villain}} {{shout}}\"Vocês estão na minha terra. São meus prisioneiros.\"{{/shout}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "Mesmo nas garras do gigante, uma voz interior insiste: há saída. Sempre há.", lowThreshold: 3, lowText: "O gigante é imenso. Sua voz faz o chão tremer. Toda esperança parece morrer." }
