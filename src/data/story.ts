@@ -130,6 +130,7 @@ export const characters: Character[] = [
   // ── Personagens sem nome (ilustrativos) ──
   { id: "esposa_cristao", name: "Esposa de Cristão", description: "A mulher de Cristão que, na Parte I, não compreende o desespero do marido e pede que ele volte a dormir. Na Parte II (como Cristã), ela se arrepende e faz a mesma jornada.", role: "Família", unlockedAtChapter: "cena1" },
   { id: "vizinhos", name: "Vizinhos da Cidade", description: "Os moradores da Cidade da Destruição que zombam de Cristão, fecham as janelas e riem do homem que chora em público. Representam a indiferença do mundo diante do chamado divino.", role: "Ambiente", unlockedAtChapter: "cena1b" },
+  { id: "livro_antigo", name: "O Livro", description: "O livro que Cristão abre e que revela a condenação da Cidade da Destruição. Representa a Bíblia — a Palavra de Deus que desperta a consciência do pecador.", role: "Símbolo", unlockedAtChapter: "cena1" },
 
   // ── Parte II — Novos personagens ──
   { id: "crista", name: "Cristã", description: "Esposa de Cristão e protagonista da Parte II. Arrependida por não ter acompanhado o marido, decide seguir o mesmo caminho até a Cidade Celestial, levando seus quatro filhos: Mateus, Tiago, Samuel e José.", role: "Protagonista (Parte II)", unlockedAtChapter: "cena1" },
