@@ -190,7 +190,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Livro e o Fardo",
     location: "Cidade da Destruição",
     characters: ["cristao"],
-    reflection: "r1",
+    sceneEvent: { type: 'tension', intensity: 1, duration: 3000, message: 'Um peso esmagador cai sobre seus ombros...' },
     narrative: [
       "Você está em casa, na Cidade da Destruição, quando abre um livro antigo.",
       "As palavras falam de juízo. De uma cidade condenada. {{emphasis}}Da sua cidade.{{/emphasis}}",
@@ -210,12 +210,14 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Guardar o livro e fingir que nada aconteceu",
         nextChapterId: "cena2",
         effects: { fe: -1, discernimento: -1 },
-        flag: "ignorou_inquietacao"
+        flag: "ignorou_inquietacao",
+        consequence: "Você fecha o livro, mas ele continua queimando no peito. Bunyan nos ensina: ignorar a verdade não a apaga — apenas adia o confronto com ela. Quantos vivem carregando fardos que se recusam a nomear?"
       },
       {
         text: "Sair de casa clamando: \"O que devo fazer para ser salvo?\"",
         nextChapterId: "cena1b",
-        effects: { discernimento: 1, fe: 1 }
+        effects: { discernimento: 1, fe: 1 },
+        consequence: "O grito de Cristão é o mesmo do carcereiro de Filipos (Atos 16:30). É a pergunta mais honesta que um ser humano pode fazer. Reconhecer a necessidade de salvação é o primeiro passo da jornada."
       }
     ]
   },
@@ -236,13 +238,15 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Concordar com Obstinado e voltar para casa",
         nextChapterId: "cena4",
-        effects: { fe: -1, coragem: -1 }
+        effects: { fe: -1, coragem: -1 },
+        consequence: "Obstinado representa quem ouve o chamado de Deus mas escolhe a falsa segurança do que já conhece. Voltar para a 'normalidade' quando a verdade já foi revelada é escolher o conforto acima da salvação."
       },
       {
         text: "Dizer a Flexível: \"Venha comigo. Há uma porta que devemos encontrar.\"",
         nextChapterId: "cena3",
         effects: { discernimento: 1, coragem: 1 },
-        flag: "convidou_flexivel"
+        flag: "convidou_flexivel",
+        consequence: "Flexível é a fé que depende das circunstâncias — aceita o caminho enquanto é fácil. Cristão faz o certo ao convidá-lo, mesmo sabendo que nem todos que começam a jornada a completam. Jesus disse: 'Muitos são chamados, mas poucos, escolhidos.' (Mateus 22:14)"
       }
     ]
   },
@@ -251,6 +255,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena3",
     title: "O Clamor",
     location: "Cidade da Destruição",
+    sceneEvent: { type: 'tension', intensity: 1, duration: 2000 },
     characters: ["cristao"],
     reflection: "r3",
     narrative: [
@@ -266,12 +271,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Procurar alguém que conheça o caminho",
         nextChapterId: "cena5",
-        effects: { fe: 1, discernimento: 1 }
+        effects: { fe: 1, discernimento: 1 },
+        consequence: "Buscar orientação é sabedoria. Provérbios 12:15 diz: 'O caminho do tolo parece-lhe reto, mas o sábio dá ouvidos ao conselho.' Evangelista é a figura do pregador fiel que aponta para Cristo — não para si mesmo."
       },
       {
         text: "Tentar encontrar a porta por conta própria",
         nextChapterId: "cena6",
-        effects: { perseveranca: 1, coragem: 1 }
+        effects: { perseveranca: 1, coragem: 1 },
+        consequence: "A coragem de tentar sozinho é admirável, mas perigosa. Sem orientação, o caminho se perde facilmente. Bunyan mostra que o orgulho espiritual — achar que não precisa de guia — é um dos primeiros tropeços do peregrino."
       }
     ]
   },
@@ -299,12 +306,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Fugir da cidade esta noite, mesmo sozinho",
         nextChapterId: "cena5",
-        effects: { fe: 1, coragem: 1 }
+        effects: { fe: 1, coragem: 1 },
+        consequence: "Bunyan escreveu que Cristão tapou os ouvidos e correu gritando 'Vida! Vida eterna!' Quando Deus abre nossos olhos para o perigo, a urgência de fugir do pecado é mais forte que qualquer laço terreno. Lucas 14:26 fala do custo de seguir a Cristo."
       },
       {
         text: "Aguentar mais um dia, talvez o peso passe",
         nextChapterId: "cena6",
-        effects: { coragem: -1, perseveranca: -1 }
+        effects: { coragem: -1, perseveranca: -1 },
+        consequence: "A procrastinação espiritual é uma das maiores armadilhas. Cada dia que Cristão adiou a partida, o fardo ficou mais pesado. 'Eis aqui agora o dia da salvação' (2 Coríntios 6:2). O amanhã nunca é garantido."
       }
     ]
   },
@@ -329,12 +338,14 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Seguir a luz que Evangelista apontou",
         nextChapterId: "cena5b",
         effects: { discernimento: 1, fe: 1 },
-        flag: "seguiu_evangelista"
+        flag: "seguiu_evangelista",
+        consequence: "Evangelista aponta para a Porta Estreita — que é Cristo (João 10:9: 'Eu sou a porta; se alguém entrar por mim, salvar-se-á'). A luz é fraca não porque seja falsa, mas porque a fé começa pequena. Como um grão de mostarda que se torna árvore."
       },
       {
         text: "Hesitar — a luz é fraca demais, o caminho incerto",
         nextChapterId: "cena6",
-        effects: { fe: -1 }
+        effects: { fe: -1 },
+        consequence: "A hesitação de Cristão representa a dúvida que todo crente enfrenta: 'E se eu estiver errado?' Mas Hebreus 11:1 ensina que 'a fé é a certeza de coisas que se esperam, a convicção de coisas que não se veem.' A luz fraca é o começo — não o fim."
       }
     ]
   },
@@ -343,6 +354,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena6",
     title: "Sozinho com o Fardo",
     location: "Arredores da Cidade",
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'A solidão pesa...' },
     characters: ["cristao"],
     narrative: [
       "Sem direção, você vagueia pelos campos.",
@@ -357,12 +369,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Caminhar em direção à luz, mesmo sem certeza",
         nextChapterId: "cena7",
-        effects: { fe: 1, coragem: 1 }
+        effects: { fe: 1, coragem: 1 },
+        consequence: "Andar em direção a uma luz fraca, sem mapa, sem companhia — isso é fé. Não é certeza absoluta. É confiança suficiente para dar o próximo passo. 'Lâmpada para os meus pés é a tua palavra, e luz para o meu caminho.' (Salmo 119:105)"
       },
       {
         text: "Ficar parado, esperando que algo aconteça",
         nextChapterId: "cena8",
-        effects: { perseveranca: -1 }
+        effects: { perseveranca: -1 },
+        consequence: "A inércia espiritual é perigosa. Quem espera a fé perfeita para agir nunca age. Tiago 2:17 diz: 'A fé, se não tiver obras, é morta.' A jornada exige movimento — mesmo imperfeito."
       }
     ]
   },
@@ -393,14 +407,16 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Tomar o caminho largo — é mais seguro",
         nextChapterId: "cena8",
         effects: { discernimento: -1, fe: -1 },
-        flag: "escolheu_caminho_facil"
+        flag: "escolheu_caminho_facil",
+        consequence: "Jesus disse em Mateus 7:13-14: 'Larga é a porta, e espaçoso o caminho que conduz à perdição, e muitos são os que entram por ela. Estreita é a porta, e apertado o caminho que leva à vida, e poucos há que a encontrem.' O caminho fácil seduz, mas seu destino é a destruição."
       },
       {
         text: "Subir a colina até a Porta Estreita",
         nextChapterId: "cena7b",
         effects: { fe: 2, coragem: 1 },
         flag: "escolheu_caminho_estreito",
-        item: "pergaminho_verdade"
+        item: "pergaminho_verdade",
+        consequence: "Escolher o caminho difícil quando o fácil está disponível — isso é discernimento verdadeiro. Os espinhos representam as tribulações que acompanham quem segue a Cristo (João 16:33). Mas no topo, a porta está aberta para quem persevera."
       }
     ]
   },
@@ -422,12 +438,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Ir ao vilarejo da Moralidade",
         nextChapterId: "cena10",
-        effects: { fe: -1, discernimento: -1 }
+        effects: { fe: -1, discernimento: -1 },
+        consequence: "Prudência Mundana representa a tentação de resolver o problema do pecado com moralidade humana em vez de graça divina. 'Legalidade' é a Lei — que condena mas não pode salvar. Gálatas 2:16 ensina que 'ninguém será justificado pelas obras da lei, mas pela fé em Jesus Cristo.'"
       },
       {
         text: "Recusar e voltar à encruzilhada",
         nextChapterId: "cena7",
-        effects: { discernimento: 1, fe: 1 }
+        effects: { discernimento: 1, fe: 1 },
+        consequence: "Recusar o atalho de Prudência Mundana exige discernimento. Muitos 'conselhos sábios' do mundo são armadilhas espirituais disfarçadas. 'Há caminho que ao homem parece direito, mas o seu fim são os caminhos da morte.' (Provérbios 14:12)"
       }
     ]
   },
@@ -436,6 +454,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena9",
     title: "A Porta Estreita",
     location: "Porta Estreita",
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 2000, message: 'A porta se ergue diante de você...' },
     characters: ["cristao"],
     narrative: [
       "A subida é árdua. Os espinhos rasgam suas roupas e a inclinação faz o fardo pesar ainda mais. Várias vezes você escorrega e cai de joelhos.",
@@ -447,12 +466,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Seguir o caminho que se abre além da porta",
         nextChapterId: "cena9b",
-        effects: { perseveranca: 1, fe: 1 }
+        effects: { perseveranca: 1, fe: 1 },
+        consequence: "A Porta Estreita é Cristo — 'Eu sou a porta; se alguém entrar por mim, salvar-se-á' (João 10:9). Cristão entrou com humildade, confessando ser pecador. Essa é a única credencial aceita: não méritos, mas honestidade diante de Deus."
       },
       {
         text: "Olhar para trás, com saudade do que ficou",
         nextChapterId: "cena8",
-        effects: { coragem: -1 }
+        effects: { coragem: -1 },
+        consequence: "Jesus advertiu em Lucas 9:62: 'Ninguém que, tendo posto a mão no arado, olha para trás, é apto para o Reino de Deus.' A saudade do passado é natural, mas pode se tornar uma corrente que prende o peregrino."
       }
     ]
   },
@@ -467,11 +488,13 @@ export const storyChapters: Record<string, StoryChapter> = {
       "O homem Legalidade não está em lugar nenhum. A montanha ruge como se fosse esmagar tudo ao redor. Você percebe, com horror, que este caminho não pode remover seu fardo — ele só acrescenta medo ao peso.",
       "Evangelista aparece novamente, com rosto severo: \"Por que você se desviou? O caminho de Prudência Mundana leva à morte. Volte à Porta Estreita.\""
     ],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'A montanha treme e fogo arde no topo!' },
     choices: [
       {
         text: "Obedecer a Evangelista e voltar ao caminho",
         nextChapterId: "cena7",
-        effects: { fe: 1, discernimento: 1 }
+        effects: { fe: 1, discernimento: 1 },
+        consequence: "O Monte Sinai representa a Lei de Deus — que é santa, mas não pode salvar. A Lei mostra o pecado, mas não pode removê-lo. Por isso tremia e queimava: ela revela a ira de Deus contra o pecado, mas a solução está na Cruz, não na Moralidade. Romanos 3:20: 'Pela lei vem o pleno conhecimento do pecado.'"
       }
     ]
   },
@@ -499,17 +522,20 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Procurar os degraus de pedra sob a lama e avançar devagar",
         nextChapterId: "cena12",
-        effects: { discernimento: 1, perseveranca: 1 }
+        effects: { discernimento: 1, perseveranca: 1 },
+        consequence: "Os degraus sob a lama são as promessas de Deus — sempre presentes, mesmo quando não conseguimos vê-las. O Rei ordenou que fossem colocados ali para que ninguém perecesse, mas no desespero, poucos olham para baixo. 'As suas promessas são mui preciosas e grandíssimas' (2 Pedro 1:4)."
       },
       {
         text: "Parar e ouvir — vozes estranhas sussurram na lama",
         nextChapterId: "cena11b",
-        effects: { discernimento: 1 }
+        effects: { discernimento: 1 },
+        consequence: "Prestar atenção ao que o desânimo diz é perigoso, mas necessário. Nem toda voz que fala no sofrimento é de Deus — algumas são o próprio pântano tentando te afundar. Discernir entre elas exige coragem."
       },
       {
         text: "Correr desesperadamente para atravessar",
         nextChapterId: "cena13",
-        effects: { coragem: 1 }
+        effects: { coragem: 1 },
+        consequence: "A pressa no desânimo pode ser fatal. Quem corre no pântano afunda mais rápido. Bunyan ensina que paciência no sofrimento — não velocidade — é o que leva o peregrino ao outro lado."
       }
     ]
   },
@@ -528,12 +554,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Continuar passo a passo, confiando nos degraus",
         nextChapterId: "cena14",
-        effects: { perseveranca: 1, fe: 1 }
+        effects: { perseveranca: 1, fe: 1 },
+        consequence: "Cada degrau é uma promessa de Deus. O progresso lento não é fracasso — é fidelidade. 'Os que esperam no Senhor renovarão as suas forças; subirão com asas como águias; correrão e não se cansarão; caminharão e não se fatigarão.' (Isaías 40:31)"
       },
       {
         text: "Desanimar — o progresso é lento demais",
         nextChapterId: "cena13",
-        effects: { fe: -1 }
+        effects: { fe: -1 },
+        consequence: "O desânimo no meio do avanço é uma das armas mais eficazes do inimigo. Quando você já está progredindo, ele sussurra: 'Não é o suficiente.' Mas Deus valoriza cada passo dado em fé, mesmo o mais lento."
       }
     ]
   },
@@ -557,12 +585,14 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Agarrar a mão de Auxílio",
         nextChapterId: "cena14",
         effects: { fe: 2, perseveranca: 1 },
-        flag: "pediu_ajuda_pantano"
+        flag: "pediu_ajuda_pantano",
+        consequence: "Aceitar ajuda não é fraqueza — é sabedoria. Auxílio representa a graça de Deus que se estende quando nossas forças acabam. 'A minha graça te basta, porque o meu poder se aperfeiçoa na fraqueza' (2 Coríntios 12:9). Cristão não saiu do pântano por mérito — saiu porque aceitou a mão estendida."
       },
       {
         text: "Tentar sair sozinho — por orgulho ou medo",
         nextChapterId: "cena15",
-        effects: { perseveranca: 1, fe: -1 }
+        effects: { perseveranca: 1, fe: -1 },
+        consequence: "O orgulho espiritual — recusar ajuda quando se está afundando — é perigoso. Provérbios 16:18 avisa: 'A soberba precede a ruína.' Deus envia Auxílio, mas não obriga ninguém a aceitar."
       }
     ]
   },
@@ -581,7 +611,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Agradecer a Auxílio e seguir adiante",
         nextChapterId: "cena14b",
-        effects: { fe: 1, discernimento: 1 }
+        effects: { fe: 1, discernimento: 1 },
+        consequence: "Auxílio explica que o Rei colocou degraus sob a lama — mas no desespero, ninguém olha para baixo. As promessas de Deus estão sempre ali, mesmo quando a dor nos cega. Gratidão é o antídoto do desânimo."
       }
     ]
   },
@@ -591,7 +622,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Cruz e o Sepulcro",
     location: "Colina da Cruz",
     characters: ["cristao"],
-    reflection: "r6",
+    sceneEvent: { type: 'suspense', delay: 800, duration: 3000, message: 'Uma presença sagrada enche o lugar...' },
     narrative: [
       "O caminho sobe uma colina. No topo, uma visão te paralisa: uma cruz de madeira, erguida contra o céu. Ao seu pé, um sepulcro aberto.",
       "Ao olhar para a cruz, algo acontece. As cordas que prendiam o fardo às suas costas se soltam. O fardo desliza, cai, e rola colina abaixo até desaparecer dentro do sepulcro. A boca do túmulo se fecha.",

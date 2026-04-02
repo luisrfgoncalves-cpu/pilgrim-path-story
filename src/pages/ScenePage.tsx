@@ -92,7 +92,7 @@ const ScenePage = () => {
   const { triggerChoiceEffect, triggerSceneEntryVFX } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
-  const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
+  const { setAmbienceForScene, sfxForChoice, playSfx, toggleAudio, stopAmbience } = useAudioEngine();
   // Recent decision effects for trend analysis
   const recentEffects = useMemo(() => {
     return (progress as any).decisions?.slice(-5)?.map((d: any) => d.effects || {}) || [];
@@ -261,10 +261,25 @@ const ScenePage = () => {
     const t = setTimeout(() => {
       setTransitioning(false);
       triggerSceneEntryVFX(progress.currentChapterId);
+      // Start ambient audio for this scene
+      if (audioOn) {
+        setAmbienceForScene(progress.currentChapterId, legacyTone);
+        // Scene-specific entry SFX
+        const id = progress.currentChapterId;
+        if (id === 'cena10') setTimeout(() => playSfx('attack'), 500); // Sinai earthquake
+        if (id === 'cena13') setTimeout(() => playSfx('defeat'), 400); // sinking
+        if (id === 'cena15' || id === 'cena15b') setTimeout(() => playSfx('victory'), 1000); // Cruz
+        if (id === 'cena7b') setTimeout(() => playSfx('attack'), 300); // flechas
+        if (id === 'fase3-cena3') setTimeout(() => playSfx('gameStart'), 500); // Apolião
+        if (id === 'fase4-cena7' || id === 'fase4-cena8') setTimeout(() => playSfx('defeat'), 800); // Fiel
+        if (id === 'fase5-cena3') setTimeout(() => playSfx('attack'), 500); // Gigante
+        if (id === 'fase5-cena6') setTimeout(() => playSfx('itemFound'), 800); // Chave
+        if (id === 'fase6-cena8' || id === 'fase6-cena9') setTimeout(() => playSfx('victory'), 500); // Celestial
+      }
       // Second scroll after content renders
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
     }, 100);
-    return () => clearTimeout(t);
+    return () => { clearTimeout(t); };
   }, [progress.currentChapterId]);
 
   // Dramatic character entrance — show big portrait for non-protagonist characters
