@@ -361,6 +361,11 @@ const PresentialMultiplayer = () => {
   const [isTokenMoving, setIsTokenMoving] = useState(false);
   const [returnMoveInfo, setReturnMoveInfo] = useState<string | null>(null); // show "Voltando X casas..."
   const [showStats, setShowStats] = useState(false);
+  const [showAttrPanel, setShowAttrPanel] = useState(false);
+  const [resultFeedback, setResultFeedback] = useState<{
+    visible: boolean; success: boolean; message: string; emoji: string;
+    posAdjust?: number; attrChanges?: Record<string, number>;
+  } | null>(null);
   const tokenMovingTimerRef = useRef<number | null>(null);
 
   // Deferred move after mini-game popup closes
