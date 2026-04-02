@@ -616,7 +616,7 @@ const JourneysPage = () => {
                       {expanded && (
                         <div className="mt-3 space-y-2" style={{ animation: 'slideUp 0.3s ease-out' }}>
                           {phase.chapters.map((item) => {
-                            const unlocked = progress.visitedChapters.includes(item.id);
+                            const unlocked = isOwner || progress.visitedChapters.includes(item.id);
                             const isCurrent = progress.currentChapterId === item.id;
                             return (
                               <button key={item.id} onClick={() => handleChapterClick(item.id, 'part2')} disabled={!unlocked} className="w-full text-left transition-all active:scale-[0.98]">
