@@ -31,6 +31,9 @@ import giganteMataBons from '@/assets/scenes/gigante-mata-bons.jpg';
 import casteloDestruido from '@/assets/scenes/castelo-destruido.jpg';
 import chamadoRio from '@/assets/scenes/chamado-rio.jpg';
 import valenteEncontro from '@/assets/scenes/valente-encontro.jpg';
+import masmorrasCastelo from '@/assets/scenes/masmorra-castelo.jpg';
+import gaiolaFerro from '@/assets/scenes/gaiola-ferro.jpg';
+import armaduraCrista from '@/assets/scenes/armadura-crista.jpg';
 
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
@@ -65,8 +68,8 @@ export const sceneImages: Record<string, string> = {
   'fase2-cena5': casaInterprete,
   'fase2-cena6': casaInterprete,
   'fase2-cena7': palacioBelo,
-  'fase2-cena8': casaInterprete,
-  'fase2-cena9': palacioBelo,
+  'fase2-cena8': gaiolaFerro,
+  'fase2-cena9': armaduraCrista,
   'fase2-cena10': palacioBelo,
   'fase2-cena11': colinaDificuldade,
   'fase2-cena12': colinaDificuldadeSubida,
@@ -104,10 +107,10 @@ export const sceneImages: Record<string, string> = {
   'fase5-cena1': pradoAgradavel,
   'fase5-cena2': pradoAgradavel,
   'fase5-cena3': casteloDuvida,
-  'fase5-cena4': casteloDuvida,
-  'fase5-cena5': casteloDuvida,
-  'fase5-cena6': casteloDuvida,
-  'fase5-cena7': casteloDuvida,
+  'fase5-cena4': masmorrasCastelo,
+  'fase5-cena5': masmorrasCastelo,
+  'fase5-cena6': masmorrasCastelo,
+  'fase5-cena7': masmorrasCastelo,
   'fase5-cena8': casteloDuvida,
   'fase5-cena9': montanhasDeleitosas,
   'fase5-cena10': montanhasDeleitosas,

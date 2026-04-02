@@ -75,10 +75,9 @@ const ScenePage = () => {
   // Inline consequence overlay state
   const [inlineConsequence, setInlineConsequence] = useState<InlineConsequence | null>(null);
   const [consequencePhase, setConsequencePhase] = useState<'enter' | 'attrs' | 'ready'>('enter');
-  // Streak/combo counter
+  // Streak counter (internal only — no popup)
   const [streak, setStreak] = useState(0);
   const [lastStreakEffect, setLastStreakEffect] = useState<'positive' | 'negative' | null>(null);
-  const [showStreakBurst, setShowStreakBurst] = useState(false);
   // Mini-game state
   const [miniGameDone, setMiniGameDone] = useState(false);
   const [miniGameResult, setMiniGameResult] = useState<MiniGameResult | null>(null);
@@ -514,10 +513,7 @@ const ScenePage = () => {
       const newStreak = lastStreakEffect === 'positive' ? streak + 1 : 1;
       setStreak(newStreak);
       setLastStreakEffect('positive');
-      if (newStreak >= 3) {
-        setShowStreakBurst(true);
-        // GameNotification handles auto-dismiss
-      }
+      // Streak tracked internally for attribute bonuses only
     } else if (total < 0) {
       setStreak(lastStreakEffect === 'negative' ? streak + 1 : 1);
       setLastStreakEffect('negative');
@@ -868,8 +864,8 @@ const ScenePage = () => {
                           boxShadow: '0 4px 12px hsl(0 0% 0% / 0.4), 0 0 8px hsl(35 40% 40% / 0.2)',
                         }}
                       />
-                      <p className="text-[9px] sm:text-[11px] font-display font-bold leading-tight mt-1 text-center max-w-[64px] truncate" style={{ color: 'hsl(35 50% 65%)' }}>{npc.name}</p>
-                      {hasAllegory && <p className="text-[7px] text-primary/50 font-display uppercase tracking-wider">toque p/ ler</p>}
+                      <p className="text-[11px] sm:text-xs font-display font-bold leading-tight mt-1 text-center max-w-[72px] truncate" style={{ color: 'hsl(35 50% 65%)' }}>{npc.name}</p>
+                      {hasAllegory && <p className="text-[9px] text-primary/50 font-display uppercase tracking-wider">toque p/ ler</p>}
                     </button>
                   );
                 })}
@@ -1404,16 +1400,7 @@ const ScenePage = () => {
         </div>
       )}
 
-      {/* ═══ STREAK BURST ═══ */}
-      <GameNotification visible={showStreakBurst && streak >= 3} onDismiss={() => setShowStreakBurst(false)} duration={8000} position="top-offset">
-        <div className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-primary/90 text-primary-foreground shadow-xl">
-          <Zap className="w-5 h-5" />
-          <span className="font-display text-lg">{streak}x Combo!</span>
-          <span className="text-sm opacity-80">
-            {lastStreakEffect === 'positive' ? '🔥 Em chamas!' : '💔 Sequência sombria'}
-          </span>
-        </div>
-      </GameNotification>
+      {/* Streak popup removed — was distracting from the narrative */}
 
       {/* ═══ CHARACTER ENTRANCE REVEAL — 3D style, no circle ═══ */}
       {charReveal && (
