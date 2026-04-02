@@ -29,6 +29,7 @@ import { MiniGame, MiniGameResult } from '@/components/MiniGames';
 import { FullscreenMiniGame, FULLSCREEN_GAMES } from '@/components/FullscreenMiniGame';
 import { miniGameMappings } from '@/data/miniGameMappings';
 import { playGameSfx } from '@/lib/gameSfx';
+import { playRealSfx } from '@/lib/realSfx';
 import GameNotification from '@/components/GameNotification';
 import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, ArrowLeft, Zap, Star, Shield, Flame, Share2 } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
@@ -276,132 +277,157 @@ const ScenePage = () => {
         setAmbienceForScene(progress.currentChapterId, legacyTone);
         // Scene-specific entry SFX — comprehensive immersive audio
         const id = progress.currentChapterId;
-        const sfxMap: Record<string, Array<[string, number]>> = {
+
+        // ═══ REAL SFX — contextual OGG sounds per scene ═══
+        const realSfxMap: Record<string, Array<[string, number, number?]>> = {
+          // [sfxName, delayMs, volume?]
           // FASE 1
-          'cena1':  [['defeat', 800]],                       // peso, opressão
-          'cena1b': [['defeat', 600]],                       // angústia
-          'cena2':  [['negative', 500]],                     // família se opõe
-          'cena3':  [['gameStart', 500]],                    // fuga dramática
-          'cena4':  [['defeat', 400], ['defeat', 1200]],     // fardo insuportável
-          'cena5':  [['pray', 800]],                         // Evangelista - momento divino
-          'cena5b': [['pray', 600], ['positive', 1200]],     // conselho do Evangelista
-          'cena6':  [['defeat', 500]],                       // sozinho, escuridão
-          'cena7':  [['pray', 600], ['itemFound', 1500]],    // Porta Estreita - revelação
-          'cena7b': [['attack', 300], ['attack', 800], ['defend', 1400]], // flechas + proteção
-          'cena8':  [['negative', 600]],                     // Prudência Mundana - tentação
-          'cena9':  [['negative', 400], ['defeat', 1000]],   // Legalista - peso da lei
-          'cena9b': [['defeat', 500]],                       // consequências do desvio
-          'cena10': [['attack', 500], ['attack', 1200]],     // Sinai - terremoto + fogo
-          'cena11': [['defeat', 400]],                       // Pântano
-          'cena11b': [['defeat', 500]],                      // afundando
-          'cena12': [['defeat', 300], ['defeat', 900]],      // mais fundo
-          'cena13': [['defeat', 400], ['defeat', 1000], ['critical', 1800]], // quase morrendo
-          'cena14': [['heal', 800]],                         // Auxílio estende a mão
-          'cena14b': [['positive', 600]],                    // resgate
-          'cena15': [['victory', 1000], ['pray', 2500]],     // Cruz! Fardo cai!
-          'cena15b': [['victory', 500], ['itemFound', 1200], ['pray', 2000]], // Três Resplandecentes
+          'cena1':  [['bell', 1200, 0.25]],                  // sino solene — despertar
+          'cena3':  [['hit', 800, 0.3]],                     // portão batendo — fuga
+          'cena7':  [['bell', 600, 0.35], ['blessing', 1800, 0.3]], // Porta Estreita — sino + bênção
+          'cena7b': [['sword', 300, 0.3], ['shield', 1000, 0.3]], // flechas + proteção
+          'cena10': [['hit', 500, 0.4], ['hit', 1200, 0.3]], // Sinai — trovão
+          'cena11': [['splash', 500, 0.4]],                   // Pântano — água
+          'cena11b': [['splash', 400, 0.35], ['water', 1000, 0.3]], // afundando
+          'cena12': [['water', 300, 0.4], ['splash', 900, 0.3]], // mais fundo
+          'cena13': [['water', 400, 0.35], ['splash', 1000, 0.35]], // quase morrendo
+          'cena14': [['chime', 800, 0.35]],                   // Auxílio — som esperançoso
+          'cena15': [['blessing', 1000, 0.4], ['crowd_cheer', 2500, 0.3]], // Cruz! Fardo cai!
+          'cena15b': [['blessing', 500, 0.35], ['chime', 1200, 0.3]], // Três Resplandecentes
           // FASE 2
-          'fase2-cena1': [['pray', 800]],                    // Casa do Intérprete
-          'fase2-cena2': [['positive', 500], ['pray', 1200]], // visões do Intérprete
-          'fase2-cena3': [['pray', 600]],                    // ensinamento profundo
-          'fase2-cena4': [['negative', 600]],                // visão perturbadora
-          'fase2-cena5': [['positive', 700]],                // aprendizado
-          'fase2-cena6': [['positive', 500], ['pray', 1200]],// lição espiritual
-          'fase2-cena7': [['positive', 500]],                // Palácio Belo
-          'fase2-cena8': [['defeat', 500], ['defeat', 1200]],// Homem na Gaiola
-          'fase2-cena9': [['itemFound', 600], ['defend', 1200]], // Armadura de Deus
-          'fase2-cena10': [['defend', 500], ['critical', 1200]], // equipando armadura
-          'fase2-cena11': [['attack', 500]],                 // Colina da Dificuldade
-          'fase2-cena12': [['defeat', 400]],                 // subida árdua
-          'fase2-cena13': [['defeat', 500], ['negative', 1200]], // dormindo no posto
-          'fase2-cena14': [['attack', 400], ['attack', 900], ['defend', 1500]], // Leões
+          'fase2-cena1': [['bell', 600, 0.25], ['chime', 1500, 0.3]], // Casa do Intérprete
+          'fase2-cena7': [['chime', 500, 0.3]],              // Palácio Belo
+          'fase2-cena8': [['trap', 600, 0.3]],                // Homem Gaiola — som sinistro
+          'fase2-cena9': [['shield', 600, 0.35], ['sword', 1200, 0.3]], // Armadura!
+          'fase2-cena11': [['hit', 500, 0.3]],                // Colina
+          'fase2-cena14': [['hit', 400, 0.3], ['shield', 1500, 0.3]], // Leões
           // FASE 3
-          'fase3-cena1': [['defeat', 500]],                  // Vale da Humilhação
-          'fase3-cena2': [['attack', 600]],                  // confronto se aproxima
-          'fase3-cena3': [['gameStart', 500], ['attack', 1200], ['critical', 2000]], // Apolião!
-          'fase3-cena4': [['heal', 800]],                    // recuperação pós-batalha
-          'fase3-cena5': [['defeat', 500], ['defeat', 1500]],// Vale da Sombra
-          'fase3-cena6': [['defeat', 400], ['attack', 1200]],// trevas profundas
-          'fase3-cena7': [['positive', 600]],                // saindo do vale
-          'fase3-cena8': [['positive', 500], ['pray', 1200]],// Fiel encontrado
-          'fase3-cena9': [['negative', 500]],                // Vergonha
-          'fase3-cena10': [['positive', 600]],               // Falador desmascarado
+          'fase3-cena3': [['sword', 500, 0.4], ['hit', 1200, 0.35]], // Apolião — espada!
+          'fase3-cena4': [['sword', 400, 0.35], ['hit', 1000, 0.3]], // batalha
+          'fase3-cena5': [['sword', 300, 0.4], ['hit', 800, 0.3], ['shield', 1500, 0.35]], // clímax
+          'fase3-cena6': [['blessing', 600, 0.3]],            // após batalha — cura
+          'fase3-cena8': [['chime', 500, 0.3]],               // encontro com Fiel
           // FASE 4
-          'fase4-cena1': [['gameStart', 400]],               // Feira da Vaidade
-          'fase4-cena2': [['negative', 500]],                // pressão social
-          'fase4-cena3': [['negative', 600]],                // Amor ao Dinheiro
-          'fase4-cena4': [['attack', 500], ['defeat', 1200]],// Julgamento
-          'fase4-cena5': [['defeat', 400], ['negative', 1000]], // acusações
-          'fase4-cena6': [['attack', 400], ['critical', 1000], ['defeat', 1800]], // sentença
-          'fase4-cena7': [['defeat', 800], ['pray', 2000]],  // Morte de Fiel
-          'fase4-cena8': [['heal', 600], ['positive', 1400]],// Esperança surge
-          'fase4-cena9': [['positive', 500]],                // companheirismo
-          'fase4-cena10': [['negative', 600]],               // tentação de Demas
-          'fase4-cena11': [['negative', 400], ['defeat', 1000]], // mina perigosa
-          'fase4-cena11b': [['negative', 500]],              // mina de prata
-          'fase4-cena12': [['positive', 500], ['pray', 1200]], // memorial de Ló
+          'fase4-cena1': [['crowd_cheer', 800, 0.2]],         // Feira — multidão
+          'fase4-cena4': [['trap', 500, 0.3]],                // prisão — armadilha
+          'fase4-cena6': [['hit', 400, 0.35], ['wrong', 1000, 0.3]], // julgamento — golpe
+          'fase4-cena8': [['chime', 500, 0.3]],               // Esperança aparece
+          'fase4-cena10': [['coins', 500, 0.3]],              // Demas — moedas tentação
+          'fase4-cena11': [['coins', 400, 0.25], ['trap', 1000, 0.3]], // mina perigosa
           // FASE 5
-          'fase5-cena1': [['negative', 500]],                // Interesses
-          'fase5-cena2': [['defeat', 400]],                  // desvio do caminho
-          'fase5-cena3': [['attack', 500], ['critical', 1200]], // Gigante Desespero
-          'fase5-cena4': [['defeat', 400], ['attack', 1000]],// calabouço
-          'fase5-cena5': [['defeat', 500]],                  // tortura
-          'fase5-cena6': [['itemFound', 800], ['pray', 1500]], // Chave da Promessa!
-          'fase5-cena7': [['victory', 600]],                 // fuga!
-          'fase5-cena8': [['positive', 500]],                // liberdade
-          'fase5-cena9': [['pray', 600], ['positive', 1200]],// Montanhas Deleitosas
-          'fase5-cena10': [['positive', 500]],               // Pastores
-          'fase5-cena11': [['negative', 500]],               // Lisonjeiro
-          'fase5-cena12': [['attack', 400]],                 // armadilha
-          'fase5-cena13': [['defeat', 500]],                 // Terra Encantada
-          'fase5-cena14': [['positive', 600], ['pray', 1200]], // País de Beulá
+          'fase5-cena3': [['hit', 500, 0.4], ['trap', 1200, 0.3]], // Gigante Desespero
+          'fase5-cena4': [['trap', 400, 0.35], ['hit', 1000, 0.3]], // calabouço
+          'fase5-cena6': [['chime', 800, 0.35], ['bell', 1500, 0.3]], // Chave da Promessa!
+          'fase5-cena7': [['complete', 600, 0.4]],            // fuga!
+          'fase5-cena9': [['blessing', 600, 0.3], ['chime', 1200, 0.25]], // Montanhas Deleitosas
+          'fase5-cena11': [['trap', 500, 0.3]],               // Lisonjeiro armadilha
+          'fase5-cena14': [['blessing', 600, 0.35]],          // País de Beulá
           // FASE 6
-          'fase6-cena1': [['defeat', 500], ['pray', 1200]],  // Rio da Morte
-          'fase6-cena2': [['defeat', 400], ['defeat', 1000]],// águas profundas
-          'fase6-cena3': [['positive', 600]],                // esperança no rio
-          'fase6-cena4': [['heal', 500]],                    // atravessando
-          'fase6-cena5': [['positive', 500], ['pray', 1200]],// outra margem
-          'fase6-cena6': [['victory', 500]],                 // terra firme
-          'fase6-cena7': [['victory', 500], ['pray', 1200]], // portões à vista
-          'fase6-cena8': [['victory', 500], ['critical', 1200], ['pray', 2000]], // Cidade Celestial!
-          'fase6-cena9': [['victory', 300], ['victory', 1000], ['pray', 2000], ['critical', 3000]], // Glória final!
+          'fase6-cena1': [['water', 500, 0.4]],               // Rio da Morte
+          'fase6-cena2': [['water', 400, 0.35], ['splash', 1000, 0.3]], // águas profundas
+          'fase6-cena3': [['water', 500, 0.3]],               // esperança no rio
+          'fase6-cena4': [['splash', 500, 0.3]],              // atravessando
+          'fase6-cena5': [['blessing', 500, 0.35]],           // outra margem
+          'fase6-cena7': [['bell', 500, 0.35], ['crowd_cheer', 1500, 0.3]], // portões à vista
+          'fase6-cena8': [['crowd_cheer', 500, 0.35], ['fireworks', 1500, 0.4], ['victory', 2500, 0.35]], // Cidade Celestial!
+          'fase6-cena9': [['fireworks', 300, 0.4], ['crowd_cheer', 1000, 0.35], ['victory', 2000, 0.4]], // Glória final!
           // PARTE II
+          'p2-cena1': [['bell', 600, 0.25]],
+          'p2-cena3': [['splash', 500, 0.35], ['water', 1200, 0.3]], // pântano
+          'p2-cena4': [['hit', 400, 0.3]],                    // confronto no portão
+          'p2-cena5': [['sword', 500, 0.3], ['shield', 1200, 0.3]], // luta
+          'p2-cena6': [['chime', 500, 0.3], ['blessing', 1200, 0.3]], // Casa do Intérprete
+          'p2-fase2-cena2': [['blessing', 600, 0.35]],        // Cruz
+          'p2-fase2-cena4': [['hit', 400, 0.3], ['shield', 1000, 0.3]], // leões
+          'p2-fase3-cena1': [['sword', 500, 0.3]],            // Vale
+          'p2-fase3-cena2': [['trap', 500, 0.3]],             // sombras
+          'p2-fase3-cena3': [['sword', 500, 0.4], ['hit', 1200, 0.35]], // Gigante Maul
+          'p2-fase3-cena4': [['chime', 500, 0.3]],            // Hospedaria Gaio
+          'p2-fase3-cena5': [['sword', 400, 0.4], ['hit', 1000, 0.35], ['victory', 2000, 0.3]], // Gigante Mata-Bons
+          'p2-fase4-cena2': [['coins', 500, 0.3]],            // Demas
+          'p2-fase4-cena3': [['sword', 400, 0.35], ['shield', 1000, 0.3]], // Valente
+          'p2-fase5-cena1': [['trap', 500, 0.3]],             // Castelo Dúvida
+          'p2-fase5-cena2': [['sword', 400, 0.4], ['hit', 1000, 0.35], ['victory', 2000, 0.3]], // destruição castelo
+          'p2-fase5-cena4': [['complete', 600, 0.35], ['crowd_cheer', 1200, 0.3]], // libertação prisioneiros
+          'p2-fase5-cena5': [['blessing', 500, 0.3], ['chime', 1200, 0.25]], // Montanhas
+          'p2-fase6-cena3': [['water', 500, 0.35]],           // Rio
+          'p2-fase6-cena5': [['water', 400, 0.3], ['splash', 1000, 0.3]], // atravessando
+          'p2-fase6-cena6': [['fireworks', 300, 0.4], ['crowd_cheer', 1000, 0.35], ['victory', 2000, 0.4]], // Celestial!
+        };
+
+        // ═══ SYNTH SFX — emotional synthesized sounds per scene ═══
+        const synthSfxMap: Record<string, Array<[string, number]>> = {
+          'cena1':  [['defeat', 800]],
+          'cena2':  [['negative', 500]],
+          'cena3':  [['gameStart', 500]],
+          'cena4':  [['defeat', 400], ['defeat', 1200]],
+          'cena5':  [['pray', 800]],
+          'cena5b': [['pray', 600], ['positive', 1200]],
+          'cena6':  [['defeat', 500]],
+          'cena8':  [['negative', 600]],
+          'cena9':  [['negative', 400], ['defeat', 1000]],
+          'cena14': [['heal', 800]],
+          'cena14b': [['positive', 600]],
+          'cena15': [['victory', 1000], ['pray', 2500]],
+          'fase2-cena2': [['positive', 500], ['pray', 1200]],
+          'fase2-cena3': [['pray', 600]],
+          'fase2-cena4': [['negative', 600]],
+          'fase2-cena5': [['positive', 700]],
+          'fase2-cena6': [['positive', 500], ['pray', 1200]],
+          'fase2-cena10': [['defend', 500], ['critical', 1200]],
+          'fase2-cena12': [['defeat', 400]],
+          'fase2-cena13': [['defeat', 500], ['negative', 1200]],
+          'fase3-cena1': [['defeat', 500]],
+          'fase3-cena2': [['attack', 600]],
+          'fase3-cena7': [['defeat', 500], ['defeat', 1200]],
+          'fase3-cena9': [['negative', 500]],
+          'fase3-cena10': [['negative', 500], ['negative', 1200]],
+          'fase4-cena2': [['negative', 500]],
+          'fase4-cena3': [['negative', 400]],
+          'fase4-cena5': [['defeat', 500]],
+          'fase4-cena7': [['defeat', 400], ['defeat', 1000]],
+          'fase4-cena9': [['positive', 500]],
+          'fase4-cena12': [['positive', 500], ['pray', 1200]],
+          'fase5-cena1': [['negative', 500]],
+          'fase5-cena2': [['defeat', 400]],
+          'fase5-cena5': [['defeat', 500]],
+          'fase5-cena8': [['positive', 500]],
+          'fase5-cena10': [['positive', 500]],
+          'fase5-cena12': [['attack', 400]],
+          'fase5-cena13': [['defeat', 500]],
+          'fase6-cena3': [['positive', 600]],
+          'fase6-cena4': [['heal', 500]],
+          'fase6-cena5': [['positive', 500], ['pray', 1200]],
+          'fase6-cena6': [['victory', 500]],
+          'fase6-cena8': [['victory', 500], ['critical', 1200], ['pray', 2000]],
           'p2-cena1': [['positive', 600], ['pray', 1200]],
           'p2-cena2': [['positive', 500]],
-          'p2-cena3': [['negative', 500], ['defeat', 1200]],
           'p2-cena4': [['attack', 400], ['negative', 1000]],
-          'p2-cena5': [['attack', 500], ['critical', 1200]],
-          'p2-cena6': [['positive', 600], ['pray', 1200]],
           'p2-fase2-cena1': [['positive', 500], ['pray', 1200]],
-          'p2-fase2-cena2': [['pray', 600], ['positive', 1200]],
           'p2-fase2-cena3': [['negative', 500]],
-          'p2-fase2-cena4': [['attack', 400], ['negative', 1000]],
           'p2-fase2-cena5': [['positive', 500], ['pray', 1200]],
           'p2-fase3-cena1': [['positive', 600]],
-          'p2-fase3-cena2': [['defeat', 500], ['pray', 1200]],
-          'p2-fase3-cena3': [['attack', 500], ['critical', 1200]],
-          'p2-fase3-cena4': [['positive', 500], ['pray', 1200]],
-          'p2-fase3-cena5': [['attack', 400], ['critical', 1000], ['victory', 2000]],
           'p2-fase3-cena6': [['negative', 500]],
           'p2-fase4-cena1': [['positive', 600]],
-          'p2-fase4-cena2': [['negative', 500]],
-          'p2-fase4-cena3': [['attack', 400], ['critical', 1000]],
           'p2-fase4-cena4': [['negative', 500], ['pray', 1200]],
-          'p2-fase5-cena1': [['defeat', 500]],
-          'p2-fase5-cena2': [['attack', 400], ['critical', 1000], ['victory', 2000]],
           'p2-fase5-cena3': [['defeat', 500], ['pray', 1200]],
-          'p2-fase5-cena4': [['victory', 600], ['critical', 1200]],
-          'p2-fase5-cena5': [['positive', 500], ['pray', 1200]],
           'p2-fase6-cena1': [['defeat', 500], ['pray', 1200]],
           'p2-fase6-cena2': [['positive', 500], ['pray', 1200]],
-          'p2-fase6-cena3': [['positive', 600], ['pray', 1200]],
           'p2-fase6-cena4': [['positive', 500], ['pray', 1200]],
-          'p2-fase6-cena5': [['victory', 500], ['pray', 1200], ['critical', 2500]],
-          'p2-fase6-cena6': [['victory', 300], ['victory', 1000], ['pray', 2000], ['critical', 3000]],
         };
-        const sfxList = sfxMap[id];
-        if (sfxList) {
-          sfxList.forEach(([sfx, delay]) => {
+
+        // Play REAL SFX (OGG files) — contextual
+        const realList = realSfxMap[id];
+        if (realList) {
+          realList.forEach(([sfx, delay, vol]) => {
+            setTimeout(() => playRealSfx(sfx as any, vol ?? 0.35), delay);
+          });
+        }
+
+        // Play SYNTH SFX — emotional layer
+        const synthList = synthSfxMap[id];
+        if (synthList) {
+          synthList.forEach(([sfx, delay]) => {
             setTimeout(() => playSfx(sfx as any), delay);
           });
         }
