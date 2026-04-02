@@ -399,11 +399,21 @@ const PresentialMultiplayer = () => {
     setEditingNames(prev => { const n = { ...prev }; delete n[id]; return n; });
   };
 
-  const startGame = () => {
-    const finalPlayers = players.map(p => {
-      const editName = editingNames[p.id];
-      return editName?.trim() ? { ...p, name: editName.trim() } : p;
-    });
+  const startGame = (config?: { difficulty: Difficulty; gameMode: GameMode; playerNames: string[]; hostPlayerIndex: number }) => {
+    let finalPlayers: LocalPlayer[];
+    if (config) {
+      // From RPGBriefing
+      setRpgDifficulty(config.difficulty);
+      setRpgGameMode(config.gameMode);
+      setRpgHostIndex(config.hostPlayerIndex);
+      rotationStateRef.current = createRotationState();
+      finalPlayers = config.playerNames.map((name, i) => createPlayer(i, name));
+    } else {
+      finalPlayers = players.map(p => {
+        const editName = editingNames[p.id];
+        return editName?.trim() ? { ...p, name: editName.trim() } : p;
+      });
+    }
     setPlayers(finalPlayers);
     setTileTypes(generateImmersiveTiles(Date.now()));
     setPhase('playing');
@@ -413,7 +423,6 @@ const PresentialMultiplayer = () => {
     playPhaseAmbient(0);
     lastPhaseAmbientRef.current = 0;
     setTurnAnnounce(`Vez de ${finalPlayers[0].name}!`);
-    // Show phase 0 transition
     setShowPhaseTransition(0);
   };
 
