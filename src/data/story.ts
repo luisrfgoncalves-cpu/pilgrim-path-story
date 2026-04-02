@@ -1004,8 +1004,8 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
     narrative: [
-      "\"A Lei não é inútil\", responde o Intérprete. \"Ela revela a doença. Mas não é o remédio. Quem tenta se curar pela Lei apenas sufoca na própria poeira.\"",
-      "Ele te olha fixamente: \"Lembre-se disso no caminho. Muitos tentarão te dizer que basta ser bom o suficiente, seguir regras o suficiente. Mas o fardo que caiu na cruz não caiu por suas obras — caiu pela Graça.\""
+      "{{dialog}}\"A Lei não é inútil\"{{/dialog}}, responde o Intérprete. {{emphasis}}\"Ela revela a doença. Mas não é o remédio.{{/emphasis}} Quem tenta se curar pela Lei apenas sufoca na própria poeira.\"",
+      "Ele te olha fixamente: {{divine}}\"Lembre-se disso no caminho. Muitos tentarão te dizer que basta ser bom o suficiente, seguir regras o suficiente. Mas o fardo que caiu na cruz não caiu por suas obras — caiu pela Graça.\"{{/divine}}"
     ],
     choices: [
       {
