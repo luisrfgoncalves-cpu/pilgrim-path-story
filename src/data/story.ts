@@ -1582,6 +1582,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Feira da Vaidade",
     location: "Feira da Vaidade",
     characters: ["cristao", "fiel"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'O barulho da feira é ensurdecedor...' },
     narrative: [
       "{{tremor}}O barulho atinge você antes de ver a feira.{{/tremor}} Gritos de vendedores, música, gargalhadas. A Feira da Vaidade existe há séculos — fundada por Belzebu, Apolião e Legião quando descobriram que o caminho dos peregrinos passava por esta cidade.",
       "Aqui, tudo está à venda: casas, terras, honras, títulos, reinos, prazeres, esposas, maridos, corpos, almas. {{fade}}As barracas se estendem até onde a vista alcança.{{/fade}}",
