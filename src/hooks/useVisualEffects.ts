@@ -332,6 +332,138 @@ export const useVisualEffects = () => {
       setTimeout(() => triggerEffect('lightning'), 700);
       setTimeout(() => triggerEffect('earthquake'), 1200);
     }
+
+    // ══════ PARTE II ══════
+    else if (chapterId === 'p2-cena1') {
+      setTimeout(() => triggerEffect('fade-dramatic'), 600);
+    }
+    else if (chapterId === 'p2-cena2') {
+      setTimeout(() => triggerEffect('flash-light'), 500);
+      setTimeout(() => triggerEffect('divine-light'), 1200);
+    }
+    else if (chapterId === 'p2-cena3') {
+      setTimeout(() => triggerEffect('tremor'), 500);
+      setTimeout(() => triggerEffect('fade-black'), 1500);
+    }
+    else if (chapterId === 'p2-cena4') {
+      setTimeout(() => triggerEffect('shake'), 400);
+      setTimeout(() => triggerEffect('impact'), 1000);
+    }
+    else if (chapterId === 'p2-cena5') {
+      setTimeout(() => triggerEffect('earthquake'), 500);
+      setTimeout(() => triggerEffect('blood-pulse'), 1200);
+    }
+    else if (chapterId === 'p2-cena6') {
+      setTimeout(() => triggerEffect('golden-burst'), 800);
+      setTimeout(() => triggerEffect('divine-light'), 1800);
+    }
+    else if (chapterId === 'p2-fase2-cena1') {
+      setTimeout(() => triggerEffect('flash-light'), 500);
+      setTimeout(() => triggerEffect('divine-light'), 1200);
+    }
+    else if (chapterId === 'p2-fase2-cena2') {
+      setTimeout(() => triggerEffect('golden-burst'), 1000);
+      setTimeout(() => triggerEffect('divine-light'), 2500);
+    }
+    else if (chapterId === 'p2-fase2-cena3') {
+      setTimeout(() => triggerEffect('tremor'), 600);
+      setTimeout(() => triggerEffect('heartbeat'), 1400);
+    }
+    else if (chapterId === 'p2-fase2-cena4') {
+      setTimeout(() => triggerEffect('shake'), 400);
+      setTimeout(() => triggerEffect('impact'), 1000);
+    }
+    else if (chapterId === 'p2-fase2-cena5') {
+      setTimeout(() => triggerEffect('golden-burst'), 600);
+      setTimeout(() => triggerEffect('divine-light'), 1500);
+    }
+    else if (chapterId === 'p2-fase3-cena1') {
+      setTimeout(() => triggerEffect('divine-light'), 800);
+    }
+    else if (chapterId === 'p2-fase3-cena2') {
+      setTimeout(() => triggerEffect('fade-black'), 500);
+      setTimeout(() => triggerEffect('tremor'), 1800);
+    }
+    else if (chapterId === 'p2-fase3-cena3') {
+      setTimeout(() => triggerEffect('earthquake'), 600);
+      setTimeout(() => triggerEffect('blood-pulse'), 1500);
+    }
+    else if (chapterId === 'p2-fase3-cena4') {
+      setTimeout(() => triggerEffect('flash-light'), 500);
+      setTimeout(() => triggerEffect('divine-light'), 1200);
+    }
+    else if (chapterId === 'p2-fase3-cena5') {
+      setTimeout(() => triggerEffect('earthquake'), 500);
+      setTimeout(() => triggerEffect('impact'), 1000);
+      setTimeout(() => triggerEffect('blood-pulse'), 2000);
+    }
+    else if (chapterId === 'p2-fase3-cena6') {
+      setTimeout(() => triggerEffect('flash-light'), 400);
+      setTimeout(() => triggerEffect('fade-dramatic'), 1000);
+    }
+    else if (chapterId === 'p2-fase4-cena1') {
+      setTimeout(() => triggerEffect('heartbeat'), 600);
+    }
+    else if (chapterId === 'p2-fase4-cena2') {
+      setTimeout(() => triggerEffect('flash-light'), 400);
+      setTimeout(() => triggerEffect('flash-dark'), 1200);
+    }
+    else if (chapterId === 'p2-fase4-cena3') {
+      setTimeout(() => triggerEffect('blood-pulse'), 500);
+      setTimeout(() => triggerEffect('shake'), 1200);
+    }
+    else if (chapterId === 'p2-fase4-cena4') {
+      setTimeout(() => triggerEffect('heartbeat'), 500);
+      setTimeout(() => triggerEffect('flash-light'), 1200);
+    }
+    else if (chapterId === 'p2-fase5-cena1') {
+      setTimeout(() => triggerEffect('tremor'), 500);
+      setTimeout(() => triggerEffect('fade-black'), 1500);
+    }
+    else if (chapterId === 'p2-fase5-cena2') {
+      setTimeout(() => triggerEffect('earthquake'), 500);
+      setTimeout(() => triggerEffect('impact'), 1000);
+      setTimeout(() => triggerEffect('blood-pulse'), 2000);
+    }
+    else if (chapterId === 'p2-fase5-cena3') {
+      setTimeout(() => triggerEffect('fade-black'), 500);
+      setTimeout(() => triggerEffect('heartbeat'), 1200);
+    }
+    else if (chapterId === 'p2-fase5-cena4') {
+      setTimeout(() => triggerEffect('earthquake'), 600);
+      setTimeout(() => triggerEffect('shake'), 1200);
+      setTimeout(() => triggerEffect('golden-burst'), 2500);
+    }
+    else if (chapterId === 'p2-fase5-cena5') {
+      setTimeout(() => triggerEffect('divine-light'), 600);
+      setTimeout(() => triggerEffect('golden-burst'), 1500);
+    }
+    else if (chapterId === 'p2-fase6-cena1') {
+      setTimeout(() => triggerEffect('fade-black'), 500);
+      setTimeout(() => triggerEffect('heartbeat'), 1200);
+    }
+    else if (chapterId === 'p2-fase6-cena2') {
+      setTimeout(() => triggerEffect('golden-burst'), 600);
+      setTimeout(() => triggerEffect('divine-light'), 1500);
+    }
+    else if (chapterId === 'p2-fase6-cena3') {
+      setTimeout(() => triggerEffect('divine-light'), 800);
+      setTimeout(() => triggerEffect('flash-light'), 1800);
+    }
+    else if (chapterId === 'p2-fase6-cena4') {
+      setTimeout(() => triggerEffect('heartbeat'), 500);
+      setTimeout(() => triggerEffect('divine-light'), 1500);
+    }
+    else if (chapterId === 'p2-fase6-cena5') {
+      setTimeout(() => triggerEffect('golden-burst'), 500);
+      setTimeout(() => triggerEffect('divine-light'), 1500);
+      setTimeout(() => triggerEffect('flash-light'), 3000);
+    }
+    else if (chapterId === 'p2-fase6-cena6') {
+      setTimeout(() => triggerEffect('golden-burst'), 500);
+      setTimeout(() => triggerEffect('divine-light'), 1500);
+      setTimeout(() => triggerEffect('flash-light'), 3000);
+    }
   }, [triggerEffect]);
 
   return { triggerEffect, triggerChoiceEffect, triggerSceneEntryVFX };

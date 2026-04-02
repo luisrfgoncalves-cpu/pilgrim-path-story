@@ -48,8 +48,8 @@ export const part2Chapters: Record<string, StoryChapter> = {
     sceneEvent: { type: 'suspense', delay: 1500, duration: 3000, message: 'Um sonho... uma carta...' },
     narrative: [
       "Anos se passaram desde que Cristão partiu da Cidade da Destruição. Sua esposa, Cristã, ficou para trás com quatro filhos — Mateus, Tiago, Samuel e José.",
-      "Uma noite, ela tem um sonho: vê o marido na Cidade Celestial, vestido de branco, entre anjos, olhando para ela com saudade e amor.",
-      "Ao acordar, encontra uma carta deixada à sua porta. É do Rei da Cidade Celestial: \"Convido-te, Cristã, a vir ao meu palácio. O mesmo caminho que teu marido percorreu está aberto para ti e teus filhos.\""
+      "Uma noite, ela tem um sonho: {{divine}}vê o marido na Cidade Celestial, vestido de branco, entre anjos, olhando para ela com saudade e amor.{{/divine}}",
+      "Ao acordar, encontra uma carta deixada à sua porta. É do Rei da Cidade Celestial: {{divine}}\"Convido-te, Cristã, a vir ao meu palácio. O mesmo caminho que teu marido percorreu está aberto para ti e teus filhos.\"{{/divine}}"
     ],
     adaptiveNarrative: [
       { minAttr: "fe", minValue: 0, text: "Cristã reconhece o caminho que seu marido percorreu. Cada marco que ele enfrentou — o pântano, a cruz, o vale, a feira — agora aguarda por ela." }
@@ -62,13 +62,15 @@ export const part2Chapters: Record<string, StoryChapter> = {
         text: "Aceitar o convite e preparar a partida imediatamente",
         nextChapterId: "p2-cena2",
         effects: { fe: 2, coragem: 1 },
-        flag: "aceitou_convite_imediato"
+        flag: "aceitou_convite_imediato",
+        consequence: "A obediência pronta é a marca da fé genuína. Cristã não esperou sinais adicionais — a carta do Rei foi suficiente. — Hebreus 11:8: \"Pela fé Abraão, sendo chamado, obedeceu, indo para um lugar que havia de receber por herança; e saiu, sem saber para onde ia.\""
       },
       {
         text: "Hesitar — o caminho é perigoso para uma mãe com filhos",
         nextChapterId: "p2-cena2",
         effects: { discernimento: 1 },
-        flag: "hesitou_convite"
+        flag: "hesitou_convite",
+        consequence: "A prudência não é pecado quando nasce do amor materno. Mas o medo pode se disfarçar de cautela. — 2 Timóteo 1:7: \"Porque Deus não nos deu o espírito de temor, mas de fortaleza, e de amor, e de moderação.\""
       }
     ]
   },
@@ -79,9 +81,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
     location: "Cidade da Destruição",
     characters: ["crista", "misericordia"],
     reflection: "p2r2",
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 3000, message: 'Uma voz chama na porta...' },
     narrative: [
-      "Cristã anuncia sua partida. Vizinhos zombam — exatamente como zombaram de Cristão anos atrás. \"Vai seguir o louco do seu marido?\", dizem.",
-      "Mas uma jovem vizinha, Misericórdia, se aproxima com olhos cheios de lágrimas: \"Cristã, posso ir contigo? Não recebi carta do Rei como tu... mas não suporto ficar aqui. Se me aceitares, te acompanho.\"",
+      "Cristã anuncia sua partida. Vizinhos zombam — exatamente como zombaram de Cristão anos atrás. {{villain}}\"Vai seguir o louco do seu marido?\"{{/villain}}, dizem.",
+      "Mas uma jovem vizinha, Misericórdia, se aproxima com olhos cheios de lágrimas: {{whisper}}\"Cristã, posso ir contigo? Não recebi carta do Rei como tu... mas não suporto ficar aqui. Se me aceitares, te acompanho.\"{{/whisper}}",
       "Misericórdia não tem chamado direto. Não tem carta. Tem apenas um coração que se recusa a abandonar quem ama."
     ],
     flagNarrative: [
@@ -93,13 +96,15 @@ export const part2Chapters: Record<string, StoryChapter> = {
         text: "\"Venha comigo, Misericórdia! A porta está aberta para todos.\"",
         nextChapterId: "p2-cena3",
         effects: { fe: 1, perseveranca: 1 },
-        flag: "aceitou_misericordia"
+        flag: "aceitou_misericordia",
+        consequence: "Cristã estende a mão a Misericórdia. A companhia na jornada de fé é um dom de Deus. — Eclesiastes 4:9-10: \"Melhor é serem dois do que um, pois se um cair, o outro o levanta.\""
       },
       {
         text: "\"Não tenho certeza se posso levar mais alguém...\"",
         nextChapterId: "p2-cena3",
         effects: { discernimento: 1 },
-        flag: "hesitou_misericordia"
+        flag: "hesitou_misericordia",
+        consequence: "A hesitação é humana, mas Deus chama através de relacionamentos. Misericórdia não tinha carta, mas tinha amor — e o amor é a marca do verdadeiro discípulo. — João 13:35: \"Nisto conhecerão que sois meus discípulos: se tiverdes amor uns aos outros.\""
       }
     ]
   },
@@ -111,22 +116,24 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "misericordia"],
     sceneEvent: { type: 'sinking', duration: 4000, message: 'A lama puxa para baixo...', intensity: 0.6 },
     narrative: [
-      "O mesmo pântano que quase engoliu Cristão ainda está ali. As pedras de promessa que o Rei ordenou colocar estão parcialmente submersas — negligência dos zeladores.",
+      "O mesmo pântano que quase engoliu Cristão ainda está ali. As pedras de promessa que o Rei ordenou colocar estão parcialmente submersas — {{whisper}}negligência dos zeladores.{{/whisper}}",
       "Os filhos de Cristã pisam nas pedras com cuidado. Misericórdia escorrega e quase cai na lama escura.",
-      "\"Mãe, o pai passou por aqui?\", pergunta Mateus. \"Sim\", responde Cristã. \"E quase não saiu.\""
+      "{{whisper}}\"Mãe, o pai passou por aqui?\"{{/whisper}}, pergunta Mateus. \"Sim\", responde Cristã. {{shout}}\"E quase não saiu.\"{{/shout}}"
     ],
     choices: [
       {
         text: "Ajudar Misericórdia e atravessar juntas, passo a passo",
         nextChapterId: "p2-cena4",
         effects: { perseveranca: 1, fe: 1 },
-        flag: "ajudou_misericordia_pantano"
+        flag: "ajudou_misericordia_pantano",
+        consequence: "A mão estendida no momento de fraqueza é a imagem do corpo de Cristo em ação. Ninguém caminha sozinho. — Gálatas 6:2: \"Levai as cargas uns dos outros, e assim cumprireis a lei de Cristo.\""
       },
       {
         text: "Correr pelas pedras com os filhos — cada um por si",
         nextChapterId: "p2-cena4",
         effects: { coragem: 1 },
-        flag: "correu_pantano"
+        flag: "correu_pantano",
+        consequence: "A pressa pode salvar os pés, mas deixa o coração para trás. Na jornada de fé, a velocidade nunca é mais importante que a comunhão. — Provérbios 19:2: \"Não é bom proceder sem refletir, e peca quem é precipitado.\""
       }
     ]
   },
@@ -139,9 +146,9 @@ export const part2Chapters: Record<string, StoryChapter> = {
     interactionType: 'hold',
     sceneEvent: { type: 'tension', duration: 5000, message: 'O cachorro late furiosamente!', intensity: 0.7 },
     narrative: [
-      "Cristã chega ao Portão Estreito e bate. Ninguém responde de imediato. Ela bate de novo. E de novo.",
-      "Um cachorro enorme late do outro lado, aterrorizado. Misericórdia, que ficou um pouco atrás, desmaia de medo ao ouvir os latidos.",
-      "Finalmente, o portão se abre. O guardião olha para Cristã: \"Quem bate assim, com tanta insistência?\" Cristã responde: \"Sou a esposa de Cristão. Venho com meus filhos e uma amiga.\""
+      "Cristã chega ao Portão Estreito e bate. Ninguém responde de imediato. Ela bate de novo. {{shout}}E de novo.{{/shout}}",
+      "Um cachorro enorme late do outro lado, aterrorizado. Misericórdia, que ficou um pouco atrás, {{tremor}}desmaia de medo{{/tremor}} ao ouvir os latidos.",
+      "Finalmente, o portão se abre. O guardião olha para Cristã: {{divine}}\"Quem bate assim, com tanta insistência?\"{{/divine}} Cristã responde: \"Sou a esposa de Cristão. Venho com meus filhos e uma amiga.\""
     ],
     flagNarrative: [
       { flag: "ajudou_misericordia_pantano", text: "Cristã corre de volta para socorrer Misericórdia desmaiada. A compaixão do pântano se repete aqui." }
@@ -152,13 +159,14 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-cena5",
         effects: { fe: 1, coragem: 1 },
         flag: "intercedeu_por_misericordia",
-        consequence: "Cristã intercede por Misericórdia no portão. O guardião sorri."
+        consequence: "A intercessão de Cristã por Misericórdia é um eco da graça divina: ninguém é salvo por mérito próprio, mas pela misericórdia do Rei. — Efésios 2:8-9: \"Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus.\""
       },
       {
         text: "Entrar e esperar que Misericórdia se recupere sozinha",
         nextChapterId: "p2-cena5",
         effects: { discernimento: -1 },
-        flag: "nao_intercedeu"
+        flag: "nao_intercedeu",
+        consequence: "Quem entra pela porta e esquece o companheiro ainda do lado de fora não compreendeu a essência do evangelho. A salvação é pessoal, mas a compaixão é obrigatória. — Tiago 2:15-16: \"Se um irmão estiver nu e tiver falta de mantimento, e algum de vós lhe disser: Ide em paz, aquentai-vos, e fartai-vos; e não lhes derdes as coisas necessárias para o corpo, que proveito virá daí?\""
       }
     ]
   },
@@ -170,21 +178,23 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "misericordia"],
     sceneEvent: { type: 'tension', duration: 4000, message: 'Servos de Belzebu atacam!', intensity: 0.8 },
     narrative: [
-      "Mal passam pelo portão, dois homens de aparência terrível atacam o grupo. São os Mal-Encarados — servos de Belzebu que tentam impedir peregrinos de prosseguir.",
+      "Mal passam pelo portão, dois homens de aparência terrível atacam o grupo. São os {{villain}}Mal-Encarados{{/villain}} — servos de Belzebu que tentam impedir peregrinos de prosseguir.",
       "O guardião do portão intervém e os afugenta, mas não antes de Cristã e Misericórdia sentirem o terror de um ataque real.",
-      "\"Isto é normal\", diz o guardião. \"Todo peregrino que passa por esta porta é atacado logo depois. Seu marido também foi. Mas o Senhor vos guardará.\""
+      "{{divine}}\"Isto é normal\"{{/divine}}, diz o guardião. \"Todo peregrino que passa por esta porta é atacado logo depois. Seu marido também foi. {{divine}}Mas o Senhor vos guardará.{{/divine}}\""
     ],
     choices: [
       {
         text: "\"Se meu marido suportou isto, eu também suportarei.\"",
         nextChapterId: "p2-cena6",
         effects: { coragem: 2, fe: 1 },
-        flag: "coragem_apos_ataque"
+        flag: "coragem_apos_ataque",
+        consequence: "A coragem de Cristã não nasce da ausência de medo, mas da presença de uma promessa maior que o perigo. — Josué 1:9: \"Não te mandei eu? Sê forte e corajoso; não temas, nem te espantes; porque o Senhor teu Deus é contigo, por onde quer que andares.\""
       },
       {
         text: "Tremer mas continuar — em silêncio, segurando os filhos",
         nextChapterId: "p2-cena6",
-        effects: { perseveranca: 1 }
+        effects: { perseveranca: 1 },
+        consequence: "O silêncio de Cristã não é fraqueza — é a perseverança de quem avança mesmo quando o corpo treme. — Isaías 41:10: \"Não temas, porque eu sou contigo; não te assombres, porque eu sou teu Deus.\""
       }
     ]
   },
@@ -194,10 +204,11 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Banho e as Vestes",
     location: "Jardim do Intérprete",
     characters: ["crista", "misericordia", "interprete"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 4000, message: 'O selo do Rei...' },
     narrative: [
-      "O Intérprete recebe Cristã e seu grupo com alegria. \"A esposa de Cristão! Que honra.\"",
-      "Ele ordena que preparem um banho cerimonial. Cristã, os filhos e Misericórdia são lavados e vestidos com roupas novas e brilhantes. O selo do Rei é colocado em suas testas.",
-      "\"Agora estais marcadas\", diz o Intérprete. \"Todos verão a quem pertenceis. E quando a estrada escurecer, lembrai-vos deste momento.\""
+      "O Intérprete recebe Cristã e seu grupo com alegria. {{divine}}\"A esposa de Cristão! Que honra.\"{{/divine}}",
+      "Ele ordena que preparem um banho cerimonial. Cristã, os filhos e Misericórdia são lavados e vestidos com {{divine}}roupas novas e brilhantes{{/divine}}. O selo do Rei é colocado em suas testas.",
+      "{{divine}}\"Agora estais marcadas\"{{/divine}}, diz o Intérprete. \"Todos verão a quem pertenceis. E quando a estrada escurecer, lembrai-vos deste momento.\""
     ],
     choices: [
       {
@@ -205,13 +216,15 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase2-cena1",
         effects: { fe: 2, perseveranca: 1 },
         flag: "recebeu_selo_parte2",
-        item: "vestes_novas"
+        item: "vestes_novas",
+        consequence: "As vestes novas representam a justiça de Cristo imputada ao crente. O banho é o símbolo da regeneração. — Tito 3:5: \"Não pelas obras de justiça que houvéssemos feito, mas segundo a sua misericórdia, nos salvou pela lavagem da regeneração.\""
       },
       {
         text: "Perguntar ao Intérprete sobre as visões que mostrou a Cristão",
         nextChapterId: "p2-fase2-cena1",
         effects: { discernimento: 2 },
-        flag: "perguntou_visoes_interprete"
+        flag: "perguntou_visoes_interprete",
+        consequence: "A busca por entendimento espiritual é uma marca de maturidade. O Intérprete mostra verdades que os olhos carnais não veem. — 1 Coríntios 2:14: \"O homem natural não compreende as coisas do Espírito de Deus, porque lhe parecem loucura.\""
       }
     ]
   },
@@ -226,22 +239,25 @@ export const part2Chapters: Record<string, StoryChapter> = {
     location: "Casa do Intérprete",
     characters: ["crista", "misericordia", "grande_coracao"],
     reflection: "p2r3",
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 3000, message: 'Um guerreiro se apresenta...' },
     narrative: [
-      "O Intérprete chama um homem forte e armado: \"Este é Grande-Coração. Ele vos acompanhará até a Cidade Celestial. Onde Cristão caminhou sozinho, vocês terão um guia.\"",
+      "O Intérprete chama um homem forte e armado: {{divine}}\"Este é Grande-Coração. Ele vos acompanhará até a Cidade Celestial.\"{{/divine}} Onde Cristão caminhou sozinho, vocês terão um guia.",
       "Grande-Coração carrega uma espada enorme e um escudo gasto de muitas batalhas. Seus olhos são bondosos, mas sua postura é de quem já matou gigantes.",
-      "\"Senhoras\", diz ele com voz grave, \"o caminho é o mesmo que o marido de vocês percorreu. Mas desta vez, nenhum gigante tocará em vocês enquanto eu respirar.\""
+      "{{shout}}\"Senhoras\"{{/shout}}, diz ele com voz grave, \"o caminho é o mesmo que o marido de vocês percorreu. Mas desta vez, {{shout}}nenhum gigante tocará em vocês enquanto eu respirar.{{/shout}}\""
     ],
     choices: [
       {
         text: "\"Deus seja louvado por nos dar um protetor!\"",
         nextChapterId: "p2-fase2-cena2",
-        effects: { fe: 1, coragem: 1 }
+        effects: { fe: 1, coragem: 1 },
+        consequence: "Grande-Coração é a imagem do cuidado providencial de Deus. Onde Cristão andou desprotegido, Cristã recebe escolta. — Salmo 91:11: \"Porque aos seus anjos dará ordem a teu respeito, para te guardarem em todos os teus caminhos.\""
       },
       {
         text: "\"Precisaremos mesmo de proteção contra gigantes?\"",
         nextChapterId: "p2-fase2-cena2",
         effects: { discernimento: 1 },
-        flag: "questionou_perigo"
+        flag: "questionou_perigo",
+        consequence: "A pergunta revela prudência, mas o caminho estreito nunca é seguro por si só — é seguro porque há Quem guarda. — Salmo 121:7-8: \"O Senhor te guardará de todo o mal; guardará a tua alma.\""
       }
     ]
   },
@@ -254,20 +270,22 @@ export const part2Chapters: Record<string, StoryChapter> = {
     sceneEvent: { type: 'suspense', delay: 2000, duration: 5000, message: 'O lugar onde o fardo caiu...' },
     narrative: [
       "O grupo chega ao pé da Cruz — o mesmo lugar onde o fardo de Cristão caiu e rolou para dentro do sepulcro.",
-      "Cristã cai de joelhos. Lágrimas escorrem. \"Aqui\", sussurra. \"Foi aqui que ele foi livre.\"",
-      "Misericórdia chora ao lado dela. Os filhos observam em silêncio sagrado. O lugar onde o peso do pecado caiu ainda pulsa com uma presença que nenhum dos viajantes consegue explicar."
+      "Cristã cai de joelhos. {{whisper}}Lágrimas escorrem. \"Aqui\", sussurra. \"Foi aqui que ele foi livre.\"{{/whisper}}",
+      "Misericórdia chora ao lado dela. Os filhos observam em silêncio sagrado. {{divine}}O lugar onde o peso do pecado caiu ainda pulsa com uma presença que nenhum dos viajantes consegue explicar.{{/divine}}"
     ],
     choices: [
       {
         text: "Orar no lugar onde Cristão foi livre",
         nextChapterId: "p2-fase2-cena3",
         effects: { fe: 2, perseveranca: 1 },
-        flag: "orou_na_cruz_p2"
+        flag: "orou_na_cruz_p2",
+        consequence: "A cruz é o ponto central de toda a peregrinação. Aqui o fardo cai. Aqui a liberdade começa. Cristã ajoelha no mesmo lugar que libertou seu marido. — Gálatas 6:14: \"Mas longe esteja de mim gloriar-me, a não ser na cruz de nosso Senhor Jesus Cristo.\""
       },
       {
         text: "Tocar a cruz e seguir em silêncio reverente",
         nextChapterId: "p2-fase2-cena3",
-        effects: { fe: 1, coragem: 1 }
+        effects: { fe: 1, coragem: 1 },
+        consequence: "O silêncio reverente é uma forma legítima de adoração. Nem toda resposta a Deus precisa de palavras. — Habacuque 2:20: \"O Senhor está no seu santo templo; cale-se diante dele toda a terra.\""
       }
     ]
   },
@@ -280,21 +298,23 @@ export const part2Chapters: Record<string, StoryChapter> = {
     sceneEvent: { type: 'sinking', duration: 4000, message: 'A subida é íngreme...', intensity: 0.5 },
     narrative: [
       "A mesma colina íngreme que exauriu Cristão aparece diante do grupo. Grande-Coração caminha na frente, abrindo o caminho.",
-      "Os filhos de Cristã tropeçam nas pedras. Misericórdia ajuda os menores. Cristã puxa os maiores. A subida é lenta e dolorosa.",
-      "No caramanchão onde Cristão adormeceu e quase perdeu o pergaminho, Grande-Coração diz: \"Descansem. Mas não durmam como o marido de vocês. Esse erro quase lhe custou tudo.\""
+      "Os filhos de Cristã tropeçam nas pedras. Misericórdia ajuda os menores. Cristã puxa os maiores. {{tremor}}A subida é lenta e dolorosa.{{/tremor}}",
+      "No caramanchão onde Cristão adormeceu e quase perdeu o pergaminho, Grande-Coração diz: {{shout}}\"Descansem. Mas não durmam como o marido de vocês. Esse erro quase lhe custou tudo.\"{{/shout}}"
     ],
     choices: [
       {
         text: "Descansar brevemente sem adormecer — aprender com o erro de Cristão",
         nextChapterId: "p2-fase2-cena4",
         effects: { discernimento: 2, perseveranca: 1 },
-        flag: "aprendeu_erro_cristao"
+        flag: "aprendeu_erro_cristao",
+        consequence: "Aprender com os erros de quem veio antes é sabedoria. A segunda geração não precisa repetir as falhas da primeira. — Provérbios 22:3: \"O prudente vê o mal e esconde-se; mas os simples passam e sofrem a pena.\""
       },
       {
         text: "Não parar — subir sem descanso até o topo",
         nextChapterId: "p2-fase2-cena4",
         effects: { perseveranca: 2 },
-        flag: "nao_parou_colina"
+        flag: "nao_parou_colina",
+        consequence: "A determinação de não parar pode ser força ou imprudência. O corpo precisa de descanso, mas o espírito não deve adormecer. — Marcos 14:38: \"Vigiai e orai, para que não entreis em tentação; o espírito está pronto, mas a carne é fraca.\""
       }
     ]
   },
@@ -308,21 +328,23 @@ export const part2Chapters: Record<string, StoryChapter> = {
     interactionType: 'timed',
     timeLimit: 12,
     narrative: [
-      "Os leões acorrentados ainda estão ali. Cristã recua de medo, mas Grande-Coração ergue a espada e avança.",
-      "Os leões rugem. Grande-Coração não hesita. Ele bate no chão com a espada e os leões recuam, revelando que suas correntes são curtas — como Vigilante revelou a Cristão.",
-      "\"Viram?\", diz Grande-Coração. \"A mesma lição. O medo ruge alto, mas está acorrentado. Passem pelo centro.\""
+      "Os leões acorrentados ainda estão ali. Cristã recua de medo, mas {{shout}}Grande-Coração ergue a espada e avança.{{/shout}}",
+      "{{tremor}}Os leões rugem.{{/tremor}} Grande-Coração não hesita. Ele bate no chão com a espada e os leões recuam, revelando que suas correntes são curtas — como Vigilante revelou a Cristão.",
+      "\"Viram?\", diz Grande-Coração. \"A mesma lição. {{divine}}O medo ruge alto, mas está acorrentado. Passem pelo centro.{{/divine}}\""
     ],
     choices: [
       {
         text: "Passar pelos leões confiando em Grande-Coração",
         nextChapterId: "p2-fase2-cena5",
         effects: { coragem: 2, fe: 1 },
-        flag: "passou_leoes_p2"
+        flag: "passou_leoes_p2",
+        consequence: "Confiar no guia é confiar em Quem o enviou. Os leões rugem, mas estão presos. O medo é real, mas limitado. — 1 Pedro 5:8: \"Sede sóbrios; vigiai; porque o diabo, vosso adversário, anda em derredor, bramando como leão, buscando a quem possa tragar.\""
       },
       {
         text: "Fechar os olhos e correr pelo meio",
         nextChapterId: "p2-fase2-cena5",
-        effects: { coragem: 1 }
+        effects: { coragem: 1 },
+        consequence: "Correr com os olhos fechados é avançar na fé sem entendimento. É melhor do que recuar, mas a coragem consciente é mais sólida que o pânico. — 2 Coríntios 5:7: \"Porque andamos por fé, e não por vista.\""
       }
     ]
   },
@@ -332,11 +354,12 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Palácio Belo — O Reencontro",
     location: "Palácio Belo",
     characters: ["crista", "misericordia", "grande_coracao", "discricao", "prudencia", "piedade", "caridade"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 4000, message: 'O Palácio Belo se abre...' },
     narrative: [
       "O Palácio Belo recebe o grupo com festa. As donzelas — Discrição, Prudência, Piedade e Caridade — reconhecem Cristã como a esposa de Cristão.",
-      "\"Seu marido dormiu aqui. Comeu nesta mesa. Vestiu a armadura nesta sala\", diz Prudência com ternura.",
-      "Misericórdia recebe atenção especial de Caridade: \"Você veio sem carta do Rei, mas com o coração do Rei. Isso é mais raro.\"",
-      "Mateus, o filho mais velho, adoece após comer frutos de uma árvore proibida no caminho. O médico do palácio o cura com uma pílula amarga — arrependimento."
+      "{{divine}}\"Seu marido dormiu aqui. Comeu nesta mesa. Vestiu a armadura nesta sala\"{{/divine}}, diz Prudência com ternura.",
+      "Misericórdia recebe atenção especial de Caridade: {{divine}}\"Você veio sem carta do Rei, mas com o coração do Rei. Isso é mais raro.\"{{/divine}}",
+      "Mateus, o filho mais velho, adoece após comer frutos de uma árvore proibida no caminho. O médico do palácio o cura com uma pílula amarga — {{whisper}}arrependimento{{/whisper}}."
     ],
     choices: [
       {
@@ -344,14 +367,16 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase3-cena1",
         effects: { fe: 1, perseveranca: 1, discernimento: 1 },
         flag: "descansou_palacio_p2",
-        item: "armadura_fe"
+        item: "armadura_fe",
+        consequence: "O descanso no Palácio Belo é a comunhão dos santos — a igreja como refúgio e preparo para as batalhas adiante. A cura de Mateus pela pílula amarga ensina que o arrependimento é remédio, não castigo. — Apocalipse 3:19: \"Eu repreendo e castigo a todos quantos amo; sê pois zeloso, e arrepende-te.\""
       },
       {
         text: "Pedir para ver a armadura que Cristão usou contra Apolião",
         nextChapterId: "p2-fase3-cena1",
         effects: { coragem: 2, fe: 1 },
         flag: "viu_armadura_cristao",
-        item: "espada_espirito"
+        item: "espada_espirito",
+        consequence: "A armadura de Deus usada por Cristão está preservada como testemunho de que a batalha espiritual é real e a vitória é possível. — Efésios 6:13: \"Tomai toda a armadura de Deus, para que possais resistir no dia mau.\""
       }
     ]
   },
@@ -365,23 +390,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Vale da Humilhação — Sem Apolião",
     location: "Vale da Humilhação",
     characters: ["crista", "grande_coracao", "velho_honesto"],
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 3000, message: 'O vale se abre diante do grupo...' },
     narrative: [
-      "O mesmo vale onde Cristão lutou contra Apolião. Mas desta vez, com Grande-Coração à frente, nenhum demônio ousa atacar.",
-      "\"É estranho\", diz Grande-Coração. \"Este vale, que foi campo de batalha para seu marido, é para vocês um prado agradável. Vejam — há lírios e ovelhas.\"",
-      "Um velho homem emerge do caminho lateral. \"Sou Velho Honesto, da Cidade da Estupidez. Vi a Luz há muito tempo, mas nunca tive coragem de partir. Posso juntar-me a vocês?\""
+      "O mesmo vale onde Cristão lutou contra Apolião. Mas desta vez, com Grande-Coração à frente, {{divine}}nenhum demônio ousa atacar.{{/divine}}",
+      "\"É estranho\", diz Grande-Coração. \"Este vale, que foi campo de batalha para seu marido, é para vocês {{divine}}um prado agradável{{/divine}}. Vejam — há lírios e ovelhas.\"",
+      "Um velho homem emerge do caminho lateral. \"Sou Velho Honesto, da Cidade da Estupidez. Vi a Luz há muito tempo, mas nunca tive coragem de partir. {{whisper}}Posso juntar-me a vocês?{{/whisper}}\""
     ],
     choices: [
       {
         text: "\"Toda alma que busca a Cidade é bem-vinda!\"",
         nextChapterId: "p2-fase3-cena2",
         effects: { fe: 1, discernimento: 1 },
-        flag: "aceitou_velho_honesto"
+        flag: "aceitou_velho_honesto",
+        consequence: "Acolher quem busca tardiamente é imitar a graça de Deus. A porta não se fecha para os que demoram, contanto que cheguem. — Mateus 20:6-7: \"Ide vós também para a vinha, e recebereis o que for justo.\""
       },
       {
         text: "Pedir a Grande-Coração que avalie Velho Honesto primeiro",
         nextChapterId: "p2-fase3-cena2",
         effects: { discernimento: 2 },
-        flag: "avaliou_velho_honesto"
+        flag: "avaliou_velho_honesto",
+        consequence: "A prudência na avaliação de companheiros é bíblica. Nem todo viajante tem intenções puras. — 1 João 4:1: \"Amados, não creiais a todo espírito, mas provai se os espíritos são de Deus.\""
       }
     ]
   },
@@ -393,21 +421,23 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "grande_coracao"],
     sceneEvent: { type: 'tension', duration: 6000, message: 'Os sussurros do abismo ecoam...', intensity: 0.8 },
     narrative: [
-      "O vale é tão escuro quanto foi para Cristão. Mas desta vez, um pilar de fogo aparece adiante, iluminando o caminho.",
-      "Grande-Coração explica: \"Quando Cristão passou, o vale era pura escuridão. Para vocês, o Senhor enviou luz. Talvez porque desta vez haja crianças.\"",
-      "Os filhos de Cristã se agarram à mãe. Os sussurros do abismo ainda ecoam, mas o pilar de fogo mantém os demônios à distância."
+      "O vale é tão escuro quanto foi para Cristão. Mas desta vez, {{divine}}um pilar de fogo aparece adiante, iluminando o caminho.{{/divine}}",
+      "Grande-Coração explica: \"Quando Cristão passou, o vale era pura escuridão. Para vocês, o Senhor enviou luz. {{divine}}Talvez porque desta vez haja crianças.{{/divine}}\"",
+      "Os filhos de Cristã se agarram à mãe. {{whisper}}Os sussurros do abismo ainda ecoam{{/whisper}}, mas o pilar de fogo mantém os demônios à distância."
     ],
     choices: [
       {
         text: "Cantar hinos enquanto atravessa — afugentar o medo com louvor",
         nextChapterId: "p2-fase3-cena3",
         effects: { fe: 2, coragem: 1 },
-        flag: "cantou_no_vale_p2"
+        flag: "cantou_no_vale_p2",
+        consequence: "O louvor no vale escuro é uma arma espiritual. Onde há cântico, o medo recua. Paulo e Silas cantaram na prisão e as correntes caíram. — Salmo 149:6: \"Os altos louvores de Deus estejam em suas bocas, e espada de dois fios em suas mãos.\""
       },
       {
         text: "Caminhar em silêncio, seguindo o pilar de fogo",
         nextChapterId: "p2-fase3-cena3",
-        effects: { perseveranca: 1, discernimento: 1 }
+        effects: { perseveranca: 1, discernimento: 1 },
+        consequence: "Seguir a luz em silêncio é obedecer sem entender — a forma mais pura de fé. O pilar de fogo guiou Israel no deserto da mesma maneira. — Êxodo 13:21: \"E o Senhor ia adiante deles, de dia numa coluna de nuvem, e de noite numa coluna de fogo.\""
       }
     ]
   },
@@ -419,21 +449,23 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "grande_coracao"],
     sceneEvent: { type: 'tension', duration: 5000, message: 'A terra treme!', intensity: 0.9 },
     narrative: [
-      "Na saída do vale, um gigante chamado Maul bloqueia o caminho. Ele é menor que Desespero, mas feroz: \"Mulheres peregrinas? Fácil demais!\"",
-      "Grande-Coração avança. A luta é intensa — espada contra clava. O gigante é forte, mas Grande-Coração é habilidoso.",
-      "Após um combate que faz a terra tremer, Grande-Coração decepa a cabeça do gigante e a coloca num poste ao lado do caminho: aviso a todos os outros."
+      "Na saída do vale, um gigante chamado {{villain}}Maul{{/villain}} bloqueia o caminho. Ele é menor que Desespero, mas feroz: {{villain}}\"Mulheres peregrinas? Fácil demais!\"{{/villain}}",
+      "{{shout}}Grande-Coração avança.{{/shout}} A luta é intensa — espada contra clava. O gigante é forte, mas Grande-Coração é habilidoso.",
+      "{{tremor}}Após um combate que faz a terra tremer{{/tremor}}, Grande-Coração decepa a cabeça do gigante e a coloca num poste ao lado do caminho: aviso a todos os outros."
     ],
     choices: [
       {
         text: "Agradecer a Deus pela proteção de Grande-Coração",
         nextChapterId: "p2-fase3-cena4",
         effects: { fe: 2 },
-        flag: "agradeceu_vitoria_maul"
+        flag: "agradeceu_vitoria_maul",
+        consequence: "A gratidão após a vitória é o sacrifício que agrada a Deus. Grande-Coração lutou, mas foi o Senhor quem deu a força. — Salmo 18:39: \"Pois me cingiste de força para a peleja; os que contra mim se levantaram tu puseste debaixo de mim.\""
       },
       {
         text: "Perguntar a Grande-Coração quantos gigantes ele já matou",
         nextChapterId: "p2-fase3-cena4",
-        effects: { coragem: 1, discernimento: 1 }
+        effects: { coragem: 1, discernimento: 1 },
+        consequence: "Grande-Coração é um matador de gigantes como Davi. Cada vitória passada é testemunho da fidelidade divina para batalhas futuras. — 1 Samuel 17:37: \"O Senhor me livrou das garras do leão e do urso; Ele me livrará das mãos deste filisteu.\""
       }
     ]
   },
@@ -443,23 +475,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "A Hospedaria de Gaio",
     location: "Hospedaria de Gaio",
     characters: ["crista", "misericordia", "gaio"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 3000, message: 'Uma hospedaria no caminho...' },
     narrative: [
       "Entre o vale e a feira, o grupo encontra a hospedaria de Gaio — um discípulo honrado que recebe peregrinos com pão, vinho e histórias.",
-      "\"Cristã!\", exclama Gaio. \"Seu marido comeu nesta mesa. E devo lhes contar: a linhagem de Cristão remonta a homens ilustres da fé.\"",
-      "Gaio revela a ancestralidade espiritual de Cristão e organiza o casamento de Mateus (filho de Cristã) com Misericórdia. Lágrimas de alegria enchem a sala."
+      "{{divine}}\"Cristã!\"{{/divine}}, exclama Gaio. \"Seu marido comeu nesta mesa. E devo lhes contar: a linhagem de Cristão remonta a homens ilustres da fé.\"",
+      "Gaio revela a ancestralidade espiritual de Cristão e organiza o casamento de Mateus (filho de Cristã) com Misericórdia. {{divine}}Lágrimas de alegria enchem a sala.{{/divine}}"
     ],
     choices: [
       {
         text: "Celebrar o casamento e descansar na hospedaria",
         nextChapterId: "p2-fase3-cena5",
         effects: { fe: 1, perseveranca: 1 },
-        flag: "celebrou_casamento_mateus"
+        flag: "celebrou_casamento_mateus",
+        consequence: "O casamento de Mateus e Misericórdia é sinal de que a peregrinação não é só sofrimento — há celebrações no caminho. A hospitalidade de Gaio reflete o amor de Cristo. — 3 João 1:5: \"Amado, procedes fielmente em tudo o que fazes para com os irmãos e para com os estrangeiros.\""
       },
       {
         text: "Perguntar a Gaio sobre os perigos adiante",
         nextChapterId: "p2-fase3-cena5",
         effects: { discernimento: 2 },
-        flag: "perguntou_perigos_gaio"
+        flag: "perguntou_perigos_gaio",
+        consequence: "Buscar informação sobre os perigos adiante é prudência. Gaio conhece o caminho e seus monstros. — Provérbios 27:12: \"O prudente vê o perigo e esconde-se; mas os simples passam e sofrem a pena.\""
       }
     ]
   },
@@ -471,24 +506,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "grande_coracao", "mente_fraca"],
     sceneEvent: { type: 'tension', duration: 5000, message: 'Combate brutal!', intensity: 1.0 },
     narrative: [
-      "No caminho, encontram o Gigante Mata-Bons arrastando um homem pálido e fraco: Mente-Fraca.",
-      "Grande-Coração desafia o gigante: \"Solta esse homem, monstro! Tua hora chegou.\"",
-      "O combate é brutal. Mata-Bons é mais forte que Maul, mas Grande-Coração luta com a fúria de quem protege os fracos. A cabeça do gigante rola no chão.",
-      "Mente-Fraca, tremendo, agradece: \"Eu estava prestes a ser devorado. Posso... posso ir com vocês?\""
+      "No caminho, encontram o {{villain}}Gigante Mata-Bons{{/villain}} arrastando um homem pálido e fraco: Mente-Fraca.",
+      "{{shout}}Grande-Coração desafia o gigante: \"Solta esse homem, monstro! Tua hora chegou.\"{{/shout}}",
+      "{{tremor}}O combate é brutal.{{/tremor}} Mata-Bons é mais forte que Maul, mas Grande-Coração luta com a fúria de quem protege os fracos. A cabeça do gigante rola no chão.",
+      "Mente-Fraca, tremendo, agradece: {{whisper}}\"Eu estava prestes a ser devorado. Posso... posso ir com vocês?\"{{/whisper}}"
     ],
     choices: [
       {
         text: "\"Venha conosco. Os fracos são bem-vindos neste grupo.\"",
         nextChapterId: "p2-fase3-cena6",
         effects: { fe: 1, perseveranca: 1 },
-        flag: "acolheu_mente_fraca"
+        flag: "acolheu_mente_fraca",
+        consequence: "Acolher o fraco é a marca de Cristo. Mente-Fraca não tem força, mas tem fé — e fé do tamanho de um grão de mostarda move montanhas. — Mateus 12:20: \"Não esmagará a cana quebrada, e não apagará a torcida que fumega.\""
       },
       {
         text: "Cuidar de seus ferimentos antes de continuar",
         nextChapterId: "p2-fase3-cena6",
         effects: { discernimento: 1 },
         flag: "cuidou_mente_fraca",
-        item: "folhas_arvore_vida"
+        item: "folhas_arvore_vida",
+        consequence: "Curar antes de caminhar é sabedoria. Um corpo ferido retarda o grupo, mas um coração curado fortalece a todos. — Lucas 10:34: \"Chegando-se, atou-lhe as feridas, deitando-lhes azeite e vinho.\""
       }
     ]
   },
@@ -498,23 +535,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "A Feira da Vaidade — Desta Vez, Diferente",
     location: "Feira da Vaidade",
     characters: ["crista", "grande_coracao", "misericordia"],
+    sceneEvent: { type: 'tension', duration: 4000, message: 'A Feira da Vaidade...', intensity: 0.6 },
     narrative: [
-      "A Feira da Vaidade ainda existe. Mas algo mudou. O martírio de Fiel, anos atrás, plantou sementes.",
+      "A Feira da Vaidade ainda existe. Mas algo mudou. {{divine}}O martírio de Fiel, anos atrás, plantou sementes.{{/divine}}",
       "Alguns moradores da feira recebem os peregrinos com respeito. Outros ainda zombam, mas o ódio não é tão intenso quanto foi com Cristão e Fiel.",
-      "Grande-Coração fica alerta: \"Não confiem na aparente paz. Esta feira já matou um santo. Passem depressa.\""
+      "Grande-Coração fica alerta: {{shout}}\"Não confiem na aparente paz. Esta feira já matou um santo. Passem depressa.\"{{/shout}}"
     ],
     choices: [
       {
         text: "Passar rapidamente, lembrando do sacrifício de Fiel",
         nextChapterId: "p2-fase4-cena1",
         effects: { perseveranca: 1, coragem: 1 },
-        flag: "passou_rapido_feira_p2"
+        flag: "passou_rapido_feira_p2",
+        consequence: "A memória do martírio de Fiel é combustível para a perseverança. O sangue dos santos nunca é derramado em vão. — Apocalipse 6:9-10: \"Até quando, ó verdadeiro e santo Dominador, não julgas e vingas o nosso sangue?\""
       },
       {
         text: "Parar para testemunhar aos moradores da feira",
         nextChapterId: "p2-fase4-cena1",
         effects: { fe: 2, coragem: 1 },
-        flag: "testemunhou_feira_p2"
+        flag: "testemunhou_feira_p2",
+        consequence: "Testemunhar no lugar que matou Fiel é coragem extrema. As sementes que ele plantou com seu sangue agora frutificam através de Cristã. — João 12:24: \"Se o grão de trigo, caindo na terra, não morrer, fica ele só; mas se morrer, dá muito fruto.\""
       }
     ]
   },
@@ -528,9 +568,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "Pronto-para-Parar",
     location: "Caminho Estreito",
     characters: ["crista", "grande_coracao", "pronto_para_parar"],
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 3000, message: 'Um homem com muletas no caminho...' },
     narrative: [
       "No caminho, encontram um homem aleijado caminhando dolorosamente com muletas. Cada passo parece ser o último.",
-      "\"Me chamam de Pronto-para-Parar\", diz ele com um sorriso triste. \"Porque a cada metro dizem que vou desistir. Mas aqui estou — ainda caminhando.\"",
+      "{{whisper}}\"Me chamam de Pronto-para-Parar\"{{/whisper}}, diz ele com um sorriso triste. \"Porque a cada metro dizem que vou desistir. {{shout}}Mas aqui estou — ainda caminhando.{{/shout}}\"",
       "Seu corpo é fraco, seus pés sangram, mas sua determinação faz o grupo inteiro parar em admiração."
     ],
     choices: [
@@ -538,13 +579,15 @@ export const part2Chapters: Record<string, StoryChapter> = {
         text: "Oferecer apoio — ele caminhará com o grupo",
         nextChapterId: "p2-fase4-cena2",
         effects: { perseveranca: 2, fe: 1 },
-        flag: "apoiou_pronto_para_parar"
+        flag: "apoiou_pronto_para_parar",
+        consequence: "Pronto-para-Parar é a imagem da fé que persevera quando o corpo falha. Suas muletas são testemunho de que a jornada não exige pernas fortes, mas coração inabalável. — 2 Coríntios 12:9: \"A minha graça te basta, porque o meu poder se aperfeiçoa na fraqueza.\""
       },
       {
         text: "Perguntar como ele mantém a esperança com tanta dor",
         nextChapterId: "p2-fase4-cena2",
         effects: { discernimento: 2 },
-        flag: "ouviu_pronto_para_parar"
+        flag: "ouviu_pronto_para_parar",
+        consequence: "A resposta de Pronto-para-Parar é simples: 'Olho para a Cidade, não para meus pés.' A esperança que ultrapassa a dor física é a marca dos santos sofredores. — Romanos 8:18: \"As aflições do tempo presente não são para comparar com a glória que em nós há de ser revelada.\""
       }
     ]
   },
@@ -554,22 +597,25 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "A Mina de Demas — De Novo",
     location: "Colina de Lucro",
     characters: ["crista", "grande_coracao"],
+    sceneEvent: { type: 'tension', duration: 4000, message: 'O brilho da prata cega...', intensity: 0.6 },
     narrative: [
-      "A mina de Demas ainda está ali. Mas Demas não. Dizem que ele próprio entrou na mina buscando mais prata — e nunca mais saiu.",
+      "A mina de Demas ainda está ali. Mas Demas não. {{villain}}Dizem que ele próprio entrou na mina buscando mais prata — e nunca mais saiu.{{/villain}}",
       "A entrada da mina brilha com um reflexo dourado tentador. Alguns dos filhos olham com curiosidade.",
-      "Grande-Coração fala severamente: \"Não olhem. Não cheguem perto. Muitos peregrinos morreram ali dentro. A ganância é uma porta sem volta.\""
+      "Grande-Coração fala severamente: {{shout}}\"Não olhem. Não cheguem perto. Muitos peregrinos morreram ali dentro. A ganância é uma porta sem volta.\"{{/shout}}"
     ],
     choices: [
       {
         text: "Ensinar os filhos sobre o perigo da ganância e seguir",
         nextChapterId: "p2-fase4-cena3",
         effects: { discernimento: 2, fe: 1 },
-        flag: "ensinou_filhos_ganancia"
+        flag: "ensinou_filhos_ganancia",
+        consequence: "Ensinar os filhos no caminho é mandamento divino. A ganância que destruiu Demas serve de lição eterna para a próxima geração. — 1 Timóteo 6:10: \"Porque o amor ao dinheiro é a raiz de toda a espécie de males.\""
       },
       {
         text: "Cobrir os olhos dos filhos e passar correndo",
         nextChapterId: "p2-fase4-cena3",
-        effects: { coragem: 1 }
+        effects: { coragem: 1 },
+        consequence: "Proteger os olhos da tentação é sábio, mas fugir sem ensinar é perder a oportunidade de fortalecer. As tentações voltarão — e os filhos precisarão saber por que resistir. — Deuteronômio 6:7: \"E as ensinarás a teus filhos e delas falarás assentado em tua casa, e andando pelo caminho.\""
       }
     ]
   },
@@ -579,23 +625,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "Valente-pela-Verdade",
     location: "Caminho Estreito",
     characters: ["crista", "grande_coracao", "valente_pela_verdade"],
+    sceneEvent: { type: 'tension', duration: 4000, message: 'Sangue e espada no caminho!', intensity: 0.8 },
     narrative: [
       "O grupo encontra um homem coberto de sangue, espada em punho, cercado por três bandidos derrotados no chão.",
-      "\"Sou Valente-pela-Verdade\", diz ele, limpando a lâmina. \"Três ladrões — Coração-Fraco, Desconfiança e Culpa — me emboscaram. Eles tentam roubar a fé de todo peregrino. Mas esta espada é uma lâmina legítima de Jerusalém.\"",
-      "Grande-Coração sorri com aprovação: \"Um guerreiro de verdade. Junte-se a nós.\""
+      "\"Sou {{shout}}Valente-pela-Verdade{{/shout}}\", diz ele, limpando a lâmina. \"Três ladrões — {{villain}}Coração-Fraco, Desconfiança e Culpa{{/villain}} — me emboscaram. Eles tentam roubar a fé de todo peregrino. Mas esta espada é uma lâmina legítima de Jerusalém.\"",
+      "Grande-Coração sorri com aprovação: {{divine}}\"Um guerreiro de verdade. Junte-se a nós.\"{{/divine}}"
     ],
     choices: [
       {
         text: "Receber Valente-pela-Verdade como companheiro de armas",
         nextChapterId: "p2-fase4-cena4",
         effects: { coragem: 2, fe: 1 },
-        flag: "aceitou_valente"
+        flag: "aceitou_valente",
+        consequence: "Valente-pela-Verdade empunha a Palavra como espada. Seus três inimigos — dúvida, desconfiança e culpa — são os mesmos que atacam todo crente. — Efésios 6:17: \"Tomai o capacete da salvação, e a espada do Espírito, que é a palavra de Deus.\""
       },
       {
         text: "Cuidar de seus ferimentos — ele lutou até o limite",
         nextChapterId: "p2-fase4-cena4",
         effects: { perseveranca: 1, fe: 1 },
-        flag: "cuidou_valente"
+        flag: "cuidou_valente",
+        consequence: "Cuidar de um guerreiro ferido é honrar quem lutou pela verdade. As cicatrizes de Valente são medalhas de fidelidade. — Gálatas 6:17: \"Eu trago no meu corpo as marcas do Senhor Jesus.\""
       }
     ]
   },
@@ -605,22 +654,25 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Prado Agradável — Lição Aprendida",
     location: "Prado Agradável",
     characters: ["crista", "grande_coracao"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 3000, message: 'O prado verde seduz...' },
     narrative: [
       "O Prado Agradável que seduziu Cristão e Esperançoso para o Castelo da Dúvida aparece à esquerda do caminho.",
-      "\"Aqui\", diz Grande-Coração, apontando as marcas na cerca. \"Aqui seu marido escalou a cerca e foi capturado pelo Gigante Desespero. Mas nós não repetiremos esse erro.\"",
-      "Os filhos olham o prado verde e tentador. É lindo. É convidativo. E é uma armadilha."
+      "\"Aqui\", diz Grande-Coração, apontando as marcas na cerca. {{shout}}\"Aqui seu marido escalou a cerca e foi capturado pelo Gigante Desespero. Mas nós não repetiremos esse erro.\"{{/shout}}",
+      "Os filhos olham o prado verde e tentador. {{whisper}}É lindo. É convidativo. E é uma armadilha.{{/whisper}}"
     ],
     choices: [
       {
         text: "\"Mantenhamo-nos no caminho estreito, não importa quão duro seja\"",
         nextChapterId: "p2-fase5-cena1",
         effects: { discernimento: 2, perseveranca: 1 },
-        flag: "ficou_no_caminho_p2"
+        flag: "ficou_no_caminho_p2",
+        consequence: "O caminho estreito é árduo, mas é o único que leva à Cidade. O prado é largo e bonito, mas termina nas mãos do Gigante Desespero. — Mateus 7:14: \"Estreita é a porta, e apertado o caminho que leva à vida, e poucos há que a encontrem.\""
       },
       {
         text: "Olhar para o prado com saudade mas obedecer a Grande-Coração",
         nextChapterId: "p2-fase5-cena1",
-        effects: { perseveranca: 1 }
+        effects: { perseveranca: 1 },
+        consequence: "A obediência mesmo com saudade é mais forte que a obediência sem luta. Cristã deseja o descanso, mas escolhe a segurança do caminho reto. — Provérbios 3:5-6: \"Confia no Senhor de todo o teu coração, e não te estribes no teu próprio entendimento.\""
       },
       {
         text: "Sentar no prado para descansar — os filhos estão exaustos",
@@ -628,7 +680,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
         effects: { fe: -2, perseveranca: -2 },
         requires: { fe: -99 },
         flag: "desistiu_prado_p2",
-        consequence: "O prado é confortável. Perigosamente confortável. Os olhos pesam..."
+        consequence: "O prado é confortável. Perigosamente confortável. Os olhos pesam... — Provérbios 14:12: \"Há caminho que ao homem parece direito, mas o fim dele são os caminhos da morte.\""
       }
     ]
   },
@@ -644,22 +696,24 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "grande_coracao", "valente_pela_verdade"],
     sceneEvent: { type: 'suspense', delay: 1000, duration: 4000, message: 'O Castelo da Dúvida...' },
     narrative: [
-      "Grande-Coração para diante do Castelo da Dúvida. Não para fugir — para atacar.",
-      "\"Este castelo aprisiona peregrinos há anos demais\", declara. \"O Gigante Desespero ainda vive ali dentro. Hoje, nós o destruímos.\"",
-      "Valente-pela-Verdade bate a espada no escudo: \"Estou pronto.\""
+      "Grande-Coração para diante do Castelo da Dúvida. Não para fugir — {{shout}}para atacar.{{/shout}}",
+      "\"Este castelo aprisiona peregrinos há anos demais\", declara. {{shout}}\"O Gigante Desespero ainda vive ali dentro. Hoje, nós o destruímos.\"{{/shout}}",
+      "Valente-pela-Verdade bate a espada no escudo: {{shout}}\"Estou pronto.\"{{/shout}}"
     ],
     choices: [
       {
         text: "Encorajar o ataque — é hora de destruir a Dúvida de vez",
         nextChapterId: "p2-fase5-cena2",
         effects: { coragem: 2, fe: 1 },
-        flag: "encorajou_ataque_castelo"
+        flag: "encorajou_ataque_castelo",
+        consequence: "A decisão de atacar a Dúvida em vez de contorná-la é a diferença entre a jornada de Cristão e a de Cristã. O que a primeira geração sobreviveu, a segunda destrói. — Romanos 16:20: \"O Deus de paz em breve esmagará Satanás debaixo dos vossos pés.\""
       },
       {
         text: "Orar antes da batalha — pedir proteção divina",
         nextChapterId: "p2-fase5-cena2",
         effects: { fe: 2, perseveranca: 1 },
-        flag: "orou_antes_castelo_p2"
+        flag: "orou_antes_castelo_p2",
+        consequence: "Orar antes da batalha é reconhecer que a vitória não vem da espada, mas de Deus. Josafá orou antes de enfrentar três exércitos e venceu sem lutar. — 2 Crônicas 20:15: \"Não temais; a peleja não é vossa, senão de Deus.\""
       }
     ]
   },
@@ -671,9 +725,9 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "grande_coracao", "valente_pela_verdade", "gigante_desespero"],
     sceneEvent: { type: 'tension', duration: 6000, message: 'O Gigante Desespero ataca!', intensity: 1.0 },
     narrative: [
-      "Grande-Coração arromba os portões. O Gigante Desespero emerge, rugindo. Desconfiança, sua esposa, grita do alto da torre.",
-      "A luta é épica. Grande-Coração e Valente-pela-Verdade atacam em conjunto. O gigante é poderoso, mas os dois guerreiros são implacáveis.",
-      "Depois de um combate que faz tremer as fundações do castelo, Grande-Coração decepa a cabeça do Gigante Desespero. Desconfiança foge para as sombras."
+      "{{tremor}}Grande-Coração arromba os portões.{{/tremor}} O {{villain}}Gigante Desespero{{/villain}} emerge, rugindo. Desconfiança, sua esposa, grita do alto da torre.",
+      "A luta é épica. Grande-Coração e Valente-pela-Verdade atacam em conjunto. {{tremor}}O gigante é poderoso, mas os dois guerreiros são implacáveis.{{/tremor}}",
+      "{{shout}}Depois de um combate que faz tremer as fundações do castelo, Grande-Coração decepa a cabeça do Gigante Desespero.{{/shout}} Desconfiança foge para as sombras."
     ],
     interactionType: "hold",
     choices: [
@@ -682,7 +736,8 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase5-cena3",
         effects: { coragem: 2, fe: 1 },
         flag: "entrou_castelo_destruido",
-        item: "chave_promessa"
+        item: "chave_promessa",
+        consequence: "O Gigante Desespero está morto. O que aterrorizou Cristão por dias foi destruído em horas. Cada geração recebe mais poder para enfrentar os mesmos inimigos. — Isaías 10:27: \"E o jugo será despedaçado por causa da unção.\""
       }
     ]
   },
@@ -692,23 +747,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "Os Prisioneiros Libertados",
     location: "Masmorras do Castelo",
     characters: ["crista", "grande_coracao", "sr_desanimo", "muito_medo"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 4000, message: 'Vozes nas masmorras...' },
     narrative: [
       "Nas masmorras escuras, encontram dois prisioneiros: Sr. Desânimo e sua filha, Muito-Medo. Estão pálidos, fracos, cobertos de feridas.",
-      "\"Há quanto tempo estão aqui?\", pergunta Cristã. \"Não sabemos mais\", responde Sr. Desânimo. \"O gigante nos dizia todos os dias para desistir da vida. Quase obedecemos.\"",
-      "Muito-Medo agarra a mão de Misericórdia e não solta. \"Vocês são reais? Não é mais uma ilusão do gigante?\""
+      "{{whisper}}\"Há quanto tempo estão aqui?\"{{/whisper}}, pergunta Cristã. \"Não sabemos mais\", responde Sr. Desânimo. {{villain}}\"O gigante nos dizia todos os dias para desistir da vida. Quase obedecemos.\"{{/villain}}",
+      "Muito-Medo agarra a mão de Misericórdia e não solta. {{whisper}}\"Vocês são reais? Não é mais uma ilusão do gigante?\"{{/whisper}}"
     ],
     choices: [
       {
         text: "\"É real. O gigante está morto. Vocês são livres. Venham conosco.\"",
         nextChapterId: "p2-fase5-cena4",
         effects: { fe: 2, perseveranca: 1 },
-        flag: "libertou_desanimo"
+        flag: "libertou_desanimo",
+        consequence: "Libertar prisioneiros do desespero é a missão de todo cristão. O gigante mentia — e a verdade é que há liberdade para os cativos. — Lucas 4:18: \"O Espírito do Senhor é sobre mim, porque me ungiu para pregar liberdade aos cativos.\""
       },
       {
         text: "Alimentá-los e cuidar de seus ferimentos antes de sair",
         nextChapterId: "p2-fase5-cena4",
         effects: { discernimento: 1, perseveranca: 1 },
-        flag: "cuidou_desanimo"
+        flag: "cuidou_desanimo",
+        consequence: "Antes de caminhar, é preciso curar. O desânimo e o medo deixam feridas profundas que só o cuidado paciente pode restaurar. — Salmo 147:3: \"Sara os quebrantados de coração, e lhes ata as suas feridas.\""
       }
     ]
   },
@@ -720,11 +778,12 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "grande_coracao"],
     reflection: "p2r4",
     interactionType: 'hold',
+    sceneEvent: { type: 'tension', duration: 5000, message: 'O castelo desmorona!', intensity: 0.9 },
     narrative: [
-      "Grande-Coração não se contenta em matar o gigante. Ele ordena a destruição completa do Castelo da Dúvida.",
-      "Pedra por pedra, o grupo destrói as muralhas. O castelo que aterrorizou peregrinos por gerações é reduzido a ruínas.",
-      "\"O que Cristão sobreviveu, nós destruímos\", diz Grande-Coração. \"Nenhum outro peregrino será preso aqui.\"",
-      "Onde antes havia trevas, agora há céu aberto."
+      "Grande-Coração não se contenta em matar o gigante. {{shout}}Ele ordena a destruição completa do Castelo da Dúvida.{{/shout}}",
+      "{{tremor}}Pedra por pedra, o grupo destrói as muralhas.{{/tremor}} O castelo que aterrorizou peregrinos por gerações é reduzido a ruínas.",
+      "{{divine}}\"O que Cristão sobreviveu, nós destruímos\"{{/divine}}, diz Grande-Coração. \"Nenhum outro peregrino será preso aqui.\"",
+      "{{divine}}Onde antes havia trevas, agora há céu aberto.{{/divine}}"
     ],
     choices: [
       {
@@ -732,12 +791,14 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase5-cena5",
         effects: { fe: 1, discernimento: 1 },
         flag: "levantou_memorial_castelo",
-        item: "pedra_memorial"
+        item: "pedra_memorial",
+        consequence: "Os memoriais bíblicos existem para que as gerações futuras perguntem: 'O que significam estas pedras?' A destruição da dúvida merece ser lembrada. — Josué 4:6-7: \"Quando vossos filhos perguntarem: Que significam estas pedras? Direis que as águas do Jordão se cortaram.\""
       },
       {
         text: "Seguir para as Montanhas Deleitosas com o grupo renovado",
         nextChapterId: "p2-fase5-cena5",
-        effects: { perseveranca: 1, coragem: 1 }
+        effects: { perseveranca: 1, coragem: 1 },
+        consequence: "A jornada não para para celebrar — avança. O castelo caiu, mas a Cidade Celestial ainda está adiante. A vitória sobre o passado deve impulsionar, não paralisar. — Filipenses 3:14: \"Prossigo para o alvo, pelo prêmio da soberana vocação de Deus em Cristo Jesus.\""
       }
     ]
   },
@@ -747,23 +808,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "As Montanhas Deleitosas",
     location: "Montanhas Deleitosas",
     characters: ["crista", "grande_coracao", "pastores"],
+    sceneEvent: { type: 'suspense', delay: 2000, duration: 4000, message: 'A vista da Cidade...' },
     narrative: [
       "Os quatro pastores — Conhecimento, Experiência, Vigilante e Sincero — recebem o grupo com banquete.",
-      "\"A esposa de Cristão!\", exclama Conhecimento. \"Que jornada! O castelo que prendeu seu marido agora é pó. A coragem cresce a cada geração.\"",
-      "Das montanhas, mostram a vista da Cidade Celestial — mais perto do que nunca. Os filhos de Cristã olham maravilhados.",
-      "\"Vejam\", diz Sincero. \"E lembrem-se: também há um abismo para os que se desviam. Olhem ambos.\""
+      "{{divine}}\"A esposa de Cristão!\"{{/divine}}, exclama Conhecimento. \"Que jornada! O castelo que prendeu seu marido agora é pó. {{divine}}A coragem cresce a cada geração.{{/divine}}\"",
+      "Das montanhas, mostram a vista da Cidade Celestial — {{divine}}mais perto do que nunca{{/divine}}. Os filhos de Cristã olham maravilhados.",
+      "\"Vejam\", diz Sincero. {{shout}}\"E lembrem-se: também há um abismo para os que se desviam. Olhem ambos.\"{{/shout}}"
     ],
     choices: [
       {
         text: "Contemplar a Cidade Celestial e renovar a esperança",
         nextChapterId: "p2-fase6-cena1",
-        effects: { fe: 2, perseveranca: 1 }
+        effects: { fe: 2, perseveranca: 1 },
+        consequence: "A visão da Cidade Celestial das Montanhas Deleitosas renova a esperança para a última etapa. Ver o destino fortalece para o caminho que resta. — Hebreus 12:1-2: \"Corramos com paciência a carreira que nos está proposta, olhando para Jesus.\""
       },
       {
         text: "Pedir aos pastores conselhos para a última etapa da jornada",
         nextChapterId: "p2-fase6-cena1",
         effects: { discernimento: 2, fe: 1 },
-        flag: "pediu_conselho_pastores_p2"
+        flag: "pediu_conselho_pastores_p2",
+        consequence: "Os pastores das montanhas são guardiões de sabedoria. Seus conselhos preparam para a Terra Encantada e o Rio — as últimas provas antes da glória. — Provérbios 11:14: \"Onde não há conselho, o povo cai, mas na multidão de conselheiros há segurança.\""
       },
       {
         text: "Deitar na grama macia das montanhas... os olhos pesam...",
@@ -771,14 +835,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
         effects: { fe: -3 },
         requires: { perseveranca: -99 },
         flag: "dormiu_montanhas_p2",
-        consequence: "O sono das Montanhas é doce. Doce demais."
+        consequence: "O sono das Montanhas é doce. Doce demais. — Provérbios 6:10-11: \"Um pouco de sono, um pouco de tosquejar, um pouco de encruzar das mãos para dormir; assim sobrevirá a tua pobreza.\""
       }
     ]
   },
-
-  // ═══════════════════════════════════════════════
-  // FASE 6: A TERRA ENCANTADA E O RIO (cenas 1-6)
-  // ═══════════════════════════════════════════════
 
   "p2-fase6-cena1": {
     id: "p2-fase6-cena1",
@@ -788,23 +848,25 @@ export const part2Chapters: Record<string, StoryChapter> = {
     reflection: "p2r5",
     sceneEvent: { type: 'suspense', delay: 2000, duration: 5000, message: 'O ar da Terra Encantada é pesado...' },
     narrative: [
-      "Na Terra Encantada — onde o ar faz os viajantes dormirem — o grupo encontra um homem ajoelhado em oração, tremendo.",
-      "É Firme. Ao lado dele, uma mulher alta e elegante tenta seduzi-lo: Madame Bolha. Ela oferece sua bolsa de ouro, seu corpo e sua cama.",
-      "\"Vem comigo\", sussurra ela. \"Tudo que queres, eu te dou. O caminho é longo demais. Por que sofrer?\"",
-      "Firme ora com mais força. Grande-Coração avança e Madame Bolha desaparece como fumaça."
+      "Na Terra Encantada — onde o ar faz os viajantes dormirem — o grupo encontra um homem ajoelhado em oração, {{tremor}}tremendo{{/tremor}}.",
+      "É Firme. Ao lado dele, uma mulher alta e elegante tenta seduzi-lo: {{villain}}Madame Bolha{{/villain}}. Ela oferece sua bolsa de ouro, seu corpo e sua cama.",
+      "{{villain}}\"Vem comigo\"{{/villain}}, sussurra ela. {{villain}}\"Tudo que queres, eu te dou. O caminho é longo demais. Por que sofrer?\"{{/villain}}",
+      "{{divine}}Firme ora com mais força.{{/divine}} Grande-Coração avança e Madame Bolha desaparece como fumaça."
     ],
     choices: [
       {
         text: "Admirar a resistência de Firme e convidá-lo ao grupo",
         nextChapterId: "p2-fase6-cena2",
         effects: { fe: 2, coragem: 1 },
-        flag: "admirou_firme"
+        flag: "admirou_firme",
+        consequence: "Firme resistiu não com espada, mas de joelhos. A oração é a arma mais poderosa contra a tentação — silenciosa, invisível, invencível. — Tiago 4:7: \"Resisti ao diabo, e ele fugirá de vós.\""
       },
       {
         text: "Perguntar a Firme como resistiu à tentação",
         nextChapterId: "p2-fase6-cena2",
         effects: { discernimento: 2, fe: 1 },
-        flag: "perguntou_firme"
+        flag: "perguntou_firme",
+        consequence: "Firme responde: 'Não olhei para ela. Olhei para Ele.' A resistência à tentação não vem da força de vontade, mas da fixação dos olhos em Cristo. — Hebreus 12:2: \"Olhando para Jesus, autor e consumador da fé.\""
       }
     ]
   },
@@ -814,23 +876,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O País de Beulá",
     location: "País de Beulá",
     characters: ["crista", "misericordia", "grande_coracao"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 4000, message: 'O ar muda... paz...' },
     narrative: [
-      "O ar muda. O sono da Terra Encantada fica para trás. O País de Beulá se abre diante do grupo — flores, pássaros cantando, sol perpétuo.",
-      "Aqui, anjos caminham entre os peregrinos. As crianças brincam sem medo pela primeira vez na jornada inteira.",
-      "Cristã respira fundo: \"É assim que cheira a paz.\"",
-      "Misericórdia sorri: \"Valeu cada pântano, cada gigante, cada lágrima.\""
+      "O ar muda. O sono da Terra Encantada fica para trás. {{divine}}O País de Beulá se abre diante do grupo — flores, pássaros cantando, sol perpétuo.{{/divine}}",
+      "Aqui, {{divine}}anjos caminham entre os peregrinos{{/divine}}. As crianças brincam sem medo pela primeira vez na jornada inteira.",
+      "Cristã respira fundo: {{divine}}\"É assim que cheira a paz.\"{{/divine}}",
+      "Misericórdia sorri: {{whisper}}\"Valeu cada pântano, cada gigante, cada lágrima.\"{{/whisper}}"
     ],
     choices: [
       {
         text: "Caminhar até o rio em paz, cantando com o grupo",
         nextChapterId: "p2-fase6-cena3",
-        effects: { fe: 1, perseveranca: 1 }
+        effects: { fe: 1, perseveranca: 1 },
+        consequence: "O cântico no País de Beulá é o prelúdio da adoração eterna. Todo sofrimento da jornada culmina neste momento de paz antecipada. — Isaías 62:4: \"Nunca mais te chamarão Desamparada... mas chamar-te-ão Beulá; porque o Senhor se agrada de ti.\""
       },
       {
         text: "Parar para orar e agradecer por toda a jornada",
         nextChapterId: "p2-fase6-cena3",
         effects: { fe: 2 },
-        flag: "orou_beula_p2"
+        flag: "orou_beula_p2",
+        consequence: "A gratidão é o selo da peregrinação completa. Cristã olha para trás e vê cada vale, cada gigante, cada pântano transformado em testemunho de fidelidade. — 1 Tessalonicenses 5:18: \"Em tudo dai graças, porque esta é a vontade de Deus em Cristo Jesus para convosco.\""
       }
     ]
   },
@@ -842,22 +907,24 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "misericordia", "grande_coracao", "valente_pela_verdade"],
     sceneEvent: { type: 'suspense', delay: 2000, duration: 4000, message: 'Um mensageiro do Rei...' },
     narrative: [
-      "O rio aparece. Mas na Parte II, Bunyan faz algo diferente: cada peregrino recebe um chamado individual do Rei.",
-      "Um mensageiro chega a Cristã com uma carta: \"O Mestre te convida a estar em Sua presença dentro de dez dias.\"",
-      "Cristã lê a carta e sorri. Não há medo. Não há pânico. Apenas uma paz profunda e uma saudade de quem já espera do outro lado — seu marido."
+      "O rio aparece. Mas na Parte II, Bunyan faz algo diferente: {{divine}}cada peregrino recebe um chamado individual do Rei.{{/divine}}",
+      "Um mensageiro chega a Cristã com uma carta: {{divine}}\"O Mestre te convida a estar em Sua presença dentro de dez dias.\"{{/divine}}",
+      "Cristã lê a carta e sorri. Não há medo. Não há pânico. Apenas {{divine}}uma paz profunda{{/divine}} e uma saudade de quem já espera do outro lado — seu marido."
     ],
     choices: [
       {
         text: "Preparar-se em paz — despedir-se de cada companheiro",
         nextChapterId: "p2-fase6-cena4",
         effects: { fe: 2, discernimento: 1 },
-        flag: "despediu_com_paz"
+        flag: "despediu_com_paz",
+        consequence: "Cristã se despede sem pressa. Cada abraço, cada palavra é um legado. A morte do justo não é tragédia — é transição. — Filipenses 1:21: \"Para mim o viver é Cristo, e o morrer é ganho.\""
       },
       {
         text: "Encorajar os outros a não temer quando receberem seus chamados",
         nextChapterId: "p2-fase6-cena4",
         effects: { fe: 1, coragem: 1, perseveranca: 1 },
-        flag: "encorajou_outros_rio"
+        flag: "encorajou_outros_rio",
+        consequence: "Cristã pastoreia até o fim. Seu encorajamento prepara cada companheiro para sua própria travessia. — 1 Tessalonicenses 4:18: \"Consolai-vos uns aos outros com estas palavras.\""
       }
     ]
   },
@@ -867,24 +934,27 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "As Despedidas",
     location: "Margem do Rio",
     characters: ["crista", "misericordia", "grande_coracao", "valente_pela_verdade", "sr_desanimo"],
+    sceneEvent: { type: 'suspense', delay: 2000, duration: 5000, message: 'As últimas palavras...' },
     narrative: [
       "Cada peregrino se despede à sua maneira. Valente-pela-Verdade diz as palavras mais famosas da Parte II:",
-      "\"Minha espada, eu a deixo a quem me suceder na peregrinação. Minha coragem e habilidade, ao que puder obtê-las. Minhas marcas e cicatrizes, levo comigo como testemunho de que lutei Suas batalhas.\"",
-      "Sr. Desânimo, surpreendendo a todos, diz com voz firme pela primeira vez: \"Adeus, noite. Bem-vindo, dia. O desânimo não cruzará o rio comigo.\"",
-      "Muito-Medo atravessa cantando — ela que viveu em terror constante morre com uma canção nos lábios."
+      "{{shout}}\"Minha espada, eu a deixo a quem me suceder na peregrinação. Minha coragem e habilidade, ao que puder obtê-las. Minhas marcas e cicatrizes, levo comigo como testemunho de que lutei Suas batalhas.\"{{/shout}}",
+      "Sr. Desânimo, surpreendendo a todos, diz com voz firme pela primeira vez: {{divine}}\"Adeus, noite. Bem-vindo, dia. O desânimo não cruzará o rio comigo.\"{{/divine}}",
+      "{{divine}}Muito-Medo atravessa cantando{{/divine}} — ela que viveu em terror constante morre com uma canção nos lábios."
     ],
     choices: [
       {
         text: "Guardar as palavras de Valente no coração e avançar",
         nextChapterId: "p2-fase6-cena5",
         effects: { coragem: 2, fe: 1 },
-        flag: "guardou_palavras_valente"
+        flag: "guardou_palavras_valente",
+        consequence: "As palavras de Valente-pela-Verdade ecoam através dos séculos. Sua espada é a Palavra, sua herança é a coragem, suas cicatrizes são testemunho. — 2 Timóteo 4:7: \"Combati o bom combate, acabei a carreira, guardei a fé.\""
       },
       {
         text: "Abraçar Misericórdia uma última vez antes do rio",
         nextChapterId: "p2-fase6-cena5",
         effects: { fe: 2, perseveranca: 1 },
-        flag: "abraçou_misericordia"
+        flag: "abraçou_misericordia",
+        consequence: "O abraço entre Cristã e Misericórdia é o selo de uma amizade que começou na Cidade da Destruição e se completa às portas da eternidade. — Provérbios 17:17: \"Em todo o tempo ama o amigo; e para a hora da angústia nasce o irmão.\""
       }
     ]
   },
@@ -897,10 +967,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
     reflection: "p2r6",
     sceneEvent: { type: 'suspense', delay: 3000, duration: 6000, message: 'As águas recebem Cristã...' },
     narrative: [
-      "Cristã entra no rio. As águas que quase afogaram Cristão são, para ela, surpreendentemente calmas.",
-      "Bunyan escreve: \"Suas últimas palavras foram: 'Venho, Senhor, para estar Contigo e Te bendizer.'\"",
-      "Do outro lado do rio, uma multidão espera. Trombetas soam. Anjos cantam. E no meio deles — Cristão, vestido de glória, estende a mão para sua esposa.",
-      "O reencontro é eterno."
+      "Cristã entra no rio. As águas que quase afogaram Cristão são, para ela, {{divine}}surpreendentemente calmas.{{/divine}}",
+      "Bunyan escreve: {{divine}}\"Suas últimas palavras foram: 'Venho, Senhor, para estar Contigo e Te bendizer.'\"{{/divine}}",
+      "Do outro lado do rio, uma multidão espera. {{divine}}Trombetas soam. Anjos cantam.{{/divine}} E no meio deles — {{divine}}Cristão, vestido de glória, estende a mão para sua esposa.{{/divine}}",
+      "{{divine}}O reencontro é eterno.{{/divine}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "O rio é raso para Cristã. Cada passo de fé ao longo de toda a jornada reduziu a profundidade da água. Ela atravessa de pé, com um sorriso, olhando para a Cidade.", lowThreshold: 4, lowText: "A água sobe, mas não há pânico. A mão de Cristão aparece do outro lado. Ela a alcança. O rio terminou." }
@@ -910,7 +980,8 @@ export const part2Chapters: Record<string, StoryChapter> = {
         text: "Entrar na Cidade Celestial ao lado de Cristão",
         nextChapterId: "p2-fase6-cena6",
         effects: { fe: 2, coragem: 1 },
-        flag: "entrou_cidade_p2"
+        flag: "entrou_cidade_p2",
+        consequence: "A travessia de Cristã é diferente da de Cristão. Onde ele afundou em medo, ela caminha em paz. A mesma graça, dois caminhos, um destino. — Apocalipse 21:4: \"E Deus limpará de seus olhos toda a lágrima; e não haverá mais morte, nem pranto, nem clamor.\""
       }
     ]
   },
@@ -920,11 +991,12 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Fim da Segunda Peregrinação",
     location: "Cidade Celestial",
     characters: ["crista", "misericordia"],
+    sceneEvent: { type: 'suspense', delay: 2000, duration: 6000, message: 'Os portões se abrem...' },
     narrative: [
-      "Os portões se abrem. Cristã e todos os seus companheiros entram na Cidade Celestial. Trombetas soam. Vozes cantam.",
-      "A peregrinação de Cristã é diferente da de Cristão: ela não caminhou sozinha. Levou filhos, amigos, fracos, feridos. Onde Cristão lutou com espada, ela lutou com compaixão.",
-      "Bunyan encerra a Parte II com estas palavras: \"Devo tomar cuidado para não revelar mais do que o sonho me mostrou, pois há no Céu coisas que nenhuma língua pode descrever.\"",
-      "A jornada terminou. Ambas as peregrinações — a do marido e a da esposa — estão completas. A Cidade da Destruição ficou para trás. A porta está aberta para quem quiser partir."
+      "{{divine}}Os portões se abrem.{{/divine}} Cristã e todos os seus companheiros entram na Cidade Celestial. {{divine}}Trombetas soam. Vozes cantam.{{/divine}}",
+      "A peregrinação de Cristã é diferente da de Cristão: ela não caminhou sozinha. Levou filhos, amigos, fracos, feridos. {{divine}}Onde Cristão lutou com espada, ela lutou com compaixão.{{/divine}}",
+      "Bunyan encerra a Parte II com estas palavras: {{whisper}}\"Devo tomar cuidado para não revelar mais do que o sonho me mostrou, pois há no Céu coisas que nenhuma língua pode descrever.\"{{/whisper}}",
+      "{{divine}}A jornada terminou. Ambas as peregrinações — a do marido e a da esposa — estão completas.{{/divine}} A Cidade da Destruição ficou para trás. A porta está aberta para quem quiser partir."
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "Duas jornadas. Dois caminhos. Um destino. A fé que começou como desespero em Cristão e como arrependimento em Cristã converge aqui em glória compartilhada.", lowThreshold: 4, lowText: "O caminho foi longo. Houve gigantes, vales, tentações. Mas a porta se abriu. E isso é tudo que importa." }
@@ -943,11 +1015,12 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "A Desistência de Cristã",
     location: "Caminho Estreito",
     characters: ["crista"],
+    sceneEvent: { type: 'sinking', duration: 5000, message: 'O peso da jornada...', intensity: 0.8 },
     narrative: [
       "O peso da jornada se tornou insuportável. Os filhos choram, os companheiros vacilam, e a estrada parece não ter fim.",
-      "Cristã para. Olha para trás. A Cidade da Destruição parece tão distante quanto a Cidade Celestial. Presa no meio, ela se senta e não se levanta.",
-      "\"Cristão conseguiu\", sussurra. \"Mas Cristão era mais forte que eu. Talvez nem todos sejam feitos para esta jornada.\"",
-      "O caminho continua sem ela. Misericórdia chora. Os filhos esperam. Mas Cristã não se levanta. Não desta vez."
+      "Cristã para. Olha para trás. {{whisper}}A Cidade da Destruição parece tão distante quanto a Cidade Celestial.{{/whisper}} Presa no meio, ela se senta e não se levanta.",
+      "{{whisper}}\"Cristão conseguiu\"{{/whisper}}, sussurra. \"Mas Cristão era mais forte que eu. Talvez nem todos sejam feitos para esta jornada.\"",
+      "O caminho continua sem ela. Misericórdia chora. Os filhos esperam. {{whisper}}Mas Cristã não se levanta. Não desta vez.{{/whisper}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 5, highText: "Mesmo na desistência, algo queima dentro de Cristã. Um fio de fé que não se apaga totalmente. Talvez, num outro dia, ela se levante.", lowThreshold: 2, lowText: "A chama se apagou. O fardo que ela carregava não era como o de Cristão — era o peso de quem nunca teve certeza de que devia partir." }
@@ -962,12 +1035,13 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Sono Eterno",
     location: "Terra Encantada",
     characters: ["crista", "misericordia"],
+    sceneEvent: { type: 'sinking', duration: 5000, message: 'Os olhos pesam...', intensity: 0.9 },
     narrative: [
-      "O ar da Terra Encantada é doce demais. Os filhos adormecem primeiro. Depois Misericórdia. Depois Cristã.",
-      "Grande-Coração tenta acordá-los, mas o sono é profundo — o sono de quem está cansado demais para continuar.",
-      "\"Acorde!\", grita ele. \"A Cidade está tão perto! Uma hora de caminhada!\"",
-      "Mas os olhos de Cristã não se abrem. A Terra Encantada cobra seu preço. Tão perto do fim, e tão distante.",
-      "Bunyan alertou: 'Há peregrinos que dormem a um passo da glória.' Este é o sono dos que quase chegaram."
+      "O ar da Terra Encantada é doce demais. Os filhos adormecem primeiro. Depois Misericórdia. {{whisper}}Depois Cristã.{{/whisper}}",
+      "Grande-Coração tenta acordá-los, mas o sono é profundo — {{whisper}}o sono de quem está cansado demais para continuar.{{/whisper}}",
+      "{{shout}}\"Acorde!\"{{/shout}}, grita ele. \"A Cidade está tão perto! Uma hora de caminhada!\"",
+      "Mas os olhos de Cristã não se abrem. {{whisper}}A Terra Encantada cobra seu preço. Tão perto do fim, e tão distante.{{/whisper}}",
+      "Bunyan alertou: {{whisper}}'Há peregrinos que dormem a um passo da glória.'{{/whisper}} Este é o sono dos que quase chegaram."
     ],
     choices: [],
     isEnding: true,
