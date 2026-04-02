@@ -226,9 +226,24 @@ export function AllegoryCard({ characterId, onDismiss }: AllegoryCardProps) {
             </>
           )}
 
-          {/* Tap hint */}
-          <p className="text-[10px] text-muted-foreground/50 text-center mt-4 font-display uppercase tracking-widest">
-            Toque para continuar
+          {/* Dismiss button — clear and prominent */}
+          <button
+            className="mt-4 w-full py-3 rounded-xl text-sm font-display font-bold uppercase tracking-wider transition-all"
+            style={{
+              background: colors.badge,
+              color: colors.badgeText,
+              border: `1px solid ${colors.border}`,
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setPhase('exit');
+              setTimeout(onDismiss, 500);
+            }}
+          >
+            Entendi — Continuar
+          </button>
+          <p className="text-[10px] text-muted-foreground/50 text-center mt-2 font-display uppercase tracking-widest">
+            Toque no botão acima para continuar
           </p>
         </div>
       </div>
