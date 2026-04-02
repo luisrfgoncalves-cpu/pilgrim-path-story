@@ -1720,9 +1720,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Feira da Vaidade",
     characters: ["cristao"],
     narrative: [
-      "O tribunal condena Fiel. Ele é açoitado, apedrejado, esfaqueado e, por fim, queimado na estaca. Fiel não grita de dor. Seu rosto, mesmo no fogo, irradia paz.",
-      "Bunyan escreveu que uma carruagem celestial desceu e levou Fiel através das nuvens, ao som de trombetas, direto para a Porta Celestial.",
-      "Você está sozinho novamente. Mas o sacrifício de Fiel muda algo em você. Se ele suportou a morte sem recuar, o que é o desconforto diante disso?"
+      "{{tremor}}O tribunal condena Fiel.{{/tremor}} Ele é açoitado, apedrejado, esfaqueado e, por fim, queimado na estaca. {{heart}}Fiel não grita de dor. Seu rosto, mesmo no fogo, irradia paz.{{/heart}}",
+      "{{divine}}Bunyan escreveu que uma carruagem celestial desceu e levou Fiel através das nuvens, ao som de trombetas, direto para a Porta Celestial.{{/divine}}",
+      "{{fade}}Você está sozinho novamente. Mas o sacrifício de Fiel muda algo em você. Se ele suportou a morte sem recuar, o que é o desconforto diante disso?{{/fade}}"
     ],
     flagNarrative: [
       { flag: "permaneceu_diferente", text: "Você defendeu Fiel. Ele morreu sabendo que seu companheiro não o abandonou. Essa memória te fortalecerá para sempre." }
