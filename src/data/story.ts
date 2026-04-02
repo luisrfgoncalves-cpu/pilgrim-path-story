@@ -2517,10 +2517,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Afundando nas Águas",
     location: "No Rio",
     characters: ["cristao"],
+    sceneEvent: { type: 'sinking', duration: 12000, message: 'As águas escuras te cobrem!' },
     narrative: [
-      "Bunyan descreve este momento com dor: Cristão afunda nas águas escuras. As ondas cobrem sua cabeça. Todos os pecados, medos e dúvidas da jornada convergem.",
-      "\"Eu nunca verei a terra dos vivos\", ele geme. \"Nem a cidade que tanto busquei.\"",
-      "Mas Esperança não larga sua mão: \"Irmão! Vejo a porta! Há homens esperando por nós do outro lado! Mantenha a cabeça acima da água!\""
+      "{{tremor}}Bunyan descreve este momento com dor: Cristão afunda nas águas escuras.{{/tremor}} {{villain}}As ondas cobrem sua cabeça. Todos os pecados, medos e dúvidas da jornada convergem.{{/villain}}",
+      "{{heart}}\"Eu nunca verei a terra dos vivos\"{{/heart}}, ele geme. {{fade}}\"Nem a cidade que tanto busquei.\"{{/fade}}",
+      "{{shout}}Mas Esperança não larga sua mão: \"Irmão! Vejo a porta! Há homens esperando por nós do outro lado! Mantenha a cabeça acima da água!\"{{/shout}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 5, highText: "Uma última faísca de fé queima: \"Quando passares pelas águas, estarei contigo.\" A promessa. A chave. Ela funciona até aqui.", lowThreshold: 2, lowText: "A escuridão é completa. A cidade brilha ao longe, inalcançável. Você afunda." }
