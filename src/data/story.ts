@@ -519,17 +519,20 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Procurar os degraus de pedra sob a lama e avançar devagar",
         nextChapterId: "cena12",
-        effects: { discernimento: 1, perseveranca: 1 }
+        effects: { discernimento: 1, perseveranca: 1 },
+        consequence: "Os degraus sob a lama são as promessas de Deus — sempre presentes, mesmo quando não conseguimos vê-las. O Rei ordenou que fossem colocados ali para que ninguém perecesse, mas no desespero, poucos olham para baixo. 'As suas promessas são mui preciosas e grandíssimas' (2 Pedro 1:4)."
       },
       {
         text: "Parar e ouvir — vozes estranhas sussurram na lama",
         nextChapterId: "cena11b",
-        effects: { discernimento: 1 }
+        effects: { discernimento: 1 },
+        consequence: "Prestar atenção ao que o desânimo diz é perigoso, mas necessário. Nem toda voz que fala no sofrimento é de Deus — algumas são o próprio pântano tentando te afundar. Discernir entre elas exige coragem."
       },
       {
         text: "Correr desesperadamente para atravessar",
         nextChapterId: "cena13",
-        effects: { coragem: 1 }
+        effects: { coragem: 1 },
+        consequence: "A pressa no desânimo pode ser fatal. Quem corre no pântano afunda mais rápido. Bunyan ensina que paciência no sofrimento — não velocidade — é o que leva o peregrino ao outro lado."
       }
     ]
   },
