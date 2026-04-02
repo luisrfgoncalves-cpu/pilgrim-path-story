@@ -30,8 +30,7 @@ import { startAmbientMusic, stopAmbientMusic, updateAmbientPhase } from '@/compo
 import { playGameSfx } from '@/lib/gameSfx';
 import { preloadRealSfx, playRealSfx } from '@/lib/realSfx';
 import { useAudioPrewarm } from '@/hooks/useAudioPrewarm';
-import { prewarmNarrator, setNarratorEnabled, stopNarration } from '@/lib/narrator';
-import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown } from 'lucide-react';
 import ScreenHero from '@/components/ScreenHero';
 
 const COLORS = ['#E8724A', '#4CAF50', '#42A5F5', '#FFD54F', '#AB47BC', '#EF5350', '#26C6DA', '#FF7043'];
