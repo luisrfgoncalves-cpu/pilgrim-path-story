@@ -640,10 +640,15 @@ const PresentialMultiplayer = () => {
         };
         // Also handle finish after move
         if (isFinished) {
-          setPlayers(prev => prev.map((p, i) => {
-            if (i !== turnIdx) return p;
-            return { ...p, finished: true, finishOrder: newFinishCount };
-          }));
+          if (rpgGameMode === 'cooperative') {
+            // All finish together
+            setPlayers(prev => prev.map((p, i) => ({ ...p, finished: true, finishOrder: 1 })));
+          } else {
+            setPlayers(prev => prev.map((p, i) => {
+              if (i !== turnIdx) return p;
+              return { ...p, finished: true, finishOrder: newFinishCount };
+            }));
+          }
         }
       } else {
         // No position change — apply everything now
