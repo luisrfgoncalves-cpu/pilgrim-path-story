@@ -976,13 +976,14 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     ],
   },
 
-  // Cena 4 — Demolição do Castelo: QTE (destruir muralhas)
+  // Cena 4 — Demolição do Castelo: Lembrar promessas que derrubam muralhas
   'p2-fase5-cena4': {
-    type: 'qte',
+    type: 'memory',
     difficulty: 'normal',
-    intro: 'Pedra por pedra, destrua o Castelo da Dúvida! Toque em cada ponto fraco para derrubá-lo!',
+    intro: 'Cada pedra do Castelo da Dúvida representa uma mentira. Lembre-se das verdades de Deus que derrubam cada uma!',
     successBonus: { perseveranca: 1, coragem: 1 },
     failurePenalty: { perseveranca: -1 },
+    memorySymbols: ['🗝️', '📖', '✝️', '🔥', '🛡️', '🕊️', '💪', '⭐'],
   },
 
   // Cena 5 — Montanhas Deleitosas: Memória (avisos dos pastores)
