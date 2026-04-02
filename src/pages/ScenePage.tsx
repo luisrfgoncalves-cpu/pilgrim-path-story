@@ -307,16 +307,10 @@ const ScenePage = () => {
   const canShowChoices = !hasCharReveal;
 
   useEffect(() => {
-    if (!chapter) return;
-    if (narrativeIndex < fullNarrative.length - 1) {
-      // Faster pacing to avoid delayed text perception
-      const timer = setTimeout(() => setNarrativeIndex(prev => prev + 1), 320);
-      return () => clearTimeout(timer);
-    } else if (canShowChoices) {
-      const timer = setTimeout(() => setShowChoices(true), 180);
-      return () => clearTimeout(timer);
-    }
-  }, [narrativeIndex, chapter, fullNarrative.length, canShowChoices]);
+    if (!chapter || fullNarrative.length > 0 || !canShowChoices) return;
+    const timer = setTimeout(() => setShowChoices(true), 180);
+    return () => clearTimeout(timer);
+  }, [chapter, fullNarrative.length, canShowChoices]);
 
   // Delayed mini-game trigger button — appears 12s after choices show
   // Auto-popup notification after 30s if user hasn't clicked the button
@@ -442,6 +436,19 @@ const ScenePage = () => {
 
   // Merge all choices: base + dynamic
   const allChoices = [...availableChoices, ...dynamicChoicesMapped];
+  const currentNarrative = fullNarrative[narrativeIndex] ?? null;
+  const hasMoreNarrative = narrativeIndex < fullNarrative.length - 1;
+
+  const handleAdvanceNarrative = () => {
+    if (hasMoreNarrative) {
+      setNarrativeIndex(prev => prev + 1);
+      return;
+    }
+
+    if (canShowChoices) {
+      setShowChoices(true);
+    }
+  };
 
   return (
     <div id="scene-container" className={`min-h-screen bg-background flex flex-col transition-all duration-[2000ms] ease-in-out ${emotionalClass} ${atmosphere.wobbleClass}`} style={atmosphere.containerStyle}>
@@ -671,18 +678,33 @@ const ScenePage = () => {
             <div className="h-px flex-1 bg-primary/20" />
           </div>
 
-          <div className="space-y-2.5 mb-6" style={atmosphere.textStyle}>
-            {fullNarrative.slice(0, narrativeIndex + 1).map((paragraph, i) => (
+          <div className="space-y-3 mb-6" style={atmosphere.textStyle}>
+            {currentNarrative && (
               <div
-                key={i}
-                className="fade-in rounded-xl border border-border/60 bg-card/55 px-4 py-3"
-                style={{ animationDelay: `${i * 0.08}s`, boxShadow: '0 8px 20px hsl(0 0% 0% / 0.14)' }}
+                key={`${chapter.id}-${narrativeIndex}`}
+                className="fade-in rounded-xl border border-border/60 bg-card/55 px-4 py-4"
+                style={{ boxShadow: '0 8px 20px hsl(0 0% 0% / 0.14)' }}
               >
                 <p className="narrative-text text-foreground/90">
-                  {paragraph}
+                  {currentNarrative}
                 </p>
               </div>
-            ))}
+            )}
+
+            {fullNarrative.length > 0 && !showChoices && (
+              <div className="flex items-center justify-between gap-3 rounded-xl border border-border/50 bg-card/40 px-4 py-3">
+                <p className="text-[11px] font-display uppercase tracking-[0.2em] text-muted-foreground">
+                  Trecho {Math.min(narrativeIndex + 1, fullNarrative.length)} de {fullNarrative.length}
+                </p>
+                <button
+                  onClick={handleAdvanceNarrative}
+                  disabled={!hasMoreNarrative && !canShowChoices}
+                  className="btn-medieval-secondary min-w-[132px] px-4 py-2 text-xs disabled:pointer-events-none disabled:opacity-60"
+                >
+                  {hasMoreNarrative ? 'Continuar' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'}
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Scene events */}

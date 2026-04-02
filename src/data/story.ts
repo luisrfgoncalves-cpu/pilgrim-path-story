@@ -192,9 +192,12 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     reflection: "r1",
     narrative: [
-      "Você está em casa, na Cidade da Destruição. Um dia, ao abrir um livro antigo, suas mãos tremem. As palavras falam de julgamento, de uma cidade condenada — a sua cidade.",
-      "Um fardo pesado surge nas suas costas, como se cada linha lida acrescentasse pedras invisíveis. Você tenta tirá-lo, mas ele não sai. Suas mãos passam através dele. O peso, porém, é real.",
-      "Você corre para casa, tenta esconder o desespero da família. Mas à noite, as palavras ecoam: \"Fugi da ira vindoura.\""
+      "Você está em casa, na Cidade da Destruição, quando abre um livro antigo.",
+      "As palavras falam de juízo. De uma cidade condenada. Da sua cidade.",
+      "Suas mãos tremem.",
+      "Então surge um peso nas suas costas, como se cada frase virasse pedra.",
+      "Você tenta arrancá-lo. Não consegue.",
+      "À noite, uma frase não sai da sua cabeça: \"Fugi da ira vindoura.\""
     ],
     replayNarrative: [
       "O livro está aqui de novo. O fardo, também. Mas desta vez você sabe — sabe que há uma porta, um caminho, e que cada escolha adiante moldará quem você se tornará."
@@ -224,10 +227,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "obstinado", "flexivel"],
     reflection: "r2",
     narrative: [
-      "Você tenta esquecer, mas o fardo não diminui. Seus vizinhos — Obstinado e Flexível — percebem sua angústia.",
-      "\"Você ficou louco?\", diz Obstinado, rindo. \"Largue essas tolices e volte ao normal.\"",
-      "Flexível hesita: \"E se ele tiver razão? E se houver mesmo algo além desta cidade?\"",
-      "Os dois te encaram, esperando uma resposta. Obstinado cruza os braços com desdém. Flexível olha para a estrada que sai da cidade."
+      "Você tenta agir como se nada tivesse acontecido, mas o fardo continua ali.",
+      "Obstinado percebe primeiro. Ele ri: \"Você enlouqueceu. Volte ao normal.\"",
+      "Flexível não ri. Ele só pergunta: \"E se ele estiver certo?\"",
+      "Os dois esperam sua resposta, um puxando você para trás, o outro olhando para a estrada."
     ],
     choices: [
       {
@@ -251,9 +254,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     reflection: "r3",
     narrative: [
-      "Você corre pelos campos fora da cidade com os dedos nos ouvidos, recusando-se a ouvir os que gritam para você voltar. O livro está apertado contra o peito.",
-      "\"Vida! Vida! Vida eterna!\" — é tudo que você consegue gritar.",
-      "Atrás de você, os portões da Cidade da Destruição parecem menores a cada passo. À frente, um campo vasto se abre sem caminho claro."
+      "Você corre para fora da cidade com o livro apertado no peito.",
+      "Para não ouvir os gritos atrás de você, tapa os próprios ouvidos.",
+      "Só uma frase sai da sua boca: \"Vida! Vida eterna!\"",
+      "A cidade fica menor. O campo à frente parece imenso e sem direção."
     ],
     flagNarrative: [
       { flag: "convidou_flexivel", text: "Flexível corre ao seu lado, ofegante: \"Onde vamos? Mostre-me esse lugar de que você fala!\" Sua companhia é reconfortante, mas será que ele aguentará o caminho?" }
@@ -282,9 +286,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     timeoutChoiceIndex: 1,
     sceneEvent: { type: 'tension', intensity: 2, duration: 3000 },
     narrative: [
-      "Você volta para casa, mas o fardo duplica de peso. À noite, as paredes parecem se fechar. As palavras do livro queimam na sua mente: \"A ira vindoura... a ira vindoura...\"",
-      "Sua família te olha com preocupação. Seus filhos choram sem saber por quê. O peso nas suas costas faz o chão ranger sob seus pés.",
-      "Você não pode mais ficar aqui. Mas ir embora significa deixar tudo que conhece."
+      "Você volta para casa, mas o peso só aumenta.",
+      "À noite, as paredes parecem se fechar em volta de você.",
+      "As palavras do livro queimam na mente: \"A ira vindoura...\"",
+      "Sua família percebe que algo se rompeu dentro de você.",
+      "Ficar dói. Partir também."
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 6, highText: "No fundo da agonia, uma voz mansa sussurra: \"Há uma saída. Busque-a.\"", lowThreshold: 3, lowText: "O desespero é tão espesso que você mal consegue respirar. Será que existe saída, ou o fardo é para sempre?" }
@@ -309,10 +315,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Campos abertos",
     characters: ["cristao", "evangelista"],
     narrative: [
-      "No meio do campo, um homem alto aparece. Seu nome é Evangelista. Ele te olha com compaixão e gravidade.",
-      "\"Você vê aquela luz distante?\", ele aponta para um brilho fraco no horizonte. \"Caminhe em direção a ela. Lá encontrará a Porta Estreita. Bata, e lhe será aberto.\"",
-      "Ele estende a mão e coloca na sua um pergaminho enrolado. Dentro, uma única palavra brilha: FUJA.",
-      "\"Não olhe para trás\", ele diz. \"Não pare no caminho. A porta é estreita, mas é a única que leva à vida.\""
+      "No meio do campo, um homem alto cruza seu caminho.",
+      "O nome dele é Evangelista.",
+      "Ele aponta para uma luz distante: \"Siga naquela direção. Lá está a Porta Estreita.\"",
+      "Depois coloca um pergaminho na sua mão. Uma única palavra brilha nele: FUJA.",
+      "Antes de partir, ele avisa: \"Não olhe para trás.\""
     ],
     flagNarrative: [
       { flag: "convidou_flexivel", text: "Flexível olha para Evangelista com desconfiança: \"Esse caminho parece perigoso. Tem certeza?\" Evangelista o ignora e fala diretamente com você." }
@@ -338,9 +345,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Arredores da Cidade",
     characters: ["cristao"],
     narrative: [
-      "Sem orientação, você vagueia pelos campos. O fardo range a cada passo. A cidade está atrás de você, mas nenhum caminho claro se apresenta à frente.",
-      "A noite cai. O vento é frio. Você se senta numa pedra e, pela primeira vez, chora abertamente. O peso é demais para carregar sozinho.",
-      "No horizonte, quase invisível, uma luz tênue pisca. Será real?"
+      "Sem direção, você vagueia pelos campos.",
+      "O fardo range a cada passo.",
+      "A noite cai, o vento esfria, e você finalmente desaba em lágrimas.",
+      "No horizonte, uma luz fraca insiste em piscar."
     ],
     flagNarrative: [
       { flag: "convidou_flexivel", text: "Flexível te olha e diz: \"Isso é loucura. Volto para a cidade.\" Ele se vai. Agora você está completamente sozinho." }
@@ -367,9 +375,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     reflection: "r4",
     interactionType: 'drag',
     narrative: [
-      "Dois caminhos se dividem diante de você. À esquerda, uma estrada larga, bem pavimentada, iluminada por tochas. Vozes alegres ecoam dela — riso, música, promessas de conforto.",
-      "À direita, uma trilha estreita e pedregosa sobe uma colina íngreme. No topo, mal visível, uma porta pequena brilha com luz pálida. Espinhos crescem na borda do caminho.",
-      "O pergaminho de Evangelista arde no seu bolso. Você sabe o que ele disse: \"A porta estreita.\" Mas o caminho largo parece tão mais fácil..."
+      "Dois caminhos se abrem diante de você.",
+      "À esquerda, uma estrada larga, iluminada e fácil.",
+      "À direita, uma trilha estreita sobe entre pedras e espinhos.",
+      "Lá no alto, quase escondida, uma porta pequena brilha.",
+      "O pergaminho de Evangelista pesa no bolso: \"A porta estreita.\""
     ],
     replayNarrative: [
       "Você conhece essa encruzilhada. Da última vez, escolheu um caminho. Agora sabe aonde cada um leva. A pergunta é: terá coragem de escolher diferente?"
@@ -608,10 +618,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     sceneEvent: { type: 'tension', intensity: 1, duration: 3000 },
     narrative: [
-      "Você corre pelas ruas gritando, mas ninguém entende. Os vizinhos fecham as janelas. As crianças riem do homem que chora em público.",
-      "Em casa, sua esposa te segura pelos ombros: \"O que está acontecendo com você? Está assustando as crianças!\" Seus filhos te olham da porta, sem entender por que o pai chora.",
-      "Você tenta explicar — o livro, o julgamento, a cidade condenada — mas as palavras saem confusas. Ela acha que você ficou doente. Coloca a mão na sua testa, procurando febre.",
-      "\"Durma\", ela diz. \"Amanhã você vai estar melhor.\" Mas você sabe que amanhã o fardo estará ainda mais pesado."
+      "Você corre pelas ruas gritando, mas ninguém entende.",
+      "Os vizinhos fecham as janelas. As crianças riem do homem que chora em público.",
+      "Em casa, sua esposa segura seus ombros: \"Você está assustando as crianças.\"",
+      "Você tenta explicar o livro, o juízo, a cidade condenada. As palavras saem quebradas.",
+      "Ela manda você dormir. Você sabe que o peso vai amanhecer com você."
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 5, highText: "Mesmo rejeitado, uma certeza arde no seu peito: o que você leu é verdade. Se ninguém acredita, você irá sozinho.", lowThreshold: 3, lowText: "Talvez sua esposa tenha razão. Talvez seja febre. Talvez o livro seja só... um livro." }
@@ -642,10 +653,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Estrada para a Porta Estreita",
     characters: ["cristao", "evangelista"],
     narrative: [
-      "Você segura o pergaminho de Evangelista e olha para trás, uma última vez. A Cidade da Destruição brilha no horizonte — seus telhados familiares, a fumaça das chaminés, as vozes que você conhece desde criança.",
-      "Cada passo para frente é um passo para longe de tudo que você amava. O fardo range nas suas costas, lembrando que ficar não é opção.",
-      "Na beira da estrada, três homens dormem profundamente: Presunção, Preguiça e Simples. Grilhões prendem seus pés, mas eles parecem não perceber — ou não se importar.",
-      "\"Acordem!\", você grita. \"O perigo é real!\" Presunção murmura sem abrir os olhos: \"Cada um cuide de si.\" Preguiça vira de lado: \"Mais um cochilo...\" Simples boceja: \"Não vejo perigo nenhum.\""
+      "Você olha para trás uma última vez. A cidade ainda parece casa.",
+      "Mas cada passo à frente confirma: ficar não é mais opção.",
+      "Na estrada, três homens dormem acorrentados: Presunção, Preguiça e Simples.",
+      "Você grita para acordá-los.",
+      "Eles respondem sem abrir os olhos: orgulho, preguiça e indiferença."
     ],
     flagNarrative: [
       { flag: "partiu_em_segredo", text: "Você saiu de casa antes do sol nascer, sem acordar ninguém. O silêncio da madrugada pesou mais que o fardo. Será que um dia eles entenderão por que você partiu?" }
@@ -676,11 +688,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     timeLimit: 8,
     timeoutChoiceIndex: 0,
     narrative: [
-      "A subida é brutal. Os espinhos rasgam suas roupas e o fardo puxa você para trás como se tivesse vontade própria. Várias vezes, seus joelhos batem nas pedras.",
-      "Quando finalmente a porta aparece — pequena, quase insignificante — você corre até ela e bate com os punhos: \"Abram! Pelo amor de Deus, abram!\"",
-      "Nesse instante, flechas cortam o ar vindo do alto da fortaleza de Belzebu, próxima à porta! Elas assoviam perto da sua cabeça. O inimigo não quer que você entre!",
-      "A porta se abre de repente. Um homem forte chamado Boa-Vontade agarra seu braço e te puxa para dentro com um puxão violento. Uma flecha crava-se na madeira da porta no exato lugar onde sua cabeça estava.",
-      "\"Eu abro para quem bate\", diz Boa-Vontade, fechando a porta atrás de você. \"Ninguém que vem até aqui é rejeitado, por mais indigno que se sinta.\""
+      "A subida castiga. Os espinhos rasgam. O fardo puxa você para trás.",
+      "Quando a porta aparece, você corre e bate com força: \"Abram!\"",
+      "Flechas cortam o ar ao redor da sua cabeça.",
+      "Antes que outra acerte você, Boa-Vontade abre e te puxa para dentro.",
+      "Do lado de dentro, ele fecha a porta e diz: \"Quem chega até aqui não é rejeitado.\""
     ],
     choices: [
       {
