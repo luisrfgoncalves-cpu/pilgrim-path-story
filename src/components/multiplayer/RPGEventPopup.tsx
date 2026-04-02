@@ -870,11 +870,11 @@ export default function RPGEventPopup({
           {phase === 'challenge' && !showResult && challenge && (
             <div className="space-y-4">
               <h3 className="font-display font-bold text-foreground text-center">{challenge.title}</h3>
-              <div className="p-4 rounded-xl bg-orange-500/10 border border-orange-500/30">
-                <p className="text-sm text-foreground leading-relaxed">{challenge.description}</p>
-              </div>
-              <div className="p-3 rounded-xl bg-background/50 border border-border">
-                <p className="text-xs text-muted-foreground"><strong>Critério:</strong> {challenge.successCriteria}</p>
+               <div className="p-5 rounded-xl bg-orange-500/10 border border-orange-500/30">
+                 <p className="text-base text-foreground leading-relaxed">{challenge.description}</p>
+               </div>
+               <div className="p-4 rounded-xl bg-background/50 border border-border">
+                 <p className="text-sm text-muted-foreground"><strong>Critério:</strong> {challenge.successCriteria}</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <button onClick={() => {
