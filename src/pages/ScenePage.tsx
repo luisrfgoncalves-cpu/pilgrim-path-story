@@ -332,12 +332,15 @@ const ScenePage = () => {
           'fase4-cena2': [['negative', 500]],                // pressão social
           'fase4-cena3': [['negative', 600]],                // Amor ao Dinheiro
           'fase4-cena4': [['attack', 500], ['defeat', 1200]],// Julgamento
+          'fase4-cena5': [['defeat', 400], ['negative', 1000]], // acusações
           'fase4-cena6': [['attack', 400], ['critical', 1000], ['defeat', 1800]], // sentença
           'fase4-cena7': [['defeat', 800], ['pray', 2000]],  // Morte de Fiel
           'fase4-cena8': [['heal', 600], ['positive', 1400]],// Esperança surge
           'fase4-cena9': [['positive', 500]],                // companheirismo
           'fase4-cena10': [['negative', 600]],               // tentação de Demas
+          'fase4-cena11': [['negative', 400], ['defeat', 1000]], // mina perigosa
           'fase4-cena11b': [['negative', 500]],              // mina de prata
+          'fase4-cena12': [['positive', 500], ['pray', 1200]], // memorial de Ló
           // FASE 5
           'fase5-cena1': [['negative', 500]],                // Interesses
           'fase5-cena2': [['defeat', 400]],                  // desvio do caminho
