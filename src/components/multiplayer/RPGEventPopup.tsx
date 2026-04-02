@@ -31,6 +31,7 @@ const rpgSfx = (intent: string): GameSfx => {
 
 interface RPGEventPopupProps {
   visible: boolean;
+  eventKey: string;
   difficulty: Difficulty;
   playerNames: string[];
   currentPlayerIdx: number;
@@ -55,7 +56,7 @@ interface RPGEventPopupProps {
 type PopupPhase = 'suspense_intro' | 'context' | 'mode_reveal' | 'player_select' | 'challenge' | 'result' | 'revelation';
 
 export default function RPGEventPopup({
-  visible, difficulty, playerNames, currentPlayerIdx,
+  visible, eventKey, difficulty, playerNames, currentPlayerIdx,
   tileEventType, sourceTileType, onResult, onDismiss, rotationState,
   chainState, currentTurn,
 }: RPGEventPopupProps) {
@@ -87,14 +88,18 @@ export default function RPGEventPopup({
 
   const timerRef = useRef<number | null>(null);
   const narratedKeyRef = useRef('');
+  const initializedEventKeyRef = useRef<string | null>(null);
 
   // Load content when popup becomes visible
   useEffect(() => {
     if (!visible) {
       narratedKeyRef.current = '';
-      
+      initializedEventKeyRef.current = null;
       return;
     }
+
+    if (initializedEventKeyRef.current === eventKey) return;
+    initializedEventKeyRef.current = eventKey;
 
     setPhase('suspense_intro');
     setSelectedAnswer(null);
@@ -169,7 +174,7 @@ export default function RPGEventPopup({
     }
 
     return () => {};
-  }, [visible, tileEventType, difficulty, playerNames, rotationState]);
+  }, [visible, eventKey, tileEventType, difficulty, playerNames, rotationState]);
 
   // ─── STAGED NARRATIVE: Dramatic suspense intro before context ───
   const getSuspenseText = (): { emoji: string; text: string } => {
