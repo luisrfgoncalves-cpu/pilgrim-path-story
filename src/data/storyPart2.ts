@@ -503,7 +503,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     id: "p2-fase3-cena5",
     title: "O Gigante Mata-Bons",
     location: "Caminho após a Hospedaria",
-    characters: ["crista", "grande_coracao", "mente_fraca"],
+    characters: ["crista", "grande_coracao", "mente_fraca", "gigante_mata_bons"],
     sceneEvent: { type: 'tension', duration: 5000, message: 'Combate brutal!', intensity: 1.0 },
     narrative: [
       "No caminho, encontram o {{villain}}Gigante Mata-Bons{{/villain}} arrastando um homem pálido e fraco: Mente-Fraca.",

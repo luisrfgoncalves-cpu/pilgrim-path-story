@@ -145,6 +145,8 @@ export const characters: Character[] = [
   { id: "valente_pela_verdade", name: "Valente-pela-Verdade", description: "Guerreiro cristão que empunha uma 'lâmina legítima de Jerusalém' e é encontrado coberto de sangue após lutar contra três bandidos. Um dos personagens mais memoráveis de Bunyan.", role: "Guerreiro (Parte II)", unlockedAtChapter: "fase4-cena1" },
   { id: "firme", name: "Firme", description: "Encontrado ajoelhado em oração na Terra Encantada, implorando a Deus que o salvasse da tentação de Madame Bolha. Sua resistência à sedução exemplifica a perseverança na fé.", role: "Companheiro (Parte II)", unlockedAtChapter: "fase6-cena1" },
   { id: "madame_bolha", name: "Madame Bolha", description: "Uma mulher alta e elegante que carrega uma bolsa cheia de ouro e tenta seduzir Firme oferecendo seu corpo, sua bolsa e sua cama. Representa as tentações materiais e carnais do mundo.", role: "Tentadora (Parte II)", unlockedAtChapter: "fase6-cena1" },
+  { id: "gigante_maul", name: "Gigante Maul", description: "Um gigante feroz que bloqueia a saída do Vale da Sombra da Morte na Parte II. Menor que Desespero, mas igualmente mortal. Grande-Coração decepa sua cabeça e a coloca num poste como aviso.", role: "Antagonista (Parte II)", unlockedAtChapter: "p2-fase3-cena3" },
+  { id: "gigante_mata_bons", name: "Gigante Mata-Bons", description: "Um gigante brutal que ataca peregrinos fracos no caminho. Arrastava Mente-Fraca quando Grande-Coração o enfrentou e matou em combate brutal.", role: "Antagonista (Parte II)", unlockedAtChapter: "p2-fase3-cena5" },
 ];
 
 export const reflections: Reflection[] = [
