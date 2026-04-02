@@ -2279,10 +2279,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Rede do Lisonjeiro",
     location: "Caminho Estreito",
     characters: ["cristao", "esperanca", "lisonjeiro"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2500, message: 'Um estranho sorridente se aproxima...' },
     narrative: [
-      "Além das montanhas, o caminho se divide. Vocês hesitam. Um homem de pele escura, vestido com uma túnica branca brilhante, se aproxima sorrindo.",
-      "\"Amigos peregrinos! Vocês parecem perdidos. Eu conheço o caminho para a Cidade Celestial. Sigam-me.\"",
-      "Sua voz é doce, seu sorriso convincente. Ele os leva por um caminho lateral que parece seguro — até que uma rede cai sobre vocês, prendendo-os completamente."
+      "{{fade}}Além das montanhas, o caminho se divide. Vocês hesitam.{{/fade}} Um homem de pele escura, vestido com uma túnica branca brilhante, se aproxima sorrindo.",
+      "{{villain}}\"Amigos peregrinos! Vocês parecem perdidos. Eu conheço o caminho para a Cidade Celestial. Sigam-me.\"{{/villain}}",
+      "{{whisper}}Sua voz é doce, seu sorriso convincente.{{/whisper}} Ele os leva por um caminho lateral que parece seguro — {{tremor}}até que uma rede cai sobre vocês, prendendo-os completamente.{{/tremor}}"
     ],
     toneNarrative: [
       { attr: "discernimento", highThreshold: 7, highText: "Algo no sorriso dele te incomoda. Os pastores alertaram sobre o Adulador. Este homem... será ele?", lowThreshold: 3, lowText: "O homem parece confiável. Sua túnica branca irradia autoridade. Por que duvidar?" }
