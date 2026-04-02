@@ -409,7 +409,7 @@ const PresentialMultiplayer = () => {
     posAdjust?: number; attrChanges?: Record<string, number>;
   } | null>(null);
   const tokenMovingTimerRef = useRef<number | null>(null);
-  const [narrationEnabled, setNarrationEnabledState] = useState(true);
+  
 
   // Deferred move after mini-game popup closes
   const pendingMoveAfterPopup = useRef<{
