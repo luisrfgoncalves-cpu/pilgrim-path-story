@@ -487,7 +487,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena10",
     title: "A Montanha Sinai",
     location: "Monte Sinai",
-    characters: ["cristao"],
+    characters: ["cristao", "evangelista"],
     narrative: [
       "O vilarejo da Moralidade fica ao pé de uma montanha chamada Sinai. Ao se aproximar, o monte começa a tremer. Pedras despencam. Fogo parece arder no topo.",
       "O homem Legalidade não está em lugar nenhum. A montanha ruge como se fosse esmagar tudo ao redor. Você percebe, com horror, que este caminho não pode remover seu fardo — ele só acrescenta medo ao peso.",
