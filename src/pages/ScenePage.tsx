@@ -259,6 +259,7 @@ const ScenePage = () => {
     setCharReveal(null);
     setCharRevealDone(false);
     setPersistentChar(null);
+    setAllPersistentChars([]);
     const t = setTimeout(() => {
       setTransitioning(false);
       triggerSceneEntryVFX(progress.currentChapterId);
