@@ -89,8 +89,16 @@ const ScenePage = () => {
   const [timedRetryCount, setTimedRetryCount] = useState(0);
   // Character entrance reveal
   const [charReveal, setCharReveal] = useState<{ name: string; img: string; role?: string } | null>(null);
-  const [charRevealDone, setCharRevealDone] = useState(false); // After reveal, show persistent portrait
+  const [charRevealDone, setCharRevealDone] = useState(false);
   const [persistentChar, setPersistentChar] = useState<{ name: string; img: string; role?: string } | null>(null);
+  // Allegory card state — shown once per character per session
+  const [allegoryCardChar, setAllegoryCardChar] = useState<string | null>(null);
+  const [seenAllegoryCards] = useState<Set<string>>(() => {
+    try {
+      const saved = sessionStorage.getItem('seen-allegory-cards');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch { return new Set(); }
+  });
   const { triggerChoiceEffect, triggerSceneEntryVFX } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
