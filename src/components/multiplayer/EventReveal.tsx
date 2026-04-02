@@ -125,75 +125,70 @@ export default function EventReveal({ event, playerName, diceValue, challengeRes
       </div>
 
       <div
-        className={`relative w-full max-w-sm mx-4 space-y-4 transition-all duration-600
-          ${phase === 'show' ? 'scale-100 translate-y-0' : 'scale-85 translate-y-12'}
+        className={`relative w-full h-full max-h-[100dvh] flex flex-col overflow-y-auto transition-all duration-600
+          ${phase === 'show' ? 'scale-100 translate-y-0' : 'scale-95 translate-y-12'}
         `}
+        style={{
+          background: isNegative
+            ? 'linear-gradient(180deg, hsl(0 20% 10%), hsl(0 10% 6%))'
+            : isPositive
+            ? 'linear-gradient(180deg, hsl(140 15% 10%), hsl(120 10% 6%))'
+            : 'linear-gradient(180deg, hsl(40 15% 12%), hsl(30 10% 6%))',
+        }}
       >
-        {/* Character image — floating, no frame */}
+        {/* Character image */}
         {charImg && (
-          <div className="flex justify-center mb-2" style={{ animation: 'charRevealIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
+          <div className="flex justify-center pt-8 pb-2 flex-shrink-0" style={{ animation: 'charRevealIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
             <div className="relative">
               <img
                 src={charImg}
                 alt={event.title}
-                className="w-44 h-56 md:w-52 md:h-64 object-cover object-top"
+                className="w-52 h-64 md:w-60 md:h-72 object-cover object-top"
                 style={{
-                  border: 'none',
-                  borderRadius: '0',
                   filter: `contrast(1.1) brightness(1.05) drop-shadow(0 0 30px ${accentColor}40)`,
                   maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
                   WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
                 }}
               />
-              {/* Glow behind */}
-              <div className="absolute inset-0 -z-10 blur-3xl scale-150" style={{
-                background: `radial-gradient(ellipse at center 40%, ${accentColor}20 0%, transparent 70%)`,
-              }} />
             </div>
           </div>
         )}
 
         {/* Event emoji — if no character */}
         {!charImg && (
-          <div className="text-center">
-            <span className="text-7xl block mb-2 drop-shadow-lg" style={{
-              animation: 'pulse 2s infinite',
-            }}>
+          <div className="text-center pt-12 pb-4 flex-shrink-0">
+            <span className="text-8xl block drop-shadow-lg">
               {event.emoji}
             </span>
           </div>
         )}
 
-        {/* Card content */}
-        <div className="rounded-2xl p-5 space-y-3" style={{
-          background: isNegative
-            ? 'linear-gradient(180deg, hsl(0 20% 10% / 0.95), hsl(0 10% 8% / 0.95))'
-            : isPositive
-            ? 'linear-gradient(180deg, hsl(140 15% 10% / 0.95), hsl(120 10% 8% / 0.95))'
-            : 'linear-gradient(180deg, hsl(40 15% 12% / 0.95), hsl(30 10% 8% / 0.95))',
-          border: `1px solid ${accentColor}40`,
-          boxShadow: `0 0 40px ${accentColor}15, 0 20px 40px rgba(0,0,0,0.5)`,
-        }}>
+        {/* Card content — fullscreen with large fonts */}
+        <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 space-y-5 text-center">
           {/* Title */}
-          <h3 className="font-display text-xl text-center leading-tight" style={{
+          <h3 className="font-display text-2xl leading-tight" style={{
             color: accentColor,
-            textShadow: `0 0 20px ${accentColor}40`,
+            textShadow: `0 2px 12px ${accentColor}40`,
           }}>
             {event.title}
           </h3>
 
           {/* Description */}
-          <p className="text-sm text-center leading-relaxed" style={{ color: 'hsl(38 30% 75%)' }}>
+          <p className="text-xl leading-relaxed max-w-md" style={{ 
+            color: 'hsl(38 30% 85%)',
+            lineHeight: '1.7',
+            textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+          }}>
             {event.description}
           </p>
 
           {/* Dice value */}
           <div className="flex items-center justify-center gap-3">
-            <span className="text-xs" style={{ color: 'hsl(30 15% 50%)' }}>🎲 {playerName} tirou</span>
-            <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg font-bold text-lg" style={{
+            <span className="text-sm" style={{ color: 'hsl(30 15% 55%)' }}>🎲 {playerName} tirou</span>
+            <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl font-bold text-xl" style={{
               background: `${accentColor}20`,
               color: accentColor,
-              border: `1px solid ${accentColor}30`,
+              border: `2px solid ${accentColor}30`,
             }}>
               {diceValue}
             </span>
@@ -201,12 +196,12 @@ export default function EventReveal({ event, playerName, diceValue, challengeRes
 
           {/* Challenge result */}
           {isChallenge && challengeResult && (
-            <div className="text-center py-2.5 rounded-xl" style={{
+            <div className="text-center py-3 px-6 rounded-xl" style={{
               background: challengeResult === 'win' ? 'hsl(140 50% 20% / 0.3)' : 'hsl(0 50% 20% / 0.3)',
-              border: challengeResult === 'win' ? '1px solid hsl(140 60% 50% / 0.3)' : '1px solid hsl(0 60% 50% / 0.3)',
+              border: challengeResult === 'win' ? '2px solid hsl(140 60% 50% / 0.3)' : '2px solid hsl(0 60% 50% / 0.3)',
             }}>
-              <p className="text-sm font-display font-medium" style={{
-                color: challengeResult === 'win' ? 'hsl(140 60% 60%)' : 'hsl(0 60% 60%)',
+              <p className="text-lg font-display font-bold" style={{
+                color: challengeResult === 'win' ? 'hsl(140 60% 65%)' : 'hsl(0 60% 65%)',
               }}>
                 {challengeResult === 'win' ? '✨ Desafio Superado!' : '💔 Falhou no Desafio'}
               </p>
@@ -214,37 +209,37 @@ export default function EventReveal({ event, playerName, diceValue, challengeRes
           )}
 
           {/* Effect summary */}
-          <div className="flex items-center justify-center gap-2 flex-wrap text-[10px]">
+          <div className="flex items-center justify-center gap-3 flex-wrap text-sm">
             {event.effect.positions && event.effect.positions > 0 && (
-              <span className="px-2.5 py-1 rounded-full" style={{ background: 'hsl(140 50% 20% / 0.3)', color: 'hsl(140 60% 60%)' }}>
+              <span className="px-4 py-2 rounded-full font-display font-bold" style={{ background: 'hsl(140 50% 20% / 0.3)', color: 'hsl(140 60% 65%)' }}>
                 +{event.effect.positions} casas
               </span>
             )}
             {event.effect.positions && event.effect.positions < 0 && (
-              <span className="px-2.5 py-1 rounded-full" style={{ background: 'hsl(0 50% 20% / 0.3)', color: 'hsl(0 60% 60%)' }}>
+              <span className="px-4 py-2 rounded-full font-display font-bold" style={{ background: 'hsl(0 50% 20% / 0.3)', color: 'hsl(0 60% 65%)' }}>
                 {event.effect.positions} casas
               </span>
             )}
             {event.effect.stunTurns && (
-              <span className="px-2.5 py-1 rounded-full" style={{ background: 'hsl(280 40% 20% / 0.3)', color: 'hsl(280 50% 65%)' }}>
+              <span className="px-4 py-2 rounded-full font-display font-bold" style={{ background: 'hsl(280 40% 20% / 0.3)', color: 'hsl(280 50% 70%)' }}>
                 😵 Perde {event.effect.stunTurns} rodada(s)
               </span>
             )}
-            {event.effect.attribute && event.effect.amount && (
-              <span className="px-2.5 py-1 rounded-full" style={{
-                background: event.effect.amount > 0 ? 'hsl(200 50% 20% / 0.3)' : 'hsl(0 50% 20% / 0.3)',
-                color: event.effect.amount > 0 ? 'hsl(200 60% 60%)' : 'hsl(0 60% 60%)',
-              }}>
-                {event.effect.amount > 0 ? '+' : ''}{event.effect.amount} {event.effect.attribute}
-              </span>
-            )}
           </div>
-        </div>
 
-        {/* Tap hint */}
-        <p className="text-[9px] text-center uppercase tracking-widest" style={{ color: 'hsl(0 0% 40%)', animation: 'charRevealName 0.5s ease-out 1.5s both' }}>
-          toque para fechar
-        </p>
+          {/* Dismiss button */}
+          <button
+            onClick={() => { setPhase('exit'); setTimeout(onClose, 500); }}
+            className="mt-4 px-8 py-3 rounded-xl font-display font-bold text-base transition-all active:scale-95"
+            style={{
+              background: `${accentColor}20`,
+              border: `2px solid ${accentColor}50`,
+              color: accentColor,
+            }}
+          >
+            Continuar ▸
+          </button>
+        </div>
       </div>
     </div>
   );

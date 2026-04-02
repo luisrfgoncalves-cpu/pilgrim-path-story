@@ -640,12 +640,9 @@ export default function RPGEventPopup({
 
       {/* ═══ MAIN POPUP (context, challenge, result, revelation) ═══ */}
       {phase !== 'suspense_intro' && (
-      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border-2 bg-card"
+      <div className="relative w-full h-full max-h-[100dvh] overflow-y-auto bg-card"
         style={{
-          borderColor: isBoss ? 'hsl(0 70% 45%)' : tileInfo.color,
-          boxShadow: isBoss
-            ? '0 0 60px hsl(0 70% 30% / 0.5), 0 0 120px hsl(0 50% 20% / 0.3)'
-            : `0 0 40px ${tileInfo.color}40`,
+          borderTop: `3px solid ${isBoss ? 'hsl(0 70% 45%)' : tileInfo.color}`,
           animation: 'scaleReveal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
         }}
       >
