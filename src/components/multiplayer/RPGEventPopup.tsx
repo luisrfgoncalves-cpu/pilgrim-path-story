@@ -15,6 +15,7 @@ import {
   playEvilLaugh, playCrowdCheer, playTensionDrum,
   playHolyChime, playDramaticReveal, playNarrativeChime,
 } from './BoardSounds';
+import { playRealSfx, getSfxForTileEvent, playNarrativeSfx } from '@/lib/realSfx';
 import { Clock, PlayCircle } from 'lucide-react';
 
 // Map RPG sound intents to available GameSfx types
