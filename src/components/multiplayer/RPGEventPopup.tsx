@@ -62,6 +62,9 @@ export default function RPGEventPopup({
   const [dilemma, setDilemma] = useState<MoralDilemma | null>(null);
   const [challenge, setChallenge] = useState<ActiveChallenge | null>(null);
   const [boss, setBoss] = useState<BossEncounter | null>(null);
+  const [specialEvent, setSpecialEvent] = useState<SpecialEvent | null>(null);
+  const [trapEvent, setTrapEvent] = useState<TrapEvent | null>(null);
+  const [refugeEvent, setRefugeEvent] = useState<RefugeEvent | null>(null);
   const [bossPhaseIdx, setBossPhaseIdx] = useState(0);
   const [bossWins, setBossWins] = useState(0);
   const [hintIndex, setHintIndex] = useState(0);
