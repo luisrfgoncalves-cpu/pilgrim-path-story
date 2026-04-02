@@ -83,6 +83,11 @@ export default function RPGEventPopup({
     setBossPhaseIdx(0);
     setBossWins(0);
 
+    // Clear all content
+    setQuestion(null); setRiddle(null); setDilemma(null);
+    setChallenge(null); setBoss(null);
+    setSpecialEvent(null); setTrapEvent(null); setRefugeEvent(null);
+
     const state = rotationState.current;
     const mode = getRandomResponseMode();
     setResponseMode(mode);
@@ -92,30 +97,52 @@ export default function RPGEventPopup({
       const randomIdx = Math.floor(Math.random() * playerNames.length);
       setSelectedPlayer(playerNames[randomIdx]);
     } else if (mode === 'group_picks_one') {
-      setSelectedPlayer(''); // group will choose
+      setSelectedPlayer('');
     } else {
       setSelectedPlayer('');
     }
 
     // Load content based on tile type
+    let hasContent = false;
     switch (tileEventType) {
       case 'scripture':
-        setQuestion(getRandomQuestion(state, difficulty));
+        { const q = getRandomQuestion(state, difficulty); setQuestion(q); hasContent = !!q; }
         break;
       case 'riddle':
-        setRiddle(getRandomRiddle(state, difficulty));
+        { const r = getRandomRiddle(state, difficulty); setRiddle(r); hasContent = !!r; }
         break;
       case 'dilemma':
-        setDilemma(getRandomDilemma(state, difficulty));
+        { const d = getRandomDilemma(state, difficulty); setDilemma(d); hasContent = !!d; }
         break;
       case 'challenge':
-        setChallenge(getRandomChallenge(state, difficulty));
+        { const c = getRandomChallenge(state, difficulty); setChallenge(c); hasContent = !!c; }
         break;
       case 'boss':
-        setBoss(getRandomBoss(state, difficulty));
+        { const b = getRandomBoss(state, difficulty); setBoss(b); hasContent = !!b; }
+        break;
+      case 'special':
+        { const s = getRandomSpecialEvent(state, difficulty); setSpecialEvent(s); hasContent = !!s; }
+        break;
+      case 'trap':
+        { const t = getRandomTrap(state); setTrapEvent(t); hasContent = !!t; }
+        break;
+      case 'refuge':
+        { const r = getRandomRefuge(state); setRefugeEvent(r); hasContent = !!r; }
         break;
       default:
         break;
+    }
+
+    // Fallback: if no content available, auto-resolve with neutral result
+    if (!hasContent) {
+      setShowResult(true);
+      setResultData({
+        success: tileEventType === 'refuge' || tileEventType === 'special',
+        message: tileEventType === 'refuge' || tileEventType === 'special'
+          ? '🏠 Um momento de paz no caminho. Vocês descansam brevemente.'
+          : '⚡ Algo estranho acontece... mas logo passa.',
+        emoji: tileEventType === 'refuge' ? '🏠' : '⚡',
+      });
     }
   }, [visible, tileEventType, difficulty, playerNames, rotationState]);
 
