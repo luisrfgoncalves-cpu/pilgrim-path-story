@@ -261,10 +261,14 @@ const ScenePage = () => {
     const t = setTimeout(() => {
       setTransitioning(false);
       triggerSceneEntryVFX(progress.currentChapterId);
+      // Start ambient audio for this scene
+      if (audioOn) {
+        setAmbienceForScene(progress.currentChapterId, legacyTone);
+      }
       // Second scroll after content renders
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
     }, 100);
-    return () => clearTimeout(t);
+    return () => { clearTimeout(t); };
   }, [progress.currentChapterId]);
 
   // Dramatic character entrance — show big portrait for non-protagonist characters
