@@ -1104,10 +1104,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Sonho do Julgamento",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Trovões soam e o céu se abre...' },
     narrative: [
-      "Na última visão, o Intérprete mostra um homem que acordou tremendo de um sonho. No sonho, o céu se abriu, trovões soaram, e um Juiz no trono ordenou: \"Recolhei o trigo e queimem o joio.\"",
-      "O homem viu a si mesmo entre o joio — e acordou gritando.",
-      "\"O dia do juízo vem\", diz o Intérprete. \"Lembre-se disso quando o caminho parecer difícil demais, quando a tentação for doce demais. Há um final para esta história. Certifique-se de estar do lado certo.\""
+      "Na última visão, o Intérprete mostra um homem que acordou tremendo de um sonho. {{tremor}}No sonho, o céu se abriu, trovões soaram, e um Juiz no trono ordenou: \"Recolhei o trigo e queimem o joio.\"{{/tremor}}",
+      "{{heart}}O homem viu a si mesmo entre o joio — e acordou gritando.{{/heart}}",
+      "{{divine}}\"O dia do juízo vem\"{{/divine}}, diz o Intérprete. {{emphasis}}\"Lembre-se disso quando o caminho parecer difícil demais, quando a tentação for doce demais. Há um final para esta história. Certifique-se de estar do lado certo.\"{{/emphasis}}"
     ],
     choices: [
       {
