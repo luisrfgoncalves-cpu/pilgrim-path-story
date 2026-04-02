@@ -1793,10 +1793,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Esperança, o Novo Companheiro",
     location: "Saída da Feira",
     characters: ["cristao", "esperanca"],
+    sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'Alguém se aproxima por trás...' },
     narrative: [
-      "Na saída da feira, alguém te alcança. Seu nome é Esperança. Ele viu tudo — o julgamento, o martírio de Fiel, sua coragem (ou falta dela).",
-      "\"O sacrifício de Fiel me convenceu\", diz Esperança. \"Quero seguir o mesmo caminho. Posso ir com você?\"",
-      "Bunyan nos diz que a morte de Fiel converteu mais pessoas na feira do que anos de pregação teriam feito. O sangue do mártir é semente."
+      "Na saída da feira, alguém te alcança. Seu nome é {{emphasis}}Esperança{{/emphasis}}. Ele viu tudo — o julgamento, o martírio de Fiel, sua coragem (ou falta dela).",
+      "{{dialog}}\"O sacrifício de Fiel me convenceu\"{{/dialog}}, diz Esperança. {{heart}}\"Quero seguir o mesmo caminho. Posso ir com você?\"{{/heart}}",
+      "{{divine}}Bunyan nos diz que a morte de Fiel converteu mais pessoas na feira do que anos de pregação teriam feito. O sangue do mártir é semente.{{/divine}}"
     ],
     flagNarrative: [
       { flag: "entrou_casa_interprete", text: "As lições do Intérprete ganham peso: o fogo não apagou. O sangue de Fiel é o óleo que alimenta a chama." },
