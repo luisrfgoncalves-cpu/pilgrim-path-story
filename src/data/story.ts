@@ -774,7 +774,7 @@ export const storyChapters: Record<string, StoryChapter> = {
       "No solo firme, coberto de lama da cabeça aos pés, você se senta ao lado de Auxílio. Ele não parece com pressa de ir embora.",
       "\"Você quer saber por que o pântano existe?\", ele pergunta, como se lesse seus pensamentos. \"É assim: quando um pecador desperta para sua condição, medos, dúvidas e terrores surgem na sua alma. Eles se acumulam e escorrem para este lugar.\"",
       "Ele aponta para a lama: \"Por isso o pântano nunca seca. O Rei mandou colocar degraus de pedra firme sob a lama — são Suas promessas de perdão. Mas no desespero, as pessoas não olham para baixo. Só olham para a lama.\"",
-      "Você olha para suas mãos sujas. Cada manchade lama é uma dúvida que quase te engoliu. Mas agora você está do outro lado.",
+      "Você olha para suas mãos sujas. Cada mancha de lama é uma dúvida que quase te engoliu. Mas agora você está do outro lado.",
       "\"O caminho continua\", diz Auxílio, apontando para uma colina à frente. \"E o melhor está por vir. Naquela colina, seu fardo será tratado de um jeito que você não espera.\""
     ],
     choices: [
