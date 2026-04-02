@@ -552,6 +552,9 @@ export default function RPGEventPopup({
   const isBossContext = isBoss && phase === 'context' && !showResult;
 
   // ─── RENDER ───
+  // Get content ID for revelation lookup
+  const getContentId = () => question?.id || riddle?.id || dilemma?.id || boss?.id || '';
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
       style={isBossContext ? { animation: 'bossScreenShake 0.5s ease-in-out 3' } : undefined}
@@ -579,12 +582,44 @@ export default function RPGEventPopup({
         </>
       )}
 
+      {/* ═══ SUSPENSE INTRO PHASE ═══ */}
+      {phase === 'suspense_intro' && (
+        <div className="relative z-10 flex flex-col items-center gap-6 text-center px-8">
+          <div className="relative">
+            <div className="text-7xl" style={{
+              animation: 'shake 0.15s infinite alternate',
+              filter: `drop-shadow(0 0 30px ${tileInfo.color}60)`,
+            }}>
+              {getSuspenseText().emoji}
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-32 h-32 rounded-full border-2 animate-ping opacity-30"
+                style={{ borderColor: tileInfo.color }} />
+            </div>
+          </div>
+          <p className="text-lg font-display font-bold tracking-wider uppercase animate-pulse"
+            style={{ color: tileInfo.color, textShadow: `0 0 20px ${tileInfo.color}60` }}
+          >
+            {getSuspenseText().text}
+          </p>
+          <div className="flex gap-1">
+            {[0, 1, 2].map(i => (
+              <div key={i} className="w-2 h-2 rounded-full animate-bounce"
+                style={{ background: tileInfo.color, animationDelay: `${i * 0.2}s` }} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ═══ MAIN POPUP (context, challenge, result, revelation) ═══ */}
+      {phase !== 'suspense_intro' && (
       <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border-2 bg-card"
         style={{
           borderColor: isBoss ? 'hsl(0 70% 45%)' : tileInfo.color,
           boxShadow: isBoss
             ? '0 0 60px hsl(0 70% 30% / 0.5), 0 0 120px hsl(0 50% 20% / 0.3)'
             : `0 0 40px ${tileInfo.color}40`,
+          animation: 'scaleReveal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
         }}
       >
         {/* Header */}
