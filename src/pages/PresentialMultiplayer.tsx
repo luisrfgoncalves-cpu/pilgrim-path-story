@@ -304,6 +304,32 @@ function resolveTileEffect(
         result.statUpdate.backToStartCount = 1;
       }
       break;
+    // Narrative story tiles — handled by RPG popup, but fallback here
+    case 'wicket_gate':
+      result.attrChanges = { fe: 1 }; result.message = '🚪 A Porta Estreita! Boa Vontade os recebe.'; result.emoji = '🚪'; break;
+    case 'interpreter_house':
+      result.attrChanges = { discernimento: 2 }; result.message = '🏛️ O Intérprete revela verdades profundas!'; result.emoji = '🏛️'; break;
+    case 'hill_difficulty':
+      result.attrChanges = { perseveranca: 1 }; result.message = '⛰️ Monte Dificuldade — a subida fortalece!'; result.emoji = '⛰️'; break;
+    case 'palace_beautiful':
+      result.attrChanges = { fe: 1, coragem: 1 }; result.message = '🏰 Palácio Formoso! Prudência, Piedade e Caridade acolhem vocês.'; result.emoji = '🏰'; break;
+    case 'valley_humiliation':
+      result.attrChanges = { coragem: -1 }; result.message = '⚔️ Vale da Humilhação — Apolião se aproxima!'; result.emoji = '⚔️'; break;
+    case 'valley_shadow':
+      result.attrChanges = { fe: -1 }; result.message = '💀 Vale da Sombra da Morte — trevas envolvem!'; result.emoji = '💀'; break;
+    case 'vanity_fair':
+      result.message = '🎪 Feira da Vaidade — tentações por toda parte!'; result.emoji = '🎪'; break;
+    case 'doubting_castle':
+      result.attrChanges = { coragem: -2 }; result.stun = true; result.stunTurns = 1;
+      result.message = '🏴 Castelo da Dúvida — Gigante Desespero captura os peregrinos!'; result.emoji = '🏴'; break;
+    case 'delectable_mountains':
+      result.attrChanges = { fe: 2, discernimento: 1 }; result.message = '🏔️ Montanhas Deleitosas! Os pastores mostram a Cidade Celestial ao longe.'; result.emoji = '🏔️'; break;
+    case 'enchanted_ground':
+      result.stun = true; result.stunTurns = 1;
+      result.message = '😴 Terra Encantada — o sono tenta vencê-los!'; result.emoji = '😴'; break;
+    case 'beulah_land':
+      result.attrChanges = { fe: 2, coragem: 2, perseveranca: 1 };
+      result.message = '🌸 Terra de Beulá! Ar doce, flores eternas — a Cidade está próxima!'; result.emoji = '🌸'; break;
     default:
       result.message = 'Caminho tranquilo...';
       result.emoji = '·';
