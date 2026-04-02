@@ -261,10 +261,6 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
 
       {/* CSS animations */}
       <style>{`
-        @keyframes shake {
-          0% { transform: translateX(-3px) rotate(-2deg); }
-          100% { transform: translateX(3px) rotate(2deg); }
-        }
         @keyframes scaleReveal {
           0% { transform: scale(0.3) rotate(-5deg); opacity: 0; }
           100% { transform: scale(1) rotate(0deg); opacity: 1; }
@@ -277,10 +273,6 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
           0% { opacity: 0; }
           30% { opacity: 1; }
           100% { opacity: 0; }
-        }
-        @keyframes floatEmoji {
-          0%, 100% { transform: translateY(0) scale(1); }
-          50% { transform: translateY(-8px) scale(1.1); }
         }
       `}</style>
     </div>
