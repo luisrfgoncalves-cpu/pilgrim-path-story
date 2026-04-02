@@ -1855,6 +1855,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Legado de Fiel",
     location: "Estrada além da Feira",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2500, message: 'O silêncio carrega o peso do sacrifício...' },
     narrative: [
       "{{fade}}A feira fica para trás. A estrada é silenciosa novamente.{{/fade}} Mas o silêncio não é vazio — está cheio de tudo que aconteceu.",
       "{{heart}}Fiel morreu. Mas Esperança nasceu do seu sacrifício.{{/heart}} E você carrega a memória de ambos como uma tocha.",
