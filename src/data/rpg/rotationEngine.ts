@@ -6,6 +6,8 @@ import { activeChallenges } from './challenges';
 import { bossEncounters } from './bosses';
 import { specialEvents, trapEvents, refugeEvents } from './specialEvents';
 
+export type { RotationState };
+
 // ═══════════════════════════════════════════════════════
 // MOTOR DE ROTAÇÃO ANTI-REPETIÇÃO
 // Garante que conteúdo não se repete na mesma sessão
