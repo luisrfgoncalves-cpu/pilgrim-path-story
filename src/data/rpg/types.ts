@@ -63,13 +63,16 @@ export interface ScriptureQuestion {
 export interface Riddle {
   id: string;
   difficulty: Difficulty;
-  context: string;           // Contextualização
-  riddle: string;            // O enigma
-  hints: string[];           // Até 3 dicas progressivas
-  answer: string;            // Resposta
+  context: string;
+  riddle: string;
+  hints: string[];
+  answer: string;
   bibleReference: string;
   explanation: string;
   timerSeconds: number;
+  revelation?: HiddenRevelation;
+  chainTrigger?: ChainTrigger;
+  chainCondition?: ChainCondition;
 }
 
 export interface MoralDilemma {
