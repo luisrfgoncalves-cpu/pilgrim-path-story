@@ -617,7 +617,7 @@ const ScenePage = () => {
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Back to previous scene */}
+            {/* Back to previous scene — always visible */}
             {progress.visitedChapters.length > 1 && (
               <button
                 onClick={() => {
@@ -628,10 +628,11 @@ const ScenePage = () => {
                     goToChapter(prevId);
                   }
                 }}
-                className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95"
+                className="btn-medieval-icon !px-3 !py-2 !rounded-lg flex items-center justify-center gap-1.5 active:scale-95"
                 aria-label="Cena anterior"
               >
-                <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+                <ArrowLeft className="w-4 h-4 text-primary" />
+                <span className="text-[10px] font-display text-primary uppercase tracking-wider hidden sm:inline">Voltar</span>
               </button>
             )}
             <button
