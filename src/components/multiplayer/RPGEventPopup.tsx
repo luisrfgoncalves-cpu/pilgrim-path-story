@@ -659,7 +659,7 @@ export default function RPGEventPopup({
           {phase === 'context' && !showResult && (
             <>
               {/* Response mode badge */}
-              <div className="p-3 rounded-xl text-center text-sm font-display font-bold"
+              <div className="p-4 rounded-xl text-center text-base font-display font-bold"
                 style={{
                   background: 'hsl(40 30% 12%)',
                   border: '1px solid hsl(40 50% 30%)',
