@@ -651,7 +651,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena1b",
     title: "A Angústia Secreta",
     location: "Cidade da Destruição",
-    characters: ["cristao"],
+    characters: ["cristao", "esposa_cristao", "vizinhos"],
     sceneEvent: { type: 'tension', intensity: 1, duration: 3000 },
     narrative: [
       "{{shout}}Você corre pelas ruas gritando, mas ninguém entende.{{/shout}}",
