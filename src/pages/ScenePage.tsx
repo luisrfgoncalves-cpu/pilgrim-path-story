@@ -850,17 +850,28 @@ const ScenePage = () => {
             )}
 
             {fullNarrative.length > 0 && !showChoices && (
-              <div className="flex items-center justify-between gap-3 rounded-xl border border-border/50 bg-card/40 px-4 py-3">
-                <p className="text-[11px] font-display uppercase tracking-[0.2em] text-muted-foreground">
-                  Trecho {Math.min(narrativeIndex + 1, fullNarrative.length)} de {fullNarrative.length}
-                </p>
-                <button
-                  onClick={handleAdvanceNarrative}
-                  disabled={!hasMoreNarrative && !canShowChoices}
-                  className="btn-medieval-secondary min-w-[132px] px-4 py-2 text-xs disabled:pointer-events-none disabled:opacity-60"
-                >
-                  {hasMoreNarrative ? 'Continuar' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'}
-                </button>
+              <div className="space-y-2">
+                {/* Back to previous beat */}
+                {narrativeIndex > 0 && (
+                  <button
+                    onClick={() => setNarrativeIndex(prev => Math.max(0, prev - 1))}
+                    className="flex items-center gap-2 text-[11px] font-display text-primary/70 hover:text-primary transition-colors uppercase tracking-wider"
+                  >
+                    <ArrowLeft className="w-3 h-3" /> Reler trecho anterior
+                  </button>
+                )}
+                <div className="flex items-center justify-between gap-3 rounded-xl border border-border/50 bg-card/40 px-4 py-3">
+                  <p className="text-[11px] font-display uppercase tracking-[0.2em] text-muted-foreground">
+                    Trecho {Math.min(narrativeIndex + 1, fullNarrative.length)} de {fullNarrative.length}
+                  </p>
+                  <button
+                    onClick={handleAdvanceNarrative}
+                    disabled={!hasMoreNarrative && !canShowChoices}
+                    className="btn-medieval-secondary min-w-[132px] px-4 py-2 text-xs disabled:pointer-events-none disabled:opacity-60"
+                  >
+                    {hasMoreNarrative ? 'Continuar' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'}
+                  </button>
+                </div>
               </div>
             )}
           </div>
