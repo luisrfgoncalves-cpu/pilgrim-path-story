@@ -501,6 +501,13 @@ const PresentialMultiplayer = () => {
         return;
       }
 
+      // Check if this tile should use the RPG popup
+      const rpgEventType = TILE_TO_RPG_EVENT[tileType];
+      if (rpgEventType) {
+        setRpgEvent({ tileType: rpgEventType, playerIdx: turnIdx, prevPosition: prevPos, newPosition: newPos });
+        return;
+      }
+
       if (EXPANDED_MINI_GAME_TILES.includes(tileType)) {
         setMiniGame({ tileType, playerIdx: turnIdx, prevPosition: prevPos, newPosition: newPos });
         return;
