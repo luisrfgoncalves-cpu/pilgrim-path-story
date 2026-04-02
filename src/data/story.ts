@@ -484,9 +484,9 @@ export const storyChapters: Record<string, StoryChapter> = {
       },
       {
         text: "Olhar para trás, com saudade do que ficou",
-        nextChapterId: "cena8",
+        nextChapterId: "cena9b",
         effects: { coragem: -1 },
-        consequence: "Jesus advertiu em Lucas 9:62: 'Ninguém que, tendo posto a mão no arado, olha para trás, é apto para o Reino de Deus.' A saudade do passado é natural, mas pode se tornar uma corrente que prende o peregrino."
+        consequence: "Jesus advertiu em Lucas 9:62: 'Ninguém que, tendo posto a mão no arado, olha para trás, é apto para o Reino de Deus.' A saudade do passado é natural, mas a porta já se abriu — não há como voltar."
       }
     ]
   },
