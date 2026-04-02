@@ -157,10 +157,26 @@ export default function RPGEventPopup({
     return () => stopNarration();
   }, [visible, tileEventType, difficulty, playerNames, rotationState]);
 
+  // Build dramatic RPG master intro for the context
+  const buildRPGIntro = (baseContext: string): string => {
+    const playerName = playerNames[currentPlayerIdx] || 'Peregrino';
+    const intros = [
+      `O Mestre ergue a voz: "${playerName}, ouça bem..."`,
+      `Uma sombra cai sobre o grupo. O Mestre narra: `,
+      `O vento silencia. O Mestre fala com gravidade: `,
+      `Todos se aproximam. O Mestre declara: `,
+      `O Mestre bate o cajado no chão e anuncia: `,
+      `Com olhar penetrante, o Mestre revela: `,
+    ];
+    const intro = intros[Math.floor(Math.random() * intros.length)];
+    return `${intro}${baseContext}`;
+  };
+
   const getContextNarrationText = () => {
-    return question?.context || riddle?.context || dilemma?.context || challenge?.context
+    const raw = question?.context || riddle?.context || dilemma?.context || challenge?.context
       || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
       || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative || '';
+    return raw ? buildRPGIntro(raw) : '';
   };
 
   const getChallengeNarrationText = () => {
