@@ -1319,18 +1319,6 @@ const PresentialMultiplayer = () => {
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => {
-                const newState = !narrationEnabled;
-                setNarrationEnabledState(newState);
-                setNarratorEnabled(newState);
-                if (!newState) stopNarration();
-              }}
-              className="p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground transition-colors active:scale-95"
-              title={narrationEnabled ? 'Desativar narração' : 'Ativar narração'}
-            >
-              {narrationEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-            </button>
-            <button
               onClick={() => setShowStats(true)}
               className="text-sm text-primary font-display font-bold bg-card px-4 py-2 rounded-lg border border-primary/30 hover:bg-primary/10 active:scale-95 transition-all"
             >
