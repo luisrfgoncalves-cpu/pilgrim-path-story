@@ -790,9 +790,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Perguntar se não existe um atalho mais rápido",
         nextChapterId: "cena11",
         effects: { discernimento: -1 },
-        consequence: "O fogo da Graça se mantém vivo pela oração, pela Palavra e pela comunhão. O diabo não consegue apagá-lo porque Cristo alimenta secretamente o que o inimigo tenta destruir. João 10:28: 'Ninguém pode arrebatá-las da minha mão.'",
-        consequence: "Boa-Vontade responde com tristeza: 'Não há atalhos no caminho da vida.' Provérbios 14:12: 'Há caminho que ao homem parece direito, mas o seu fim são os caminhos da morte.'",
-        consequence: "Boa-Vontade sorri triste: \"Não há atalhos no caminho da vida. Todos os que tentaram atalhos caíram em armadilhas.\""
+        consequence: "Boa-Vontade sorri triste: 'Não há atalhos no caminho da vida.' Provérbios 14:12: 'Há caminho que ao homem parece direito, mas o seu fim são os caminhos da morte.'"
       }
     ]
   },
