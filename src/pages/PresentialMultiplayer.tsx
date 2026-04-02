@@ -1143,7 +1143,21 @@ const PresentialMultiplayer = () => {
         phaseIdx={miniGame ? Math.floor(miniGame.newPosition / TILES_PER_PHASE) : 0}
       />
 
-      {/* Sticky header */}
+      {/* RPG Event Popup */}
+      <RPGEventPopup
+        visible={!!rpgEvent}
+        difficulty={rpgDifficulty}
+        playerNames={players.map(p => p.name)}
+        currentPlayerIdx={rpgEvent?.playerIdx || currentTurn}
+        tileEventType={rpgEvent?.tileType || 'scripture'}
+        onResult={handleRpgEventResult}
+        onDismiss={() => {
+          setRpgEvent(null);
+          nextTurn();
+        }}
+        rotationState={rotationStateRef}
+      />
+
       <header className="sticky top-0 z-20 bg-card/95 backdrop-blur-md border-b border-border px-4 py-2">
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
