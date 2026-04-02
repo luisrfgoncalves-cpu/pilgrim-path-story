@@ -94,15 +94,19 @@ const PHASES_PART2 = [
   },
 ];
 
+const OWNER_EMAIL = 'luis.rf.goncalves@gmail.com';
+
 const JourneysPage = () => {
   const navigate = useNavigate();
   const { progress, goToChapter, startJourney, resetProgress } = useStoryProgress();
+  const { user } = useAuth();
   const [expandedPhase, setExpandedPhase] = useState<string | null>(null);
 
+  const isOwner = user?.email?.toLowerCase() === OWNER_EMAIL;
   const currentCampaign = progress.campaign || 'part1';
 
   const handleChapterClick = (chapterId: string, campaign: 'part1' | 'part2') => {
-    if (progress.visitedChapters.includes(chapterId)) {
+    if (isOwner || progress.visitedChapters.includes(chapterId)) {
       goToChapter(chapterId);
       startJourney();
       navigate('/jornada', { replace: true });
