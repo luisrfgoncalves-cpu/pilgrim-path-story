@@ -932,87 +932,107 @@ const PresentialMultiplayer = () => {
     setShowPhaseTransition(0);
   };
 
+  // ─── RPG Event Popup result handler ───
+  const handleRpgEventResult = useCallback((result: {
+    success: boolean;
+    posAdjust?: number;
+    attrChanges?: Record<string, number>;
+    stun?: boolean;
+    stunTurns?: number;
+    affectsGroup?: boolean;
+    message: string;
+    emoji: string;
+  }) => {
+    if (!rpgEvent) return;
+    const { playerIdx, prevPosition, newPosition } = rpgEvent;
+    const player = players[playerIdx];
+
+    // Update stats
+    if (result.success) {
+      updatePlayerStats(playerIdx, { challengesWon: 1 });
+    } else {
+      updatePlayerStats(playerIdx, { challengesLost: 1 });
+    }
+
+    // Apply attribute changes
+    if (result.attrChanges) {
+      setPlayers(prev => prev.map((p, i) => {
+        if (i !== playerIdx && !result.affectsGroup) return p;
+        if (i !== playerIdx && result.affectsGroup) {
+          // Apply reduced effect to group in cooperative mode
+          if (rpgGameMode !== 'cooperative') return p;
+        }
+        const newAttrs = { ...p.attributes };
+        for (const [key, val] of Object.entries(result.attrChanges!)) {
+          if (key in newAttrs) {
+            (newAttrs as any)[key] = Math.max(0, Math.min(12, ((newAttrs as any)[key] || 0) + val));
+          }
+        }
+        return { ...p, attributes: newAttrs };
+      }));
+    }
+
+    // Handle position adjustment
+    const posAdj = result.posAdjust || 0;
+    if (result.success && posAdj >= 0) {
+      // Won — stay or advance, apply stun if any
+      setPlayers(prev => prev.map((p, i) => {
+        if (i !== playerIdx) return p;
+        return {
+          ...p,
+          isStunned: result.stun || false,
+          stunTurns: result.stunTurns || 0,
+          stats: { ...p.stats, currentStreak: (p.stats.currentStreak || 0) + 1, maxStreak: Math.max(p.stats.maxStreak, (p.stats.currentStreak || 0) + 1) },
+        };
+      }));
+      pendingMoveAfterPopup.current = posAdj > 0 ? {
+        playerIdx,
+        targetPos: Math.min(newPosition + posAdj, IMMERSIVE_BOARD_SIZE - 1),
+        attrs: {},
+        stats: {},
+        isReturnMove: false,
+      } : null;
+    } else {
+      // Lost — retreat
+      const retreatPos = Math.max(0, newPosition + posAdj);
+      setPlayers(prev => prev.map((p, i) => {
+        if (i !== playerIdx) return p;
+        return {
+          ...p,
+          isStunned: result.stun || false,
+          stunTurns: result.stunTurns || 0,
+          stats: { ...p.stats, currentStreak: 0 },
+        };
+      }));
+      if (posAdj < 0) {
+        pendingMoveAfterPopup.current = {
+          playerIdx,
+          targetPos: retreatPos,
+          attrs: {},
+          stats: {},
+          isReturnMove: true,
+        };
+      }
+    }
+
+    setRpgEvent(null);
+
+    // Show result message as tile popup
+    setTileMessage({
+      message: result.message,
+      emoji: result.emoji,
+      tileType: rpgEvent.tileType === 'boss' ? 'giant' : (rpgEvent.tileType as unknown as TileType) || 'challenge',
+      playerName: player.name,
+    });
+  }, [rpgEvent, players, rpgGameMode]);
+
   // ─── SETUP ───
   if (phase === 'setup') {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-3">
-          <div className="max-w-lg mx-auto flex items-center gap-3">
-            <button onClick={() => navigate('/multiplayer')} className="text-muted-foreground hover:text-foreground">
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <h1 className="font-display text-lg text-foreground">Modo Presencial</h1>
-          </div>
-        </header>
-
-        <main className="flex-1 max-w-lg mx-auto w-full px-5 py-6 space-y-6">
-          <ScreenHero
-            icon={<Dices className="w-full h-full" />}
-            name="Jogo Presencial"
-            subtitle="Um celular, todos os jogadores reunidos"
-            sfx="gameStart"
-            size="md"
-          />
-
-          <div className="bg-card/50 border border-border rounded-xl p-4 space-y-2">
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              📜 <strong className="text-foreground">Como funciona:</strong> Um celular serve como tabuleiro digital imersivo.
-              Cada fase ocupa uma tela inteira com cenários e personagens. Role o dado e explore a jornada do Peregrino!
-            </p>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              🎮 <strong className="text-foreground">120 casas</strong> em 6 fases: Refúgios, Desafios, Surpresas, Armadilhas, Gigantes, Mini-games e muito mais!
-            </p>
-          </div>
-
-          {/* Players */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-display text-foreground flex items-center gap-2">
-                <Users className="w-4 h-4 text-primary" />
-                Jogadores ({players.length}/8)
-              </span>
-              {players.length < 8 && (
-                <button onClick={addPlayer} className="flex items-center gap-1 text-xs text-primary hover:underline">
-                  <Plus className="w-3 h-3" /> Adicionar
-                </button>
-              )}
-            </div>
-
-            {players.map((p) => (
-              <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl bg-card/60 border border-border">
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold flex-shrink-0"
-                  style={{ backgroundColor: p.color + '20', border: `2px solid ${p.color}60`, color: p.color }}
-                >
-                  {(editingNames[p.id] || p.name).charAt(0).toUpperCase()}
-                </div>
-                <input
-                  type="text"
-                  value={editingNames[p.id] ?? p.name}
-                  onChange={e => updatePlayerName(p.id, e.target.value)}
-                  onBlur={() => commitName(p.id)}
-                  className="flex-1 bg-transparent border-none text-sm text-foreground font-medium outline-none focus:text-primary"
-                  maxLength={20}
-                />
-                {players.length > 2 && (
-                  <button onClick={() => removePlayer(p.id)} className="text-muted-foreground hover:text-destructive p-1">
-                    <Minus className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <button
-            onClick={startGame}
-            disabled={players.length < 2}
-            className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 glow-gold disabled:opacity-50 transition-all"
-          >
-            <Dices className="w-5 h-5" />
-            Começar Partida ({players.length} peregrinos)
-          </button>
-        </main>
-      </div>
+      <RPGBriefing
+        onStart={startGame}
+        onBack={() => navigate('/multiplayer')}
+      />
     );
   }
 
