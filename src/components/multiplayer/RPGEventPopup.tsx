@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Difficulty, ResponseMode, ScriptureQuestion, Riddle, MoralDilemma, ActiveChallenge, BossEncounter } from '@/data/rpg/types';
+import { Difficulty, ResponseMode, ScriptureQuestion, Riddle, MoralDilemma, ActiveChallenge, BossEncounter, SpecialEvent, TrapEvent, RefugeEvent } from '@/data/rpg/types';
 import {
   getRandomQuestion, getRandomRiddle,
   getRandomDilemma, getRandomChallenge, getRandomBoss,
+  getRandomSpecialEvent, getRandomTrap, getRandomRefuge,
   getRandomResponseMode, getResponseModeLabel, getTileEventLabel,
   RotationState,
 } from '@/data/rpg/rotationEngine';
