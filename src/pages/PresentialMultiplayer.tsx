@@ -498,10 +498,6 @@ const PresentialMultiplayer = () => {
   }, [miniGame]);
 
   useEffect(() => {
-    if (rpgEvent) handledRpgResultKeyRef.current = null;
-  }, [rpgEvent]);
-
-  useEffect(() => {
     return () => {
       if (rpgFeedbackTimerRef.current) clearTimeout(rpgFeedbackTimerRef.current);
       if (rpgResolutionTimerRef.current) clearTimeout(rpgResolutionTimerRef.current);
@@ -528,6 +524,10 @@ const PresentialMultiplayer = () => {
     prevPosition: number;
     newPosition: number;
   } | null>(null);
+
+  useEffect(() => {
+    if (rpgEvent) handledRpgResultKeyRef.current = null;
+  }, [rpgEvent]);
 
   const addPlayer = () => {
     if (players.length >= 8) return;
