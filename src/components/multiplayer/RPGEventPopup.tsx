@@ -57,8 +57,9 @@ type PopupPhase = 'suspense_intro' | 'context' | 'mode_reveal' | 'player_select'
 export default function RPGEventPopup({
   visible, difficulty, playerNames, currentPlayerIdx,
   tileEventType, sourceTileType, onResult, onDismiss, rotationState,
+  chainState, currentTurn,
 }: RPGEventPopupProps) {
-  const [phase, setPhase] = useState<PopupPhase>('context');
+  const [phase, setPhase] = useState<PopupPhase>('suspense_intro');
   const [responseMode, setResponseMode] = useState<ResponseMode>('group_consensus');
   const [selectedPlayer, setSelectedPlayer] = useState<string>('');
   const [timerActive, setTimerActive] = useState(false);
