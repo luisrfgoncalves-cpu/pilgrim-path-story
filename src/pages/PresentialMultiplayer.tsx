@@ -105,6 +105,20 @@ function createPlayer(index: number, name?: string): LocalPlayer {
   };
 }
 
+function getMiniGameEventKey(event: { playerIdx: number; prevPosition: number; newPosition: number; tileType: TileType }) {
+  return `${event.playerIdx}:${event.tileType}:${event.prevPosition}:${event.newPosition}`;
+}
+
+function getRpgEventKey(event: {
+  playerIdx: number;
+  prevPosition: number;
+  newPosition: number;
+  tileType: RPGTileEventType;
+  sourceTileType: TileType;
+}) {
+  return `${event.playerIdx}:${event.tileType}:${event.sourceTileType}:${event.prevPosition}:${event.newPosition}`;
+}
+
 // Now ALL special tiles trigger mini-games (more interactive!)
 const EXPANDED_MINI_GAME_TILES: TileType[] = ['giant', 'challenge', 'scripture', 'surprise', 'blessing', 'trap', 'shield', 'current', 'swap'];
 
@@ -437,6 +451,10 @@ const PresentialMultiplayer = () => {
     posAdjust?: number; attrChanges?: Record<string, number>;
   } | null>(null);
   const tokenMovingTimerRef = useRef<number | null>(null);
+  const handledMiniGameResultKeyRef = useRef<string | null>(null);
+  const handledRpgResultKeyRef = useRef<string | null>(null);
+  const rpgFeedbackTimerRef = useRef<number | null>(null);
+  const rpgResolutionTimerRef = useRef<number | null>(null);
   
 
   // Deferred move after mini-game popup closes
@@ -474,6 +492,21 @@ const PresentialMultiplayer = () => {
       if (tokenMovingTimerRef.current) clearTimeout(tokenMovingTimerRef.current);
     };
   }, [isTokenMoving]);
+
+  useEffect(() => {
+    if (miniGame) handledMiniGameResultKeyRef.current = null;
+  }, [miniGame]);
+
+  useEffect(() => {
+    if (rpgEvent) handledRpgResultKeyRef.current = null;
+  }, [rpgEvent]);
+
+  useEffect(() => {
+    return () => {
+      if (rpgFeedbackTimerRef.current) clearTimeout(rpgFeedbackTimerRef.current);
+      if (rpgResolutionTimerRef.current) clearTimeout(rpgResolutionTimerRef.current);
+    };
+  }, []);
 
   // New state for phase transitions and River of Death
   const [showPhaseTransition, setShowPhaseTransition] = useState<number | null>(null);
@@ -876,6 +909,11 @@ const PresentialMultiplayer = () => {
 
   const handleMiniGameResult = useCallback((won: boolean) => {
     if (!miniGame) return;
+
+    const miniGameKey = getMiniGameEventKey(miniGame);
+    if (handledMiniGameResultKeyRef.current === miniGameKey) return;
+    handledMiniGameResultKeyRef.current = miniGameKey;
+
     const { playerIdx, prevPosition, newPosition, tileType } = miniGame;
     const player = players[playerIdx];
 
@@ -1041,8 +1079,12 @@ const PresentialMultiplayer = () => {
     emoji: string;
   }) => {
     if (!rpgEvent) return;
+
+    const rpgEventKey = getRpgEventKey(rpgEvent);
+    if (handledRpgResultKeyRef.current === rpgEventKey) return;
+    handledRpgResultKeyRef.current = rpgEventKey;
+
     const { playerIdx, prevPosition, newPosition } = rpgEvent;
-    const player = players[playerIdx];
 
     // Update stats
     if (result.success) {
@@ -1112,8 +1154,6 @@ const PresentialMultiplayer = () => {
       }
     }
 
-    setRpgEvent(null);
-
     // Streak feedback — notify when player hits 3+ correct in a row
     if (result.success) {
       const currentPlayer = players[playerIdx];
@@ -1137,12 +1177,14 @@ const PresentialMultiplayer = () => {
       }
     }
 
+    if (rpgFeedbackTimerRef.current) clearTimeout(rpgFeedbackTimerRef.current);
+    if (rpgResolutionTimerRef.current) clearTimeout(rpgResolutionTimerRef.current);
+
     // Clear RPG popup FIRST — then show result feedback after a short delay
-    // This prevents two popups appearing simultaneously
     setRpgEvent(null);
 
     // Show dramatic result feedback overlay AFTER RPG popup is gone
-    setTimeout(() => {
+    rpgFeedbackTimerRef.current = window.setTimeout(() => {
       setResultFeedback({
         visible: true,
         success: result.success,
@@ -1156,8 +1198,8 @@ const PresentialMultiplayer = () => {
     // RPG popup already showed the result — skip redundant TileEventPopup
     // Delay pending moves/next turn until ResultFeedback finishes (~4.5s)
     const pendingMove = pendingMoveAfterPopup.current;
-    const rpgPlayerIdx = rpgEvent.playerIdx;
-    setTimeout(() => {
+    const rpgPlayerIdx = playerIdx;
+    rpgResolutionTimerRef.current = window.setTimeout(() => {
       if (pendingMove) {
         const { playerIdx: pIdx, targetPos, attrs, stats, shield, isReturnMove } = pendingMove;
         pendingMoveAfterPopup.current = null;
