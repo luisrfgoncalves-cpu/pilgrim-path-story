@@ -1154,41 +1154,42 @@ const PresentialMultiplayer = () => {
     }, 400);
 
     // RPG popup already showed the result — skip redundant TileEventPopup
-    // Just process pending moves or go to next turn
+    // Delay pending moves/next turn until ResultFeedback finishes (~4.5s)
     const pendingMove = pendingMoveAfterPopup.current;
-    if (pendingMove) {
-      // There's a pending move — trigger it
-      const { playerIdx: pIdx, targetPos, attrs, stats, shield, isReturnMove } = pendingMove;
-      pendingMoveAfterPopup.current = null;
-      if (isReturnMove) {
-        const currentPos = players[pIdx]?.position ?? 0;
-        const casasDiff = Math.abs(currentPos - targetPos);
-        setReturnMoveInfo(`↩️ Voltando ${casasDiff} casa${casasDiff > 1 ? 's' : ''}...`);
-      }
-      setIsTokenMoving(true);
-      setPlayers(prev => prev.map((p, i) => {
-        const shouldMove = rpgGameMode === 'cooperative' || i === pIdx;
-        if (!shouldMove) return p;
-        const newAttrs = { ...p.attributes };
-        for (const [key, val] of Object.entries(attrs)) {
-          (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+    const rpgPlayerIdx = rpgEvent.playerIdx;
+    setTimeout(() => {
+      if (pendingMove) {
+        const { playerIdx: pIdx, targetPos, attrs, stats, shield, isReturnMove } = pendingMove;
+        pendingMoveAfterPopup.current = null;
+        if (isReturnMove) {
+          const currentPos = players[pIdx]?.position ?? 0;
+          const casasDiff = Math.abs(currentPos - targetPos);
+          setReturnMoveInfo(`↩️ Voltando ${casasDiff} casa${casasDiff > 1 ? 's' : ''}...`);
         }
-        return { ...p, position: targetPos, attributes: newAttrs, hasShield: shield !== undefined ? shield : p.hasShield };
-      }));
-      pendingActionRef.current = () => {
-        if (isReturnMove) { nextTurn(); return; }
-        const p2 = players[pIdx];
-        if (p2?.extraTurn) { setTurnAnnounce(`🎲 ${p2.name} joga de novo!`); } else { nextTurn(); }
-      };
-    } else {
-      // No pending move — just next turn
-      const p = players[rpgEvent.playerIdx];
-      if (p?.extraTurn) {
-        setTurnAnnounce(`🎲 ${p.name} joga de novo!`);
+        setIsTokenMoving(true);
+        setPlayers(prev => prev.map((p, i) => {
+          const shouldMove = rpgGameMode === 'cooperative' || i === pIdx;
+          if (!shouldMove) return p;
+          const newAttrs = { ...p.attributes };
+          for (const [key, val] of Object.entries(attrs)) {
+            (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+          }
+          return { ...p, position: targetPos, attributes: newAttrs, hasShield: shield !== undefined ? shield : p.hasShield };
+        }));
+        pendingActionRef.current = () => {
+          if (isReturnMove) { nextTurn(); return; }
+          const p2 = players[pIdx];
+          if (p2?.extraTurn) { setTurnAnnounce(`🎲 ${p2.name} joga de novo!`); } else { nextTurn(); }
+        };
       } else {
-        nextTurn();
+        const p = players[rpgPlayerIdx];
+        if (p?.extraTurn) {
+          setTurnAnnounce(`🎲 ${p.name} joga de novo!`);
+        } else {
+          nextTurn();
+        }
       }
-    }
+    }, 4500); // Wait for ResultFeedback to finish
   }, [rpgEvent, players, rpgGameMode]);
 
   // ─── SETUP ───
