@@ -1079,9 +1079,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
     narrative: [
-      "A última sala contém uma gaiola de ferro. Dentro, um homem em trapos, de cabeça baixa. Seus olhos estão vazios.",
-      "\"Eu já fui um peregrino como você\", diz o homem da gaiola. \"Eu era cheio de fé. Mas me deixei levar pelos prazeres e pecados do mundo. Abandonei o caminho. E agora...\" Sua voz falha. \"Agora estou trancado no desespero. A Graça me foi oferecida, e eu a rejeitei tantas vezes que ela se retirou.\"",
-      "O Intérprete se vira para você com seriedade mortal: \"Grave isso no seu coração. Para que nunca lhe aconteça o mesmo.\""
+      "A última sala contém uma gaiola de ferro. Dentro, um homem em trapos, de cabeça baixa. {{fade}}Seus olhos estão vazios.{{/fade}}",
+      "{{villain}}\"Eu já fui um peregrino como você\"{{/villain}}, diz o homem da gaiola. \"Eu era cheio de fé. Mas me deixei levar pelos prazeres e pecados do mundo. Abandonei o caminho. E agora...\" {{heart}}Sua voz falha.{{/heart}} \"Agora estou trancado no desespero. A Graça me foi oferecida, e eu a rejeitei tantas vezes que ela se retirou.\"",
+      "{{tremor}}O Intérprete se vira para você com seriedade mortal: \"Grave isso no seu coração. Para que nunca lhe aconteça o mesmo.\"{{/tremor}}"
     ],
     choices: [
       {
