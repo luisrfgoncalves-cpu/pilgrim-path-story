@@ -602,7 +602,10 @@ const ScenePage = () => {
               fetchPriority="high"
               onLoad={() => setImageLoaded(true)}
               className="w-full h-auto object-cover scene-image scene-image-alive"
-              style={atmosphere.imageStyle}
+              style={{
+                ...atmosphere.imageStyle,
+                filter: getSceneAtmosphere(chapter.id).imageFilter || (atmosphere.imageStyle as any)?.filter,
+              }}
             />
             {/* Particle effects overlay */}
             {imageLoaded && (() => {
@@ -610,6 +613,16 @@ const ScenePage = () => {
               return pType ? <ParticleEffects type={pType} intensity={0.6} /> : null;
             })()}
             <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+            {/* Scene atmosphere overlay */}
+            {(() => {
+              const atmo = getSceneAtmosphere(chapter.id);
+              return atmo.overlayColor || atmo.bgTint ? (
+                <div className="absolute inset-0 pointer-events-none transition-all duration-[2000ms]" style={{
+                  background: atmo.bgTint || atmo.overlayColor,
+                  mixBlendMode: 'multiply',
+                }} />
+              ) : null;
+            })()}
             <div className="absolute bottom-2 left-3 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-md border border-primary/20">
               <MapPin className="w-3 h-3 text-primary/80" />
               <span className="text-xs uppercase tracking-widest text-amber-300 font-display font-bold" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}>{chapter.location}</span>
