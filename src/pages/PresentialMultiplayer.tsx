@@ -1431,7 +1431,7 @@ const PresentialMultiplayer = () => {
                         }, 1200);
                       }}
                       className="focus:outline-none active:scale-95 transition-transform"
-                      disabled={diceRolling || isTokenMoving || !!tileMessage || !!miniGame || !!rpgEvent || showRiverOfDeath !== null || showPhaseTransition !== null}
+                      disabled={diceRolling || isTokenMoving || !!tileMessage || !!miniGame || !!rpgEvent || !!resultFeedback || showRiverOfDeath !== null || showPhaseTransition !== null}
                     >
                       <Dice3D value={diceValue} rolling={diceRolling} size={90} color="gold" />
                     </button>
