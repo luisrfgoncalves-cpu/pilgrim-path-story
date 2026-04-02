@@ -28,8 +28,8 @@ import {
 import { startAmbientMusic, stopAmbientMusic, updateAmbientPhase } from '@/components/multiplayer/AmbientMusic';
 import { playGameSfx } from '@/lib/gameSfx';
 import { useAudioPrewarm } from '@/hooks/useAudioPrewarm';
-import { prewarmNarrator } from '@/lib/narrator';
-import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown } from 'lucide-react';
+import { prewarmNarrator, setNarratorEnabled, stopNarration } from '@/lib/narrator';
+import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown, Volume2, VolumeX } from 'lucide-react';
 import ScreenHero from '@/components/ScreenHero';
 
 const COLORS = ['#E8724A', '#4CAF50', '#42A5F5', '#FFD54F', '#AB47BC', '#EF5350', '#26C6DA', '#FF7043'];
@@ -127,6 +127,17 @@ const TILE_TO_RPG_EVENT: Partial<Record<TileType, RPGTileEventType>> = {
   delectable_mountains: 'refuge',
   enchanted_ground: 'trap',
   beulah_land: 'special',
+  // New narrative tiles
+  slough_despond: 'dilemma',
+  cross_sepulchre: 'refuge',
+  simple_sloth_presumption: 'riddle',
+  hill_lucre: 'dilemma',
+  by_path_meadow: 'dilemma',
+  flatterer_net: 'trap',
+  atheist_encounter: 'riddle',
+  ignorance_path: 'dilemma',
+  little_faith: 'scripture',
+  river_of_life: 'refuge',
 };
 
 // ─── River of Death tiles: last 5 tiles before finish ───
@@ -334,6 +345,36 @@ function resolveTileEffect(
     case 'beulah_land':
       result.attrChanges = { fe: 2, coragem: 2, perseveranca: 1 };
       result.message = '🌸 Terra de Beulá! Ar doce, flores eternas — a Cidade está próxima!'; result.emoji = '🌸'; break;
+    case 'slough_despond':
+      result.attrChanges = { perseveranca: -1 }; result.posAdjust = -2;
+      result.message = '🏚️ Pântano do Desânimo — a lama da dúvida puxa para baixo!'; result.emoji = '🏚️'; break;
+    case 'cross_sepulchre':
+      result.attrChanges = { fe: 3, perseveranca: 1 };
+      result.message = '✝️ A Cruz! Sua carga pesada finalmente cai — liberdade em Cristo!'; result.emoji = '✝️'; break;
+    case 'simple_sloth_presumption':
+      result.stun = true; result.stunTurns = 1;
+      result.message = '😴 Simples, Preguiça e Presunção dormem acorrentados à beira do caminho!'; result.emoji = '😴'; break;
+    case 'hill_lucre':
+      result.attrChanges = { discernimento: -1 }; result.posAdjust = -2;
+      result.message = '💰 A Mina de Demas! A prata brilha, mas o chão é traiçoeiro!'; result.emoji = '💰'; break;
+    case 'by_path_meadow':
+      result.posAdjust = -3;
+      result.message = '🌿 Prado do Atalho — o caminho fácil leva ao perigo!'; result.emoji = '🌿'; break;
+    case 'flatterer_net':
+      result.posAdjust = -2; result.attrChanges = { discernimento: -1 };
+      result.message = '🕸️ A Rede do Lisonjeiro! Palavras doces escondem armadilhas!'; result.emoji = '🕸️'; break;
+    case 'atheist_encounter':
+      result.attrChanges = { fe: -1 };
+      result.message = '🤷 O Ateu zomba da jornada — mas a fé permanece firme!'; result.emoji = '🤷'; break;
+    case 'ignorance_path':
+      result.attrChanges = { discernimento: -1 };
+      result.message = '🚶 Ignorância segue seu próprio caminho tortuoso!'; result.emoji = '🚶'; break;
+    case 'little_faith':
+      result.attrChanges = { fe: -1, coragem: -1 };
+      result.message = '😰 Pouca-Fé! Ladrões roubaram sua paz — mas não a salvação!'; result.emoji = '😰'; break;
+    case 'river_of_life':
+      result.attrChanges = { fe: 1, perseveranca: 1 };
+      result.message = '💧 Rio da Vida! Águas cristalinas restauram a alma!'; result.emoji = '💧'; break;
     default:
       result.message = 'Caminho tranquilo...';
       result.emoji = '·';
@@ -367,6 +408,7 @@ const PresentialMultiplayer = () => {
     posAdjust?: number; attrChanges?: Record<string, number>;
   } | null>(null);
   const tokenMovingTimerRef = useRef<number | null>(null);
+  const [narrationEnabled, setNarrationEnabledState] = useState(true);
 
   // Deferred move after mini-game popup closes
   const pendingMoveAfterPopup = useRef<{
@@ -525,6 +567,10 @@ const PresentialMultiplayer = () => {
       return;
     }
 
+    // Reset extraTurn — this roll IS the extra turn
+    if (player.extraTurn) {
+      setPlayers(prev => prev.map((p, i) => i === currentTurn ? { ...p, extraTurn: false } : p));
+    }
     const diceVal = value || (Math.floor(Math.random() * 6) + 1);
     let newPos = Math.min(player.position + diceVal, IMMERSIVE_BOARD_SIZE - 1);
     playMove();
@@ -549,6 +595,18 @@ const PresentialMultiplayer = () => {
       // Check for River of Death zone (last few tiles before finish)
       if (newPos >= RIVER_ZONE_START && newPos < IMMERSIVE_BOARD_SIZE - 1 && !player.stats.riverCrossed) {
         setShowRiverOfDeath({ playerIdx: turnIdx, prevPos, newPos });
+        return;
+      }
+
+      // Auto-resolve double_dice — no popup, just extra turn
+      if (tileType === 'double_dice') {
+        setPlayers(prev => prev.map((p, i) => {
+          const shouldApply = rpgGameMode === 'cooperative' || i === turnIdx;
+          if (!shouldApply) return p;
+          return { ...p, extraTurn: true };
+        }));
+        playGameSfx('diceRoll');
+        setTurnAnnounce(`🎲 Dado Duplo! ${player.name} joga novamente!`);
         return;
       }
 
@@ -1217,12 +1275,26 @@ const PresentialMultiplayer = () => {
               )}
             </div>
           </div>
-          <button
-            onClick={() => setShowStats(true)}
-            className="text-sm text-primary font-display font-bold bg-card px-4 py-2 rounded-lg border border-primary/30 hover:bg-primary/10 active:scale-95 transition-all"
-          >
-            Placar
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                const newState = !narrationEnabled;
+                setNarrationEnabledState(newState);
+                setNarratorEnabled(newState);
+                if (!newState) stopNarration();
+              }}
+              className="p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground transition-colors active:scale-95"
+              title={narrationEnabled ? 'Desativar narração' : 'Ativar narração'}
+            >
+              {narrationEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            </button>
+            <button
+              onClick={() => setShowStats(true)}
+              className="text-sm text-primary font-display font-bold bg-card px-4 py-2 rounded-lg border border-primary/30 hover:bg-primary/10 active:scale-95 transition-all"
+            >
+              Placar
+            </button>
+          </div>
         </div>
       </header>
 

@@ -214,3 +214,68 @@ export function playRiverAmbient() {
   osc.start(c.currentTime);
   osc.stop(c.currentTime + 10);
 }
+
+// ─── Contextual narrative SFX ───
+
+export function playEvilLaugh() {
+  const c = getCtx();
+  if (!c) return;
+  [220, 180, 140, 110].forEach((freq, i) => {
+    setTimeout(() => {
+      playTone(freq, 0.3, 'sawtooth', 0.06);
+    }, i * 150);
+  });
+}
+
+export function playCrowdCheer() {
+  [523, 659, 784, 1047].forEach((freq, i) => {
+    setTimeout(() => {
+      playTone(freq, 0.2, 'sine', 0.08);
+      playTone(freq * 1.01, 0.2, 'sine', 0.06);
+    }, i * 50);
+  });
+}
+
+export function playTensionDrum() {
+  for (let i = 0; i < 12; i++) {
+    const delay = i < 6 ? i * 120 : 720 + (i - 6) * 60;
+    setTimeout(() => {
+      playTone(100 + Math.random() * 50, 0.04, 'square', 0.1);
+    }, delay);
+  }
+}
+
+export function playHolyChime() {
+  const c = getCtx();
+  if (!c) return;
+  [880, 1320, 1760].forEach((freq, i) => {
+    setTimeout(() => {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.08, c.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 1.2);
+      osc.connect(gain);
+      gain.connect(c.destination);
+      osc.start(c.currentTime);
+      osc.stop(c.currentTime + 1.2);
+    }, i * 200);
+  });
+}
+
+export function playDramaticReveal() {
+  playTone(220, 0.3, 'sine', 0.06);
+  setTimeout(() => playTone(277, 0.3, 'sine', 0.06), 200);
+  setTimeout(() => playTone(330, 0.3, 'sine', 0.08), 400);
+  setTimeout(() => {
+    playTone(440, 0.5, 'sine', 0.1);
+    playTone(554, 0.5, 'sine', 0.08);
+  }, 700);
+}
+
+export function playNarrativeChime() {
+  playTone(440, 0.15, 'sine', 0.08);
+  setTimeout(() => playTone(554, 0.15, 'sine', 0.08), 120);
+  setTimeout(() => playTone(660, 0.2, 'sine', 0.1), 240);
+}
