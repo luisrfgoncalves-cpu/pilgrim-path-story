@@ -236,9 +236,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     reflection: "r2",
     narrative: [
       "Você tenta agir como se nada tivesse acontecido, mas o fardo continua ali.",
-      "Obstinado percebe primeiro. {{villain}}\"Você enlouqueceu. Volte ao normal.\"{{/villain}}",
-      "Flexível não ri. {{dialog}}\"E se ele estiver certo?\"{{/dialog}}",
-      "Os dois esperam sua resposta. Um te puxa para trás. O outro olha para a estrada."
+      "{{villain}}Obstinado percebe primeiro. \"Você enlouqueceu. Volte ao normal.\"{{/villain}}",
+      "{{tremor}}Ele te segura pelo braço com força.{{/tremor}}",
+      "Flexível não ri. {{dialog}}\"E se ele estiver certo? E se a cidade realmente for destruída?\"{{/dialog}}",
+      "Os dois esperam sua resposta. {{heart}}Um te puxa para trás. O outro olha para a estrada.{{/heart}}"
     ],
     choices: [
       {
