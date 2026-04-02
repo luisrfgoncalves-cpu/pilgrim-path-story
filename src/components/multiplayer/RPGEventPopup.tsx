@@ -917,12 +917,43 @@ export default function RPGEventPopup({
           )}
 
           {/* RESULT PHASE */}
-          {showResult && resultData && (
+          {showResult && resultData && !currentRevelation && (
             <div className="space-y-4">
               <div className="text-center text-4xl">{resultData.emoji}</div>
               <div className={`p-4 rounded-xl border ${resultData.success ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
                 <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">{resultData.message}</p>
               </div>
+              {/* Revelation button — only on success */}
+              {resultData.success && getRevelation(getContentId()) && (
+                <button
+                  onClick={() => {
+                    const rev = getRevelation(getContentId());
+                    if (rev) {
+                      setCurrentRevelation(rev);
+                      playRealSfx('blessing', 0.5);
+                      playHolyChime();
+                      // Set chain flag if applicable
+                      const item = question || riddle || dilemma;
+                      if (item && 'chainTrigger' in item && item.chainTrigger && chainState) {
+                        setChainFlag(chainState.current, item.chainTrigger.flag, currentTurn || 0, playerNames[currentPlayerIdx] || '');
+                      }
+                      narrate(`Revelação desbloqueada! ${rev.title}. ${rev.deepTeaching}`, { style: 'calm', force: true });
+                    }
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-display font-bold text-sm transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, hsl(45 80% 25%), hsl(30 70% 20%))',
+                    border: '1px solid hsl(45 60% 40%)',
+                    color: 'hsl(45 80% 80%)',
+                    boxShadow: '0 0 20px hsl(45 60% 30% / 0.4)',
+                    animation: 'goldenPulse 2s ease-in-out infinite',
+                  }}
+                >
+                  <BookOpen className="w-4 h-4" />
+                  🔓 Desbloquear Revelação Oculta
+                  <Sparkles className="w-4 h-4" />
+                </button>
+              )}
               <button
                 onClick={handleFinalDismiss}
                 className={`w-full py-4 rounded-xl font-display font-bold text-sm ${
@@ -933,10 +964,48 @@ export default function RPGEventPopup({
               </button>
             </div>
           )}
+
+          {/* REVELATION PHASE — Deep biblical teaching */}
+          {showResult && currentRevelation && (
+            <div className="space-y-4">
+              <div className="text-center">
+                <Sparkles className="w-8 h-8 mx-auto mb-2" style={{ color: 'hsl(45 80% 60%)' }} />
+                <h3 className="font-display font-bold text-foreground text-lg">{currentRevelation.title}</h3>
+              </div>
+              <div className="p-4 rounded-xl border" style={{
+                background: 'linear-gradient(135deg, hsl(45 30% 10%), hsl(30 20% 8%))',
+                borderColor: 'hsl(45 40% 30%)',
+              }}>
+                <p className="text-sm leading-relaxed" style={{ color: 'hsl(45 30% 80%)' }}>
+                  {currentRevelation.deepTeaching}
+                </p>
+              </div>
+              {currentRevelation.historicalContext && (
+                <div className="p-3 rounded-xl bg-background/50 border border-border">
+                  <p className="text-xs text-muted-foreground"><strong>📚 Contexto Histórico:</strong> {currentRevelation.historicalContext}</p>
+                </div>
+              )}
+              {currentRevelation.practicalApplication && (
+                <div className="p-3 rounded-xl" style={{ background: 'hsl(120 20% 10%)', border: '1px solid hsl(120 30% 25%)' }}>
+                  <p className="text-xs" style={{ color: 'hsl(120 40% 70%)' }}><strong>💡 Para o Grupo:</strong> {currentRevelation.practicalApplication}</p>
+                </div>
+              )}
+              {currentRevelation.bibleDeepDive && (
+                <p className="text-xs text-muted-foreground text-center italic">📖 Aprofundamento: {currentRevelation.bibleDeepDive}</p>
+              )}
+              <button
+                onClick={() => { setCurrentRevelation(null); handleFinalDismiss(); }}
+                className="w-full py-4 rounded-xl bg-green-600 text-white font-display font-bold text-sm"
+              >
+                ✨ Continuar a Jornada Iluminado
+              </button>
+            </div>
+          )}
         </div>
       </div>
+      )}
 
-      {/* Boss VFX animations */}
+      {/* Animations */}
       <style>{`
         @keyframes bossScreenShake {
           0%, 100% { transform: translate(0, 0); }
@@ -954,6 +1023,18 @@ export default function RPGEventPopup({
           0% { transform: translateY(0) scaleY(1); opacity: 0.6; }
           50% { transform: translateY(-30px) scaleY(1.3); opacity: 1; }
           100% { transform: translateY(-60px) scaleY(0.5); opacity: 0; }
+        }
+        @keyframes shake {
+          0% { transform: translateX(-3px) rotate(-2deg); }
+          100% { transform: translateX(3px) rotate(2deg); }
+        }
+        @keyframes scaleReveal {
+          0% { transform: scale(0.3) rotate(-3deg); opacity: 0; }
+          100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        @keyframes goldenPulse {
+          0%, 100% { box-shadow: 0 0 20px hsl(45 60% 30% / 0.4); }
+          50% { box-shadow: 0 0 40px hsl(45 70% 40% / 0.6); }
         }
       `}</style>
     </div>
