@@ -252,7 +252,7 @@ const JourneysPage = () => {
           const complete = isPhaseComplete(phase.id, 'part1');
           const current = isCurrentPhase(phase.id);
           const expanded = expandedPhase === phase.id;
-          const visitedCount = phase.chapters.filter(c => progress.visitedChapters.includes(c.id)).length;
+          const visitedCount = isOwner ? phase.chapters.length : phase.chapters.filter(c => progress.visitedChapters.includes(c.id)).length;
 
           return (
             <div key={phase.id} className="relative">
