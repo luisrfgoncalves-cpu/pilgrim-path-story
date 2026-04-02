@@ -2486,10 +2486,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Recordações à Beira do Rio",
     location: "Margem do Rio",
     characters: ["cristao", "esperanca"],
+    sceneEvent: { type: 'suspense', delay: 800, duration: 3000, message: 'Memórias da jornada surgem como ondas...' },
     narrative: [
-      "Antes de entrar nas águas, Esperança e você sentam-se na margem. O País de Beulá perfuma o ar atrás de vocês. O rio corre à frente, escuro e profundo.",
-      "\"Lembra-se de Fiel?\", pergunta Esperança. \"Ele não precisou atravessar o rio. A carruagem celestial o levou direto. Mas nós... nós temos que passar por aqui.\"",
-      "Vocês relembram toda a jornada: o fardo, o pântano, o vale, a feira, o castelo. Cada memória é uma pedra no alicerce da fé que os sustentará nas águas."
+      "{{heart}}Antes de entrar nas águas, Esperança e você sentam-se na margem.{{/heart}} {{fade}}O País de Beulá perfuma o ar atrás de vocês. O rio corre à frente, escuro e profundo.{{/fade}}",
+      "{{dialog}}\"Lembra-se de Fiel?\"{{/dialog}}, pergunta Esperança. {{heart}}\"Ele não precisou atravessar o rio. A carruagem celestial o levou direto. Mas nós... nós temos que passar por aqui.\"{{/heart}}",
+      "{{emphasis}}Vocês relembram toda a jornada: o fardo, o pântano, o vale, a feira, o castelo.{{/emphasis}} {{divine}}Cada memória é uma pedra no alicerce da fé que os sustentará nas águas.{{/divine}}"
     ],
     flagNarrative: [
       { flag: "permaneceu_diferente", text: "\"Você defendeu Fiel na feira\", diz Esperança. \"Essa coragem veio de algum lugar. Ela te carregará pelo rio também.\"" },
