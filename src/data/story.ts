@@ -1130,9 +1130,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
     narrative: [
-      "Na porta, o Intérprete coloca as mãos nos seus ombros.",
-      "\"O Consolador esteja sempre contigo, bom Cristão, para te guiar no caminho que leva à Cidade Celestial.\"",
-      "Ele aperta sua mão. Seus olhos brilham — não de tristeza, mas de esperança firme."
+      "{{heart}}Na porta, o Intérprete coloca as mãos nos seus ombros.{{/heart}}",
+      "{{divine}}\"O Consolador esteja sempre contigo, bom Cristão, para te guiar no caminho que leva à Cidade Celestial.\"{{/divine}}",
+      "{{fade}}Ele aperta sua mão. Seus olhos brilham — não de tristeza, mas de esperança firme.{{/fade}}"
     ],
     flagNarrative: [
       { flag: "escolheu_caminho_estreito", text: "\"Você já escolheu o caminho difícil antes\", ele diz. \"Essa coragem será testada. Não a abandone.\"" },
