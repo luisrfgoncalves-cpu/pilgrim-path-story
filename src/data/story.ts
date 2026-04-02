@@ -593,6 +593,235 @@ export const storyChapters: Record<string, StoryChapter> = {
   },
 
   // ═══════════════════════════════════════════
+  // FASE 1 — CENAS EXPANDIDAS (fidelidade a Bunyan)
+  // ═══════════════════════════════════════════
+
+  "cena1b": {
+    id: "cena1b",
+    title: "A Angústia Secreta",
+    location: "Cidade da Destruição",
+    characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 1, duration: 3000 },
+    narrative: [
+      "Você corre pelas ruas gritando, mas ninguém entende. Os vizinhos fecham as janelas. As crianças riem do homem que chora em público.",
+      "Em casa, sua esposa te segura pelos ombros: \"O que está acontecendo com você? Está assustando as crianças!\" Seus filhos te olham da porta, sem entender por que o pai chora.",
+      "Você tenta explicar — o livro, o julgamento, a cidade condenada — mas as palavras saem confusas. Ela acha que você ficou doente. Coloca a mão na sua testa, procurando febre.",
+      "\"Durma\", ela diz. \"Amanhã você vai estar melhor.\" Mas você sabe que amanhã o fardo estará ainda mais pesado."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 5, highText: "Mesmo rejeitado, uma certeza arde no seu peito: o que você leu é verdade. Se ninguém acredita, você irá sozinho.", lowThreshold: 3, lowText: "Talvez sua esposa tenha razão. Talvez seja febre. Talvez o livro seja só... um livro." }
+    ],
+    choices: [
+      {
+        text: "Levantar antes do amanhecer e partir em segredo",
+        nextChapterId: "cena3",
+        effects: { coragem: 2, fe: 1 },
+        flag: "partiu_em_segredo"
+      },
+      {
+        text: "Tentar mais uma vez convencer sua família",
+        nextChapterId: "cena2",
+        effects: { perseveranca: 1 }
+      },
+      {
+        text: "Obedecer e tentar dormir — talvez realmente passe",
+        nextChapterId: "cena4",
+        effects: { fe: -1, coragem: -1 }
+      }
+    ]
+  },
+
+  "cena5b": {
+    id: "cena5b",
+    title: "O Peso da Partida",
+    location: "Estrada para a Porta Estreita",
+    characters: ["cristao", "evangelista"],
+    narrative: [
+      "Você segura o pergaminho de Evangelista e olha para trás, uma última vez. A Cidade da Destruição brilha no horizonte — seus telhados familiares, a fumaça das chaminés, as vozes que você conhece desde criança.",
+      "Cada passo para frente é um passo para longe de tudo que você amava. O fardo range nas suas costas, lembrando que ficar não é opção.",
+      "Na beira da estrada, três homens dormem profundamente: Presunção, Preguiça e Simples. Grilhões prendem seus pés, mas eles parecem não perceber — ou não se importar.",
+      "\"Acordem!\", você grita. \"O perigo é real!\" Presunção murmura sem abrir os olhos: \"Cada um cuide de si.\" Preguiça vira de lado: \"Mais um cochilo...\" Simples boceja: \"Não vejo perigo nenhum.\""
+    ],
+    flagNarrative: [
+      { flag: "partiu_em_segredo", text: "Você saiu de casa antes do sol nascer, sem acordar ninguém. O silêncio da madrugada pesou mais que o fardo. Será que um dia eles entenderão por que você partiu?" }
+    ],
+    choices: [
+      {
+        text: "Seguir em frente — você não pode salvar quem não quer ser salvo",
+        nextChapterId: "cena7",
+        effects: { discernimento: 1, perseveranca: 1 },
+        flag: "alertou_dorminhocoes"
+      },
+      {
+        text: "Insistir e tentar acordar os três à força",
+        nextChapterId: "cena7",
+        effects: { coragem: 1, fe: 1 },
+        consequence: "Você os sacode, mas eles resmungam e voltam a dormir. Alguns caminhos só podem ser escolhidos por quem os percorre."
+      }
+    ]
+  },
+
+  "cena7b": {
+    id: "cena7b",
+    title: "Boa-Vontade e as Flechas",
+    location: "Porta Estreita",
+    characters: ["cristao", "boa_vontade"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Flechas cortam o ar ao seu redor!' },
+    interactionType: 'timed',
+    timeLimit: 8,
+    timeoutChoiceIndex: 0,
+    narrative: [
+      "A subida é brutal. Os espinhos rasgam suas roupas e o fardo puxa você para trás como se tivesse vontade própria. Várias vezes, seus joelhos batem nas pedras.",
+      "Quando finalmente a porta aparece — pequena, quase insignificante — você corre até ela e bate com os punhos: \"Abram! Pelo amor de Deus, abram!\"",
+      "Nesse instante, flechas cortam o ar vindo do alto da fortaleza de Belzebu, próxima à porta! Elas assoviam perto da sua cabeça. O inimigo não quer que você entre!",
+      "A porta se abre de repente. Um homem forte chamado Boa-Vontade agarra seu braço e te puxa para dentro com um puxão violento. Uma flecha crava-se na madeira da porta no exato lugar onde sua cabeça estava.",
+      "\"Eu abro para quem bate\", diz Boa-Vontade, fechando a porta atrás de você. \"Ninguém que vem até aqui é rejeitado, por mais indigno que se sinta.\""
+    ],
+    choices: [
+      {
+        text: "\"Obrigado! Mas por que o inimigo atira flechas tão perto da porta?\"",
+        nextChapterId: "cena9",
+        effects: { discernimento: 1, fe: 1 },
+        flag: "entrou_pela_porta_estreita"
+      },
+      {
+        text: "Cair de joelhos, trêmulo, agradecendo por estar vivo",
+        nextChapterId: "cena9",
+        effects: { fe: 2 },
+        flag: "entrou_pela_porta_estreita"
+      }
+    ]
+  },
+
+  "cena9b": {
+    id: "cena9b",
+    title: "A Instrução de Boa-Vontade",
+    location: "Além da Porta Estreita",
+    characters: ["cristao", "boa_vontade"],
+    narrative: [
+      "Do lado de dentro da porta, o mundo parece diferente. A luz é mais clara. O ar é mais limpo. Mas o fardo nas suas costas ainda está lá.",
+      "Boa-Vontade caminha ao seu lado e aponta para um caminho estreito e reto: \"Vê aquela estrada? Ela foi aberta pelos patriarcas, pelos profetas, por Cristo e seus apóstolos. É reta como uma régua. Esse é o caminho que você deve seguir.\"",
+      "\"Mas o fardo...\", você murmura. Boa-Vontade olha para suas costas com compaixão: \"Carregue-o por mais um pouco. Quando chegar ao lugar da libertação, ele cairá sozinho. Ninguém pode tirá-lo antes da hora.\"",
+      "Ele aponta para o horizonte: \"Primeiro, a Casa do Intérprete. Bata à porta e peça para ver as coisas excelentes. Elas te prepararão para o que vem pela frente.\""
+    ],
+    toneNarrative: [
+      { attr: "perseveranca", highThreshold: 6, highText: "As palavras de Boa-Vontade te enchem de determinação. Se o fardo vai cair, vale a pena cada passo até lá.", lowThreshold: 3, lowText: "\"Mais um pouco\" — as palavras doem. Quanto é \"um pouco\"? O fardo parece eterno." }
+    ],
+    choices: [
+      {
+        text: "Seguir pela estrada reta com esperança renovada",
+        nextChapterId: "cena11",
+        effects: { fe: 1, perseveranca: 1 },
+        flag: "recebeu_instrucao_boa_vontade"
+      },
+      {
+        text: "Perguntar se não existe um atalho mais rápido",
+        nextChapterId: "cena11",
+        effects: { discernimento: -1 },
+        consequence: "Boa-Vontade sorri triste: \"Não há atalhos no caminho da vida. Todos os que tentaram atalhos caíram em armadilhas.\""
+      }
+    ]
+  },
+
+  "cena11b": {
+    id: "cena11b",
+    title: "As Vozes na Lama",
+    location: "Profundezas do Pântano",
+    characters: ["cristao"],
+    sceneEvent: { type: 'sinking', duration: 10000, message: 'O desânimo te puxa para baixo...' },
+    interactionType: 'hold',
+    narrative: [
+      "No fundo do pântano, vozes sussurram da lama. Não são vozes humanas — são seus próprios pensamentos, transformados em eco pelo desânimo:",
+      "\"Você abandonou sua família por nada...\" \"A Cidade Celestial não existe...\" \"Volte enquanto pode...\" \"Ninguém vai sentir sua falta no caminho...\"",
+      "Cada sussurro pesa como mais uma pedra no fardo. A lama borbulha ao redor dos seus quadris. Seus braços mal conseguem se mover.",
+      "Mas entre os sussurros, outra voz — quase inaudível — repete uma promessa: \"Os que semeiam com lágrimas, com júbilo ceifarão.\" É fraca, mas é diferente das outras. Ela não vem da lama. Vem de cima."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 5, highText: "Você se agarra à voz que vem de cima como um náufrago se agarra a uma tábua. Ela é real. As outras vozes são a lama falando.", lowThreshold: 3, lowText: "Todas as vozes se misturam — as da lama e a de cima. Você não sabe mais qual é verdadeira. O desespero é quase total." }
+    ],
+    choices: [
+      {
+        text: "Focar na voz de cima e ignorar os sussurros da lama",
+        nextChapterId: "cena12",
+        effects: { fe: 2, perseveranca: 1 },
+        flag: "resistiu_vozes_pantano"
+      },
+      {
+        text: "Gritar por socorro com todas as forças que restam",
+        nextChapterId: "cena13",
+        effects: { coragem: 1, fe: 1 }
+      },
+      {
+        text: "Parar de lutar — talvez se afundar seja menos doloroso",
+        nextChapterId: "cena13",
+        effects: { fe: -2, perseveranca: -1 },
+        flag: "cedeu_desanimo"
+      }
+    ]
+  },
+
+  "cena14b": {
+    id: "cena14b",
+    title: "A Razão do Pântano",
+    location: "Margem do Pântano",
+    characters: ["cristao", "auxilio"],
+    narrative: [
+      "No solo firme, coberto de lama da cabeça aos pés, você se senta ao lado de Auxílio. Ele não parece com pressa de ir embora.",
+      "\"Você quer saber por que o pântano existe?\", ele pergunta, como se lesse seus pensamentos. \"É assim: quando um pecador desperta para sua condição, medos, dúvidas e terrores surgem na sua alma. Eles se acumulam e escorrem para este lugar.\"",
+      "Ele aponta para a lama: \"Por isso o pântano nunca seca. O Rei mandou colocar degraus de pedra firme sob a lama — são Suas promessas de perdão. Mas no desespero, as pessoas não olham para baixo. Só olham para a lama.\"",
+      "Você olha para suas mãos sujas. Cada manchade lama é uma dúvida que quase te engoliu. Mas agora você está do outro lado.",
+      "\"O caminho continua\", diz Auxílio, apontando para uma colina à frente. \"E o melhor está por vir. Naquela colina, seu fardo será tratado de um jeito que você não espera.\""
+    ],
+    choices: [
+      {
+        text: "\"Obrigado, Auxílio. Nunca esquecerei sua mão estendida.\"",
+        nextChapterId: "cena15",
+        effects: { fe: 1, discernimento: 1, perseveranca: 1 },
+        flag: "grato_a_auxilio"
+      },
+      {
+        text: "Seguir em frente rapidamente — o pântano ainda assusta",
+        nextChapterId: "cena15",
+        effects: { perseveranca: 1 }
+      }
+    ]
+  },
+
+  "cena15b": {
+    id: "cena15b",
+    title: "Os Três Seres Resplandecentes",
+    location: "Colina da Cruz",
+    characters: ["cristao", "tres_resplandecentes"],
+    narrative: [
+      "Você ainda está de joelhos quando três figuras luminosas aparecem diante de você. A luz que emana deles é tão intensa que você cobre os olhos com as mãos.",
+      "O primeiro se adianta. Sua voz é como trovão gentil: \"Paz a você. Seus pecados são perdoados.\" As palavras atravessam o seu peito como fogo que não queima — purifica.",
+      "O segundo se ajoelha ao seu lado e, com mãos que parecem feitas de luz, remove seus trapos sujos e imundos — as velhas roupas da Cidade da Destruição. No lugar, veste você com roupas novas, brancas e limpas. Pela primeira vez, você não sente vergonha do que veste.",
+      "O terceiro coloca um selo na sua testa — uma marca invisível mas real — e estende um pergaminho selado com um selo dourado. \"Este é seu passaporte\", ele diz. \"Guarde-o com sua vida. Você precisará dele nos portões da Cidade Celestial. Não o perca.\"",
+      "Os três desaparecem como vieram — em luz. Você fica ali, de pé, com roupas novas, sem fardo, com um pergaminho selado no peito. O caminho à frente parece possível agora."
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "Neste momento, tudo faz sentido. O fardo, o pântano, as flechas, a porta — tudo levava até aqui. Até a Cruz.", lowThreshold: 3, lowText: "Você quase não acredita no que aconteceu. Será real? Será que o fardo realmente se foi? Você toca as costas — nada ali. Pela primeira vez em muito tempo, nada ali." }
+    ],
+    choices: [
+      {
+        text: "Seguir a jornada com alegria — em direção à Casa do Intérprete",
+        nextChapterId: "fase2-cena1",
+        effects: { fe: 2, perseveranca: 1, coragem: 1, discernimento: 1 },
+        flag: "recebeu_vestes_novas",
+        item: "pergaminho_selado"
+      },
+      {
+        text: "Dar três saltos de alegria e correr pelo caminho cantando",
+        nextChapterId: "fase2-cena1",
+        effects: { fe: 2, coragem: 2 },
+        flag: "recebeu_vestes_novas",
+        item: "pergaminho_selado",
+        consequence: "Cristão deu três saltos e seguiu cantando: \"Bendito seja aquele lugar! Bendita a Cruz e o Sepulcro! Bendita a graça que me libertou!\""
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════
   // FASE 2: A CASA DO INTÉRPRETE
   // Baseado nas visões do Intérprete em Bunyan
   // ═══════════════════════════════════════════
