@@ -786,7 +786,7 @@ export default function RPGEventPopup({
               {/* Hints */}
               <div className="space-y-2">
                 {riddle.hints.slice(0, hintIndex + 1).map((hint, i) => (
-                  <div key={i} className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300">
+                  <div key={i} className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-sm text-amber-300">
                     💡 Dica {i + 1}: {hint}
                   </div>
                 ))}
