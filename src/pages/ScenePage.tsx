@@ -604,7 +604,7 @@ const ScenePage = () => {
             <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background/80 via-transparent to-transparent" />
             <div className="absolute bottom-2 left-3 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-md border border-primary/20">
               <MapPin className="w-3 h-3 text-primary/80" />
-              <span className="text-[10px] uppercase tracking-widest text-primary/90 font-display font-bold" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>{chapter.location}</span>
+              <span className="text-xs uppercase tracking-widest text-amber-300 font-display font-bold" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}>{chapter.location}</span>
             </div>
           </div>
         )}
