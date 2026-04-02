@@ -767,22 +767,33 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     failurePenalty: { fe: -1 },
   },
 
-  // Cena 3 — Colina da Dificuldade: Stealth (subida cuidadosa)
+  // Cena 3 — Colina da Dificuldade: Memorizar lições que sustentam
   'p2-fase2-cena3': {
-    type: 'stealth',
+    type: 'memory',
     difficulty: 'normal',
-    intro: 'A Colina da Dificuldade exige cada gota de energia. Suba com cautela — os filhos dependem de você!',
+    intro: 'A Colina da Dificuldade exige resistência espiritual. Memorize os símbolos das lições que seus filhos precisarão para sobreviver!',
     successBonus: { perseveranca: 2 },
     failurePenalty: { perseveranca: -1 },
+    memorySymbols: ['⛰️', '🙏', '💪', '📖', '🔥', '✝️', '🛡️', '⭐'],
   },
 
-  // Cena 4 — Os Leões: QTE (passar pelos leões)
+  // Cena 4 — Os Leões: Discernir coragem verdadeira de imprudência
   'p2-fase2-cena4': {
-    type: 'qte',
+    type: 'swipe',
     difficulty: 'normal',
-    intro: 'Os leões rugem! Grande-Coração abre caminho — corra pelo centro antes que avancem!',
+    intro: 'Os leões rugem, mas estão acorrentados! Discerna entre a coragem que vem da fé e a imprudência que vem do medo.',
     successBonus: { coragem: 2 },
     failurePenalty: { coragem: -1 },
+    swipeItems: [
+      { text: '"Fugir é sábio"', emoji: '🏃', good: false },
+      { text: '"Os leões estão presos"', emoji: '🦁', good: true },
+      { text: '"Deus não protege aqui"', emoji: '😰', good: false },
+      { text: '"O caminho do centro é seguro"', emoji: '🛤️', good: true },
+      { text: '"Qualquer caminho serve"', emoji: '🤷', good: false },
+      { text: '"Confie no Vigilante"', emoji: '👁️', good: true },
+      { text: '"Volte pela Colina"', emoji: '↩️', good: false },
+      { text: '"A fé vence o medo"', emoji: '🛡️', good: true },
+    ],
   },
 
   // Cena 5 — Palácio Belo: Caça ao Tesouro
