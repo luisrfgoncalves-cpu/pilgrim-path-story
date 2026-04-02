@@ -1244,11 +1244,12 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Os Leões Acorrentados",
     location: "Portão do Palácio Belo",
     characters: ["cristao", "discricao"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Rugidos ecoam entre os muros!' },
     narrative: [
-      "No topo da colina, o caminho estreita entre muros altos. E ali, bloqueando a passagem, dois leões enormes rugem com ferocidade.",
-      "Dois homens correm na direção oposta — Timidez e Desconfiança. \"Volte!\", gritam. \"Os leões nos devorarão!\"",
-      "Mas um porteiro chamado Vigilante grita do outro lado: \"Não tema! Os leões estão acorrentados! Mantenha-se no meio do caminho e eles não poderão tocá-lo!\"",
-      "Bunyan usa os leões para ensinar que os perigos no caminho cristão são muitas vezes mais aparentes do que reais — desde que o peregrino permaneça no centro do caminho estreito."
+      "No topo da colina, o caminho estreita entre muros altos. {{tremor}}E ali, bloqueando a passagem, dois leões enormes rugem com ferocidade.{{/tremor}}",
+      "Dois homens correm na direção oposta — Timidez e Desconfiança. {{shout}}\"Volte!\"{{/shout}}, gritam. {{villain}}\"Os leões nos devorarão!\"{{/villain}}",
+      "Mas um porteiro chamado {{emphasis}}Vigilante{{/emphasis}} grita do outro lado: {{divine}}\"Não tema! Os leões estão acorrentados! Mantenha-se no meio do caminho e eles não poderão tocá-lo!\"{{/divine}}",
+      "{{whisper}}Bunyan usa os leões para ensinar que os perigos no caminho cristão são muitas vezes mais aparentes do que reais — desde que o peregrino permaneça no centro do caminho estreito.{{/whisper}}"
     ],
     flagNarrative: [
       { flag: "dormiu_caramanchao", text: "Você acorda em pânico e descobre que o pergaminho caiu. Corre colina abaixo, encontra-o no caramanchão, e sobe tudo de novo — exausto, mas aliviado. A lição: não durma no caminho." }
