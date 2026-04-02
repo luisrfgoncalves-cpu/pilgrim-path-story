@@ -116,22 +116,24 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "misericordia"],
     sceneEvent: { type: 'sinking', duration: 4000, message: 'A lama puxa para baixo...', intensity: 0.6 },
     narrative: [
-      "O mesmo pântano que quase engoliu Cristão ainda está ali. As pedras de promessa que o Rei ordenou colocar estão parcialmente submersas — negligência dos zeladores.",
+      "O mesmo pântano que quase engoliu Cristão ainda está ali. As pedras de promessa que o Rei ordenou colocar estão parcialmente submersas — {{whisper}}negligência dos zeladores.{{/whisper}}",
       "Os filhos de Cristã pisam nas pedras com cuidado. Misericórdia escorrega e quase cai na lama escura.",
-      "\"Mãe, o pai passou por aqui?\", pergunta Mateus. \"Sim\", responde Cristã. \"E quase não saiu.\""
+      "{{whisper}}\"Mãe, o pai passou por aqui?\"{{/whisper}}, pergunta Mateus. \"Sim\", responde Cristã. {{shout}}\"E quase não saiu.\"{{/shout}}"
     ],
     choices: [
       {
         text: "Ajudar Misericórdia e atravessar juntas, passo a passo",
         nextChapterId: "p2-cena4",
         effects: { perseveranca: 1, fe: 1 },
-        flag: "ajudou_misericordia_pantano"
+        flag: "ajudou_misericordia_pantano",
+        consequence: "A mão estendida no momento de fraqueza é a imagem do corpo de Cristo em ação. Ninguém caminha sozinho. — Gálatas 6:2: \"Levai as cargas uns dos outros, e assim cumprireis a lei de Cristo.\""
       },
       {
         text: "Correr pelas pedras com os filhos — cada um por si",
         nextChapterId: "p2-cena4",
         effects: { coragem: 1 },
-        flag: "correu_pantano"
+        flag: "correu_pantano",
+        consequence: "A pressa pode salvar os pés, mas deixa o coração para trás. Na jornada de fé, a velocidade nunca é mais importante que a comunhão. — Provérbios 19:2: \"Não é bom proceder sem refletir, e peca quem é precipitado.\""
       }
     ]
   },
