@@ -26,6 +26,16 @@ interface ImmersiveBoardProps {
   onTokenArrived?: () => void;
 }
 
+/** Estimate scroll position for a tile that may be virtualized (not in DOM) */
+function scrollToEstimatedPosition(board: HTMLElement | null, tileGlobalIdx: number) {
+  if (!board) return;
+  const totalTiles = IMMERSIVE_BOARD_SIZE;
+  const totalHeight = board.scrollHeight || document.documentElement.scrollHeight;
+  const ratio = tileGlobalIdx / totalTiles;
+  const targetY = ratio * totalHeight - window.innerHeight / 2;
+  window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+}
+
 export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTileClick, onTokenArrived }: ImmersiveBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
   const trailPositions = useMemo(() => getTrailPositions(), []);
@@ -96,6 +106,16 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
       if (stepIdx >= maxSteps) {
         setAnimatingPlayerId([]);
         setAnimatedPosition({});
+        // Final scroll to destination tile
+        requestAnimationFrame(() => {
+          const finalEl = boardRef.current?.querySelector(`[data-tile-global="${focusTrack.newPos}"]`);
+          if (finalEl) {
+            finalEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            // Tile may be virtualized — estimate scroll position
+            scrollToEstimatedPosition(boardRef.current, focusTrack.newPos);
+          }
+        });
         onTokenArrivedRef.current?.();
         return;
       }
@@ -113,6 +133,9 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
       const tileEl = boardRef.current?.querySelector(`[data-tile-global="${focusPos}"]`);
       if (tileEl) {
         tileEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        // Tile virtualized — use estimated scroll
+        scrollToEstimatedPosition(boardRef.current, focusPos);
       }
 
       stepIdx++;
