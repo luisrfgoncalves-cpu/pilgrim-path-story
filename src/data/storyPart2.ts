@@ -229,6 +229,16 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Ele ordena que preparem um banho cerimonial. Cristã, os filhos e Misericórdia são lavados e vestidos com {{divine}}roupas novas e brilhantes{{/divine}}. O selo do Rei é colocado em suas testas.",
       "{{divine}}\"Agora estais marcadas\"{{/divine}}, diz o Intérprete. \"Todos verão a quem pertenceis. E quando a estrada escurecer, lembrai-vos deste momento.\""
     ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "Cristã recebe as vestes como quem recebe uma coroa. A certeza brilha em seus olhos mais que o tecido.", lowThreshold: 3, lowText: "As vestes parecem pesadas demais para quem ainda carrega dúvidas. Mas o Intérprete sorri: 'A roupa veste a fé, não o contrário.'" }
+    ],
+    flagNarrative: [
+      { flag: "coragem_apos_ataque", text: "O Intérprete nota as marcas do ataque: \"Os Mal-Encarados deixaram suas marcas. Mas as vestes do Rei cobrem toda cicatriz.\"" },
+      { flag: "aceitou_misericordia", text: "\"Misericórdia também recebe vestes\", diz o Intérprete com um sorriso. \"O Rei já sabia que ela viria.\"" }
+    ],
+    replayNarrative: [
+      "O Intérprete olha para Cristã com olhos que parecem ver além: \"Você já esteve aqui antes, não é? O selo parece reconhecê-la.\""
+    ],
     choices: [
       {
         text: "Aceitar as vestes com gratidão e reverência",
