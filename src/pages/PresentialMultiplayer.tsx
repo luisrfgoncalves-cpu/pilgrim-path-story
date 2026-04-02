@@ -1088,6 +1088,29 @@ const PresentialMultiplayer = () => {
 
     setRpgEvent(null);
 
+    // Streak feedback — notify when player hits 3+ correct in a row
+    if (result.success) {
+      const currentPlayer = players[playerIdx];
+      const newStreak = (currentPlayer?.stats.currentStreak || 0) + 1;
+      if (newStreak === 3) {
+        setStreakAnnounce(`🔥 ${currentPlayer.name} — Sequência de Fé! 3 acertos seguidos! O Mestre está impressionado!`);
+        playRealSfx('crowd_cheer', 0.5);
+        setTimeout(() => setStreakAnnounce(null), 5000);
+      } else if (newStreak === 5) {
+        setStreakAnnounce(`⚡ ${currentPlayer.name} — INABALÁVEL! 5 acertos! "Mais que vencedores!" (Rm 8:37)`);
+        playRealSfx('victory', 0.5);
+        setTimeout(() => setStreakAnnounce(null), 6000);
+      } else if (newStreak === 7) {
+        setStreakAnnounce(`👑 ${currentPlayer.name} — LENDÁRIO! 7 acertos seguidos! O grupo celebra este momento épico!`);
+        playRealSfx('fireworks', 0.6);
+        setTimeout(() => setStreakAnnounce(null), 7000);
+      } else if (newStreak >= 10) {
+        setStreakAnnounce(`🏆 ${currentPlayer.name} — IMBATÍVEL! ${newStreak} acertos! "Tudo posso naquele que me fortalece!" (Fp 4:13)`);
+        playRealSfx('fireworks', 0.7);
+        setTimeout(() => setStreakAnnounce(null), 8000);
+      }
+    }
+
     // Show dramatic result feedback overlay
     setResultFeedback({
       visible: true,
