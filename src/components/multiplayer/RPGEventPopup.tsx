@@ -400,7 +400,11 @@ export default function RPGEventPopup({
     // For riddles: reveal the answer instead of auto-failing
     if (riddle) {
       setRiddleAnswerRevealed(true);
-      
+      return;
+    }
+    // For questions: reveal the correct answer instead of auto-failing
+    if (question) {
+      setSelectedAnswer(question.correctIndex);
       return;
     }
     playGameSfx(rpgSfx('trap'));
@@ -410,7 +414,7 @@ export default function RPGEventPopup({
       message: '⏰ Tempo esgotado! A resposta não veio a tempo...',
       emoji: '⏰',
     });
-  }, [riddle]);
+  }, [riddle, question]);
 
   const startTimer = useCallback((seconds: number) => {
     setTotalTime(seconds);
