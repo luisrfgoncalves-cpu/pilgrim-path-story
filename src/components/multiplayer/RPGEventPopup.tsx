@@ -199,8 +199,6 @@ export default function RPGEventPopup({
 
     // Narrate the suspense text
     const suspense = getSuspenseText();
-    narrate(suspense.text, { style: 'whisper', force: true });
-
     const timer = window.setTimeout(() => {
       setPhase('context');
       // Play the main contextual SFX when transitioning
@@ -329,7 +327,7 @@ export default function RPGEventPopup({
     if (rawContext) playNarrativeSfx(rawContext);
 
     const timer = window.setTimeout(() => {
-      narrate(text, { style: getNarrationStyle(tileEventType), force: true });
+      narrate(text, { style: 'dramatic', force: true });
     }, 400);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -348,7 +346,7 @@ export default function RPGEventPopup({
 
     const timer = window.setTimeout(() => {
       narrate(text, {
-        style: boss ? 'urgent' : getNarrationStyle(tileEventType),
+        style: boss ? 'urgent' : 'dramatic',
         force: true,
       });
     }, 300);
@@ -376,11 +374,7 @@ export default function RPGEventPopup({
     }
 
     const timer = window.setTimeout(() => {
-      narrate(resultData.message, {
-        style: resultData.success ? 'triumphant' : 'whisper',
-        force: true,
-      });
-    }, 200);
+      }, 200);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, showResult, resultData]);
