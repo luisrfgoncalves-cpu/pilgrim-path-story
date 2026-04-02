@@ -405,14 +405,16 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Tomar o caminho largo — é mais seguro",
         nextChapterId: "cena8",
         effects: { discernimento: -1, fe: -1 },
-        flag: "escolheu_caminho_facil"
+        flag: "escolheu_caminho_facil",
+        consequence: "Jesus disse em Mateus 7:13-14: 'Larga é a porta, e espaçoso o caminho que conduz à perdição, e muitos são os que entram por ela. Estreita é a porta, e apertado o caminho que leva à vida, e poucos há que a encontrem.' O caminho fácil seduz, mas seu destino é a destruição."
       },
       {
         text: "Subir a colina até a Porta Estreita",
         nextChapterId: "cena7b",
         effects: { fe: 2, coragem: 1 },
         flag: "escolheu_caminho_estreito",
-        item: "pergaminho_verdade"
+        item: "pergaminho_verdade",
+        consequence: "Escolher o caminho difícil quando o fácil está disponível — isso é discernimento verdadeiro. Os espinhos representam as tribulações que acompanham quem segue a Cristo (João 16:33). Mas no topo, a porta está aberta para quem persevera."
       }
     ]
   },
