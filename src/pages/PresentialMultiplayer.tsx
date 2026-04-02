@@ -524,8 +524,12 @@ const PresentialMultiplayer = () => {
     const prevPhase = Math.floor(prevPos / TILES_PER_PHASE);
     const newPhase = Math.floor(newPos / TILES_PER_PHASE);
 
-    // Move token visually
-    setPlayers(prev => prev.map((p, i) => i === turnIdx ? { ...p, position: newPos, lastDice: diceVal } : p));
+    // Move token(s) visually — cooperative = ALL move together
+    if (rpgGameMode === 'cooperative') {
+      setPlayers(prev => prev.map(p => ({ ...p, position: newPos, lastDice: diceVal })));
+    } else {
+      setPlayers(prev => prev.map((p, i) => i === turnIdx ? { ...p, position: newPos, lastDice: diceVal } : p));
+    }
     playGameSfx('diceRoll');
 
     // Build the post-animation action
