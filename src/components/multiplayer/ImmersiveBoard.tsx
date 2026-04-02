@@ -300,13 +300,13 @@ const PhaseSection = memo(function PhaseSection({
           const isCurrentPlayerHere = playersHere.some(p => p.id === currentTurnId);
           const isAnimatingHere = playersHere.some(p => animatingPlayerId.includes(p.id));
 
+          const isSpecial = tileType !== 'normal';
+          const isBoss = tileType === 'giant' || tileType === 'challenge';
           const tileCharKey = config.characterKey;
           const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
           // Only show images on special tiles to reduce repetition
           const tileEnvImg = isSpecial ? (config.tileImage || null) : null;
           const tileImg = tileCharImg || tileEnvImg;
-          const isSpecial = tileType !== 'normal';
-          const isBoss = tileType === 'giant' || tileType === 'challenge';
           const tileSize = isBoss ? 88 : isSpecial ? 78 : 66;
 
           const labelOnRight = pos.x < 50;
