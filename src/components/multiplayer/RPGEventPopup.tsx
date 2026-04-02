@@ -96,7 +96,7 @@ export default function RPGEventPopup({
       return;
     }
 
-    setPhase('context');
+    setPhase('suspense_intro');
     setSelectedAnswer(null);
     setShowResult(false);
     setResultData(null);
@@ -106,6 +106,8 @@ export default function RPGEventPopup({
     setBossPhaseIdx(0);
     setBossWins(0);
     narratedKeyRef.current = '';
+    setCurrentRevelation(null);
+    setNarrativeStage(0);
 
     // Clear all content
     setQuestion(null); setRiddle(null); setDilemma(null);
