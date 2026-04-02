@@ -199,6 +199,85 @@ const allegoryMeanings: Record<string, { meaning: string; verse?: string; type: 
     verse: '2 Pedro 2:21 — "Melhor lhes fora não terem conhecido o caminho da justiça do que, conhecendo-o, desviarem-se do santo mandamento."',
     type: 'warning',
   },
+
+  // ── Protagonistas ──
+  cristao: {
+    meaning: 'O Peregrino — um homem comum esmagado pelo peso de seus pecados que parte em busca da Cidade Celestial. Representa todo pecador que ouve o chamado de Deus e decide abandonar tudo para segui-Lo.',
+    verse: 'Lucas 14:33 — "Qualquer de vós que não renunciar a tudo quanto tem, não pode ser meu discípulo."',
+    type: 'ally',
+  },
+
+  // ── Parte II — A Peregrina ──
+  crista: {
+    meaning: 'Esposa de Cristão, que se arrependeu por não tê-lo acompanhado. Representa o arrependimento tardio que ainda encontra a porta aberta — e a coragem de refazer o caminho com filhos e responsabilidades.',
+    verse: 'Joel 2:25 — "Restituir-vos-ei os anos que foram consumidos pelo gafanhoto."',
+    type: 'ally',
+  },
+  misericordia: {
+    meaning: 'Jovem vizinha que acompanha Cristã sem ter recebido carta do Rei. Representa a fé que nasce não de um chamado direto, mas do amor por alguém que crê — a compaixão como porta de entrada para a graça.',
+    verse: 'Rute 1:16 — "Aonde quer que fores, irei eu; e onde quer que pousares, ali pousarei eu."',
+    type: 'ally',
+  },
+  grande_coracao: {
+    meaning: 'Soldado designado pelo Intérprete para escoltar o grupo. Onde Cristão caminhou sozinho, Cristã recebe um protetor. Representa o cuidado providencial de Deus — matador de gigantes e defensor dos fracos.',
+    verse: 'Salmos 91:11 — "Porque aos seus anjos dará ordem a teu respeito, para te guardarem em todos os teus caminhos."',
+    type: 'divine',
+  },
+  velho_honesto: {
+    meaning: 'Da Cidade da Estupidez, viu a Luz e se juntou ao grupo. Prolixo e imperfeito, mas genuíno. Representa aqueles de origens improváveis que encontram a verdade apesar de tudo.',
+    verse: '1 Coríntios 1:27 — "Deus escolheu as coisas loucas deste mundo para confundir as sábias."',
+    type: 'ally',
+  },
+  gaio: {
+    meaning: 'Hospedeiro generoso que recebe peregrinos com pão e vinho entre os vales e a feira. Representa a hospitalidade cristã como ministério sagrado — abrir a casa é abrir o coração de Deus.',
+    verse: 'Hebreus 13:2 — "Não vos esqueçais da hospitalidade, porque por ela alguns, sem o saberem, hospedaram anjos."',
+    type: 'ally',
+  },
+  mente_fraca: {
+    meaning: 'Homem frágil resgatado das garras do Gigante Mata-Bons. Representa os crentes de constituição fraca que precisam da proteção do corpo de Cristo para sobreviver — fé genuína em vaso frágil.',
+    verse: 'Mateus 12:20 — "Não esmagará a cana quebrada, e não apagará a torcida que fumega."',
+    type: 'warning',
+  },
+  pronto_para_parar: {
+    meaning: 'Aleijado que caminha com muletas, a cada passo dizem que vai desistir — mas nunca para. Representa a perseverança que não depende de força física, mas de determinação espiritual inabalável.',
+    verse: '2 Coríntios 12:9 — "A minha graça te basta, porque o meu poder se aperfeiçoa na fraqueza."',
+    type: 'ally',
+  },
+  sr_desanimo: {
+    meaning: 'Prisioneiro resgatado do Castelo da Dúvida que continua lamentando até o fim. Mas na hora de cruzar o rio, suas últimas palavras surpreendem: "Adeus, noite. Bem-vindo, dia." O desânimo não cruza a eternidade.',
+    verse: 'Salmo 30:5 — "O choro pode durar uma noite, mas a alegria vem pela manhã."',
+    type: 'warning',
+  },
+  muito_medo: {
+    meaning: 'Filha do Sr. Desânimo, viveu em terror constante. Mas atravessa o rio cantando — ela que nunca cantou na vida. Representa a transformação final: o medo não tem a última palavra.',
+    verse: 'Apocalipse 21:4 — "E Deus limpará de seus olhos toda a lágrima; e não haverá mais morte, nem pranto."',
+    type: 'ally',
+  },
+  valente_pela_verdade: {
+    meaning: 'Guerreiro coberto de sangue após lutar contra três bandidos — Coração-Fraco, Desconfiança e Culpa. Empunha uma lâmina legítima de Jerusalém. Suas palavras de despedida são as mais famosas de Bunyan: "Minha espada, eu a deixo a quem me suceder."',
+    verse: '2 Timóteo 4:7 — "Combati o bom combate, acabei a carreira, guardei a fé."',
+    type: 'ally',
+  },
+  firme: {
+    meaning: 'Encontrado ajoelhado em oração na Terra Encantada, resistindo à sedução de Madame Bolha. Não lutou com espada, mas de joelhos. A oração silenciosa é a arma mais poderosa contra a tentação.',
+    verse: 'Tiago 4:7 — "Resisti ao diabo, e ele fugirá de vós."',
+    type: 'ally',
+  },
+  madame_bolha: {
+    meaning: 'Mulher elegante que oferece ouro, corpo e cama para desviar peregrinos. Representa as tentações materiais e carnais que se apresentam como liberdade mas são escravidão disfarçada.',
+    verse: 'Provérbios 7:21-23 — "Seduziu-o com a suavidade dos seus lábios. Vai após ela como o boi vai ao matadouro."',
+    type: 'villain',
+  },
+  gigante_maul: {
+    meaning: 'Um gigante feroz que bloqueia a saída do Vale da Sombra. Representa os inimigos espirituais que atacam os peregrinos nos momentos de transição — quando o pior parece ter passado.',
+    verse: '1 Pedro 5:8 — "Sede sóbrios; vigiai; porque o diabo, vosso adversário, anda em derredor, bramando como leão, buscando a quem possa tragar."',
+    type: 'villain',
+  },
+  gigante_mata_bons: {
+    meaning: 'O gigante que caça especificamente os fracos e vulneráveis. Representa as forças que atacam os crentes mais frágeis — aqueles que o corpo de Cristo tem a obrigação de proteger.',
+    verse: 'Ezequiel 34:16 — "A perdida buscarei, a desgarrada tornarei a trazer, a quebrada ligarei, e a enferma fortalecerei."',
+    type: 'villain',
+  },
 };
 
 interface AllegoryCardProps {
