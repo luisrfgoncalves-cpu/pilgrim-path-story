@@ -455,8 +455,8 @@ export const storyChapters: Record<string, StoryChapter> = {
         consequence: "Prudência Mundana representa a tentação de resolver o problema do pecado com moralidade humana em vez de graça divina. 'Legalidade' é a Lei — que condena mas não pode salvar. Gálatas 2:16 ensina que 'ninguém será justificado pelas obras da lei, mas pela fé em Jesus Cristo.'"
       },
       {
-        text: "Recusar e voltar à encruzilhada",
-        nextChapterId: "cena7",
+        text: "Recusar e seguir para a Porta Estreita",
+        nextChapterId: "cena9",
         effects: { discernimento: 1, fe: 1 },
         consequence: "Recusar o atalho de Prudência Mundana exige discernimento. Muitos 'conselhos sábios' do mundo são armadilhas espirituais disfarçadas. 'Há caminho que ao homem parece direito, mas o seu fim são os caminhos da morte.' (Provérbios 14:12)"
       }
@@ -484,9 +484,9 @@ export const storyChapters: Record<string, StoryChapter> = {
       },
       {
         text: "Olhar para trás, com saudade do que ficou",
-        nextChapterId: "cena8",
+        nextChapterId: "cena9b",
         effects: { coragem: -1 },
-        consequence: "Jesus advertiu em Lucas 9:62: 'Ninguém que, tendo posto a mão no arado, olha para trás, é apto para o Reino de Deus.' A saudade do passado é natural, mas pode se tornar uma corrente que prende o peregrino."
+        consequence: "Jesus advertiu em Lucas 9:62: 'Ninguém que, tendo posto a mão no arado, olha para trás, é apto para o Reino de Deus.' A saudade do passado é natural, mas a porta já se abriu — não há como voltar."
       }
     ]
   },
@@ -504,10 +504,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'A montanha treme e fogo arde no topo!' },
     choices: [
       {
-        text: "Obedecer a Evangelista e voltar ao caminho",
-        nextChapterId: "cena7",
+        text: "Obedecer a Evangelista e correr para a Porta Estreita",
+        nextChapterId: "cena11",
         effects: { fe: 1, discernimento: 1 },
-        consequence: "O Monte Sinai representa a Lei de Deus — que é santa, mas não pode salvar. A Lei mostra o pecado, mas não pode removê-lo. Por isso tremia e queimava: ela revela a ira de Deus contra o pecado, mas a solução está na Cruz, não na Moralidade. Romanos 3:20: 'Pela lei vem o pleno conhecimento do pecado.'"
+        flag: "corrigido_por_evangelista",
+        consequence: "O Monte Sinai representa a Lei de Deus — que é santa, mas não pode salvar. Evangelista te redireciona com urgência. Pela graça, você é levado diretamente ao caminho além da porta, sem precisar voltar atrás. Romanos 3:20: 'Pela lei vem o pleno conhecimento do pecado.'"
       }
     ]
   },
@@ -988,10 +989,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     ],
     choices: [
       {
-        text: "Voltar e entrar na casa",
-        nextChapterId: "fase2-cena2",
+        text: "Voltar e entrar na casa — ainda há tempo",
+        nextChapterId: "fase2-cena4",
         effects: { discernimento: 1, fe: 1 },
-        consequence: "Reconhecer o erro e voltar atrás é humildade — a virtude que abre portas que o orgulho tranca. A Casa ainda está de portas abertas."
+        flag: "voltou_casa_interprete",
+        consequence: "Reconhecer o erro e buscar instrução é humildade. O Intérprete te recebe com graça e te mostra o que precisava ver."
       },
       {
         text: "Seguir em frente sem instrução",
@@ -1608,7 +1610,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Levantar a cabeça e seguir — você ainda está vivo",
-        nextChapterId: "fase3-cena8",
+        nextChapterId: "fase3-cena10",
         effects: { fe: 1, coragem: 1 },
         consequence: "O pergaminho ainda está ali. O selo ainda brilha. A queda dos outros não determina o seu destino. Filipenses 3:14: 'Prossigo para o alvo.'",
         conditionalEffects: [
@@ -1935,7 +1937,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Abandonar a feira agora, antes que seja tarde",
-        nextChapterId: "fase4-cena8",
+        nextChapterId: "fase4-cena10",
         effects: { discernimento: 1, fe: 1 },
         consequence: "Reconhecer que está preso e decidir sair é arrependimento prático. 2 Crônicas 7:14: 'Se o meu povo se humilhar e orar, sararei a sua terra.'"
       },
@@ -2306,7 +2308,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Usar a Chave da Promessa antes que o gigante chegue",
-        nextChapterId: "fase5-cena6",
+        nextChapterId: "fase5-cena8",
         effects: { fe: 1 },
         consequence: "A urgência salva. Cada segundo de hesitação fortalece o gigante. Hebreus 3:15: 'Hoje, se ouvirdes a sua voz, não endureçais os vossos corações.'"
       },
@@ -2636,14 +2638,14 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Orar juntos e entrar no rio com fé",
-        nextChapterId: "fase6-cena2",
+        nextChapterId: "fase6-cena4",
         effects: { fe: 1, perseveranca: 1 },
         consequence: "A oração antes da travessia é preparo espiritual. Filipenses 4:6: 'Não estejais inquietos por coisa alguma; antes sejam os vossos pedidos conhecidos diante de Deus pela oração.'",
         flag: "orou_antes_rio"
       },
       {
         text: "Entrar no rio sem mais delongas",
-        nextChapterId: "fase6-cena2",
+        nextChapterId: "fase6-cena4",
         effects: { coragem: 1 },
         consequence: "A decisão rápida também é fé — a fé que não procrastina. Tiago 1:6: 'Peça com fé, em nada duvidando.'"
       }
