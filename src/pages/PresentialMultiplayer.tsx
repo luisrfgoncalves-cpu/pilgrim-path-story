@@ -662,10 +662,7 @@ const PresentialMultiplayer = () => {
         return;
       }
 
-      if (EXPANDED_MINI_GAME_TILES.includes(tileType)) {
-        setMiniGame({ tileType, playerIdx: turnIdx, prevPosition: prevPos, newPosition: newPos });
-        return;
-      }
+      // All non-RPG tiles auto-resolve with their narrative text
 
       const phaseIdx = Math.floor(newPos / TILES_PER_PHASE);
       const effect = resolveTileEffect(tileType, player, players, Date.now() + newPos, phaseIdx);
