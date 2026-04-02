@@ -366,6 +366,39 @@ const ScenePage = () => {
           'fase6-cena7': [['victory', 500], ['pray', 1200]], // portões à vista
           'fase6-cena8': [['victory', 500], ['critical', 1200], ['pray', 2000]], // Cidade Celestial!
           'fase6-cena9': [['victory', 300], ['victory', 1000], ['pray', 2000], ['critical', 3000]], // Glória final!
+          // PARTE II
+          'p2-cena1': [['positive', 600], ['pray', 1200]],
+          'p2-cena2': [['positive', 500]],
+          'p2-cena3': [['negative', 500], ['defeat', 1200]],
+          'p2-cena4': [['attack', 400], ['negative', 1000]],
+          'p2-cena5': [['attack', 500], ['critical', 1200]],
+          'p2-cena6': [['positive', 600], ['pray', 1200]],
+          'p2-fase2-cena1': [['positive', 500], ['pray', 1200]],
+          'p2-fase2-cena2': [['pray', 600], ['positive', 1200]],
+          'p2-fase2-cena3': [['negative', 500]],
+          'p2-fase2-cena4': [['attack', 400], ['negative', 1000]],
+          'p2-fase2-cena5': [['positive', 500], ['pray', 1200]],
+          'p2-fase3-cena1': [['positive', 600]],
+          'p2-fase3-cena2': [['defeat', 500], ['pray', 1200]],
+          'p2-fase3-cena3': [['attack', 500], ['critical', 1200]],
+          'p2-fase3-cena4': [['positive', 500], ['pray', 1200]],
+          'p2-fase3-cena5': [['attack', 400], ['critical', 1000], ['victory', 2000]],
+          'p2-fase3-cena6': [['negative', 500]],
+          'p2-fase4-cena1': [['positive', 600]],
+          'p2-fase4-cena2': [['negative', 500]],
+          'p2-fase4-cena3': [['attack', 400], ['critical', 1000]],
+          'p2-fase4-cena4': [['negative', 500], ['pray', 1200]],
+          'p2-fase5-cena1': [['defeat', 500]],
+          'p2-fase5-cena2': [['attack', 400], ['critical', 1000], ['victory', 2000]],
+          'p2-fase5-cena3': [['defeat', 500], ['pray', 1200]],
+          'p2-fase5-cena4': [['victory', 600], ['critical', 1200]],
+          'p2-fase5-cena5': [['positive', 500], ['pray', 1200]],
+          'p2-fase6-cena1': [['defeat', 500], ['pray', 1200]],
+          'p2-fase6-cena2': [['positive', 500], ['pray', 1200]],
+          'p2-fase6-cena3': [['positive', 600], ['pray', 1200]],
+          'p2-fase6-cena4': [['positive', 500], ['pray', 1200]],
+          'p2-fase6-cena5': [['victory', 500], ['pray', 1200], ['critical', 2500]],
+          'p2-fase6-cena6': [['victory', 300], ['victory', 1000], ['pray', 2000], ['critical', 3000]],
         };
         const sfxList = sfxMap[id];
         if (sfxList) {
