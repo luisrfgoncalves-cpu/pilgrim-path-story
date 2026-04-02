@@ -155,7 +155,7 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
             <div
               key={phaseIdx}
               data-phase={phaseIdx}
-              style={{ minHeight: '500svh' }}
+              style={{ minHeight: '750svh' }}
               className="relative w-full"
             />
           );
@@ -252,7 +252,7 @@ const PhaseSection = memo(function PhaseSection({
       ref={sectionRef}
       data-phase={phaseIdx}
       className="relative w-full overflow-hidden"
-      style={{ minHeight: '500svh' }}
+      style={{ minHeight: '750svh' }}
     >
       {/* Background */}
       <div className="absolute inset-0">
@@ -282,7 +282,7 @@ const PhaseSection = memo(function PhaseSection({
       />
 
       {/* Tiles — VIRTUALIZED: only render visible ones */}
-      <div className="relative w-full z-[2]" style={{ minHeight: '500svh' }}>
+      <div className="relative w-full z-[2]" style={{ minHeight: '750svh' }}>
         {trailPositions.map((pos, localIdx) => {
           const globalIdx = startIdx + localIdx;
           if (globalIdx >= IMMERSIVE_BOARD_SIZE) return null;
@@ -300,12 +300,13 @@ const PhaseSection = memo(function PhaseSection({
           const isCurrentPlayerHere = playersHere.some(p => p.id === currentTurnId);
           const isAnimatingHere = playersHere.some(p => animatingPlayerId.includes(p.id));
 
-          const tileCharKey = config.characterKey;
-          const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
-          const tileEnvImg = config.tileImage || null;
-          const tileImg = tileCharImg || tileEnvImg;
           const isSpecial = tileType !== 'normal';
           const isBoss = tileType === 'giant' || tileType === 'challenge';
+          const tileCharKey = config.characterKey;
+          const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
+          // Only show images on special tiles to reduce repetition
+          const tileEnvImg = isSpecial ? (config.tileImage || null) : null;
+          const tileImg = tileCharImg || tileEnvImg;
           const tileSize = isBoss ? 88 : isSpecial ? 78 : 66;
 
           const labelOnRight = pos.x < 50;
@@ -365,12 +366,6 @@ const PhaseSection = memo(function PhaseSection({
                 />
               </div>
 
-              {/* Boss indicator */}
-              {isBoss && (
-                <div className="absolute -top-2 -right-2 text-xs z-10">
-                  {tileType === 'giant' ? '💀' : '⚔️'}
-                </div>
-              )}
 
               {/* Type label */}
               {isSpecial && (

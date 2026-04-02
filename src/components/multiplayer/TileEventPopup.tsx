@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { characterImages } from '@/data/characterImages';
@@ -84,41 +84,6 @@ function playSoundForTile(tileType: TileType) {
   }
 }
 
-// Singleton AudioContext — prevents memory leak from creating new contexts every popup
-let _sharedAudioCtx: AudioContext | null = null;
-function getSharedAudioCtx(): AudioContext | null {
-  const AudioCtx = typeof window !== 'undefined' ? (window.AudioContext || (window as any).webkitAudioContext) : null;
-  if (!AudioCtx) return null;
-  if (!_sharedAudioCtx || _sharedAudioCtx.state === 'closed') {
-    _sharedAudioCtx = new AudioCtx();
-  }
-  // Resume if suspended (browser autoplay policy)
-  if (_sharedAudioCtx.state === 'suspended') {
-    _sharedAudioCtx.resume().catch(() => {});
-  }
-  return _sharedAudioCtx;
-}
-
-// Suspense sound — building tension (uses singleton AudioContext)
-function playSuspenseSound() {
-  const ctx = getSharedAudioCtx();
-  if (!ctx) return;
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(180, ctx.currentTime);
-  osc.frequency.linearRampToValueAtTime(350, ctx.currentTime + 1.2);
-  gain.gain.setValueAtTime(0.04, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 1.0);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.3);
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start(ctx.currentTime);
-  osc.stop(ctx.currentTime + 1.3);
-  // Clean up nodes after playback (prevent node accumulation)
-  osc.onended = () => { osc.disconnect(); gain.disconnect(); };
-}
-
 interface TileEventPopupProps {
   visible: boolean;
   tileType: TileType;
@@ -130,24 +95,17 @@ interface TileEventPopupProps {
 
 export default function TileEventPopup({ visible, tileType, message, emoji, playerName, onDismiss }: TileEventPopupProps) {
   const hasPlayedSound = useRef(false);
-  const [phase, setPhase] = useState<'suspense' | 'reveal'>('suspense');
 
   useEffect(() => {
     if (!visible) {
-      setPhase('suspense');
       hasPlayedSound.current = false;
       return;
     }
-    // Start suspense phase
-    playSuspenseSound();
-    const revealTimer = setTimeout(() => {
-      setPhase('reveal');
-      if (!hasPlayedSound.current) {
-        hasPlayedSound.current = true;
-        playSoundForTile(tileType);
-      }
-    }, 1400); // 1.4s suspense delay
-    return () => clearTimeout(revealTimer);
+    // Play sound immediately on reveal
+    if (!hasPlayedSound.current) {
+      hasPlayedSound.current = true;
+      playSoundForTile(tileType);
+    }
   }, [visible, tileType]);
 
   // No auto-dismiss — user must tap to close (prevents premature closure)
@@ -181,57 +139,27 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
     : 'rgba(100,160,255,0.2)';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={phase === 'reveal' ? onDismiss : undefined}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onDismiss}>
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
 
       {/* Screen flash for negative events */}
-      {phase === 'reveal' && isNegative && (
+      {isNegative && (
         <div className="absolute inset-0 pointer-events-none" style={{
           animation: 'screenFlash 0.6s ease-out forwards',
           background: 'radial-gradient(circle, rgba(200,0,0,0.3), transparent 70%)',
         }} />
       )}
       {/* Golden glow for positive events */}
-      {phase === 'reveal' && isPositive && (
+      {isPositive && (
         <div className="absolute inset-0 pointer-events-none" style={{
           animation: 'goldenGlow 1.5s ease-out forwards',
           background: 'radial-gradient(circle, rgba(255,215,0,0.15), transparent 60%)',
         }} />
       )}
 
-      {/* SUSPENSE PHASE — dramatic buildup */}
-      {phase === 'suspense' && (
-        <div className="relative z-10 flex flex-col items-center gap-4">
-          {/* Shaking emoji with pulse ring */}
-          <div className="relative">
-            <div className="text-7xl" style={{
-              animation: 'shake 0.15s infinite alternate',
-              filter: `drop-shadow(0 0 30px ${glowColor})`,
-            }}>
-              {emoji}
-            </div>
-            {/* Multiple pulsing rings */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-32 h-32 rounded-full border-2 animate-ping opacity-30"
-                style={{ borderColor }} />
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-40 h-40 rounded-full border animate-ping opacity-20"
-                style={{ borderColor, animationDelay: '0.3s' }} />
-            </div>
-          </div>
-          {/* Suspense text */}
-          <p className="text-lg font-display font-bold tracking-wider uppercase animate-pulse"
-            style={{ color: borderColor, textShadow: `0 0 20px ${glowColor}` }}
-          >
-            {isNegative ? '⚠️ Perigo...' : isChallenge ? '⚔️ Desafio...' : isPositive ? '✨ Algo acontece...' : '🔮 O destino decide...'}
-          </p>
-        </div>
-      )}
-
-      {/* REVEAL PHASE — fullscreen popup */}
-      {phase === 'reveal' && (
+      {/* Fullscreen popup */}
+      {(
         <div
           className="relative w-full h-full max-h-[100dvh] flex flex-col overflow-y-auto"
           style={{
@@ -333,10 +261,6 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
 
       {/* CSS animations */}
       <style>{`
-        @keyframes shake {
-          0% { transform: translateX(-3px) rotate(-2deg); }
-          100% { transform: translateX(3px) rotate(2deg); }
-        }
         @keyframes scaleReveal {
           0% { transform: scale(0.3) rotate(-5deg); opacity: 0; }
           100% { transform: scale(1) rotate(0deg); opacity: 1; }
@@ -349,10 +273,6 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
           0% { opacity: 0; }
           30% { opacity: 1; }
           100% { opacity: 0; }
-        }
-        @keyframes floatEmoji {
-          0%, 100% { transform: translateY(0) scale(1); }
-          50% { transform: translateY(-8px) scale(1.1); }
         }
       `}</style>
     </div>
