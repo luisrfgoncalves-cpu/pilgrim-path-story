@@ -409,6 +409,7 @@ const PresentialMultiplayer = () => {
   const rotationStateRef = useRef<RotationState>(createRotationState());
   const [rpgEvent, setRpgEvent] = useState<{
     tileType: RPGTileEventType;
+    sourceTileType: TileType;
     playerIdx: number;
     prevPosition: number;
     newPosition: number;

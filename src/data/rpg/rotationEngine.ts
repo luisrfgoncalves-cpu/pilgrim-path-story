@@ -22,6 +22,7 @@ export function createRotationState(): RotationState {
     usedBosses: new Set(),
     usedSpecials: new Set(),
     usedTraps: new Set(),
+    usedRefuges: new Set(),
   };
 }
 
