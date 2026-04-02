@@ -11,6 +11,8 @@ import RiverOfDeath from '@/components/multiplayer/RiverOfDeath';
 import GameNotification from '@/components/GameNotification';
 import RPGBriefing, { GameMode } from '@/components/multiplayer/RPGBriefing';
 import RPGEventPopup from '@/components/multiplayer/RPGEventPopup';
+import AttributePanel from '@/components/multiplayer/AttributePanel';
+import ResultFeedback from '@/components/multiplayer/ResultFeedback';
 import { Difficulty, TileEventType as RPGTileEventType } from '@/data/rpg/types';
 import { createRotationState, RotationState } from '@/data/rpg/rotationEngine';
 import { boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
@@ -23,6 +25,7 @@ import {
   playMove, playVictory, playTurnStart,
   playPhaseAmbient, playPhaseTransitionSound,
 } from '@/components/multiplayer/BoardSounds';
+import { startAmbientMusic, stopAmbientMusic, updateAmbientPhase } from '@/components/multiplayer/AmbientMusic';
 import { playGameSfx } from '@/lib/gameSfx';
 import { useAudioPrewarm } from '@/hooks/useAudioPrewarm';
 import { prewarmNarrator } from '@/lib/narrator';
