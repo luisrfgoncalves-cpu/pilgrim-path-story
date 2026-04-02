@@ -424,11 +424,44 @@ export default function RPGEventPopup({
 
   const tileInfo = sourceTileType ? TILE_TYPES[sourceTileType] : getTileEventLabel(tileEventType);
 
+  const isBoss = !!boss;
+  const isBossContext = isBoss && phase === 'context' && !showResult;
+
   // ─── RENDER ───
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border-2 bg-card"
-        style={{ borderColor: tileInfo.color, boxShadow: `0 0 40px ${tileInfo.color}40` }}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+      style={isBossContext ? { animation: 'bossScreenShake 0.5s ease-in-out 3' } : undefined}
+    >
+      {/* Boss VFX overlay */}
+      {isBossContext && (
+        <>
+          <div className="absolute inset-0 pointer-events-none" style={{
+            background: 'radial-gradient(circle, transparent 30%, hsl(0 70% 10% / 0.6) 100%)',
+            animation: 'bossPulse 2s ease-in-out infinite',
+          }} />
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div key={i} className="absolute w-1 rounded-full" style={{
+                height: `${20 + Math.random() * 40}px`,
+                left: `${Math.random() * 100}%`,
+                bottom: '-10px',
+                background: `linear-gradient(to top, hsl(${15 + Math.random() * 20} 90% 50%), transparent)`,
+                animation: `bossFlame ${1 + Math.random() * 2}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 2}s`,
+                opacity: 0.6 + Math.random() * 0.4,
+              }} />
+            ))}
+          </div>
+        </>
+      )}
+
+      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border-2 bg-card"
+        style={{
+          borderColor: isBoss ? 'hsl(0 70% 45%)' : tileInfo.color,
+          boxShadow: isBoss
+            ? '0 0 60px hsl(0 70% 30% / 0.5), 0 0 120px hsl(0 50% 20% / 0.3)'
+            : `0 0 40px ${tileInfo.color}40`,
+        }}
       >
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b border-border bg-card/95 backdrop-blur-sm rounded-t-2xl">
@@ -715,6 +748,27 @@ export default function RPGEventPopup({
           )}
         </div>
       </div>
+
+      {/* Boss VFX animations */}
+      <style>{`
+        @keyframes bossScreenShake {
+          0%, 100% { transform: translate(0, 0); }
+          10% { transform: translate(-4px, -2px); }
+          30% { transform: translate(4px, 2px); }
+          50% { transform: translate(-3px, 3px); }
+          70% { transform: translate(3px, -3px); }
+          90% { transform: translate(-2px, 1px); }
+        }
+        @keyframes bossPulse {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 0.8; }
+        }
+        @keyframes bossFlame {
+          0% { transform: translateY(0) scaleY(1); opacity: 0.6; }
+          50% { transform: translateY(-30px) scaleY(1.3); opacity: 1; }
+          100% { transform: translateY(-60px) scaleY(0.5); opacity: 0; }
+        }
+      `}</style>
     </div>
   );
 }

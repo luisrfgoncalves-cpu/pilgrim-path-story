@@ -311,4 +311,44 @@ export const riddles: Riddle[] = [
     explanation: 'Bunyan encapsulou a ordo salutis em três presentes: a declaração de justiça, a transformação progressiva e a certeza do destino eterno.',
     timerSeconds: 90
   },
+  {
+    id: 'r-v-008', difficulty: 'veterano',
+    context: 'Na Feira da Vaidade, um julgamento injusto condenou Fiel à morte...',
+    riddle: 'Meu tribunal tem 12 vícios sentados como juízes. Meu réu é inocente mas condenado. Meu juiz se chama Ódio-ao-Bem. Meu veredicto estava decidido antes de começar. Que evento bíblico eu espelho?',
+    hints: ['Outro inocente foi julgado por um tribunal corrupto', 'Pilatos sabia que era inocente', 'Os acusadores eram motivados por inveja'],
+    answer: 'O julgamento de Jesus Cristo diante do Sinédrio e de Pilatos',
+    bibleReference: 'Mateus 27:18-26',
+    explanation: 'Bunyan modelou o julgamento de Fiel no de Cristo: réu inocente, juízes corruptos, testemunhas falsas, condenação predeterminada. O mundo sempre condenará os fiéis.',
+    timerSeconds: 90
+  },
+  {
+    id: 'r-v-009', difficulty: 'veterano',
+    context: 'Cristão encontrou dois peregrinos que entraram por cima do muro em vez de pelo portão...',
+    riddle: 'Meu companheiro e eu temos nomes que são nosso pecado. Entramos sem convite, caminhamos sem selo, falamos sem substância. Na primeira prova real, desaparecemos. Nosso destino é um abismo. Que doutrina nossa existência ilustra?',
+    hints: ['Somos Formalista e Hipocrisia', 'Jesus falou sobre quem sobe por outro lugar', 'Ilustramos um tipo específico de falsa religiosidade'],
+    answer: 'A doutrina da falsa conversão — a diferença entre religião externa (formalismo) e fé genuína (regeneração)',
+    bibleReference: 'Mateus 23:27-28',
+    explanation: '"Sepulcros caiados, belos por fora mas cheios de ossos." Formalista e Hipocrisia representam a religião sem novo nascimento.',
+    timerSeconds: 90
+  },
+  {
+    id: 'r-v-010', difficulty: 'veterano',
+    context: 'Na Casa do Intérprete, Cristão viu um homem varrendo uma sala empoeirada...',
+    riddle: 'Duas mulheres trabalham na mesma sala. A primeira levanta nuvens com sua vassoura e sufoca todos. A segunda borrifador água e tudo fica limpo. Uma trabalha há 3.500 anos, a outra há 2.000. Quem são elas e por que uma falha onde a outra triunfa?',
+    hints: ['A vassoura representa algo dado no Sinai', 'A água representa algo dado no Calvário', 'Uma revela, a outra remove'],
+    answer: 'A Lei (vassoura — dada por Moisés ~1500 aC) e a Graça (água — dada por Cristo). A Lei agita o pecado mas não pode removê-lo; só a Graça purifica.',
+    bibleReference: 'João 1:17',
+    explanation: '"A lei foi dada por Moisés; a graça e a verdade vieram por Jesus Cristo." Bunyan ilustrou visualmente a insuficiência da Lei e a suficiência da Graça.',
+    timerSeconds: 90
+  },
+  {
+    id: 'r-v-011', difficulty: 'veterano',
+    context: 'O Ateu ria dos peregrinos dizendo que a Cidade Celestial não existia...',
+    riddle: 'Procurei 20 anos e não achei. Andei muito mas sempre em círculos. Rio dos que ainda buscam porque sofri demais para admitir que eu é que estava errado. Que falácia lógica minha história representa?',
+    hints: ['É uma falácia conhecida na filosofia', 'Minha experiência negativa não prova inexistência', 'Nunca estive no caminho certo para começar'],
+    answer: 'A falácia do argumento pela ignorância (argumentum ad ignorantiam) e o viés de confirmação — a experiência pessoal de fracasso não invalida a realidade objetiva',
+    bibleReference: '2 Pedro 3:3-4',
+    explanation: '"Nos últimos dias virão escarnecedores." O Ateu nunca percorreu o caminho correto, mas usa seu fracasso pessoal para negar a verdade objetiva.',
+    timerSeconds: 90
+  },
 ];

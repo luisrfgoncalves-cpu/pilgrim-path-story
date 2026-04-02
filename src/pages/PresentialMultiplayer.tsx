@@ -11,6 +11,8 @@ import RiverOfDeath from '@/components/multiplayer/RiverOfDeath';
 import GameNotification from '@/components/GameNotification';
 import RPGBriefing, { GameMode } from '@/components/multiplayer/RPGBriefing';
 import RPGEventPopup from '@/components/multiplayer/RPGEventPopup';
+import AttributePanel from '@/components/multiplayer/AttributePanel';
+import ResultFeedback from '@/components/multiplayer/ResultFeedback';
 import { Difficulty, TileEventType as RPGTileEventType } from '@/data/rpg/types';
 import { createRotationState, RotationState } from '@/data/rpg/rotationEngine';
 import { boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
@@ -23,6 +25,7 @@ import {
   playMove, playVictory, playTurnStart,
   playPhaseAmbient, playPhaseTransitionSound,
 } from '@/components/multiplayer/BoardSounds';
+import { startAmbientMusic, stopAmbientMusic, updateAmbientPhase } from '@/components/multiplayer/AmbientMusic';
 import { playGameSfx } from '@/lib/gameSfx';
 import { useAudioPrewarm } from '@/hooks/useAudioPrewarm';
 import { prewarmNarrator } from '@/lib/narrator';
@@ -358,6 +361,11 @@ const PresentialMultiplayer = () => {
   const [isTokenMoving, setIsTokenMoving] = useState(false);
   const [returnMoveInfo, setReturnMoveInfo] = useState<string | null>(null); // show "Voltando X casas..."
   const [showStats, setShowStats] = useState(false);
+  const [showAttrPanel, setShowAttrPanel] = useState(false);
+  const [resultFeedback, setResultFeedback] = useState<{
+    visible: boolean; success: boolean; message: string; emoji: string;
+    posAdjust?: number; attrChanges?: Record<string, number>;
+  } | null>(null);
   const tokenMovingTimerRef = useRef<number | null>(null);
 
   // Deferred move after mini-game popup closes
@@ -459,6 +467,7 @@ const PresentialMultiplayer = () => {
     playTurnStart();
     playGameSfx('gameStart');
     playPhaseAmbient(0);
+    startAmbientMusic(0);
     lastPhaseAmbientRef.current = 0;
     setTurnAnnounce(`Vez de ${finalPlayers[0].name}!`);
     setShowPhaseTransition(0);
@@ -686,6 +695,7 @@ const PresentialMultiplayer = () => {
         // Play phase ambient and transition sound
         playPhaseTransitionSound(newPhase);
         playPhaseAmbient(newPhase);
+        updateAmbientPhase(newPhase);
         lastPhaseAmbientRef.current = newPhase;
         // Update player's lastPhase
         setPlayers(prev => prev.map((p, i) => i === turnIdx ? { ...p, lastPhase: newPhase } : p));
@@ -1013,6 +1023,16 @@ const PresentialMultiplayer = () => {
 
     setRpgEvent(null);
 
+    // Show dramatic result feedback overlay
+    setResultFeedback({
+      visible: true,
+      success: result.success,
+      message: result.message,
+      emoji: result.emoji,
+      posAdjust: result.posAdjust,
+      attrChanges: result.attrChanges,
+    });
+
     // RPG popup already showed the result — skip redundant TileEventPopup
     // Just process pending moves or go to next turn
     const pendingMove = pendingMoveAfterPopup.current;
@@ -1206,31 +1226,37 @@ const PresentialMultiplayer = () => {
         </div>
       </header>
 
-      {/* Scrollable player bar */}
-      <div className="sticky top-[52px] z-20 bg-card/90 backdrop-blur-sm border-b border-border px-3 py-2 overflow-x-auto">
-        <div className="flex gap-2 max-w-lg mx-auto">
-          {players.map((p, i) => {
-            const isTurn = i === currentTurn;
-            return (
-              <div
-                key={p.id}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border shrink-0 transition-all ${
-                  isTurn ? 'bg-primary/10 border-primary/30' : p.finished ? 'opacity-50 border-border/50' : 'border-border'
-                }`}
-              >
-                <div className="w-5 h-5 rounded-full shrink-0" style={{ backgroundColor: p.color, border: `2px solid ${p.color}80` }} />
-                <div className="text-[9px] leading-tight">
-                  <p className="font-medium text-foreground">{p.name}</p>
-                  <p className="text-muted-foreground">
-                    {p.finished ? `🏆${p.finishOrder}º` : p.isStunned ? '😵' : `${p.position + 1}`}
-                    {p.hasShield && ' 🛡️'}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+      {/* Attribute Panel + Player Bar */}
+      <div className="sticky top-[52px] z-20 bg-card/90 backdrop-blur-sm border-b border-border px-3 py-2 space-y-1.5">
+        <div className="max-w-lg mx-auto">
+          <AttributePanel
+            players={players.map(p => ({
+              name: p.name,
+              color: p.color,
+              attributes: p.attributes,
+              hasShield: p.hasShield,
+              isStunned: p.isStunned,
+              finished: p.finished,
+            }))}
+            currentPlayerIdx={currentTurn}
+            expanded={showAttrPanel}
+            onToggle={() => setShowAttrPanel(prev => !prev)}
+          />
         </div>
       </div>
+
+      {/* Result Feedback Overlay */}
+      {resultFeedback && (
+        <ResultFeedback
+          visible={resultFeedback.visible}
+          success={resultFeedback.success}
+          message={resultFeedback.message}
+          emoji={resultFeedback.emoji}
+          posAdjust={resultFeedback.posAdjust}
+          attrChanges={resultFeedback.attrChanges}
+          onComplete={() => setResultFeedback(null)}
+        />
+      )}
 
       {/* Immersive Board */}
       <main className="flex-1 w-full">

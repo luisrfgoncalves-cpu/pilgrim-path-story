@@ -356,4 +356,76 @@ export const moralDilemmas: MoralDilemma[] = [
     bibleReference: 'Mateus 6:33',
     lesson: 'A cobiça mais perigosa é aquela disfarçada de generosidade. Deus não precisa que desobedeçamos para financiar Sua obra.'
   },
+  {
+    id: 'd-v-006', difficulty: 'veterano',
+    context: 'No Vale da Sombra da Morte, vocês ouvem pensamentos blasfemos na própria mente. São tão terríveis que vocês se perguntam se realmente pertencem a Deus.',
+    situation: '"Se eu fosse realmente salvo, nunca pensaria isso!" diz um membro do grupo em pânico. Outro responde: "Talvez esses pensamentos provem que não somos de Deus."',
+    choices: [
+      {
+        text: 'Concordar — esses pensamentos provam que não somos salvos',
+        consequence: 'O desespero tomou conta! Vocês esqueceram que Satanás PLANTA pensamentos para nos acusar. Cristão passou pelo mesmo e permaneceu fiel.',
+        effect: { type: 'penalty', attribute: 'fe', amount: -3, affectsGroup: true }
+      },
+      {
+        text: 'Reconhecer como ataque espiritual e resistir com a Palavra',
+        consequence: '"Esses pensamentos não são nossos — são dardos do maligno!" Vocês citaram Romanos 8:1 e a escuridão recuou.',
+        effect: { type: 'boost', attribute: 'discernimento', amount: 3, affectsGroup: true }
+      },
+      {
+        text: 'Ignorar os pensamentos e fingir que não existem',
+        consequence: 'Negar a batalha espiritual não a elimina. Os pensamentos voltaram mais fortes porque não foram enfrentados com a Palavra.',
+        effect: { type: 'penalty', attribute: 'coragem', amount: -2, affectsGroup: true }
+      }
+    ],
+    bibleReference: '2 Coríntios 10:5',
+    lesson: '"Levamos cativo todo pensamento à obediência de Cristo." Pensamentos blasfemos que causam horror são evidência de fé (se não incomodassem, seria indiferença). O inimigo ataca quem pertence a Deus.'
+  },
+  {
+    id: 'd-v-007', difficulty: 'veterano',
+    context: 'Vocês encontram Pequena-Fé, que foi assaltado e perdeu todo seu dinheiro. Ele está vivo mas completamente desanimado, andando lentamente e chorando.',
+    situation: 'Cristão conta que Pequena-Fé tinha tudo para se defender (a armadura de Deus) mas foi pego dormindo. "Devemos carregá-lo ou deixá-lo encontrar forças sozinho?"',
+    choices: [
+      {
+        text: 'Carregar Pequena-Fé nas costas',
+        consequence: 'A intenção era boa, mas vocês ficaram tão pesados que mal avançaram. A fé precisa ser exercitada, não substituída.',
+        effect: { type: 'stun', stunTurns: 1, affectsGroup: true }
+      },
+      {
+        text: 'Caminhar ao lado dele, encorajando-o com as Escrituras',
+        consequence: 'Pouco a pouco, Pequena-Fé se fortaleceu. "Não pela força, nem pelo poder, mas pelo meu Espírito." A comunhão restaura.',
+        effect: { type: 'boost', attribute: 'perseveranca', amount: 2, affectsGroup: true }
+      },
+      {
+        text: 'Repreendê-lo por ter dormido e mandá-lo se virar',
+        consequence: '"A cana trilhada não quebrará." Vocês machucaram um irmão já ferido. O amor seria mais eficaz que a repreensão.',
+        effect: { type: 'penalty', attribute: 'fe', amount: -2, affectsGroup: true }
+      }
+    ],
+    bibleReference: 'Isaías 42:3',
+    lesson: '"A cana trilhada não quebrará e o pavio que fumega não apagará." Cristãos fracos precisam de companhia, não de sermão. A fé se fortalece na comunhão.'
+  },
+  {
+    id: 'd-v-008', difficulty: 'veterano',
+    context: 'Vocês chegam a um cruzamento onde um homem se apresenta como "Pastor" e oferece um caminho "mais bíblico" que o de vocês. Ele cita muitos versículos e parece muito piedoso.',
+    situation: '"O caminho que vocês seguem é antiquado. Eu tenho uma revelação mais nova e mais profunda do Espírito!" Ele tem seguidores devotos que confirmam tudo.',
+    choices: [
+      {
+        text: 'Seguir o novo pastor — ele parece mais iluminado',
+        consequence: 'Era o Lisonjeiro disfarçado! O "caminho mais profundo" levou a uma rede. Revelações "novas" que contradizem as Escrituras são sempre falsas.',
+        effect: { type: 'retreat', positions: 4, affectsGroup: true }
+      },
+      {
+        text: 'Testar tudo pelas Escrituras antes de decidir',
+        consequence: 'Vocês pediram base bíblica e ele não tinha. "Examinai tudo e retende o que é bom!" A Bereia espiritual os salvou.',
+        effect: { type: 'boost', attribute: 'discernimento', amount: 4, affectsGroup: true }
+      },
+      {
+        text: 'Ignorá-lo completamente sem ouvir',
+        consequence: 'Prudência, mas sem amor. Se ele fosse sincero, vocês poderiam tê-lo ajudado. O discernimento inclui ouvir antes de julgar.',
+        effect: { type: 'advance', positions: 1, affectsGroup: true }
+      }
+    ],
+    bibleReference: 'Atos 17:11',
+    lesson: 'Os bereanos "examinavam as Escrituras diariamente para ver se as coisas eram assim." Nem todo que cita a Bíblia ensina a verdade. A Escritura é o crivo final.'
+  },
 ];
