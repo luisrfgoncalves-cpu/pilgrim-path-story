@@ -424,8 +424,6 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Subir a colina até a Porta Estreita",
         nextChapterId: "cena7b",
         effects: { fe: 2, coragem: 1 },
-        consequence: "A subida final é pavimentada de ouro. Não há mais lama, pedras ou espinhos. Apocalipse 21:21: 'A praça da cidade era de ouro puro.' O sofrimento acabou.",
-        consequence: "A Colina da Dificuldade não tem atalhos. Bunyan ensina que o caminho cristão não contorna obstáculos — atravessa-os. Hebreus 12:1: 'Corramos com paciência a carreira que nos está proposta.'",
         flag: "escolheu_caminho_estreito",
         item: "pergaminho_verdade",
         consequence: "Escolher o caminho difícil quando o fácil está disponível — isso é discernimento verdadeiro. Os espinhos representam as tribulações que acompanham quem segue a Cristo (João 16:33). Mas no topo, a porta está aberta para quem persevera."
