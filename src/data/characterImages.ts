@@ -55,6 +55,8 @@ import muitoMedo from '@/assets/characters/muito-medo.jpg';
 import valentePelaVerdade from '@/assets/characters/valente-pela-verdade.jpg';
 import firme from '@/assets/characters/firme.jpg';
 import madameBolha from '@/assets/characters/madame-bolha.jpg';
+import giganteMaul from '@/assets/characters/gigante-maul.jpg';
+import giganteMataBons from '@/assets/characters/gigante-mata-bons.jpg';
 
 export const characterImages: Record<string, string> = {
   cristao,
