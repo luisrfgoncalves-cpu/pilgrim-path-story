@@ -434,13 +434,10 @@ const PhaseSection = memo(function PhaseSection({
                   {playersHere.map(p => (
                     <div
                       key={p.id}
-                      className="w-6 h-6 rounded-full border-2 border-white/60 shadow-lg"
+                      className="w-6 h-6 rounded-full border-2 border-white/60"
                       style={{
                         backgroundColor: p.color,
-                        boxShadow: `0 0 ${animatingPlayerId.includes(p.id) ? '20' : '12'}px ${p.color}90`,
-                        animation: animatingPlayerId.includes(p.id)
-                          ? 'tokenGlow 0.35s ease-in-out infinite alternate'
-                          : p.id === currentTurnId && capability.enableCssAnimations ? 'bounce 1s infinite' : undefined,
+                        boxShadow: `0 2px 6px rgba(0,0,0,0.5)`,
                       }}
                       title={p.name}
                     />
@@ -449,7 +446,7 @@ const PhaseSection = memo(function PhaseSection({
               )}
 
               {playersHere.some(p => p.isStunned) && (
-                <div className="absolute -top-7 right-0 text-base animate-bounce z-20">😵</div>
+                <div className="absolute -top-7 right-0 text-base z-20">😵</div>
               )}
             </div>
           );
