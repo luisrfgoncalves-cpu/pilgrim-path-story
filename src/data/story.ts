@@ -1213,9 +1213,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     timeLimit: 15,
     timeoutChoiceIndex: 1,
     narrative: [
-      "Na metade da subida, um caramanchão de pedra oferece sombra e descanso. Bunyan nos diz que o Senhor o construiu para alívio dos peregrinos cansados.",
-      "Você se senta. O cansaço é imenso. As pálpebras pesam. O vento é morno. O caramanchão é tão confortável...",
-      "No livro original, Cristão adormeceu aqui — e o pergaminho selado caiu de suas mãos. Quando acordou e descobriu a perda, teve que descer toda a colina para buscá-lo, chorando e se recriminando."
+      "Na metade da subida, um caramanchão de pedra oferece sombra e descanso. {{whisper}}Bunyan nos diz que o Senhor o construiu para alívio dos peregrinos cansados.{{/whisper}}",
+      "{{fade}}Você se senta. O cansaço é imenso. As pálpebras pesam. O vento é morno. O caramanchão é tão confortável...{{/fade}}",
+      "{{emphasis}}No livro original, Cristão adormeceu aqui — e o pergaminho selado caiu de suas mãos.{{/emphasis}} Quando acordou e descobriu a perda, teve que descer toda a colina para buscá-lo, {{heart}}chorando e se recriminando.{{/heart}}"
     ],
     flagNarrative: [
       { flag: "tentou_atalho_colina", text: "O atalho te trouxe de volta ao mesmo ponto, mais cansado. A colina não aceita atalhos." }
