@@ -160,4 +160,6 @@ export const sceneImages: Record<string, string> = {
   'p2-fase6-cena4': chamadoRio,
   'p2-fase6-cena5': rioFinal,
   'p2-fase6-cena6': cidadeCelestial,
+  'p2-final-desistencia': terraEncantada,
+  'p2-final-terra-encantada': terraEncantada,
 };
