@@ -71,10 +71,16 @@ export default function RPGEventPopup({
   const [hintIndex, setHintIndex] = useState(0);
 
   const timerRef = useRef<number | null>(null);
+  const narratedKeyRef = useRef('');
 
   // Load content when popup becomes visible
   useEffect(() => {
-    if (!visible) return;
+    if (!visible) {
+      narratedKeyRef.current = '';
+      stopNarration();
+      return;
+    }
+
     setPhase('context');
     setSelectedAnswer(null);
     setShowResult(false);
@@ -83,6 +89,7 @@ export default function RPGEventPopup({
     setHintIndex(0);
     setBossPhaseIdx(0);
     setBossWins(0);
+    narratedKeyRef.current = '';
 
     // Clear all content
     setQuestion(null); setRiddle(null); setDilemma(null);
@@ -97,8 +104,6 @@ export default function RPGEventPopup({
     if (mode === 'individual_solo' || mode === 'individual_group_help') {
       const randomIdx = Math.floor(Math.random() * playerNames.length);
       setSelectedPlayer(playerNames[randomIdx]);
-    } else if (mode === 'group_picks_one') {
-      setSelectedPlayer('');
     } else {
       setSelectedPlayer('');
     }
@@ -134,7 +139,6 @@ export default function RPGEventPopup({
         break;
     }
 
-    // Fallback: if no content available, auto-resolve with neutral result
     if (!hasContent) {
       setShowResult(true);
       setResultData({
@@ -146,28 +150,58 @@ export default function RPGEventPopup({
       });
     }
 
-    // Auto-narrate context when popup opens (delayed slightly for visual)
-    setTimeout(() => {
-      const contextText = 
-        question?.context || riddle?.context || dilemma?.context || challenge?.context
-        || boss?.narrative || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative;
-      if (contextText) {
-        narrate(contextText, { style: getNarrationStyle(tileEventType) });
-      }
-    }, 500);
-
     return () => stopNarration();
   }, [visible, tileEventType, difficulty, playerNames, rotationState]);
 
-  // Narrate results when they appear
-  useEffect(() => {
-    if (showResult && resultData) {
-      stopNarration();
-      setTimeout(() => narrate(resultData.message.replace(/[✅❌🏆😔⏰✨]/g, '').trim(), {
-        style: resultData.success ? 'triumphant' : 'whisper',
-      }), 300);
+  const getContextNarrationText = () => {
+    return question?.context || riddle?.context || dilemma?.context || challenge?.context
+      || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
+      || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative || '';
+  };
+
+  const getChallengeNarrationText = () => {
+    if (question) return question.question;
+    if (riddle) return riddle.riddle;
+    if (dilemma) return dilemma.situation;
+    if (challenge) return `${challenge.title}. ${challenge.description}. Critério: ${challenge.successCriteria}`;
+    if (boss?.phases[bossPhaseIdx]) {
+      return `${boss.phases[bossPhaseIdx].description} ${boss.phases[bossPhaseIdx].question}`;
     }
-  }, [showResult, resultData]);
+    return '';
+  };
+
+  useEffect(() => {
+    if (!visible) return;
+
+    const rawText = showResult
+      ? resultData?.message
+      : phase === 'challenge'
+        ? getChallengeNarrationText()
+        : getContextNarrationText();
+
+    const cleanedText = rawText
+      ?.replace(/[✅❌🏆😔⏰✨]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (!cleanedText) return;
+
+    const narrationKey = `${showResult ? 'result' : phase}:${bossPhaseIdx}:${cleanedText}`;
+    if (narratedKeyRef.current === narrationKey) return;
+    narratedKeyRef.current = narrationKey;
+
+    const narrationTimer = window.setTimeout(() => {
+      narrate(cleanedText, {
+        style: showResult
+          ? (resultData?.success ? 'triumphant' : 'whisper')
+          : phase === 'challenge' && boss
+            ? 'urgent'
+            : getNarrationStyle(tileEventType),
+      });
+    }, showResult ? 150 : 350);
+
+    return () => clearTimeout(narrationTimer);
+  }, [visible, showResult, resultData, phase, question, riddle, dilemma, challenge, boss, bossPhaseIdx, specialEvent, trapEvent, refugeEvent, tileEventType]);
 
   useEffect(() => {
     if (!timerActive || timeLeft <= 0) return;

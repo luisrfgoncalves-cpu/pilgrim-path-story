@@ -30,8 +30,8 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
   const boardRef = useRef<HTMLDivElement>(null);
   const trailPositions = useMemo(() => getTrailPositions(), []);
   const prevPositionRef = useRef<Record<string, number>>({});
-  const [animatingPlayerId, setAnimatingPlayerId] = useState<string | null>(null);
-  const [animatedPosition, setAnimatedPosition] = useState<number | null>(null);
+  const [animatingPlayerId, setAnimatingPlayerId] = useState<string[]>([]);
+  const [animatedPosition, setAnimatedPosition] = useState<Record<string, number>>({});
   const animationRef = useRef<number | null>(null);
   const onTokenArrivedRef = useRef(onTokenArrived);
   onTokenArrivedRef.current = onTokenArrived;
@@ -39,83 +39,78 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
   const visiblePhases = useVisiblePhases(players);
   const capability = useDeviceCapability();
 
-  // Track ALL players' position changes — animate whichever player moved
   useEffect(() => {
     if (!boardRef.current) return;
 
-    // Find which player changed position
-    let movedPlayer: Player | null = null;
-    let prevPos = 0;
-    let newPos = 0;
+    const movedPlayers = players
+      .map((p) => {
+        const prevPos = prevPositionRef.current[p.id] ?? p.position;
+        return { ...p, prevPos, newPos: p.position };
+      })
+      .filter((p) => p.prevPos !== p.newPos && !p.finished);
 
-    for (const p of players) {
-      const prev = prevPositionRef.current[p.id] ?? p.position;
-      if (prev !== p.position && !p.finished) {
-        movedPlayer = p;
-        prevPos = prev;
-        newPos = p.position;
-        break; // animate one at a time
-      }
-    }
+    players.forEach((p) => {
+      prevPositionRef.current[p.id] = p.position;
+    });
 
-    // Save current positions for all players
-    players.forEach(p => { prevPositionRef.current[p.id] = p.position; });
+    if (movedPlayers.length === 0) return;
 
-    if (!movedPlayer || prevPos === newPos) return;
-
-    // Cancel any running animation — call onTokenArrived so state doesn't get stuck
     if (animationRef.current) {
       clearTimeout(animationRef.current);
       animationRef.current = null;
-      // If we were already animating, fire the callback to clean up
-      if (animatingPlayerId) {
-        setAnimatingPlayerId(null);
-        setAnimatedPosition(null);
-        // Don't call onTokenArrived here — the new animation replaces the old one
-      }
+      setAnimatingPlayerId([]);
+      setAnimatedPosition({});
     }
 
-    // Animate step by step
-    const steps: number[] = [];
-    if (newPos > prevPos) {
-      for (let i = prevPos + 1; i <= newPos; i++) steps.push(i);
-    } else {
-      for (let i = prevPos - 1; i >= newPos; i--) steps.push(i);
-    }
+    const movementTracks = movedPlayers.map(({ id, prevPos, newPos }) => ({
+      id,
+      prevPos,
+      newPos,
+      steps: newPos > prevPos
+        ? Array.from({ length: newPos - prevPos }, (_, i) => prevPos + i + 1)
+        : Array.from({ length: prevPos - newPos }, (_, i) => prevPos - i - 1),
+    }));
 
-    if (steps.length === 0) {
+    const maxSteps = Math.max(...movementTracks.map((track) => track.steps.length));
+    if (maxSteps <= 0) {
       onTokenArrivedRef.current?.();
       return;
     }
 
-    const playerId = movedPlayer.id;
-    setAnimatingPlayerId(playerId);
-    setAnimatedPosition(prevPos);
+    setAnimatingPlayerId(movementTracks.map((track) => track.id));
+    setAnimatedPosition(Object.fromEntries(movementTracks.map((track) => [track.id, track.prevPos])));
 
-    // Scroll to starting position first so user sees the token
-    const startTileEl = boardRef.current?.querySelector(`[data-tile-global="${prevPos}"]`);
+    const focusTrack = movementTracks.find((track) => track.id === currentTurnId) || movementTracks[0];
+    const startTileEl = boardRef.current?.querySelector(`[data-tile-global="${focusTrack.prevPos}"]`);
     if (startTileEl) {
       startTileEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     let stepIdx = 0;
-    // Speed up for long return moves (more than 5 tiles)
-    const STEP_DELAY = steps.length > 5 ? 500 : 900;
+    const STEP_DELAY = maxSteps > 5 ? 500 : 900;
     let cancelled = false;
 
     const doStep = () => {
       if (cancelled) return;
-      if (stepIdx >= steps.length) {
-        setAnimatingPlayerId(null);
-        setAnimatedPosition(null);
+
+      if (stepIdx >= maxSteps) {
+        setAnimatingPlayerId([]);
+        setAnimatedPosition({});
         onTokenArrivedRef.current?.();
         return;
       }
 
-      const pos = steps[stepIdx];
-      setAnimatedPosition(pos);
+      const nextAnimatedPositions = Object.fromEntries(
+        movementTracks.map((track) => [
+          track.id,
+          track.steps[Math.min(stepIdx, track.steps.length - 1)] ?? track.newPos,
+        ]),
+      );
 
-      const tileEl = boardRef.current?.querySelector(`[data-tile-global="${pos}"]`);
+      setAnimatedPosition(nextAnimatedPositions);
+
+      const focusPos = nextAnimatedPositions[focusTrack.id] ?? focusTrack.newPos;
+      const tileEl = boardRef.current?.querySelector(`[data-tile-global="${focusPos}"]`);
       if (tileEl) {
         tileEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -124,17 +119,15 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
       animationRef.current = window.setTimeout(doStep, STEP_DELAY);
     };
 
-    // Small delay to let React render the target phase before animating
     animationRef.current = window.setTimeout(doStep, 350);
 
-    // Safety fallback: if animation doesn't complete in reasonable time, force-complete it
-    const maxTime = 350 + steps.length * STEP_DELAY + 2000;
+    const maxTime = 350 + maxSteps * STEP_DELAY + 2000;
     const safetyTimer = window.setTimeout(() => {
       if (!cancelled && animationRef.current) {
         clearTimeout(animationRef.current);
         animationRef.current = null;
-        setAnimatingPlayerId(null);
-        setAnimatedPosition(null);
+        setAnimatingPlayerId([]);
+        setAnimatedPosition({});
         onTokenArrivedRef.current?.();
       }
     }, maxTime);
@@ -143,19 +136,14 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
       cancelled = true;
       if (animationRef.current) clearTimeout(animationRef.current);
       clearTimeout(safetyTimer);
-      // On cleanup, reset visual state but do NOT call onTokenArrived
-      // (that would trigger popups prematurely when the effect re-runs)
-      setAnimatingPlayerId(null);
-      setAnimatedPosition(null);
+      setAnimatingPlayerId([]);
+      setAnimatedPosition({});
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [players.map(p => `${p.id}:${p.position}`).join(',')]);
+  }, [players.map(p => `${p.id}:${p.position}`).join(','), currentTurnId]);
 
   const getDisplayPosition = (player: Player): number => {
-    if (player.id === animatingPlayerId && animatedPosition !== null) {
-      return animatedPosition;
-    }
-    return player.position;
+    return animatedPosition[player.id] ?? player.position;
   };
 
   return (
