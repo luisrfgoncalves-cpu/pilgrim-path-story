@@ -2641,12 +2641,13 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Portões da Cidade Celestial",
     characters: ["cristao", "ignorancia"],
     reflection: "r15",
+    sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'Uma cena solene se desenrola...' },
     narrative: [
-      "Antes que os portões se fechem, Bunyan mostra uma última cena — a mais solene de todo o livro.",
-      "Ignorância chega aos portões. Ele também fez a jornada — mas nunca passou pela Porta Estreita. Nunca carregou o fardo à cruz. Nunca recebeu o pergaminho selado.",
-      "\"Boas obras são meu passaporte\", diz ele confiante. Mas quando buscam seu nome no livro, ele não está lá. Os portões não se abrem. Dois Seres Resplandecentes o tomam pelos braços e o levam embora — não para a Cidade, mas para uma porta lateral no monte que leva ao abismo.",
-      "Bunyan termina com uma frase que ecoa pelos séculos: \"Então vi que havia um caminho para o inferno, mesmo dos portões do Céu.\"",
-      "A jornada terminou. A graça triunfou — não por suas forças, mas pela fidelidade de Quem prometeu."
+      "{{fade}}Antes que os portões se fechem, Bunyan mostra uma última cena — a mais solene de todo o livro.{{/fade}}",
+      "{{emphasis}}Ignorância chega aos portões.{{/emphasis}} Ele também fez a jornada — mas {{villain}}nunca passou pela Porta Estreita. Nunca carregou o fardo à cruz. Nunca recebeu o pergaminho selado.{{/villain}}",
+      "{{dialog}}\"Boas obras são meu passaporte\"{{/dialog}}, diz ele confiante. Mas quando buscam seu nome no livro, {{tremor}}ele não está lá.{{/tremor}} {{villain}}Os portões não se abrem. Dois Seres Resplandecentes o tomam pelos braços e o levam embora — não para a Cidade, mas para uma porta lateral no monte que leva ao abismo.{{/villain}}",
+      "{{emphasis}}Bunyan termina com uma frase que ecoa pelos séculos:{{/emphasis}} {{divine}}\"Então vi que havia um caminho para o inferno, mesmo dos portões do Céu.\"{{/divine}}",
+      "{{heart}}A jornada terminou. A graça triunfou — não por suas forças, mas pela fidelidade de Quem prometeu.{{/heart}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "A cena de Ignorância te faz estremecer mesmo na glória. A graça não é merecida — é recebida. E você a recebeu.", lowThreshold: 4, lowText: "O destino de Ignorância é um aviso final: boas intenções não bastam. A porta estreita existe por uma razão." }
