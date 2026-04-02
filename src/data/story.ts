@@ -436,12 +436,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Ir ao vilarejo da Moralidade",
         nextChapterId: "cena10",
-        effects: { fe: -1, discernimento: -1 }
+        effects: { fe: -1, discernimento: -1 },
+        consequence: "Prudência Mundana representa a tentação de resolver o problema do pecado com moralidade humana em vez de graça divina. 'Legalidade' é a Lei — que condena mas não pode salvar. Gálatas 2:16 ensina que 'ninguém será justificado pelas obras da lei, mas pela fé em Jesus Cristo.'"
       },
       {
         text: "Recusar e voltar à encruzilhada",
         nextChapterId: "cena7",
-        effects: { discernimento: 1, fe: 1 }
+        effects: { discernimento: 1, fe: 1 },
+        consequence: "Recusar o atalho de Prudência Mundana exige discernimento. Muitos 'conselhos sábios' do mundo são armadilhas espirituais disfarçadas. 'Há caminho que ao homem parece direito, mas o seu fim são os caminhos da morte.' (Provérbios 14:12)"
       }
     ]
   },
