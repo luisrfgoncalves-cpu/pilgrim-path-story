@@ -1677,10 +1677,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Julgamento",
     location: "Feira da Vaidade",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'O tribunal se ergue diante de vocês!' },
     narrative: [
-      "A confusão cresce. Os donos da feira decidem prender vocês. São levados a um tribunal presidido pelo juiz Ódio-ao-Bem. O júri é formado por Cego, Sem-Bem, Malícia, Luxúria, Vive-no-Prazer, Imprudente e outros.",
-      "As acusações: perturbação do comércio, desprezo pela cultura local, e influência perigosa sobre cidadãos honestos.",
-      "Fiel é chamado primeiro. Ele fala com coragem: \"Tudo que se opõe à verdade se opõe ao Rei dos reis. Eu respondo apenas a Ele.\""
+      "{{tremor}}A confusão cresce. Os donos da feira decidem prender vocês.{{/tremor}} São levados a um tribunal presidido pelo juiz {{villain}}Ódio-ao-Bem{{/villain}}. O júri é formado por Cego, Sem-Bem, Malícia, Luxúria, Vive-no-Prazer, Imprudente e outros.",
+      "As acusações: {{emphasis}}perturbação do comércio, desprezo pela cultura local, e influência perigosa sobre cidadãos honestos.{{/emphasis}}",
+      "{{divine}}Fiel é chamado primeiro. Ele fala com coragem: \"Tudo que se opõe à verdade se opõe ao Rei dos reis. Eu respondo apenas a Ele.\"{{/divine}}"
     ],
     flagNarrative: [
       { flag: "enfrentou_presenca", text: "Você enfrentou Apolião. Este tribunal é assustador, mas os juízes são humanos — não monstros." }
