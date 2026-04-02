@@ -1238,6 +1238,18 @@ const PresentialMultiplayer = () => {
         </div>
       </GameNotification>
 
+      {/* Streak feedback notification */}
+      <GameNotification visible={!!streakAnnounce} onDismiss={() => setStreakAnnounce(null)} duration={6000} position="top-offset">
+        <div className="px-6 py-3 rounded-2xl font-display text-base" style={{
+          background: 'linear-gradient(135deg, hsl(25 80% 20%), hsl(15 70% 15%))',
+          border: '1px solid hsl(30 80% 55% / 0.6)',
+          color: 'hsl(40 90% 80%)',
+          boxShadow: '0 0 50px hsl(30 80% 50% / 0.3)',
+        }}>
+          {streakAnnounce}
+        </div>
+      </GameNotification>
+
       {/* Collective event notification */}
       <GameNotification visible={!!collectiveMsg} onDismiss={() => setCollectiveMsg(null)} duration={4000} position="top-offset">
         <div className="px-6 py-3 rounded-2xl font-display text-base" style={{
