@@ -4,9 +4,9 @@ import { riddles } from './riddles';
 import { moralDilemmas } from './dilemmas';
 import { activeChallenges } from './challenges';
 import { bossEncounters } from './bosses';
-
-export type RotationState = RotationStateType;
 import { specialEvents, trapEvents, refugeEvents } from './specialEvents';
+
+export type { RotationStateType as RotationState };
 
 // ═══════════════════════════════════════════════════════
 // MOTOR DE ROTAÇÃO ANTI-REPETIÇÃO
