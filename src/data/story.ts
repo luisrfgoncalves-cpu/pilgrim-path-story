@@ -1473,10 +1473,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Os Gigantes na Caverna",
     location: "Saída do Vale",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'Ossos rangem na escuridão...' },
     narrative: [
-      "Na saída do vale, duas cavernas se abrem. Dentro, os esqueletos de peregrinos que não conseguiram passar. Gigantes antigos — Papa e Pagão — vigiavam este lugar. Um já morreu, o outro está velho demais para atacar.",
-      "O gigante sobrevivente range os dentes, mas só consegue gritar: \"Vocês nunca mudarão!\"",
-      "Você passa por ele. Suas ameaças são vazias. Mas os esqueletos são um lembrete: nem todos que começaram a jornada chegaram ao fim."
+      "Na saída do vale, duas cavernas se abrem. {{fade}}Dentro, os esqueletos de peregrinos que não conseguiram passar.{{/fade}} Gigantes antigos — {{villain}}Papa e Pagão{{/villain}} — vigiavam este lugar. Um já morreu, o outro está velho demais para atacar.",
+      "{{villain}}O gigante sobrevivente range os dentes, mas só consegue gritar: \"Vocês nunca mudarão!\"{{/villain}}",
+      "{{heart}}Você passa por ele. Suas ameaças são vazias.{{/heart}} Mas os esqueletos são um lembrete: {{emphasis}}nem todos que começaram a jornada chegaram ao fim.{{/emphasis}}"
     ],
     flagNarrative: [
       { flag: "escolheu_caminho_estreito", text: "Você olha os esqueletos e pensa: qualquer um deles poderia ter sido você, se tivesse escolhido diferente naquela encruzilhada." }
