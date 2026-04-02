@@ -2,8 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { storyChapters, chapterOrder } from '@/data/story';
 import { part2Chapters, part2ChapterOrder } from '@/data/storyPart2';
-import { ArrowLeft, Lock, CheckCircle2, MapPin, ChevronDown, ChevronUp, RotateCcw, Compass } from 'lucide-react';
+import { ArrowLeft, Lock, CheckCircle2, MapPin, ChevronDown, ChevronUp, RotateCcw, Compass, Shield } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import ScreenHero from '@/components/ScreenHero';
 
 import mapFase1 from '@/assets/map-fase1.jpg';
@@ -93,15 +94,19 @@ const PHASES_PART2 = [
   },
 ];
 
+const OWNER_EMAIL = 'luis.rf.goncalves@gmail.com';
+
 const JourneysPage = () => {
   const navigate = useNavigate();
   const { progress, goToChapter, startJourney, resetProgress } = useStoryProgress();
+  const { user } = useAuth();
   const [expandedPhase, setExpandedPhase] = useState<string | null>(null);
 
+  const isOwner = user?.email?.toLowerCase() === OWNER_EMAIL;
   const currentCampaign = progress.campaign || 'part1';
 
   const handleChapterClick = (chapterId: string, campaign: 'part1' | 'part2') => {
-    if (progress.visitedChapters.includes(chapterId)) {
+    if (isOwner || progress.visitedChapters.includes(chapterId)) {
       goToChapter(chapterId);
       startJourney();
       navigate('/jornada', { replace: true });
@@ -111,6 +116,13 @@ const JourneysPage = () => {
 
   const handlePhaseReplay = (phaseId: string, campaign: 'part1' | 'part2') => {
     const phaseChapters = getPhaseChapterIds(phaseId, campaign);
+    if (isOwner && phaseChapters.length > 0) {
+      goToChapter(phaseChapters[0]);
+      startJourney();
+      navigate('/jornada', { replace: true });
+      setTimeout(() => navigate('/cena'), 50);
+      return;
+    }
     const firstVisited = phaseChapters.find(id => progress.visitedChapters.includes(id));
     if (firstVisited) {
       goToChapter(firstVisited);
@@ -159,11 +171,11 @@ const JourneysPage = () => {
   const total = chapterOrder.length + part2ChapterOrder.length;
 
   const isPhaseVisited = (phaseId: string, campaign: 'part1' | 'part2') =>
-    getPhaseChapterIds(phaseId, campaign).some(id => progress.visitedChapters.includes(id));
+    isOwner || getPhaseChapterIds(phaseId, campaign).some(id => progress.visitedChapters.includes(id));
 
   const isPhaseComplete = (phaseId: string, campaign: 'part1' | 'part2') => {
     const phaseChapters = getPhaseChapterIds(phaseId, campaign);
-    return phaseChapters.length > 0 && phaseChapters.every(id => progress.visitedChapters.includes(id));
+    return phaseChapters.length > 0 && (isOwner || phaseChapters.every(id => progress.visitedChapters.includes(id)));
   };
 
   const isCurrentPhase = (phaseId: string) => {
@@ -240,7 +252,7 @@ const JourneysPage = () => {
           const complete = isPhaseComplete(phase.id, 'part1');
           const current = isCurrentPhase(phase.id);
           const expanded = expandedPhase === phase.id;
-          const visitedCount = phase.chapters.filter(c => progress.visitedChapters.includes(c.id)).length;
+          const visitedCount = isOwner ? phase.chapters.length : phase.chapters.filter(c => progress.visitedChapters.includes(c.id)).length;
 
           return (
             <div key={phase.id} className="relative">
@@ -420,7 +432,7 @@ const JourneysPage = () => {
                       {expanded && (
                         <div className="mt-3 space-y-2" style={{ animation: 'slideUp 0.3s ease-out' }}>
                           {phase.chapters.map((item) => {
-                            const unlocked = progress.visitedChapters.includes(item.id);
+                            const unlocked = isOwner || progress.visitedChapters.includes(item.id);
                             const isCurrent = progress.currentChapterId === item.id;
 
                             return (
@@ -526,7 +538,7 @@ const JourneysPage = () => {
           const complete = isPhaseComplete(phase.id, 'part2');
           const current = isCurrentPhase(phase.id);
           const expanded = expandedPhase === phase.id;
-          const visitedCount = phase.chapters.filter(c => progress.visitedChapters.includes(c.id)).length;
+          const visitedCount = isOwner ? phase.chapters.length : phase.chapters.filter(c => progress.visitedChapters.includes(c.id)).length;
 
           return (
             <div key={phase.id} className="relative">
@@ -604,7 +616,7 @@ const JourneysPage = () => {
                       {expanded && (
                         <div className="mt-3 space-y-2" style={{ animation: 'slideUp 0.3s ease-out' }}>
                           {phase.chapters.map((item) => {
-                            const unlocked = progress.visitedChapters.includes(item.id);
+                            const unlocked = isOwner || progress.visitedChapters.includes(item.id);
                             const isCurrent = progress.currentChapterId === item.id;
                             return (
                               <button key={item.id} onClick={() => handleChapterClick(item.id, 'part2')} disabled={!unlocked} className="w-full text-left transition-all active:scale-[0.98]">

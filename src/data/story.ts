@@ -1617,8 +1617,9 @@ export const storyChapters: Record<string, StoryChapter> = {
       },
       {
         text: "Sentar entre os esqueletos e chorar",
-        nextChapterId: "fase3-cena9",
+        nextChapterId: "fase3-cena10",
         effects: { coragem: -1 },
+        flag: "chorou_entre_esqueletos",
         consequence: "O desânimo entre os mortos é compreensível, mas perigoso. Os esqueletos representam o passado — não o futuro. Isaías 43:18: 'Não vos lembreis das coisas passadas.'",
         conditionalEffects: [
           { attr: "fe", threshold: 4, bonus: {}, penalty: { fe: -1 } }
@@ -1940,9 +1941,10 @@ export const storyChapters: Record<string, StoryChapter> = {
       },
       {
         text: "Mais um dia não fará diferença...",
-        nextChapterId: "fase4-cena9",
+        nextChapterId: "fase4-cena10",
         effects: { fe: -1 },
-        consequence: "A procrastinação espiritual é uma corrente invisível. Hebreus 3:15: 'Hoje, se ouvirdes a sua voz, não endureçais os vossos corações.'"
+        flag: "ficou_preso_feira",
+        consequence: "A procrastinação espiritual é uma corrente invisível. Mas a graça quebra até essa corrente. Hebreus 3:15: 'Hoje, se ouvirdes a sua voz, não endureçais os vossos corações.'"
       }
     ]
   },
@@ -2310,9 +2312,10 @@ export const storyChapters: Record<string, StoryChapter> = {
       },
       {
         text: "Fechar os olhos e esperar o golpe",
-        nextChapterId: "fase5-cena7",
-        effects: {},
-        consequence: "A passividade total na masmorra é rendição ao desespero. Mas mesmo aqui, a chave permanece no peito. Enquanto ela existir, a porta pode ser aberta."
+        nextChapterId: "fase5-cena8",
+        effects: { fe: -1 },
+        flag: "rendeu_se_ao_gigante",
+        consequence: "A passividade total na masmorra é rendição ao desespero. Mas Deus não abandona os seus — mesmo quando eles desistem de si mesmos. A chave permanece no peito."
       }
     ]
   },
