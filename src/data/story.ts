@@ -238,13 +238,15 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Concordar com Obstinado e voltar para casa",
         nextChapterId: "cena4",
-        effects: { fe: -1, coragem: -1 }
+        effects: { fe: -1, coragem: -1 },
+        consequence: "Obstinado representa quem ouve o chamado de Deus mas escolhe a falsa segurança do que já conhece. Voltar para a 'normalidade' quando a verdade já foi revelada é escolher o conforto acima da salvação."
       },
       {
         text: "Dizer a Flexível: \"Venha comigo. Há uma porta que devemos encontrar.\"",
         nextChapterId: "cena3",
         effects: { discernimento: 1, coragem: 1 },
-        flag: "convidou_flexivel"
+        flag: "convidou_flexivel",
+        consequence: "Flexível é a fé que depende das circunstâncias — aceita o caminho enquanto é fácil. Cristão faz o certo ao convidá-lo, mesmo sabendo que nem todos que começam a jornada a completam. Jesus disse: 'Muitos são chamados, mas poucos, escolhidos.' (Mateus 22:14)"
       }
     ]
   },
