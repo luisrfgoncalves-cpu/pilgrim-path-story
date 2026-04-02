@@ -2040,11 +2040,12 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase5-cena3",
     title: "A Masmorra",
     location: "Castelo da Dúvida",
-    characters: ["cristao", "gigante_desespero"],
+    characters: ["cristao", "gigante_desespero", "desconfianca"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'A escuridão é total...' },
     narrative: [
-      "O Gigante Desespero os arrasta para seu castelo e os joga numa masmorra escura, fétida e sem esperança. Não há luz. Não há comida. Apenas pedra úmida e correntes.",
-      "A esposa do gigante, Desconfiança, sussurra ao marido: \"Bata neles pela manhã. Faça-os desejar nunca ter nascido.\"",
-      "Na escuridão, Esperança murmura: \"Cristão... o que fizemos?\""
+      "{{tremor}}O Gigante Desespero os arrasta para seu castelo e os joga numa masmorra escura, fétida e sem esperança.{{/tremor}} {{fade}}Não há luz. Não há comida. Apenas pedra úmida e correntes.{{/fade}}",
+      "{{villain}}A esposa do gigante, Desconfiança, sussurra ao marido: \"Bata neles pela manhã. Faça-os desejar nunca ter nascido.\"{{/villain}}",
+      "{{whisper}}Na escuridão, Esperança murmura: \"Cristão... o que fizemos?\"{{/whisper}}"
     ],
     toneNarrative: [
       { attr: "coragem", highThreshold: 6, highText: "Mesmo acorrentado, algo em você se recusa a quebrar. Você já enfrentou Apolião. Este gigante é grande, mas não é invencível.", lowThreshold: 3, lowText: "As correntes pesam. A escuridão é total. Você se pergunta se alguém sequer sabe que está aqui." }
