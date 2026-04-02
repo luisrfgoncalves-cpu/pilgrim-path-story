@@ -2138,6 +2138,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Chave da Promessa",
     location: "Castelo da Dúvida",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 3000, message: 'Uma lembrança surge como um raio!' },
     narrative: [
       "Na terceira noite, enquanto oram, Cristão dá um salto: {{shout}}\"Que tolo eu sou! Tenho no meu peito uma chave chamada Promessa. Ela pode abrir qualquer fechadura do Castelo da Dúvida!\"{{/shout}}",
       "Esperança se anima: {{dialog}}\"Tire-a, irmão! Experimente!\"{{/dialog}}",
