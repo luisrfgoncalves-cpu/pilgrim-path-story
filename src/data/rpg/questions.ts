@@ -921,4 +921,125 @@ export const scriptureQuestions: ScriptureQuestion[] = [
     explanation: 'Perto do fim, o perigo de relaxar é maior. A apatia espiritual é o último ataque do inimigo contra quem quase completou a corrida.',
     timerSeconds: 75
   },
+  // ═══════ VETERANO — LOTE EXTRA (teologia profunda) ═══════
+  {
+    id: 'q-v-021', difficulty: 'veterano',
+    context: 'O Intérprete mostrou a Cristão um fogo alimentado secretamente por trás de uma parede, enquanto alguém tentava apagá-lo por diante.',
+    question: 'Qual doutrina reformada esta visão ilustra mais precisamente, e qual o significado teológico do óleo ser invisível ao homem da vassoura?',
+    options: [
+      'A perseverança dos santos — a graça sustentadora de Cristo opera invisivelmente mesmo quando as tentações parecem vencer',
+      'A predestinação — Deus já decidiu quem terá o fogo',
+      'A inerrância bíblica — o fogo representa a Palavra',
+      'A soberania divina sobre a natureza'
+    ],
+    correctIndex: 0,
+    bibleReference: 'Filipenses 1:6',
+    explanation: '"Aquele que em vós começou a boa obra a aperfeiçoará." O óleo secreto é a graça sustentadora de Cristo que mantém a fé viva mesmo quando o diabo (vassoura) ataca sem cessar.',
+    timerSeconds: 75
+  },
+  {
+    id: 'q-v-022', difficulty: 'veterano',
+    context: 'Cristão recebeu a armadura completa de Deus no Palácio Belo antes de descer ao Vale da Humilhação.',
+    question: 'Em Efésios 6:10-18, Paulo lista 6 peças da armadura. Qual é a única peça ofensiva, e por que Bunyan posiciona a armadura ANTES do Vale onde Apolião ataca?',
+    options: [
+      'A espada do Espírito (Palavra de Deus) — Bunyan mostra que sem preparação espiritual prévia, o confronto com o mal é suicídio',
+      'O escudo da fé — porque a fé é ativa',
+      'O capacete da salvação — porque protege a mente',
+      'As sandálias do evangelho — porque permitem avançar'
+    ],
+    correctIndex: 0,
+    bibleReference: 'Efésios 6:17',
+    explanation: 'A espada do Espírito é a Palavra de Deus — a única arma ofensiva. Cristão a usou contra Apolião citando Escritura. Bunyan ensina: primeiro se arme, depois enfrente.',
+    timerSeconds: 75
+  },
+  {
+    id: 'q-v-023', difficulty: 'veterano',
+    context: 'No Pântano do Desânimo, Bunyan explica que existem degraus firmes sob a lama, colocados por ordem do Rei.',
+    question: 'Os "degraus firmes" no Pântano representam as promessas de Deus. Por que Bunyan enfatiza que eles existem MAS são difíceis de encontrar na lama?',
+    options: [
+      'Para mostrar que as promessas são falsas',
+      'Para ilustrar que as promessas de Deus são reais mas o desânimo obscurece nossa capacidade de vê-las — a fé é confiar no que não se vê',
+      'Para criticar a negligência do governo',
+      'Para mostrar que Deus é cruel'
+    ],
+    correctIndex: 1,
+    bibleReference: 'Hebreus 11:1',
+    explanation: '"Ora, a fé é o firme fundamento das coisas que se esperam, e a prova das coisas que se não veem." Os degraus existem — a dificuldade é achá-los quando estamos afundando.',
+    timerSeconds: 75
+  },
+  {
+    id: 'q-v-024', difficulty: 'veterano',
+    context: 'Ignorância fez toda a jornada e chegou aos portões da Cidade Celestial, mas foi rejeitado porque não tinha o pergaminho.',
+    question: 'Bunyan termina com: "Vi que havia um caminho para o inferno, mesmo dos portões do Céu." Qual heresia eclesiológica Ignorância representa?',
+    options: [
+      'O pelagianismo — a crença de que boas obras bastam para a salvação sem necessidade de graça regeneradora',
+      'O gnosticismo — crença em conhecimento secreto',
+      'O arianismo — negação da divindade de Cristo',
+      'O docetismo — negação da humanidade de Cristo'
+    ],
+    correctIndex: 0,
+    bibleReference: 'Efésios 2:8-9',
+    explanation: '"Pela graça sois salvos, por meio da fé, e isto não vem de vós, é dom de Deus; não vem das obras, para que ninguém se glorie." Ignorância confiou em obras — nunca recebeu a graça.',
+    timerSeconds: 75
+  },
+  {
+    id: 'q-v-025', difficulty: 'veterano',
+    context: 'Na Feira da Vaidade, Fiel foi martirizado após um julgamento fraudulento. Os jurados tinham nomes como Cego, Malícia, Luxúria e Crueldade.',
+    question: 'Bunyan modelou o julgamento de Fiel em qual evento bíblico específico, e qual paralelo teológico ele traça entre Fiel e esse personagem bíblico?',
+    options: [
+      'O julgamento de Paulo em Atenas',
+      'O julgamento de Jesus diante de Pilatos — réu inocente, testemunhas falsas, juiz covarde, condenação predeterminada pelo sistema',
+      'O julgamento de Estêvão no Sinédrio',
+      'O julgamento de Daniel na cova dos leões'
+    ],
+    correctIndex: 1,
+    bibleReference: 'Mateus 26:59-66',
+    explanation: 'Assim como Cristo foi condenado por testemunhas falsas diante de um juiz que sabia da inocência, Fiel foi condenado por Inveja, Superstição e Bajulação diante do Juiz Ódio-ao-Bem.',
+    timerSeconds: 75
+  },
+  {
+    id: 'q-v-026', difficulty: 'veterano',
+    context: 'Cristão e Esperança encontraram Pequena-Fé, que foi assaltado por Coração-Fraco, Desconfiança e Culpa na Alameda dos Mortos.',
+    question: 'Pequena-Fé perdeu o dinheiro mas manteve o pergaminho e as joias. Qual distinção teológica crucial Bunyan faz entre posses temporais e salvação eterna?',
+    options: [
+      'Que riqueza material é pecado',
+      'Que a salvação (pergaminho/joias) nunca pode ser roubada pelo inimigo — apenas conforto e alegria temporais podem ser tirados. A segurança eterna permanece',
+      'Que devemos esconder nossas riquezas',
+      'Que a fé é inútil contra ladrões'
+    ],
+    correctIndex: 1,
+    bibleReference: 'João 10:28-29',
+    explanation: '"Ninguém as arrebatará da minha mão." O inimigo pode roubar paz, alegria e conforto temporal, mas jamais a salvação — o pergaminho selado pelo Rei.',
+    timerSeconds: 75
+  },
+  {
+    id: 'q-v-027', difficulty: 'veterano',
+    context: 'No Palácio Belo, as donzelas Discrição, Prudência, Piedade e Caridade examinaram Cristão antes de recebê-lo.',
+    question: 'Por que Bunyan faz Cristão ser EXAMINADO antes de ser armado? Qual princípio eclesiológico isso reflete?',
+    options: [
+      'Suspeita contra estrangeiros',
+      'A disciplina eclesiástica — a igreja (Palácio Belo) deve examinar, instruir e preparar seus membros antes de enviá-los à batalha espiritual',
+      'Burocracia religiosa',
+      'Desconfiança contra novos convertidos'
+    ],
+    correctIndex: 1,
+    bibleReference: '1 Timóteo 3:10',
+    explanation: '"Sejam primeiro provados; depois sirvam." O Palácio Belo é a igreja local que examina, fortalece e arma o peregrino. Sem comunhão, não há preparo para a guerra.',
+    timerSeconds: 75
+  },
+  {
+    id: 'q-v-028', difficulty: 'veterano',
+    context: 'O Gigante Desespero tinha ataques de fraqueza nos dias de sol. Sua esposa Desconfiança o instigava.',
+    question: 'Por que Bunyan dá ao Gigante Desespero ataques de fraqueza em dias ensolarados? Que verdade espiritual isso revela sobre a natureza do desespero?',
+    options: [
+      'Era diabético',
+      'O desespero é forte na escuridão mas fraco diante da luz — a verdade de Deus (sol) enfraquece o poder do desespero, que só reina onde há trevas na alma',
+      'Era superstição medieval',
+      'Para mostrar que gigantes são fracos'
+    ],
+    correctIndex: 1,
+    bibleReference: 'João 8:12',
+    explanation: '"Eu sou a luz do mundo; quem me segue não andará em trevas." O desespero é poderoso no escuro, mas perde força quando a verdade brilha. A Chave da Promessa É essa luz.',
+    timerSeconds: 75
+  },
 ];

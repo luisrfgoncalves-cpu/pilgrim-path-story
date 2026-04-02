@@ -34,6 +34,9 @@ import valenteEncontro from '@/assets/scenes/valente-encontro.jpg';
 import masmorrasCastelo from '@/assets/scenes/masmorra-castelo.jpg';
 import gaiolaFerro from '@/assets/scenes/gaiola-ferro.jpg';
 import armaduraCrista from '@/assets/scenes/armadura-crista.jpg';
+import caramanchaoColina from '@/assets/scenes/caramanchao-colina.jpg';
+import minaPrataDemas from '@/assets/scenes/mina-prata-demas.jpg';
+import terraEncantadaFlores from '@/assets/scenes/terra-encantada-flores.jpg';
 
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
@@ -73,7 +76,7 @@ export const sceneImages: Record<string, string> = {
   'fase2-cena10': palacioBelo,
   'fase2-cena11': colinaDificuldade,
   'fase2-cena12': colinaDificuldadeSubida,
-  'fase2-cena13': colinaDificuldadeSubida,
+  'fase2-cena13': caramanchaoColina,
   'fase2-cena14': leoesPalacio,
 
   // FASE 3: Vale da Humilhação e Apolião
@@ -99,7 +102,7 @@ export const sceneImages: Record<string, string> = {
   'fase4-cena8': esperancaEncontro,
   'fase4-cena9': feiraVaidade,
   'fase4-cena10': esperancaEncontro,
-  'fase4-cena11b': minaDemas,
+  'fase4-cena11b': minaPrataDemas,
   'fase4-cena11': esperancaEncontro,
   'fase4-cena12': fielEncontro,
 
@@ -116,7 +119,7 @@ export const sceneImages: Record<string, string> = {
   'fase5-cena10': montanhasDeleitosas,
   'fase5-cena11': redeLisonjeiro,
   'fase5-cena12': redeLisonjeiro,
-  'fase5-cena13': terraEncantada,
+  'fase5-cena13': terraEncantadaFlores,
   'fase5-cena14': paisBeula,
 
   // FASE 6: Rio e Cidade Celestial
