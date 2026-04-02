@@ -145,6 +145,18 @@ export default function RPGEventPopup({
         emoji: tileEventType === 'refuge' ? '🏠' : '⚡',
       });
     }
+
+    // Auto-narrate context when popup opens (delayed slightly for visual)
+    setTimeout(() => {
+      const contextText = 
+        question?.context || riddle?.context || dilemma?.context || challenge?.context
+        || boss?.narrative || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative;
+      if (contextText) {
+        narrate(contextText, { style: getNarrationStyle(tileEventType) });
+      }
+    }, 500);
+
+    return () => stopNarration();
   }, [visible, tileEventType, difficulty, playerNames, rotationState]);
 
   // Timer countdown
