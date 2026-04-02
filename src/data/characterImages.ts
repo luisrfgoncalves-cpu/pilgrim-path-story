@@ -99,6 +99,7 @@ export const characterImages: Record<string, string> = {
   vigilante: vigilantePorteiro,
   demas,
   timidez_desconfianca: timidezDesconfiancaDupla,
+  livro_antigo: livroAntigo,
 
   // Parte II — novos
   crista,
