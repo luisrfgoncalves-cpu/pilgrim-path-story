@@ -103,6 +103,19 @@ function createPlayer(index: number, name?: string): LocalPlayer {
 // Now ALL special tiles trigger mini-games (more interactive!)
 const EXPANDED_MINI_GAME_TILES: TileType[] = ['giant', 'challenge', 'scripture', 'surprise', 'blessing', 'trap', 'shield', 'current', 'swap'];
 
+// Map board tile types to RPG event types for the RPG popup
+const TILE_TO_RPG_EVENT: Partial<Record<TileType, RPGTileEventType>> = {
+  scripture: 'scripture',
+  challenge: 'challenge',
+  giant: 'boss',
+  surprise: 'special',
+  blessing: 'refuge',
+  trap: 'trap',
+};
+
+// Tiles that should use the RPG popup instead of the old mini-game
+const RPG_TILE_TYPES: TileType[] = ['scripture', 'challenge', 'giant', 'surprise', 'blessing', 'trap'];
+
 // ─── River of Death tiles: last 5 tiles before finish ───
 const RIVER_ZONE_START = IMMERSIVE_BOARD_SIZE - 6; // tiles 114-118 are the river zone
 
