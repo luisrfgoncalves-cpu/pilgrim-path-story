@@ -259,6 +259,7 @@ const ScenePage = () => {
     setCharReveal(null);
     setCharRevealDone(false);
     setPersistentChar(null);
+    setAllPersistentChars([]);
     const t = setTimeout(() => {
       setTransitioning(false);
       triggerSceneEntryVFX(progress.currentChapterId);
@@ -359,6 +360,9 @@ const ScenePage = () => {
     return () => { clearTimeout(t); };
   }, [progress.currentChapterId]);
 
+  // All non-protagonist characters for persistent display
+  const [allPersistentChars, setAllPersistentChars] = useState<{ name: string; img: string; role?: string }[]>([]);
+
   // Dramatic character entrance — show big portrait for non-protagonist characters
   useEffect(() => {
     if (!chapter || transitioning) return;
@@ -366,18 +370,20 @@ const ScenePage = () => {
     const isPart2 = progress.campaign === 'part2';
     const protagonistId = isPart2 ? 'crista' : 'cristao';
     const sceneCharIds = chapter.characters || [];
-    // Find the most important non-protagonist character to reveal
-    const revealChar = sceneCharIds
+    // Find ALL non-protagonist characters with images
+    const sceneNPCs = sceneCharIds
       .filter(id => id !== protagonistId)
       .map(id => {
         const char = allChars.find(c => c.id === id);
         const img = characterImages[id];
         if (!char || !img) return null;
-        const isVillain = ['apolion', 'gigante_desespero', 'juiz_odio_ao_bem', 'amor_dinheiro', 'hipocrisia', 'formalista', 'ateismo', 'lisonjeiro'].includes(id);
+        const isVillain = ['apolion', 'gigante_desespero', 'juiz_odio_ao_bem', 'amor_dinheiro', 'hipocrisia', 'formalista', 'ateismo', 'lisonjeiro', 'vergonha', 'desconfianca', 'madame_bolha'].includes(id);
         return { name: char.name, img, role: char.role, isVillain };
       })
-      .find(Boolean);
+      .filter(Boolean) as { name: string; img: string; role?: string; isVillain?: boolean }[];
 
+    // Reveal the FIRST important character dramatically
+    const revealChar = sceneNPCs[0];
     if (revealChar) {
       const delay = setTimeout(() => {
         playGameSfx('suspense');
@@ -385,14 +391,17 @@ const ScenePage = () => {
           playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
         }, 200);
         setCharReveal(revealChar);
-        // Faster reveal to avoid slow feeling on mobile scenes
         setTimeout(() => {
           setCharReveal(null);
           setCharRevealDone(true);
           setPersistentChar(revealChar);
+          // Set ALL NPCs as persistent (including the first one)
+          setAllPersistentChars(sceneNPCs);
         }, 2500);
       }, 250);
       return () => clearTimeout(delay);
+    } else {
+      setAllPersistentChars([]);
     }
   }, [chapter?.id, transitioning]);
 
@@ -765,22 +774,23 @@ const ScenePage = () => {
               );
             })()}
 
-            {/* Persistent NPC portrait — appears after reveal animation finishes */}
-            {persistentChar && charRevealDone && (
-              <div className="flex items-center gap-3 flex-shrink-0 animate-fade-in ml-auto">
-                <div className="text-right">
-                  <p className="font-display text-sm font-bold leading-tight" style={{ color: 'hsl(35 50% 65%)' }}>{persistentChar.name}</p>
-                  <p className="text-[10px] text-muted-foreground">{persistentChar.role || 'Personagem'}</p>
-                </div>
-                <img
-                  src={persistentChar.img}
-                  alt={persistentChar.name}
-                  className="w-14 h-14 rounded-2xl object-cover"
-                  style={{
-                    border: '2px solid hsl(35 40% 40%)',
-                    boxShadow: '0 4px 16px hsl(0 0% 0% / 0.4), 0 0 10px hsl(35 40% 40% / 0.25)',
-                  }}
-                />
+            {/* Persistent NPC portraits — ALL characters in scene */}
+            {charRevealDone && allPersistentChars.length > 0 && (
+              <div className="flex items-center gap-2 flex-shrink-0 animate-fade-in ml-auto overflow-hidden">
+                {allPersistentChars.slice(0, 3).map((npc, idx) => (
+                  <div key={idx} className="flex flex-col items-center flex-shrink-0">
+                    <img
+                      src={npc.img}
+                      alt={npc.name}
+                      className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl object-cover"
+                      style={{
+                        border: '2px solid hsl(35 40% 40%)',
+                        boxShadow: '0 4px 12px hsl(0 0% 0% / 0.4), 0 0 8px hsl(35 40% 40% / 0.2)',
+                      }}
+                    />
+                    <p className="text-[8px] sm:text-[10px] font-display font-bold leading-tight mt-0.5 text-center max-w-[56px] truncate" style={{ color: 'hsl(35 50% 65%)' }}>{npc.name}</p>
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -1320,7 +1330,7 @@ const ScenePage = () => {
               <img
                 src={charReveal.img}
                 alt={charReveal.name}
-                className="w-72 h-[22rem] md:w-[22rem] md:h-[28rem] object-cover object-top mx-auto"
+                className="w-64 h-[20rem] sm:w-72 sm:h-[22rem] md:w-[22rem] md:h-[28rem] object-cover object-top mx-auto max-w-[90vw]"
                 style={{
                   borderRadius: '0',
                   border: 'none',

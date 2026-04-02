@@ -11,59 +11,80 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
   // ║  FASE 1 — Início da Jornada         ║
   // ╚══════════════════════════════════════╝
 
-  // Fuga da Cidade — QTE (correr!)
+  // Fuga da Cidade — Discernir entre vozes: quem ouvir?
   'cena2': {
-    type: 'qte',
-    difficulty: 'easy',
-    intro: 'Você precisa correr! Os vizinhos tentam impedi-lo. Toque nos obstáculos para desviar!',
-    successBonus: { coragem: 1 },
-    failurePenalty: { coragem: -1 },
-  },
-
-  // Pântano do Desânimo — Stealth
-  'cena4': {
-    type: 'stealth',
-    difficulty: 'easy',
-    intro: 'O Pântano do Desânimo se abre diante de você. Cada passo deve ser calculado para não afundar na lama da dúvida.',
-    successBonus: { perseveranca: 1 },
-    failurePenalty: { perseveranca: -1 },
-  },
-
-  // Porta Estreita — Reflexo Divino
-  'cena6': {
-    type: 'reflex',
-    difficulty: 'easy',
-    intro: 'A luz da Porta Estreita pulsa em direções. Siga os sinais para encontrar o caminho!',
-    successBonus: { fe: 1 },
-    failurePenalty: { fe: -1 },
-  },
-
-  // Encontro com Prudência Mundana — Swipe
-  'cena8': {
     type: 'swipe',
     difficulty: 'easy',
-    intro: 'Prudência Mundana sussurra promessas sedutoras. Discerna entre as mentiras e a verdade!',
+    intro: 'Obstinado e Flexível gritam coisas diferentes. Discerna entre os conselhos que levam à vida e os que prendem na destruição.',
     successBonus: { discernimento: 1 },
     failurePenalty: { discernimento: -1 },
     swipeItems: [
-      { text: 'Caminho fácil', emoji: '🛤️', good: false },
-      { text: 'Riqueza rápida', emoji: '💰', good: false },
-      { text: 'Paz sem luta', emoji: '😴', good: false },
-      { text: 'Palavra de Deus', emoji: '📖', good: true },
-      { text: 'Porta Estreita', emoji: '🚪', good: true },
-      { text: 'Conforto vão', emoji: '🍷', good: false },
-      { text: 'Oração sincera', emoji: '🙏', good: true },
-      { text: 'Fé verdadeira', emoji: '✨', good: true },
+      { text: '"Volte! Está louco!"', emoji: '😤', good: false },
+      { text: '"Fique, é mais seguro"', emoji: '🏠', good: false },
+      { text: '"Fuja da ira vindoura"', emoji: '📖', good: true },
+      { text: '"Não vale a pena"', emoji: '🙄', good: false },
+      { text: '"Busque a Porta Estreita"', emoji: '🚪', good: true },
+      { text: '"Vida! Vida eterna!"', emoji: '🔥', good: true },
+      { text: '"Todo mundo fica"', emoji: '👥', good: false },
+      { text: '"Corra sem olhar para trás"', emoji: '🏃', good: true },
     ],
   },
 
-  // Monte Sinai — Tremor/Stealth
+  // Pântano do Desânimo — Agarrar-se às promessas
+  'cena4': {
+    type: 'swipe',
+    difficulty: 'easy',
+    intro: 'No Pântano do Desânimo, pensamentos de dúvida e promessas de Deus se misturam. Agarre-se às verdades que sustentam sua alma.',
+    successBonus: { perseveranca: 1, fe: 1 },
+    failurePenalty: { perseveranca: -1 },
+    swipeItems: [
+      { text: '"Deus me abandonou"', emoji: '😰', good: false },
+      { text: '"Não sou digno"', emoji: '😞', good: false },
+      { text: '"Deus é refúgio e fortaleza"', emoji: '🛡️', good: true },
+      { text: '"Melhor voltar atrás"', emoji: '↩️', good: false },
+      { text: '"Ele me tirará do lamaçal"', emoji: '🙌', good: true },
+      { text: '"Ninguém se importa"', emoji: '😢', good: false },
+      { text: '"Clama a mim e eu te responderei"', emoji: '🙏', good: true },
+      { text: '"A graça é suficiente"', emoji: '✨', good: true },
+    ],
+  },
+
+  // Porta Estreita — Montar o versículo que abre a porta
+  'cena6': {
+    type: 'wordpuzzle',
+    difficulty: 'easy',
+    intro: 'Para encontrar a Porta Estreita, monte o versículo que revela o caminho da vida.',
+    successBonus: { fe: 1, discernimento: 1 },
+    failurePenalty: { fe: -1 },
+  },
+
+  // Encontro com Prudência Mundana — Discernir engano
+  'cena8': {
+    type: 'swipe',
+    difficulty: 'easy',
+    intro: 'Prudência Mundana usa argumentos convincentes para desviar do caminho. Discerna entre a sabedoria do mundo e a sabedoria de Deus.',
+    successBonus: { discernimento: 1 },
+    failurePenalty: { discernimento: -1 },
+    swipeItems: [
+      { text: '"Busque conforto primeiro"', emoji: '🛋️', good: false },
+      { text: '"A moralidade basta"', emoji: '⚖️', good: false },
+      { text: '"Sem a Cruz, não há vida"', emoji: '✝️', good: true },
+      { text: '"Evite sofrimento"', emoji: '😴', good: false },
+      { text: '"A Porta Estreita é o único caminho"', emoji: '🚪', good: true },
+      { text: '"Deus vê o coração"', emoji: '👁️', good: true },
+      { text: '"Existem muitos caminhos"', emoji: '🛤️', good: false },
+      { text: '"Só pela graça"', emoji: '🙏', good: true },
+    ],
+  },
+
+  // Monte Sinai — Lembrar por que a Lei condena mas Cristo salva
   'cena10': {
-    type: 'stealth',
+    type: 'memory',
     difficulty: 'normal',
-    intro: 'O Monte Sinai treme! Avance com cuidado pelo caminho instável sem ser engolido pela terra.',
-    successBonus: { perseveranca: 1, coragem: 1 },
-    failurePenalty: { coragem: -1 },
+    intro: 'O Monte Sinai treme com a Lei de Deus. Memorize os símbolos que representam a diferença entre Lei e Graça — seu discernimento depende disso.',
+    successBonus: { discernimento: 1, fe: 1 },
+    failurePenalty: { fe: -1 },
+    memorySymbols: ['⚡', '📜', '✝️', '🕊️', '🔥', '💧', '⛰️', '🌟'],
   },
 
   // Caça ao Tesouro — antes de chegar à Porta
@@ -75,11 +96,11 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     failurePenalty: {},
   },
 
-  // Auxílio no Pântano — Memória
+  // Auxílio no Pântano — Memorizar as verdades que sustentam
   'cena13': {
     type: 'memory',
     difficulty: 'easy',
-    intro: 'Auxílio te ensina verdades para não afundar novamente. Memorize as lições!',
+    intro: 'Auxílio te ensina verdades para não afundar novamente. Memorize as promessas que são como pedras firmes no pântano!',
     successBonus: { fe: 1, discernimento: 1 },
     failurePenalty: { discernimento: -1 },
   },
@@ -98,20 +119,30 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     memorySymbols: ['✝️', '🕊️', '🔥', '💧', '⭐', '📖', '🛡️', '🗝️'],
   },
 
-  // Sala do fogo — Reflexo Divino
+  // Sala do fogo — Discernir o que alimenta e o que apaga a fé
   'fase2-cena3': {
-    type: 'reflex',
+    type: 'swipe',
     difficulty: 'easy',
-    intro: 'As chamas do Espírito dançam em padrões. Siga os movimentos para não ser queimado!',
-    successBonus: { fe: 1, coragem: 1 },
+    intro: 'Na sala do fogo, o Intérprete mostra: o diabo joga água para apagar a chama, mas Cristo derrama óleo por trás. Discerna o que fortalece e o que enfraquece sua fé.',
+    successBonus: { fe: 1, discernimento: 1 },
     failurePenalty: { fe: -1 },
+    swipeItems: [
+      { text: 'Dúvida persistente', emoji: '💧', good: false },
+      { text: 'Tentação mundana', emoji: '🌊', good: false },
+      { text: 'Óleo do Espírito', emoji: '🔥', good: true },
+      { text: 'Perseguição', emoji: '⚡', good: false },
+      { text: 'Graça de Cristo', emoji: '✨', good: true },
+      { text: 'Oração constante', emoji: '🙏', good: true },
+      { text: 'Preguiça espiritual', emoji: '😴', good: false },
+      { text: 'Palavra viva', emoji: '📖', good: true },
+    ],
   },
 
-  // A Cruz e o Fardo — QTE
+  // A Cruz e o Fardo — Montar versículo da libertação
   'fase2-cena4': {
-    type: 'qte',
+    type: 'wordpuzzle',
     difficulty: 'easy',
-    intro: 'As correntes do pecado se rompem! Toque nos grilhões para quebrá-los antes que se fechem novamente!',
+    intro: 'Ao pé da Cruz, o fardo finalmente pode cair! Monte o versículo que declara a libertação do pecado.',
     successBonus: { fe: 2 },
     failurePenalty: { fe: -1 },
   },
@@ -164,13 +195,23 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
   // ║  FASE 3 — Vale da Humilhação        ║
   // ╚══════════════════════════════════════╝
 
-  // Descida ao Vale — Stealth
+  // Descida ao Vale — Discernir entre humildade verdadeira e falsa
   'fase3-cena1': {
-    type: 'stealth',
+    type: 'swipe',
     difficulty: 'normal',
-    intro: 'A descida ao Vale da Humilhação é traiçoeira. Cada passo deve ser dado com cautela.',
-    successBonus: { perseveranca: 1 },
+    intro: 'O Vale da Humilhação ensina uma lição crucial: a humildade verdadeira fortalece, a falsa humildade destrói. Discerna entre elas.',
+    successBonus: { perseveranca: 1, discernimento: 1 },
     failurePenalty: { perseveranca: -1 },
+    swipeItems: [
+      { text: '"Sou inútil para Deus"', emoji: '😞', good: false },
+      { text: '"Os humildes são exaltados"', emoji: '🙌', good: true },
+      { text: '"Desista, você não merece"', emoji: '💀', good: false },
+      { text: '"Cristo foi humilhado por amor"', emoji: '✝️', good: true },
+      { text: '"Vergonha é o meu destino"', emoji: '😰', good: false },
+      { text: '"Na fraqueza, sou forte"', emoji: '💪', good: true },
+      { text: '"Orgulho é proteção"', emoji: '🦚', good: false },
+      { text: '"Deus resiste aos soberbos"', emoji: '📖', good: true },
+    ],
   },
 
   // Batalha contra Apolião — DUELO DE DADOS
@@ -192,21 +233,31 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     failurePenalty: { fe: -1 },
   },
 
-  // Vale da Sombra da Morte — Stealth
+  // Vale da Sombra — Discernir vozes nas trevas
   'fase3-cena5': {
-    type: 'stealth',
+    type: 'swipe',
     difficulty: 'hard',
-    intro: 'O Vale da Sombra da Morte se estende em trevas. Avance em silêncio — os demônios espreitam.',
-    successBonus: { coragem: 1, perseveranca: 1 },
+    intro: 'No Vale da Sombra da Morte, vozes sussurram nas trevas. Algumas são demônios tentando destruir sua fé. Outras são promessas de Deus. Discerna quem fala!',
+    successBonus: { coragem: 1, fe: 1 },
     failurePenalty: { coragem: -1 },
+    swipeItems: [
+      { text: '"Deus te abandonou aqui"', emoji: '🌑', good: false },
+      { text: '"Ainda que eu ande pelo vale..."', emoji: '🕯️', good: true },
+      { text: '"Você nunca sairá daqui"', emoji: '💀', good: false },
+      { text: '"Tu estás comigo"', emoji: '🙏', good: true },
+      { text: '"Blasfeme e morra em paz"', emoji: '😈', good: false },
+      { text: '"Tua vara e teu cajado me consolam"', emoji: '🛡️', good: true },
+      { text: '"A fé é ilusão"', emoji: '🎭', good: false },
+      { text: '"Não temerei mal algum"', emoji: '✨', good: true },
+    ],
   },
 
-  // QTE no Vale — evitar armadilhas
+  // Versículos como arma no Vale — Puzzle de Escritura
   'fase3-cena6': {
-    type: 'qte',
+    type: 'wordpuzzle',
     difficulty: 'normal',
-    intro: 'Armadilhas surgem no caminho escuro! Desvie rapidamente!',
-    successBonus: { coragem: 1 },
+    intro: 'As trevas só recuam diante da Palavra. Monte o Salmo 23 para iluminar seu caminho no vale da sombra!',
+    successBonus: { coragem: 1, fe: 1 },
     failurePenalty: { coragem: -1 },
   },
 
@@ -252,13 +303,23 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     ],
   },
 
-  // Confronto na Feira — QTE
+  // Confronto na Feira — Discernir entre a voz da multidão e a voz de Deus
   'fase4-cena2': {
-    type: 'qte',
+    type: 'swipe',
     difficulty: 'normal',
-    intro: 'A multidão se volta contra vocês! Desvie dos objetos atirados!',
-    successBonus: { coragem: 1 },
+    intro: 'A multidão grita acusações e ofertas. Em meio ao caos, ouça a voz de Deus e rejeite a voz do mundo.',
+    successBonus: { coragem: 1, fe: 1 },
     failurePenalty: { coragem: -1 },
+    swipeItems: [
+      { text: '"Adore nossos ídolos!"', emoji: '🗿', good: false },
+      { text: '"Compre prazeres!"', emoji: '💰', good: false },
+      { text: '"Não temais, eu venci o mundo"', emoji: '✝️', good: true },
+      { text: '"Neguem sua fé!"', emoji: '😡', good: false },
+      { text: '"Bem-aventurados os perseguidos"', emoji: '🕊️', good: true },
+      { text: '"Sejam como nós!"', emoji: '🎭', good: false },
+      { text: '"Sê fiel até a morte"', emoji: '👑', good: true },
+      { text: '"A verdade vos libertará"', emoji: '📖', good: true },
+    ],
   },
 
   // Caça ao tesouro na Feira
@@ -304,13 +365,14 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     duelEnemy: { name: 'Acusador', emoji: '⚖️', power: 5 },
   },
 
-  // Fuga da Feira — Stealth
+  // Fuga da Feira — Recordar lições da jornada
   'fase4-cena11': {
-    type: 'stealth',
+    type: 'memory',
     difficulty: 'normal',
-    intro: 'Vocês precisam escapar da Feira sem serem capturados novamente. Avance em silêncio!',
-    successBonus: { perseveranca: 1, coragem: 1 },
-    failurePenalty: { coragem: -1 },
+    intro: 'Para escapar da Feira, lembre-se das lições que aprendeu na jornada. Cada memória é um passo para a liberdade!',
+    successBonus: { perseveranca: 1, fe: 1 },
+    failurePenalty: { fe: -1 },
+    memorySymbols: ['🚪', '✝️', '🛡️', '📖', '🗡️', '🕊️', '🔥', '🗝️'],
   },
 
   // ╔══════════════════════════════════════╗
@@ -362,13 +424,13 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     duelEnemy: { name: 'Gigante Desespero', emoji: '👹', power: 7 },
   },
 
-  // Fuga do Castelo — QTE
+  // Fuga do Castelo — A Chave da Promessa (versículo)
   'fase5-cena4': {
-    type: 'qte',
+    type: 'wordpuzzle',
     difficulty: 'hard',
-    intro: 'Corram! O Gigante os persegue! Desvie dos obstáculos na fuga desesperada!',
-    successBonus: { coragem: 2 },
-    failurePenalty: { coragem: -1, perseveranca: -1 },
+    intro: 'Cristão lembra: "Tenho uma chave chamada Promessa!" Monte o versículo que abre as portas do calabouço e liberta sua alma!',
+    successBonus: { fe: 2, perseveranca: 1 },
+    failurePenalty: { perseveranca: -1 },
   },
 
   // Montanhas Deleitosas — Reflexo Divino
@@ -407,26 +469,46 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     ],
   },
 
-  // Terra Encantada — Stealth
+  // Terra Encantada — Discernir entre sono espiritual e vigília
   'fase5-cena12': {
-    type: 'stealth',
+    type: 'swipe',
     difficulty: 'hard',
-    intro: 'A Terra Encantada tenta fazê-los dormir! Avance sem ceder ao sono mortal.',
+    intro: 'A Terra Encantada é um lugar de sono mortal. Discerna entre o que adormece sua alma e o que a mantém desperta!',
     successBonus: { perseveranca: 2 },
     failurePenalty: { perseveranca: -2 },
+    swipeItems: [
+      { text: '"Descanse um pouco..."', emoji: '😴', good: false },
+      { text: '"Vigiai e orai!"', emoji: '🔥', good: true },
+      { text: '"Já fizemos o suficiente"', emoji: '🛋️', good: false },
+      { text: '"Estamos quase lá!"', emoji: '🏔️', good: true },
+      { text: '"O caminho pode esperar"', emoji: '⏸️', good: false },
+      { text: '"O inimigo ronda como leão"', emoji: '🦁', good: true },
+      { text: '"Um cochilo não faz mal"', emoji: '💤', good: false },
+      { text: '"Corramos com perseverança"', emoji: '🏃', good: true },
+    ],
   },
 
   // ╔══════════════════════════════════════╗
   // ║  FASE 6 — Cidade Celestial          ║
   // ╚══════════════════════════════════════╝
 
-  // Rio da Morte — QTE final
+  // Rio da Morte — Discernir entre medo e fé
   'fase6-cena1': {
-    type: 'qte',
+    type: 'swipe',
     difficulty: 'normal',
-    intro: 'O Rio da Morte se interpõe entre você e a Cidade Celestial. Lute para atravessar!',
+    intro: 'O Rio da Morte é a última prova. Nas águas geladas, medos e promessas se misturam. Agarre-se às promessas de Deus para não afundar!',
     successBonus: { fe: 2, perseveranca: 1 },
     failurePenalty: { fe: -1 },
+    swipeItems: [
+      { text: '"As águas vão me engolir"', emoji: '🌊', good: false },
+      { text: '"Todos os meus pecados voltam"', emoji: '😱', good: false },
+      { text: '"Eu sou a ressurreição e a vida"', emoji: '✝️', good: true },
+      { text: '"Não há esperança"', emoji: '💀', good: false },
+      { text: '"Nem a morte nos separará de Deus"', emoji: '🕊️', good: true },
+      { text: '"Eu vejo terra firme do outro lado"', emoji: '🌅', good: true },
+      { text: '"A jornada foi em vão"', emoji: '😢', good: false },
+      { text: '"As portas estão abertas para mim"', emoji: '🏛️', good: true },
+    ],
   },
 
   // Travessia — Duelo Espiritual final
@@ -608,20 +690,30 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     memorySymbols: ['👼', '✉️', '🌟', '🕊️', '👑', '💌', '🔔', '✨'],
   },
 
-  // Cena 3 — O Pântano com Misericórdia: Stealth
+  // Cena 3 — O Pântano com Misericórdia: Discernir promessas
   'p2-cena3': {
-    type: 'stealth',
+    type: 'swipe',
     difficulty: 'easy',
-    intro: 'O Pântano do Desânimo ameaça engolir Misericórdia! Avance com cuidado pelas pedras de promessa.',
+    intro: 'No Pântano, Misericórdia está afundando de medo. Agarre-se às promessas que são como pedras firmes e rejeite os pensamentos que arrastam para baixo!',
     successBonus: { perseveranca: 1, fe: 1 },
     failurePenalty: { perseveranca: -1 },
+    swipeItems: [
+      { text: '"Eu não mereço estar aqui"', emoji: '😢', good: false },
+      { text: '"A graça é para todos"', emoji: '✨', good: true },
+      { text: '"Devia ter ficado em casa"', emoji: '🏠', good: false },
+      { text: '"Deus chamou e eu respondi"', emoji: '📖', good: true },
+      { text: '"Não sou digna do portão"', emoji: '😞', good: false },
+      { text: '"Bata e a porta se abrirá"', emoji: '🚪', good: true },
+      { text: '"Cristã vai me abandonar"', emoji: '😰', good: false },
+      { text: '"O Senhor é minha força"', emoji: '🙏', good: true },
+    ],
   },
 
-  // Cena 4 — O Portão Estreito: QTE (bater insistentemente)
+  // Cena 4 — O Portão Estreito: Versículo que abre a porta
   'p2-cena4': {
-    type: 'qte',
+    type: 'wordpuzzle',
     difficulty: 'easy',
-    intro: 'Bata no Portão Estreito com insistência! Não pare até que ele se abra!',
+    intro: 'Para abrir o Portão Estreito, monte o versículo que Jesus usou como promessa: "Pedi e dar-se-vos-á; buscai e encontrareis; batei e abrir-se-vos-á."',
     successBonus: { fe: 1, perseveranca: 1 },
     failurePenalty: { fe: -1 },
   },
@@ -675,22 +767,33 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     failurePenalty: { fe: -1 },
   },
 
-  // Cena 3 — Colina da Dificuldade: Stealth (subida cuidadosa)
+  // Cena 3 — Colina da Dificuldade: Memorizar lições que sustentam
   'p2-fase2-cena3': {
-    type: 'stealth',
+    type: 'memory',
     difficulty: 'normal',
-    intro: 'A Colina da Dificuldade exige cada gota de energia. Suba com cautela — os filhos dependem de você!',
+    intro: 'A Colina da Dificuldade exige resistência espiritual. Memorize os símbolos das lições que seus filhos precisarão para sobreviver!',
     successBonus: { perseveranca: 2 },
     failurePenalty: { perseveranca: -1 },
+    memorySymbols: ['⛰️', '🙏', '💪', '📖', '🔥', '✝️', '🛡️', '⭐'],
   },
 
-  // Cena 4 — Os Leões: QTE (passar pelos leões)
+  // Cena 4 — Os Leões: Discernir coragem verdadeira de imprudência
   'p2-fase2-cena4': {
-    type: 'qte',
+    type: 'swipe',
     difficulty: 'normal',
-    intro: 'Os leões rugem! Grande-Coração abre caminho — corra pelo centro antes que avancem!',
+    intro: 'Os leões rugem, mas estão acorrentados! Discerna entre a coragem que vem da fé e a imprudência que vem do medo.',
     successBonus: { coragem: 2 },
     failurePenalty: { coragem: -1 },
+    swipeItems: [
+      { text: '"Fugir é sábio"', emoji: '🏃', good: false },
+      { text: '"Os leões estão presos"', emoji: '🦁', good: true },
+      { text: '"Deus não protege aqui"', emoji: '😰', good: false },
+      { text: '"O caminho do centro é seguro"', emoji: '🛤️', good: true },
+      { text: '"Qualquer caminho serve"', emoji: '🤷', good: false },
+      { text: '"Confie no Vigilante"', emoji: '👁️', good: true },
+      { text: '"Volte pela Colina"', emoji: '↩️', good: false },
+      { text: '"A fé vence o medo"', emoji: '🛡️', good: true },
+    ],
   },
 
   // Cena 5 — Palácio Belo: Caça ao Tesouro
@@ -719,13 +822,23 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     failurePenalty: { discernimento: -1 },
   },
 
-  // Cena 2 — Vale da Sombra: Stealth (atravessar com o pilar de fogo)
+  // Cena 2 — Vale da Sombra: Discernir vozes nas trevas (versão Cristã)
   'p2-fase3-cena2': {
-    type: 'stealth',
+    type: 'swipe',
     difficulty: 'hard',
-    intro: 'O Vale da Sombra da Morte é escuro. Siga o pilar de fogo e proteja as crianças dos sussurros!',
-    successBonus: { coragem: 1, perseveranca: 1 },
+    intro: 'O Vale da Sombra tenta amedrontar as crianças. Ensine-lhes a diferença entre as mentiras dos demônios e as promessas do pilar de fogo!',
+    successBonus: { coragem: 1, fe: 1 },
     failurePenalty: { coragem: -1 },
+    swipeItems: [
+      { text: '"As crianças vão morrer"', emoji: '💀', good: false },
+      { text: '"O pilar de fogo nos guia"', emoji: '🔥', good: true },
+      { text: '"Não há saída do vale"', emoji: '🌑', good: false },
+      { text: '"O Senhor é meu pastor"', emoji: '🐑', good: true },
+      { text: '"Seus filhos serão órfãos"', emoji: '😱', good: false },
+      { text: '"Grande-Coração nos protege"', emoji: '⚔️', good: true },
+      { text: '"A escuridão é eterna"', emoji: '🌊', good: false },
+      { text: '"A manhã virá"', emoji: '🌅', good: true },
+    ],
   },
 
   // Cena 3 — Gigante Maul: Duelo de Dados
@@ -828,12 +941,12 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
 
   // ── FASE 5: O Castelo Destruído ──
 
-  // Cena 1 — Portas do Castelo: QTE (arrombar portões)
+  // Cena 1 — Portas do Castelo: Versículos que destroem a dúvida
   'p2-fase5-cena1': {
-    type: 'qte',
+    type: 'wordpuzzle',
     difficulty: 'hard',
-    intro: 'Grande-Coração arromba os portões do Castelo da Dúvida! Ajude a derrubar cada barreira!',
-    successBonus: { coragem: 2 },
+    intro: 'Para destruir o Castelo da Dúvida, monte o versículo que é mais forte que qualquer muralha de medo!',
+    successBonus: { coragem: 2, fe: 1 },
     failurePenalty: { coragem: -1 },
   },
 
@@ -863,13 +976,14 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     ],
   },
 
-  // Cena 4 — Demolição do Castelo: QTE (destruir muralhas)
+  // Cena 4 — Demolição do Castelo: Lembrar promessas que derrubam muralhas
   'p2-fase5-cena4': {
-    type: 'qte',
+    type: 'memory',
     difficulty: 'normal',
-    intro: 'Pedra por pedra, destrua o Castelo da Dúvida! Toque em cada ponto fraco para derrubá-lo!',
+    intro: 'Cada pedra do Castelo da Dúvida representa uma mentira. Lembre-se das verdades de Deus que derrubam cada uma!',
     successBonus: { perseveranca: 1, coragem: 1 },
     failurePenalty: { perseveranca: -1 },
+    memorySymbols: ['🗝️', '📖', '✝️', '🔥', '🛡️', '🕊️', '💪', '⭐'],
   },
 
   // Cena 5 — Montanhas Deleitosas: Memória (avisos dos pastores)
@@ -931,13 +1045,23 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     memorySymbols: ['⚔️', '🙏', '💪', '🕊️', '👑', '🎵', '❤️', '✨'],
   },
 
-  // Cena 5 — A Travessia de Cristã: QTE final (atravessar o rio)
+  // Cena 5 — A Travessia de Cristã: Agarrar-se às promessas no rio
   'p2-fase6-cena5': {
-    type: 'qte',
+    type: 'swipe',
     difficulty: 'normal',
-    intro: 'O Rio da Morte se abre diante de Cristã. Cada passo firme a leva mais perto de Cristão!',
+    intro: 'O Rio da Morte se abre, mas Cristã não tem medo — ela sabe que Cristão a espera do outro lado. Agarre-se às promessas e rejeite o medo!',
     successBonus: { fe: 2, perseveranca: 1 },
     failurePenalty: { fe: -1 },
+    swipeItems: [
+      { text: '"A morte é o fim"', emoji: '💀', good: false },
+      { text: '"Cristão me espera"', emoji: '💑', good: true },
+      { text: '"As águas vão me vencer"', emoji: '🌊', good: false },
+      { text: '"Eu sei em quem tenho crido"', emoji: '✝️', good: true },
+      { text: '"Meus filhos ficarão sozinhos"', emoji: '😢', good: false },
+      { text: '"A Cidade Celestial é real"', emoji: '🏛️', good: true },
+      { text: '"Fui enganada todo este tempo"', emoji: '😰', good: false },
+      { text: '"Bem-aventurados os que morrem no Senhor"', emoji: '👑', good: true },
+    ],
   },
 
   // Cena 6 — Cidade Celestial: Caça ao Tesouro (recompensas eternas)

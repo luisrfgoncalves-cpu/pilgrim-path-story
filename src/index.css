@@ -10,6 +10,12 @@ html, body, #root {
   color: hsl(38 40% 85%);
 }
 
+/* CRITICAL: Prevent horizontal scroll on all devices */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 @supports (padding: env(safe-area-inset-top)) {
   body {
     padding-top: env(safe-area-inset-top);
