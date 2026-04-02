@@ -1942,10 +1942,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Pequena-Fé Assaltado",
     location: "Caminho Estreito",
     characters: ["cristao", "esperanca", "pequena_fe"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'Um homem chora à beira do caminho...' },
     narrative: [
-      "Na estrada, encontram um homem esfarrapado sentado numa pedra, chorando. Seu nome é Pequena-Fé, da cidade de Sinceridade.",
-      "\"Três ladrões me atacaram\", soluça ele. \"Coração-Fraco, Desconfiança e Culpa. Roubaram todo o meu dinheiro. Quase levaram meu pergaminho — mas o esconderam-se quando ouviram uma voz de Grande-Graça ao longe.\"",
-      "Esperança sussurra: \"Ele ainda tem o pergaminho. Ainda pode entrar na cidade. Mas caminha como um mendigo quando poderia caminhar como um príncipe.\""
+      "Na estrada, encontram um homem esfarrapado sentado numa pedra, chorando. Seu nome é {{emphasis}}Pequena-Fé{{/emphasis}}, da cidade de Sinceridade.",
+      "{{heart}}\"Três ladrões me atacaram\"{{/heart}}, soluça ele. {{villain}}\"Coração-Fraco, Desconfiança e Culpa. Roubaram todo o meu dinheiro.{{/villain}} Quase levaram meu pergaminho — mas fugiram quando ouviram a voz de {{divine}}Grande-Graça{{/divine}} ao longe.\"",
+      "{{whisper}}Esperança sussurra: \"Ele ainda tem o pergaminho. Ainda pode entrar na cidade. Mas caminha como um mendigo quando poderia caminhar como um príncipe.\"{{/whisper}}"
     ],
     flagNarrative: [
       { flag: "rejeitou_interesses", text: "Interesses teria rido de Pequena-Fé. Você fez bem em se separar dele." },
