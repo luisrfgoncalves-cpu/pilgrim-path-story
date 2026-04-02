@@ -69,7 +69,7 @@ export const sceneImages: Record<string, string> = {
   'fase2-cena6': casaInterprete,
   'fase2-cena7': palacioBelo,
   'fase2-cena8': gaiolaFerro,
-  'fase2-cena9': palacioBelo,
+  'fase2-cena9': armaduraCrista,
   'fase2-cena10': palacioBelo,
   'fase2-cena11': colinaDificuldade,
   'fase2-cena12': colinaDificuldadeSubida,
