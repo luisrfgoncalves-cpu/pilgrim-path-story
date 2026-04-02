@@ -1470,23 +1470,36 @@ const ScenePage = () => {
           characterId={allegoryCardChar}
           onDismiss={() => {
             setAllegoryCardChar(null);
-            setCharRevealDone(true);
-            // Build persistent chars from current scene
-            const allChars = [...characters, ...part2Characters];
+
+            // Check if there's another unseen allegory card in this scene
             const isPart2 = progress.campaign === 'part2';
             const protagonistId = isPart2 ? 'crista' : 'cristao';
             const sceneCharIds = chapter?.characters || [];
-            const npcs = sceneCharIds
-              .filter(id => id !== protagonistId)
-              .map(id => {
-                const char = allChars.find(c => c.id === id);
-                const img = characterImages[id];
-                if (!char || !img) return null;
-                return { name: char.name, img, role: char.role };
-              })
-              .filter(Boolean) as { name: string; img: string; role?: string }[];
-            setAllPersistentChars(npcs);
-            if (npcs[0]) setPersistentChar(npcs[0]);
+            const nextUnseen = sceneCharIds.find(
+              id => id !== protagonistId && !seenAllegoryCards.has(id) && allegoryMeanings[id] && characterImages[id]
+            );
+
+            if (nextUnseen) {
+              // Queue the next allegory card after a short delay
+              seenAllegoryCards.add(nextUnseen);
+              try { sessionStorage.setItem('seen-allegory-cards', JSON.stringify([...seenAllegoryCards])); } catch {}
+              setTimeout(() => setAllegoryCardChar(nextUnseen), 400);
+            } else {
+              // All allegory cards shown — finalize scene
+              setCharRevealDone(true);
+              const allChars = [...characters, ...part2Characters];
+              const npcs = sceneCharIds
+                .filter(id => id !== protagonistId)
+                .map(id => {
+                  const char = allChars.find(c => c.id === id);
+                  const img = characterImages[id];
+                  if (!char || !img) return null;
+                  return { name: char.name, img, role: char.role };
+                })
+                .filter(Boolean) as { name: string; img: string; role?: string }[];
+              setAllPersistentChars(npcs);
+              if (npcs[0]) setPersistentChar(npcs[0]);
+            }
           }}
         />
       )}
