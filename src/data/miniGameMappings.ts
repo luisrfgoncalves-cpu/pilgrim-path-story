@@ -941,12 +941,12 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
 
   // ── FASE 5: O Castelo Destruído ──
 
-  // Cena 1 — Portas do Castelo: QTE (arrombar portões)
+  // Cena 1 — Portas do Castelo: Versículos que destroem a dúvida
   'p2-fase5-cena1': {
-    type: 'qte',
+    type: 'wordpuzzle',
     difficulty: 'hard',
-    intro: 'Grande-Coração arromba os portões do Castelo da Dúvida! Ajude a derrubar cada barreira!',
-    successBonus: { coragem: 2 },
+    intro: 'Para destruir o Castelo da Dúvida, monte o versículo que é mais forte que qualquer muralha de medo!',
+    successBonus: { coragem: 2, fe: 1 },
     failurePenalty: { coragem: -1 },
   },
 
