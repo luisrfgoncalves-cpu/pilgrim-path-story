@@ -54,6 +54,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
     adaptiveNarrative: [
       { minAttr: "fe", minValue: 0, text: "Cristã reconhece o caminho que seu marido percorreu. Cada marco que ele enfrentou — o pântano, a cruz, o vale, a feira — agora aguarda por ela." }
     ],
+    replayNarrative: [
+      "O sonho é mais nítido desta vez. Cristão fala diretamente: \"Não demores como eu demorei em partir. Cada dia aqui é um dia perdido.\"",
+      "A carta parece ter mais palavras do que da última vez. Como se o Rei soubesse que você voltaria."
+    ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "A carta queima em suas mãos como uma promessa viva. Não há dúvida — é hora de partir.", lowThreshold: 4, lowText: "As palavras da carta tremem diante dos seus olhos. Partir? Com quatro filhos? Pelo mesmo caminho perigoso?" }
     ],
@@ -63,6 +67,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-cena2",
         effects: { fe: 2, coragem: 1 },
         flag: "aceitou_convite_imediato",
+        item: "carta_do_rei",
         consequence: "A obediência pronta é a marca da fé genuína. Cristã não esperou sinais adicionais — a carta do Rei foi suficiente. — Hebreus 11:8: \"Pela fé Abraão, sendo chamado, obedeceu, indo para um lugar que havia de receber por herança; e saiu, sem saber para onde ia.\""
       },
       {
@@ -119,6 +124,13 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "O mesmo pântano que quase engoliu Cristão ainda está ali. As pedras de promessa que o Rei ordenou colocar estão parcialmente submersas — {{whisper}}negligência dos zeladores.{{/whisper}}",
       "Os filhos de Cristã pisam nas pedras com cuidado. Misericórdia escorrega e quase cai na lama escura.",
       "{{whisper}}\"Mãe, o pai passou por aqui?\"{{/whisper}}, pergunta Mateus. \"Sim\", responde Cristã. {{shout}}\"E quase não saiu.\"{{/shout}}"
+    ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 6, highText: "Cristã avança com passos firmes. A lama tenta, mas não assusta quem já decidiu partir.", lowThreshold: 3, lowText: "Cada passo é um ato de vontade contra o instinto de voltar. A lama parece sussurrar: 'Desista.'" }
+    ],
+    flagNarrative: [
+      { flag: "aceitou_convite_imediato", text: "A certeza da partida dá força aos passos. Quem não hesitou na decisão não hesita na lama." },
+      { flag: "hesitou_convite", text: "A hesitação inicial volta a ecoar. Será que o pântano é um sinal de que não deveria ter partido?" }
     ],
     choices: [
       {
@@ -182,6 +194,13 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "O guardião do portão intervém e os afugenta, mas não antes de Cristã e Misericórdia sentirem o terror de um ataque real.",
       "{{divine}}\"Isto é normal\"{{/divine}}, diz o guardião. \"Todo peregrino que passa por esta porta é atacado logo depois. Seu marido também foi. {{divine}}Mas o Senhor vos guardará.{{/divine}}\""
     ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 6, highText: "Cristã se coloca na frente dos filhos com uma determinação que surpreende até o guardião.", lowThreshold: 3, lowText: "O ataque paralisa Cristã por um momento. Os filhos se agarram a ela. O medo é real e cru." }
+    ],
+    flagNarrative: [
+      { flag: "intercedeu_por_misericordia", text: "Misericórdia se esconde atrás de Cristã — a mesma que intercedeu por ela no portão agora a protege com o corpo." },
+      { flag: "ajudou_misericordia_pantano", text: "A parceria forjada no pântano se mostra aqui: Misericórdia e Cristã lutam lado a lado contra os Mal-Encarados." }
+    ],
     choices: [
       {
         text: "\"Se meu marido suportou isto, eu também suportarei.\"",
@@ -209,6 +228,16 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "O Intérprete recebe Cristã e seu grupo com alegria. {{divine}}\"A esposa de Cristão! Que honra.\"{{/divine}}",
       "Ele ordena que preparem um banho cerimonial. Cristã, os filhos e Misericórdia são lavados e vestidos com {{divine}}roupas novas e brilhantes{{/divine}}. O selo do Rei é colocado em suas testas.",
       "{{divine}}\"Agora estais marcadas\"{{/divine}}, diz o Intérprete. \"Todos verão a quem pertenceis. E quando a estrada escurecer, lembrai-vos deste momento.\""
+    ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "Cristã recebe as vestes como quem recebe uma coroa. A certeza brilha em seus olhos mais que o tecido.", lowThreshold: 3, lowText: "As vestes parecem pesadas demais para quem ainda carrega dúvidas. Mas o Intérprete sorri: 'A roupa veste a fé, não o contrário.'" }
+    ],
+    flagNarrative: [
+      { flag: "coragem_apos_ataque", text: "O Intérprete nota as marcas do ataque: \"Os Mal-Encarados deixaram suas marcas. Mas as vestes do Rei cobrem toda cicatriz.\"" },
+      { flag: "aceitou_misericordia", text: "\"Misericórdia também recebe vestes\", diz o Intérprete com um sorriso. \"O Rei já sabia que ela viria.\"" }
+    ],
+    replayNarrative: [
+      "O Intérprete olha para Cristã com olhos que parecem ver além: \"Você já esteve aqui antes, não é? O selo parece reconhecê-la.\""
     ],
     choices: [
       {
@@ -245,6 +274,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Grande-Coração carrega uma espada enorme e um escudo gasto de muitas batalhas. Seus olhos são bondosos, mas sua postura é de quem já matou gigantes.",
       "{{shout}}\"Senhoras\"{{/shout}}, diz ele com voz grave, \"o caminho é o mesmo que o marido de vocês percorreu. Mas desta vez, {{shout}}nenhum gigante tocará em vocês enquanto eu respirar.{{/shout}}\""
     ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 6, highText: "A presença de Grande-Coração traz alívio imediato. Cristã sente que nenhum gigante é páreo para este guerreiro.", lowThreshold: 3, lowText: "Grande-Coração é imenso, mas os gigantes do caminho são maiores. O medo sussurra que nenhum escolta é suficiente." }
+    ],
+    
     choices: [
       {
         text: "\"Deus seja louvado por nos dar um protetor!\"",
@@ -273,6 +306,14 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Cristã cai de joelhos. {{whisper}}Lágrimas escorrem. \"Aqui\", sussurra. \"Foi aqui que ele foi livre.\"{{/whisper}}",
       "Misericórdia chora ao lado dela. Os filhos observam em silêncio sagrado. {{divine}}O lugar onde o peso do pecado caiu ainda pulsa com uma presença que nenhum dos viajantes consegue explicar.{{/divine}}"
     ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "As lágrimas de Cristã são de gratidão pura. A cruz não é tristeza — é onde tudo começou de verdade.", lowThreshold: 3, lowText: "Cristã chora, mas não sabe se é de fé ou de saudade. O lugar onde o marido foi livre parece distante da sua experiência." }
+    ],
+    flagNarrative: [
+      { flag: "recebeu_selo_parte2", text: "O selo na testa de Cristã brilha ao pé da Cruz. A marca do Rei reconhece o lugar onde tudo muda." },
+      { flag: "perguntou_visoes_interprete", text: "As visões que o Intérprete mostrou ganham sentido aqui. A Cruz é a chave de todas as alegorias." }
+    ],
+    
     choices: [
       {
         text: "Orar no lugar onde Cristão foi livre",
@@ -301,6 +342,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Os filhos de Cristã tropeçam nas pedras. Misericórdia ajuda os menores. Cristã puxa os maiores. {{tremor}}A subida é lenta e dolorosa.{{/tremor}}",
       "No caramanchão onde Cristão adormeceu e quase perdeu o pergaminho, Grande-Coração diz: {{shout}}\"Descansem. Mas não durmam como o marido de vocês. Esse erro quase lhe custou tudo.\"{{/shout}}"
     ],
+    toneNarrative: [
+      { attr: "perseveranca", highThreshold: 6, highText: "Os pés doem, mas Cristã sobe sem reclamar. A colina é a mesma — mas ela não é a mesma pessoa que começou.", lowThreshold: 3, lowText: "Cada metro parece um quilômetro. Os filhos choram. Misericórdia tropeça. A colina é impiedosa." }
+    ],
+    
     choices: [
       {
         text: "Descansar brevemente sem adormecer — aprender com o erro de Cristão",
@@ -332,6 +377,14 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "{{tremor}}Os leões rugem.{{/tremor}} Grande-Coração não hesita. Ele bate no chão com a espada e os leões recuam, revelando que suas correntes são curtas — como Vigilante revelou a Cristão.",
       "\"Viram?\", diz Grande-Coração. \"A mesma lição. {{divine}}O medo ruge alto, mas está acorrentado. Passem pelo centro.{{/divine}}\""
     ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 7, highText: "Os leões rugem, mas Cristã sente mais curiosidade que medo. Grande-Coração está ali — e ela já enfrentou coisas piores.", lowThreshold: 3, lowText: "O rugido dos leões paralisa os filhos. Cristã segura as mãos deles com tanta força que os dedos ficam brancos." }
+    ],
+    flagNarrative: [
+      { flag: "aprendeu_erro_cristao", text: "A lição do caramanchão ecoa: os erros de Cristão são escudo para Cristã. Ela não repete — ela avança." },
+      { flag: "nao_parou_colina", text: "A resistência de não parar na colina se paga agora: pernas trêmulas, mas olhos alertas." }
+    ],
+    
     choices: [
       {
         text: "Passar pelos leões confiando em Grande-Coração",
@@ -361,6 +414,14 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Misericórdia recebe atenção especial de Caridade: {{divine}}\"Você veio sem carta do Rei, mas com o coração do Rei. Isso é mais raro.\"{{/divine}}",
       "Mateus, o filho mais velho, adoece após comer frutos de uma árvore proibida no caminho. O médico do palácio o cura com uma pílula amarga — {{whisper}}arrependimento{{/whisper}}."
     ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "Cristã entra no Palácio Belo com a dignidade de quem pertence àquele lugar.", lowThreshold: 3, lowText: "Cristã hesita à porta do palácio. Será que a recepção será tão calorosa quanto foi para Cristão?" }
+    ],
+    flagNarrative: [
+      { flag: "orou_na_cruz_p2", text: "Prudência sorri: \"Soubemos da sua oração ao pé da Cruz. Quem ora ali, ora em toda parte.\"" },
+      { flag: "passou_leoes_p2", text: "\"Vimos vocês passando pelos leões\", diz Piedade. \"A coragem desta geração nos impressiona.\"" }
+    ],
+    
     choices: [
       {
         text: "Descansar no palácio e fortalecer o grupo para o vale adiante",
@@ -396,6 +457,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "\"É estranho\", diz Grande-Coração. \"Este vale, que foi campo de batalha para seu marido, é para vocês {{divine}}um prado agradável{{/divine}}. Vejam — há lírios e ovelhas.\"",
       "Um velho homem emerge do caminho lateral. \"Sou Velho Honesto, da Cidade da Estupidez. Vi a Luz há muito tempo, mas nunca tive coragem de partir. {{whisper}}Posso juntar-me a vocês?{{/whisper}}\""
     ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 6, highText: "Cristã percebe: o vale é pacífico porque o grupo veio em humildade, não em orgulho.", lowThreshold: 3, lowText: "O vale parece calmo demais. Cristã olha para os lados esperando um ataque que nunca vem." }
+    ],
+    
     choices: [
       {
         text: "\"Toda alma que busca a Cidade é bem-vinda!\"",
@@ -425,6 +490,13 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Grande-Coração explica: \"Quando Cristão passou, o vale era pura escuridão. Para vocês, o Senhor enviou luz. {{divine}}Talvez porque desta vez haja crianças.{{/divine}}\"",
       "Os filhos de Cristã se agarram à mãe. {{whisper}}Os sussurros do abismo ainda ecoam{{/whisper}}, mas o pilar de fogo mantém os demônios à distância."
     ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "O pilar de fogo parece responder à fé de Cristã. Quanto mais ela canta, mais brilhante ele fica.", lowThreshold: 3, lowText: "O pilar de fogo é reconfortante, mas a escuridão ao redor é densa." }
+    ],
+    flagNarrative: [
+      { flag: "descansou_palacio_p2", text: "O descanso no Palácio Belo deu forças para este momento. O corpo descansado sustenta a alma." }
+    ],
+    
     choices: [
       {
         text: "Cantar hinos enquanto atravessa — afugentar o medo com louvor",
@@ -453,6 +525,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "{{shout}}Grande-Coração avança.{{/shout}} A luta é intensa — espada contra clava. O gigante é forte, mas Grande-Coração é habilidoso.",
       "{{tremor}}Após um combate que faz a terra tremer{{/tremor}}, Grande-Coração decepa a cabeça do gigante e a coloca num poste ao lado do caminho: aviso a todos os outros."
     ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 7, highText: "Cristã não recua diante do gigante. Depois de leões e vale sombrio, um gigante é mais uma prova — não a última.", lowThreshold: 3, lowText: "O tamanho de Maul faz Cristã abraçar os filhos instintivamente. Se Grande-Coração cair, quem os protegerá?" }
+    ],
+    
     choices: [
       {
         text: "Agradecer a Deus pela proteção de Grande-Coração",
@@ -481,6 +557,13 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "{{divine}}\"Cristã!\"{{/divine}}, exclama Gaio. \"Seu marido comeu nesta mesa. E devo lhes contar: a linhagem de Cristão remonta a homens ilustres da fé.\"",
       "Gaio revela a ancestralidade espiritual de Cristão e organiza o casamento de Mateus (filho de Cristã) com Misericórdia. {{divine}}Lágrimas de alegria enchem a sala.{{/divine}}"
     ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 6, highText: "A hospedaria é um oásis de paz. Cristã sente que cada estação no caminho é providência.", lowThreshold: 3, lowText: "A comida é boa, o vinho aquece. Mas Cristã se pergunta: quanto mais falta? Quantas batalhas restam?" }
+    ],
+    flagNarrative: [
+      { flag: "agradeceu_vitoria_maul", text: "Gaio ouve sobre a vitória contra Maul e serve mais vinho: \"Hoje celebramos!\"" }
+    ],
+    
     choices: [
       {
         text: "Celebrar o casamento e descansar na hospedaria",
@@ -511,6 +594,13 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "{{tremor}}O combate é brutal.{{/tremor}} Mata-Bons é mais forte que Maul, mas Grande-Coração luta com a fúria de quem protege os fracos. A cabeça do gigante rola no chão.",
       "Mente-Fraca, tremendo, agradece: {{whisper}}\"Eu estava prestes a ser devorado. Posso... posso ir com vocês?\"{{/whisper}}"
     ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 7, highText: "Cristã já não teme os gigantes. Dois caíram diante de Grande-Coração. Os monstros do caminho são mortais.", lowThreshold: 3, lowText: "Mais um gigante. Mais sangue. Cristã se pergunta se os filhos suportarão ver tanta luta." }
+    ],
+    flagNarrative: [
+      { flag: "celebrou_casamento_mateus", text: "Mateus, agora casado, se coloca na frente de Misericórdia durante o combate. O casamento forjou coragem." }
+    ],
+    
     choices: [
       {
         text: "\"Venha conosco. Os fracos são bem-vindos neste grupo.\"",
@@ -541,6 +631,14 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Alguns moradores da feira recebem os peregrinos com respeito. Outros ainda zombam, mas o ódio não é tão intenso quanto foi com Cristão e Fiel.",
       "Grande-Coração fica alerta: {{shout}}\"Não confiem na aparente paz. Esta feira já matou um santo. Passem depressa.\"{{/shout}}"
     ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 7, highText: "Cristã percebe a mudança na feira. O martírio de Fiel plantou sementes que agora brotam.", lowThreshold: 3, lowText: "A feira é barulhenta e confusa. Cristã segura os filhos — este lugar matou um amigo de seu marido." }
+    ],
+    flagNarrative: [
+      { flag: "acolheu_mente_fraca", text: "Mente-Fraca caminha com dificuldade pela feira. Alguns zombam, mas Cristã o protege." },
+      { flag: "cuidou_mente_fraca", text: "As feridas de Mente-Fraca sararam bem. Ele caminha mais ereto agora." }
+    ],
+    
     choices: [
       {
         text: "Passar rapidamente, lembrando do sacrifício de Fiel",
@@ -574,6 +672,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "{{whisper}}\"Me chamam de Pronto-para-Parar\"{{/whisper}}, diz ele com um sorriso triste. \"Porque a cada metro dizem que vou desistir. {{shout}}Mas aqui estou — ainda caminhando.{{/shout}}\"",
       "Seu corpo é fraco, seus pés sangram, mas sua determinação faz o grupo inteiro parar em admiração."
     ],
+    toneNarrative: [
+      { attr: "perseveranca", highThreshold: 7, highText: "Cristã reconhece em Pronto-para-Parar uma alma irmã. Ambos sabem o que é caminhar quando o corpo implora para parar.", lowThreshold: 3, lowText: "Ver alguém em pior estado deveria consolar. Mas Cristã sente medo: se ele persiste com muletas, que desculpa ela tem?" }
+    ],
+    
     choices: [
       {
         text: "Oferecer apoio — ele caminhará com o grupo",
@@ -603,6 +705,13 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "A entrada da mina brilha com um reflexo dourado tentador. Alguns dos filhos olham com curiosidade.",
       "Grande-Coração fala severamente: {{shout}}\"Não olhem. Não cheguem perto. Muitos peregrinos morreram ali dentro. A ganância é uma porta sem volta.\"{{/shout}}"
     ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 6, highText: "A mina de Demas é um aviso vivo. O brilho falso é óbvio para quem tem olhos de ver.", lowThreshold: 3, lowText: "O brilho da prata é hipnotizante. Por um instante, Cristã entende por que Demas entrou." }
+    ],
+    flagNarrative: [
+      { flag: "apoiou_pronto_para_parar", text: "Pronto-para-Parar nem olha para a mina. \"Prata?\", diz ele. \"Eu já sei o que tem valor.\"" }
+    ],
+    
     choices: [
       {
         text: "Ensinar os filhos sobre o perigo da ganância e seguir",
@@ -631,6 +740,13 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "\"Sou {{shout}}Valente-pela-Verdade{{/shout}}\", diz ele, limpando a lâmina. \"Três ladrões — {{villain}}Coração-Fraco, Desconfiança e Culpa{{/villain}} — me emboscaram. Eles tentam roubar a fé de todo peregrino. Mas esta espada é uma lâmina legítima de Jerusalém.\"",
       "Grande-Coração sorri com aprovação: {{divine}}\"Um guerreiro de verdade. Junte-se a nós.\"{{/divine}}"
     ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 7, highText: "Sangue e espada. Cristã já não desvia o olhar. A jornada a endureceu em determinação.", lowThreshold: 3, lowText: "A visão de sangue faz os filhos recuarem. Cristã se coloca na frente deles, mas suas mãos tremem." }
+    ],
+    flagNarrative: [
+      { flag: "ensinou_filhos_ganancia", text: "Os filhos reconhecem os bandidos: \"Mãe, são como a mina de Demas?\" A lição pegou." }
+    ],
+    
     choices: [
       {
         text: "Receber Valente-pela-Verdade como companheiro de armas",
@@ -660,6 +776,16 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "\"Aqui\", diz Grande-Coração, apontando as marcas na cerca. {{shout}}\"Aqui seu marido escalou a cerca e foi capturado pelo Gigante Desespero. Mas nós não repetiremos esse erro.\"{{/shout}}",
       "Os filhos olham o prado verde e tentador. {{whisper}}É lindo. É convidativo. E é uma armadilha.{{/whisper}}"
     ],
+    toneNarrative: [
+      { attr: "discernimento", highThreshold: 7, highText: "O prado não engana Cristã. Ela vê a beleza, mas também vê a cerca. Onde há cerca, há prisão.", lowThreshold: 3, lowText: "O prado é lindo. Tão lindo que as pernas imploram para parar." }
+    ],
+    replayNarrative: [
+      "Da última vez, você quase cedeu neste prado. As mesmas flores, o mesmo convite. Mas seus olhos já conhecem a armadilha."
+    ],
+    flagNarrative: [
+      { flag: "aceitou_valente", text: "Valente-pela-Verdade franze o cenho: \"Bonito por fora. Mortal por dentro. Minha espada reconhece armadilhas.\"" }
+    ],
+    
     choices: [
       {
         text: "\"Mantenhamo-nos no caminho estreito, não importa quão duro seja\"",
@@ -700,6 +826,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "\"Este castelo aprisiona peregrinos há anos demais\", declara. {{shout}}\"O Gigante Desespero ainda vive ali dentro. Hoje, nós o destruímos.\"{{/shout}}",
       "Valente-pela-Verdade bate a espada no escudo: {{shout}}\"Estou pronto.\"{{/shout}}"
     ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 7, highText: "Cristã sente uma chama. O castelo que aprisionou Cristão será destruído por quem ele amou.", lowThreshold: 3, lowText: "O Castelo da Dúvida é imenso. Suas paredes sussurram que são pequenos demais para derrubá-lo." }
+    ],
+    
     choices: [
       {
         text: "Encorajar o ataque — é hora de destruir a Dúvida de vez",
@@ -730,6 +860,14 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "{{shout}}Depois de um combate que faz tremer as fundações do castelo, Grande-Coração decepa a cabeça do Gigante Desespero.{{/shout}} Desconfiança foge para as sombras."
     ],
     interactionType: "hold",
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "A fé de Cristã sustenta os guerreiros. Cada oração é um golpe invisível no gigante.", lowThreshold: 3, lowText: "O combate é horrível. Os filhos tapam os ouvidos. Cristã reza sem saber se as palavras chegam ao céu." }
+    ],
+    flagNarrative: [
+      { flag: "encorajou_ataque_castelo", text: "O encorajamento de Cristã ecoa: Grande-Coração luta com o dobro da força." },
+      { flag: "orou_antes_castelo_p2", text: "A oração antes da batalha se manifesta: cada golpe parece guiado por uma mão invisível." }
+    ],
+    
     choices: [
       {
         text: "Entrar no castelo para libertar os prisioneiros",
@@ -753,6 +891,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "{{whisper}}\"Há quanto tempo estão aqui?\"{{/whisper}}, pergunta Cristã. \"Não sabemos mais\", responde Sr. Desânimo. {{villain}}\"O gigante nos dizia todos os dias para desistir da vida. Quase obedecemos.\"{{/villain}}",
       "Muito-Medo agarra a mão de Misericórdia e não solta. {{whisper}}\"Vocês são reais? Não é mais uma ilusão do gigante?\"{{/whisper}}"
     ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 7, highText: "Cristã vê nos prisioneiros o que poderia ter sido. A graça é a diferença entre liberdade e masmorra.", lowThreshold: 3, lowText: "Os olhos de Sr. Desânimo são vazios. Muito-Medo treme. Cristã se pergunta: poderei ajudá-los?" }
+    ],
+    
     choices: [
       {
         text: "\"É real. O gigante está morto. Vocês são livres. Venham conosco.\"",
@@ -785,6 +927,17 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "{{divine}}\"O que Cristão sobreviveu, nós destruímos\"{{/divine}}, diz Grande-Coração. \"Nenhum outro peregrino será preso aqui.\"",
       "{{divine}}Onde antes havia trevas, agora há céu aberto.{{/divine}}"
     ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 8, highText: "Cada pedra que cai é uma dúvida derrotada. Não é apenas um castelo — é uma fortaleza de mentiras.", lowThreshold: 3, lowText: "A demolição é exaustiva. Mas Cristã continua quebrando pedras — cada uma tem o nome de um medo." }
+    ],
+    flagNarrative: [
+      { flag: "libertou_desanimo", text: "Sr. Desânimo ajuda a derrubar uma parede — tremendo, mas presente. Sua primeira contribuição." },
+      { flag: "entrou_castelo_destruido", text: "Cada cela aberta é testemunho: o que o desespero prendeu, a fé liberta." }
+    ],
+    replayNarrative: [
+      "A destruição parece mais completa desta vez. Como se cada jornada arrancasse pedras mais profundas."
+    ],
+    
     choices: [
       {
         text: "Levantar uma pedra memorial no lugar — para que ninguém esqueça",
@@ -815,6 +968,13 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Das montanhas, mostram a vista da Cidade Celestial — {{divine}}mais perto do que nunca{{/divine}}. Os filhos de Cristã olham maravilhados.",
       "\"Vejam\", diz Sincero. {{shout}}\"E lembrem-se: também há um abismo para os que se desviam. Olhem ambos.\"{{/shout}}"
     ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 8, highText: "Das montanhas, a Cidade Celestial brilha com clareza que rouba o fôlego. Cristã sabe: está mais perto do que nunca.", lowThreshold: 3, lowText: "A vista é linda, mas distante. Quantos vales e rios ainda separam o grupo do destino?" }
+    ],
+    flagNarrative: [
+      { flag: "levantou_memorial_castelo", text: "Os pastores sabem do memorial: \"Será visto por gerações. O desespero perdeu sua fortaleza.\"" }
+    ],
+    
     choices: [
       {
         text: "Contemplar a Cidade Celestial e renovar a esperança",
@@ -853,6 +1013,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "{{villain}}\"Vem comigo\"{{/villain}}, sussurra ela. {{villain}}\"Tudo que queres, eu te dou. O caminho é longo demais. Por que sofrer?\"{{/villain}}",
       "{{divine}}Firme ora com mais força.{{/divine}} Grande-Coração avança e Madame Bolha desaparece como fumaça."
     ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 8, highText: "Cristã sente o ar pesado, mas a fé queima como chama que nenhum sono apaga.", lowThreshold: 3, lowText: "O ar é doce demais. Os olhos pesam. Cada passo é luta contra o desejo de fechar os olhos." }
+    ],
+    
     choices: [
       {
         text: "Admirar a resistência de Firme e convidá-lo ao grupo",
@@ -883,6 +1047,13 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Cristã respira fundo: {{divine}}\"É assim que cheira a paz.\"{{/divine}}",
       "Misericórdia sorri: {{whisper}}\"Valeu cada pântano, cada gigante, cada lágrima.\"{{/whisper}}"
     ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 8, highText: "O País de Beulá é a antecâmara do Céu. Todo o sofrimento valeu cada passo.", lowThreshold: 3, lowText: "A paz é esmagadora. A mente quase não aceita que acabou. Será real?" }
+    ],
+    flagNarrative: [
+      { flag: "admirou_firme", text: "A resistência de Firme preparou o caminho. O ar é mais leve — como se sua oração tivesse purificado a estrada." }
+    ],
+    
     choices: [
       {
         text: "Caminhar até o rio em paz, cantando com o grupo",
@@ -911,6 +1082,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Um mensageiro chega a Cristã com uma carta: {{divine}}\"O Mestre te convida a estar em Sua presença dentro de dez dias.\"{{/divine}}",
       "Cristã lê a carta e sorri. Não há medo. Não há pânico. Apenas {{divine}}uma paz profunda{{/divine}} e uma saudade de quem já espera do outro lado — seu marido."
     ],
+    toneNarrative: [
+      { attr: "fe", highThreshold: 8, highText: "Cristã lê a carta do chamado com um sorriso que surpreende os anjos. Não há medo. Apenas paz.", lowThreshold: 3, lowText: "As mãos tremem ao abrir a carta. Dez dias. A eternidade em dez dias." }
+    ],
+    
     choices: [
       {
         text: "Preparar-se em paz — despedir-se de cada companheiro",
@@ -941,6 +1116,16 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Sr. Desânimo, surpreendendo a todos, diz com voz firme pela primeira vez: {{divine}}\"Adeus, noite. Bem-vindo, dia. O desânimo não cruzará o rio comigo.\"{{/divine}}",
       "{{divine}}Muito-Medo atravessa cantando{{/divine}} — ela que viveu em terror constante morre com uma canção nos lábios."
     ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 7, highText: "As despedidas são corajosas. Cada companheiro fala com a dignidade de quem viveu plenamente.", lowThreshold: 3, lowText: "As lágrimas são inevitáveis. Cada despedida arranca um pedaço do coração." }
+    ],
+    flagNarrative: [
+      { flag: "guardou_palavras_valente", text: "As palavras de Valente brilham na memória como diamantes: herança que nenhum ladrão pode roubar." }
+    ],
+    replayNarrative: [
+      "As despedidas parecem mais profundas a cada jornada. Como se os personagens guardassem memórias de todas as suas vidas."
+    ],
+    
     choices: [
       {
         text: "Guardar as palavras de Valente no coração e avançar",
