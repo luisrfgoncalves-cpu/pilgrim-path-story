@@ -1,9 +1,11 @@
-import { Difficulty, ResponseMode, TileEventType, RotationState, ScriptureQuestion } from './types';
+import { Difficulty, ResponseMode, TileEventType, RotationState as RotationStateType, ScriptureQuestion } from './types';
 import { scriptureQuestions } from './questions';
 import { riddles } from './riddles';
 import { moralDilemmas } from './dilemmas';
 import { activeChallenges } from './challenges';
 import { bossEncounters } from './bosses';
+
+export type RotationState = RotationStateType;
 import { specialEvents, trapEvents, refugeEvents } from './specialEvents';
 
 // ═══════════════════════════════════════════════════════

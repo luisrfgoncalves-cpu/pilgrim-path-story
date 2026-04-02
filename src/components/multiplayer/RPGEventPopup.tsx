@@ -1,15 +1,23 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Difficulty, ResponseMode, ScriptureQuestion, Riddle, MoralDilemma, ActiveChallenge, BossEncounter, BossPhase } from '@/data/rpg/types';
+import { Difficulty, ResponseMode, ScriptureQuestion, Riddle, MoralDilemma, ActiveChallenge, BossEncounter } from '@/data/rpg/types';
 import {
-  createRotationState, getRandomQuestion, getRandomRiddle,
+  getRandomQuestion, getRandomRiddle,
   getRandomDilemma, getRandomChallenge, getRandomBoss,
-  getRandomSpecialEvent, getRandomTrap, getRandomRefuge,
   getRandomResponseMode, getResponseModeLabel, getTileEventLabel,
   RotationState,
 } from '@/data/rpg/rotationEngine';
 import { TileEventType } from '@/data/rpg/types';
-import { playGameSfx } from '@/lib/gameSfx';
-import { X, Clock, PlayCircle, ChevronRight, Users, User, Vote, UserCheck } from 'lucide-react';
+import { playGameSfx, GameSfx } from '@/lib/gameSfx';
+import { Clock, PlayCircle } from 'lucide-react';
+
+// Map RPG sound intents to available GameSfx types
+const rpgSfx = (intent: string): GameSfx => {
+  const map: Record<string, GameSfx> = {
+    trap: 'wrong', blessing: 'correct', challenge: 'attack',
+    giant: 'critical', victory: 'victory',
+  };
+  return map[intent] || 'accept';
+};
 
 interface RPGEventPopupProps {
   visible: boolean;
