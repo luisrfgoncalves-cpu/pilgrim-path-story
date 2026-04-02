@@ -399,30 +399,64 @@ export default function RPGEventPopup({
               {/* Context text */}
               <div className="p-4 rounded-xl bg-background/50 border border-border">
                 <p className="text-sm text-muted-foreground leading-relaxed italic">
-                  {question?.context || riddle?.context || dilemma?.context || challenge?.context || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative)) || ''}
+                  {question?.context || riddle?.context || dilemma?.context || challenge?.context
+                    || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
+                    || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative
+                    || ''}
                 </p>
+                {refugeEvent?.bibleVerse && (
+                  <p className="mt-2 text-xs text-primary italic">📖 {refugeEvent.bibleVerse}</p>
+                )}
               </div>
 
-              {/* Start timer button */}
-              <button
-                onClick={() => {
-                  const time = question?.timerSeconds || riddle?.timerSeconds || challenge?.timerSeconds || boss?.phases[bossPhaseIdx]?.timerSeconds || 60;
-                  if (dilemma) {
-                    setPhase('challenge'); // dilemmas don't need timer countdown first
-                  } else {
-                    startTimer(time);
-                  }
-                }}
-                className="w-full flex items-center justify-center gap-3 py-4 rounded-xl font-display font-bold text-sm transition-all"
-                style={{
-                  background: `linear-gradient(135deg, ${tileInfo.color}, ${tileInfo.color}CC)`,
-                  color: 'white',
-                  boxShadow: `0 0 20px ${tileInfo.color}40`,
-                }}
-              >
-                <PlayCircle className="w-5 h-5" />
-                {dilemma ? 'Revelar Dilema' : '⏱️ Iniciar Cronômetro — Pesquisem na Bíblia!'}
-              </button>
+              {/* Special/Trap/Refuge: auto-resolve button (no timer needed) */}
+              {(specialEvent || trapEvent || refugeEvent) ? (
+                <button
+                  onClick={() => {
+                    const isPositive = !!specialEvent || !!refugeEvent;
+                    playGameSfx(rpgSfx(isPositive ? 'blessing' : 'trap'));
+                    setShowResult(true);
+                    setResultData({
+                      success: isPositive,
+                      message: specialEvent
+                        ? `${specialEvent.emoji} ${specialEvent.title}`
+                        : trapEvent
+                          ? `${trapEvent.emoji} ${trapEvent.title}${trapEvent.escapeChallenge ? '\n\n(Sem chance de escapar desta vez...)' : ''}`
+                          : `${refugeEvent!.emoji} ${refugeEvent!.title}`,
+                      emoji: specialEvent?.emoji || trapEvent?.emoji || refugeEvent?.emoji || '✨',
+                    });
+                  }}
+                  className="w-full flex items-center justify-center gap-3 py-4 rounded-xl font-display font-bold text-sm transition-all"
+                  style={{
+                    background: `linear-gradient(135deg, ${tileInfo.color}, ${tileInfo.color}CC)`,
+                    color: 'white',
+                    boxShadow: `0 0 20px ${tileInfo.color}40`,
+                  }}
+                >
+                  {specialEvent ? '✨ Aceitar Bênção' : trapEvent ? '😨 Enfrentar!' : '🙏 Descansar'}
+                </button>
+              ) : (
+                /* Start timer button for questions/riddles/challenges/bosses */
+                <button
+                  onClick={() => {
+                    const time = question?.timerSeconds || riddle?.timerSeconds || challenge?.timerSeconds || boss?.phases[bossPhaseIdx]?.timerSeconds || 60;
+                    if (dilemma) {
+                      setPhase('challenge');
+                    } else {
+                      startTimer(time);
+                    }
+                  }}
+                  className="w-full flex items-center justify-center gap-3 py-4 rounded-xl font-display font-bold text-sm transition-all"
+                  style={{
+                    background: `linear-gradient(135deg, ${tileInfo.color}, ${tileInfo.color}CC)`,
+                    color: 'white',
+                    boxShadow: `0 0 20px ${tileInfo.color}40`,
+                  }}
+                >
+                  <PlayCircle className="w-5 h-5" />
+                  {dilemma ? 'Revelar Dilema' : '⏱️ Iniciar Cronômetro — Pesquisem na Bíblia!'}
+                </button>
+              )}
             </>
           )}
 
