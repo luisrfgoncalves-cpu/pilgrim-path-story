@@ -111,10 +111,19 @@ const TILE_TO_RPG_EVENT: Partial<Record<TileType, RPGTileEventType>> = {
   surprise: 'special',
   blessing: 'refuge',
   trap: 'trap',
+  // Narrative story tiles → RPG events based on story context
+  wicket_gate: 'scripture',
+  interpreter_house: 'riddle',
+  hill_difficulty: 'challenge',
+  palace_beautiful: 'refuge',
+  valley_humiliation: 'boss',
+  valley_shadow: 'dilemma',
+  vanity_fair: 'dilemma',
+  doubting_castle: 'boss',
+  delectable_mountains: 'refuge',
+  enchanted_ground: 'trap',
+  beulah_land: 'special',
 };
-
-// Tiles that should use the RPG popup instead of the old mini-game
-const RPG_TILE_TYPES: TileType[] = ['scripture', 'challenge', 'giant', 'surprise', 'blessing', 'trap'];
 
 // ─── River of Death tiles: last 5 tiles before finish ───
 const RIVER_ZONE_START = IMMERSIVE_BOARD_SIZE - 6; // tiles 114-118 are the river zone
