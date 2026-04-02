@@ -1622,10 +1622,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Escárnio",
     location: "Feira da Vaidade",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'A multidão se volta contra vocês!' },
     narrative: [
-      "Sua recusa em comprar provoca escárnio. Vendedores zombam. A multidão começa a cercá-los. Alguns cospem em vocês. Outros jogam lama.",
-      "\"Loucos!\", gritam. \"Fanáticos! Quem vem à feira e não compra nada?\"",
-      "Fiel permanece firme ao seu lado. Seu rosto sangra onde uma pedra o atingiu, mas ele não recua."
+      "{{tremor}}Sua recusa em comprar provoca escárnio. Vendedores zombam. A multidão começa a cercá-los.{{/tremor}} Alguns cospem em vocês. Outros jogam lama.",
+      "{{shout}}\"Loucos!\"{{/shout}}, gritam. {{villain}}\"Fanáticos! Quem vem à feira e não compra nada?\"{{/villain}}",
+      "{{heart}}Fiel permanece firme ao seu lado. Seu rosto sangra onde uma pedra o atingiu, mas ele não recua.{{/heart}}"
     ],
     flagNarrative: [
       { flag: "escolheu_caminho_estreito", text: "O caminho estreito te ensinou a suportar dor. Os espinhos daquela trilha te prepararam para as pedras desta feira." }
