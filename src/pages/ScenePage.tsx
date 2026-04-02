@@ -866,26 +866,38 @@ const ScenePage = () => {
             )}
 
             {fullNarrative.length > 0 && !showChoices && (
-              <div className="space-y-2">
-                {/* Back to previous beat */}
-                {narrativeIndex > 0 && (
+              <div className="space-y-2 sticky bottom-0 z-10 pb-2 pt-2" style={{ background: 'linear-gradient(to top, hsl(var(--background)) 60%, transparent)' }}>
+                {/* Navigation: back + forward buttons always visible */}
+                <div className="flex items-center gap-2 rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm px-3 py-2.5">
+                  {/* Back button */}
                   <button
-                    onClick={() => setNarrativeIndex(prev => Math.max(0, prev - 1))}
-                    className="flex items-center gap-2 text-[11px] font-display text-primary/70 hover:text-primary transition-colors uppercase tracking-wider"
+                    onClick={() => {
+                      if (narrativeIndex > 0) {
+                        setNarrativeIndex(prev => Math.max(0, prev - 1));
+                      } else {
+                        // Go to previous scene
+                        const visited = progress.visitedChapters;
+                        const currentIdx = visited.indexOf(progress.currentChapterId);
+                        const prevId = currentIdx > 0 ? visited[currentIdx - 1] : visited[visited.length - 2];
+                        if (prevId && prevId !== progress.currentChapterId) goToChapter(prevId);
+                      }
+                    }}
+                    className="btn-medieval-secondary px-3 py-2 text-xs flex items-center gap-1.5 flex-shrink-0"
                   >
-                    <ArrowLeft className="w-3 h-3" /> Reler trecho anterior
+                    <ArrowLeft className="w-3.5 h-3.5" /> Voltar
                   </button>
-                )}
-                <div className="flex items-center justify-between gap-3 rounded-xl border border-border/50 bg-card/40 px-4 py-3">
-                  <p className="text-[11px] font-display uppercase tracking-[0.2em] text-muted-foreground">
-                    Trecho {Math.min(narrativeIndex + 1, fullNarrative.length)} de {fullNarrative.length}
+                  {/* Progress indicator */}
+                  <p className="text-[10px] font-display uppercase tracking-[0.15em] text-muted-foreground flex-1 text-center">
+                    {Math.min(narrativeIndex + 1, fullNarrative.length)}/{fullNarrative.length}
                   </p>
+                  {/* Continue button */}
                   <button
                     onClick={handleAdvanceNarrative}
                     disabled={!hasMoreNarrative && !canShowChoices}
-                    className="btn-medieval-secondary min-w-[132px] px-4 py-2 text-xs disabled:pointer-events-none disabled:opacity-60"
+                    className="btn-medieval min-w-[120px] px-4 py-2 text-xs disabled:pointer-events-none disabled:opacity-60 flex items-center justify-center gap-1.5"
                   >
-                    {hasMoreNarrative ? 'Continuar' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'}
+                    {hasMoreNarrative ? 'Continuar' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'} 
+                    {hasMoreNarrative && <ArrowRight className="w-3.5 h-3.5" />}
                   </button>
                 </div>
               </div>
