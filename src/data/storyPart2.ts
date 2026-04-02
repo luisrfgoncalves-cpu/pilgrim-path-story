@@ -125,6 +125,13 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "Os filhos de Cristã pisam nas pedras com cuidado. Misericórdia escorrega e quase cai na lama escura.",
       "{{whisper}}\"Mãe, o pai passou por aqui?\"{{/whisper}}, pergunta Mateus. \"Sim\", responde Cristã. {{shout}}\"E quase não saiu.\"{{/shout}}"
     ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 6, highText: "Cristã avança com passos firmes. A lama tenta, mas não assusta quem já decidiu partir.", lowThreshold: 3, lowText: "Cada passo é um ato de vontade contra o instinto de voltar. A lama parece sussurrar: 'Desista.'" }
+    ],
+    flagNarrative: [
+      { flag: "aceitou_convite_imediato", text: "A certeza da partida dá força aos passos. Quem não hesitou na decisão não hesita na lama." },
+      { flag: "hesitou_convite", text: "A hesitação inicial volta a ecoar. Será que o pântano é um sinal de que não deveria ter partido?" }
+    ],
     choices: [
       {
         text: "Ajudar Misericórdia e atravessar juntas, passo a passo",
