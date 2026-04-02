@@ -922,9 +922,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
     narrative: [
-      "A primeira sala contém apenas um retrato. O homem pintado tem olhos erguidos ao céu, o melhor dos livros nas mãos, a lei da verdade escrita nos lábios e o mundo atrás de si. Ele está de pé, como se suplicasse aos homens.",
-      "\"Grave este rosto\", diz o Intérprete. \"Este homem é o único guia autorizado para o caminho que você percorre. Muitos vão se oferecer para guiá-lo — Prudência Mundana, Legalidade, outros. Mas só este homem conhece a verdade.\"",
-      "Você estuda o retrato. Os olhos do homem pintado parecem vivos, cheios de urgência e compaixão."
+      "A primeira sala contém apenas um retrato. O homem pintado tem {{divine}}olhos erguidos ao céu{{/divine}}, o melhor dos livros nas mãos, a lei da verdade escrita nos lábios e o mundo atrás de si. Ele está de pé, como se suplicasse aos homens.",
+      "{{dialog}}\"Grave este rosto\"{{/dialog}}, diz o Intérprete. {{emphasis}}\"Este homem é o único guia autorizado para o caminho que você percorre.\"{{/emphasis}} \"Muitos vão se oferecer para guiá-lo — Prudência Mundana, Legalidade, outros. Mas só este homem conhece a verdade.\"",
+      "{{fade}}Você estuda o retrato. Os olhos do homem pintado parecem vivos, cheios de urgência e compaixão.{{/fade}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "Olhando o retrato, você reconhece algo. É como se já conhecesse esse homem — não pelo rosto, mas pelo que ele representa.", lowThreshold: 3, lowText: "O retrato é perturbador. Você não entende por que deveria confiar em alguém que nunca viu." },
