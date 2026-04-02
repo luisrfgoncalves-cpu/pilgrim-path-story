@@ -1439,10 +1439,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Aurora no Vale",
     location: "Vale da Sombra da Morte",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 3000, message: 'Uma luz dourada rompe a escuridão...' },
     narrative: [
-      "Quando a situação parece impossível, o sol nasce. A luz invade o vale como uma lâmina, dispersando as sombras. Os demônios recuam. As armadilhas ficam visíveis.",
-      "Bunyan escreveu: \"Então Cristão disse: 'Ele transformou a sombra da morte em manhã.'\"",
-      "À luz do dia, você vê o caminho que percorreu no escuro — cheio de fossos, redes e armadilhas. É um milagre ter passado. Não foi habilidade sua. Foi providência."
+      "{{divine}}Quando a situação parece impossível, o sol nasce. A luz invade o vale como uma lâmina, dispersando as sombras.{{/divine}} Os demônios recuam. As armadilhas ficam visíveis.",
+      "Bunyan escreveu: {{emphasis}}\"Então Cristão disse: 'Ele transformou a sombra da morte em manhã.'\"{{/emphasis}}",
+      "{{fade}}À luz do dia, você vê o caminho que percorreu no escuro — cheio de fossos, redes e armadilhas. É um milagre ter passado.{{/fade}} {{divine}}Não foi habilidade sua. Foi providência.{{/divine}}"
     ],
     adaptiveNarrative: [
       { minAttr: "fe", minValue: 8, text: "Sua fé acumulada brilha neste momento. A luz parece mais forte ao seu redor, como se respondesse à sua confiança." }
