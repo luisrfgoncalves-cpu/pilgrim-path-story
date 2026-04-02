@@ -2448,10 +2448,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Travessia",
     location: "No Rio",
     characters: ["cristao", "esperanca"],
+    sceneEvent: { type: 'sinking', duration: 15000, message: 'As águas sobem... a correnteza puxa...' },
     narrative: [
-      "A água sobe rápido. Até a cintura, até o peito. A correnteza puxa. A cidade brilha à frente, mas a água escura enche seus olhos.",
-      "No livro de Bunyan, Cristão começa a afundar. O terror dos pecados passados volta com força — cada erro, cada desvio, cada momento de dúvida. As águas representam a morte, e na morte, todas as fraquezas retornam.",
-      "Esperança, ao seu lado, grita: \"Sinto o fundo! É firme! Ânimo, irmão!\""
+      "{{tremor}}A água sobe rápido. Até a cintura, até o peito. A correnteza puxa.{{/tremor}} {{divine}}A cidade brilha à frente{{/divine}}, mas {{fade}}a água escura enche seus olhos.{{/fade}}",
+      "{{heart}}No livro de Bunyan, Cristão começa a afundar.{{/heart}} {{villain}}O terror dos pecados passados volta com força — cada erro, cada desvio, cada momento de dúvida.{{/villain}} As águas representam a morte, e na morte, todas as fraquezas retornam.",
+      "{{shout}}Esperança, ao seu lado, grita: \"Sinto o fundo! É firme! Ânimo, irmão!\"{{/shout}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "As palavras de Esperança penetram. Seus pés encontram rocha firme. A água está até o pescoço, mas você está de pé. A cidade brilha mais forte a cada passo.", lowThreshold: 3, lowText: "A água sobe acima da sua cabeça. Você não sente o fundo. Memórias de todos os fracassos da jornada te puxam para baixo como correntes." },
