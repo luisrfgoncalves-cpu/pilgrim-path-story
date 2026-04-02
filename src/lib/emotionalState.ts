@@ -342,6 +342,18 @@ export function resolveEmotionalState(
     }
   }
 
+  // 1b. Scene-specific posture overrides (narrative context)
+  if (SCENE_POSTURE_OVERRIDES[chapterId]) {
+    const posture = SCENE_POSTURE_OVERRIDES[chapterId];
+    const lines = atmosphereLines[posture];
+    return {
+      posture,
+      intensity: 0.7,
+      atmosphereLine: lines.length > 0 ? lines[seed % lines.length] : undefined,
+      sceneClass: sceneClasses[posture],
+    };
+  }
+
   // 2. Phase baseline — the story phase sets gravitational pull
   const phase = getPhaseFromChapter(chapterId);
   const baseline = phaseBaselines[phase];
