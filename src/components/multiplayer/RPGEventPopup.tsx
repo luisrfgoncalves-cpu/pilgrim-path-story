@@ -219,8 +219,12 @@ export default function RPGEventPopup({
     if (narratedKeyRef.current === key) return;
     narratedKeyRef.current = key;
 
-    // Play contextual SFX first
+    // Play contextual SFX (synth + real audio)
     playContextSfx(tileEventType);
+    // Play real narrative SFX based on context text
+    const rawContext = question?.context || riddle?.context || dilemma?.context || challenge?.context
+      || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative || '';
+    if (rawContext) playNarrativeSfx(rawContext);
 
     const timer = window.setTimeout(() => {
       narrate(text, { style: getNarrationStyle(tileEventType), force: true });
