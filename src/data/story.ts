@@ -2568,10 +2568,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Jornada Interrompida",
     location: "No Rio",
     characters: ["cristao"],
+    sceneEvent: { type: 'sinking', duration: 10000, message: 'As águas te cobrem por completo...' },
     narrative: [
-      "As águas te cobrem. A Cidade Celestial brilha ao longe, mas cada segundo ela fica mais distante.",
-      "No livro de Bunyan, Cristão quase afunda — mas é salvo. Na sua versão da história, suas escolhas te trouxeram aqui, e a fé que você construiu não foi suficiente para esta última travessia.",
-      "Mas lembre-se: este não é necessariamente o fim. A jornada do peregrino é feita de tentativas, de quedas e de recomeços. A porta continua aberta."
+      "{{fade}}As águas te cobrem. A Cidade Celestial brilha ao longe, mas cada segundo ela fica mais distante.{{/fade}}",
+      "{{heart}}No livro de Bunyan, Cristão quase afunda — mas é salvo.{{/heart}} Na sua versão da história, suas escolhas te trouxeram aqui, e {{emphasis}}a fé que você construiu não foi suficiente para esta última travessia.{{/emphasis}}",
+      "{{divine}}Mas lembre-se: este não é necessariamente o fim. A jornada do peregrino é feita de tentativas, de quedas e de recomeços. A porta continua aberta.{{/divine}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 5, highText: "Mesmo neste fracasso, algo permanece: a convicção de que a cidade é real. Na próxima vez — e haverá uma próxima vez — você estará mais forte.", lowThreshold: 2, lowText: "O silêncio é total. A cidade brilha ao longe, um lembrete do que poderia ter sido." }
