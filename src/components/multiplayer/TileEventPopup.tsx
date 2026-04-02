@@ -130,24 +130,17 @@ interface TileEventPopupProps {
 
 export default function TileEventPopup({ visible, tileType, message, emoji, playerName, onDismiss }: TileEventPopupProps) {
   const hasPlayedSound = useRef(false);
-  const [phase, setPhase] = useState<'suspense' | 'reveal'>('suspense');
 
   useEffect(() => {
     if (!visible) {
-      setPhase('suspense');
       hasPlayedSound.current = false;
       return;
     }
-    // Start suspense phase
-    playSuspenseSound();
-    const revealTimer = setTimeout(() => {
-      setPhase('reveal');
-      if (!hasPlayedSound.current) {
-        hasPlayedSound.current = true;
-        playSoundForTile(tileType);
-      }
-    }, 1400); // 1.4s suspense delay
-    return () => clearTimeout(revealTimer);
+    // Play sound immediately on reveal
+    if (!hasPlayedSound.current) {
+      hasPlayedSound.current = true;
+      playSoundForTile(tileType);
+    }
   }, [visible, tileType]);
 
   // No auto-dismiss — user must tap to close (prevents premature closure)
