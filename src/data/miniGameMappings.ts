@@ -195,13 +195,23 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
   // ║  FASE 3 — Vale da Humilhação        ║
   // ╚══════════════════════════════════════╝
 
-  // Descida ao Vale — Stealth
+  // Descida ao Vale — Discernir entre humildade verdadeira e falsa
   'fase3-cena1': {
-    type: 'stealth',
+    type: 'swipe',
     difficulty: 'normal',
-    intro: 'A descida ao Vale da Humilhação é traiçoeira. Cada passo deve ser dado com cautela.',
-    successBonus: { perseveranca: 1 },
+    intro: 'O Vale da Humilhação ensina uma lição crucial: a humildade verdadeira fortalece, a falsa humildade destrói. Discerna entre elas.',
+    successBonus: { perseveranca: 1, discernimento: 1 },
     failurePenalty: { perseveranca: -1 },
+    swipeItems: [
+      { text: '"Sou inútil para Deus"', emoji: '😞', good: false },
+      { text: '"Os humildes são exaltados"', emoji: '🙌', good: true },
+      { text: '"Desista, você não merece"', emoji: '💀', good: false },
+      { text: '"Cristo foi humilhado por amor"', emoji: '✝️', good: true },
+      { text: '"Vergonha é o meu destino"', emoji: '😰', good: false },
+      { text: '"Na fraqueza, sou forte"', emoji: '💪', good: true },
+      { text: '"Orgulho é proteção"', emoji: '🦚', good: false },
+      { text: '"Deus resiste aos soberbos"', emoji: '📖', good: true },
+    ],
   },
 
   // Batalha contra Apolião — DUELO DE DADOS
