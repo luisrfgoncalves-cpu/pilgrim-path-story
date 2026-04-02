@@ -426,7 +426,7 @@ const ScenePage = () => {
     }
   }, [chapter?.id, transitioning]);
 
-  const hasCharReveal = !!charReveal;
+  const hasCharReveal = !!charReveal || !!allegoryCardChar;
   const canShowChoices = !hasCharReveal;
 
   useEffect(() => {
