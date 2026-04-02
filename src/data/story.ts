@@ -608,7 +608,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Agradecer a Auxílio e seguir adiante",
         nextChapterId: "cena14b",
-        effects: { fe: 1, discernimento: 1 }
+        effects: { fe: 1, discernimento: 1 },
+        consequence: "Auxílio explica que o Rei colocou degraus sob a lama — mas no desespero, ninguém olha para baixo. As promessas de Deus estão sempre ali, mesmo quando a dor nos cega. Gratidão é o antídoto do desânimo."
       }
     ]
   },
