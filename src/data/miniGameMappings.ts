@@ -690,20 +690,30 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     memorySymbols: ['👼', '✉️', '🌟', '🕊️', '👑', '💌', '🔔', '✨'],
   },
 
-  // Cena 3 — O Pântano com Misericórdia: Stealth
+  // Cena 3 — O Pântano com Misericórdia: Discernir promessas
   'p2-cena3': {
-    type: 'stealth',
+    type: 'swipe',
     difficulty: 'easy',
-    intro: 'O Pântano do Desânimo ameaça engolir Misericórdia! Avance com cuidado pelas pedras de promessa.',
+    intro: 'No Pântano, Misericórdia está afundando de medo. Agarre-se às promessas que são como pedras firmes e rejeite os pensamentos que arrastam para baixo!',
     successBonus: { perseveranca: 1, fe: 1 },
     failurePenalty: { perseveranca: -1 },
+    swipeItems: [
+      { text: '"Eu não mereço estar aqui"', emoji: '😢', good: false },
+      { text: '"A graça é para todos"', emoji: '✨', good: true },
+      { text: '"Devia ter ficado em casa"', emoji: '🏠', good: false },
+      { text: '"Deus chamou e eu respondi"', emoji: '📖', good: true },
+      { text: '"Não sou digna do portão"', emoji: '😞', good: false },
+      { text: '"Bata e a porta se abrirá"', emoji: '🚪', good: true },
+      { text: '"Cristã vai me abandonar"', emoji: '😰', good: false },
+      { text: '"O Senhor é minha força"', emoji: '🙏', good: true },
+    ],
   },
 
-  // Cena 4 — O Portão Estreito: QTE (bater insistentemente)
+  // Cena 4 — O Portão Estreito: Versículo que abre a porta
   'p2-cena4': {
-    type: 'qte',
+    type: 'wordpuzzle',
     difficulty: 'easy',
-    intro: 'Bata no Portão Estreito com insistência! Não pare até que ele se abra!',
+    intro: 'Para abrir o Portão Estreito, monte o versículo que Jesus usou como promessa: "Pedi e dar-se-vos-á; buscai e encontrareis; batei e abrir-se-vos-á."',
     successBonus: { fe: 1, perseveranca: 1 },
     failurePenalty: { fe: -1 },
   },
