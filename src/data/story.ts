@@ -881,7 +881,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         sceneEvent: { type: 'suspense', delay: 1000, duration: 3000, message: 'Luz sobrenatural envolve tudo...' },
     narrative: [
       "Você ainda está de joelhos quando três figuras luminosas aparecem diante de você. A luz que emana deles é tão intensa que você cobre os olhos com as mãos.",
-      "O primeiro se adianta. Sua voz é como trovão gentil: \"Paz a você. Seus pecados são perdoados.\" As palavras atravessam o seu peito como fogo que não queima — purifica.",
+      "O primeiro se adianta. Sua voz é como trovão gentil: \"Paz a você. O Senhor perdoou os teus pecados.\" As palavras atravessam o seu peito como fogo que não queima — purifica.",
       "O segundo se ajoelha ao seu lado e, com mãos que parecem feitas de luz, remove seus trapos sujos e imundos — as velhas roupas da Cidade da Destruição. No lugar, veste você com roupas novas, brancas e limpas. Pela primeira vez, você não sente vergonha do que veste.",
       "O terceiro coloca um selo na sua testa — uma marca invisível mas real — e estende um pergaminho selado com um selo dourado. \"Este é seu passaporte\", ele diz. \"Guarde-o com sua vida. Você precisará dele nos portões da Cidade Celestial. Não o perca.\"",
       "Os três desaparecem como vieram — em luz. Você fica ali, de pé, com roupas novas, sem fardo, com um pergaminho selado no peito. O caminho à frente parece possível agora."
