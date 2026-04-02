@@ -268,6 +268,16 @@ const allegoryMeanings: Record<string, { meaning: string; verse?: string; type: 
     verse: 'Provérbios 7:21-23 — "Seduziu-o com a suavidade dos seus lábios. Vai após ela como o boi vai ao matadouro."',
     type: 'villain',
   },
+  gigante_maul: {
+    meaning: 'Um gigante feroz que bloqueia a saída do Vale da Sombra. Representa os inimigos espirituais que atacam os peregrinos nos momentos de transição — quando o pior parece ter passado.',
+    verse: '1 Pedro 5:8 — "Sede sóbrios; vigiai; porque o diabo, vosso adversário, anda em derredor, bramando como leão, buscando a quem possa tragar."',
+    type: 'villain',
+  },
+  gigante_mata_bons: {
+    meaning: 'O gigante que caça especificamente os fracos e vulneráveis. Representa as forças que atacam os crentes mais frágeis — aqueles que o corpo de Cristo tem a obrigação de proteger.',
+    verse: 'Ezequiel 34:16 — "A perdida buscarei, a desgarrada tornarei a trazer, a quebrada ligarei, e a enferma fortalecerei."',
+    type: 'villain',
+  },
 };
 
 interface AllegoryCardProps {
