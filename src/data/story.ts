@@ -354,7 +354,6 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Hesitar — a luz é fraca demais, o caminho incerto",
         nextChapterId: "cena6",
         effects: { fe: -1 },
-        consequence: "A dúvida diante da chave que já abriu uma porta é o eco do Gigante Desespero — tentando roubar a fé no último instante. Use-a antes que a voz do medo a esconda novamente.",
         consequence: "A hesitação de Cristão representa a dúvida que todo crente enfrenta: 'E se eu estiver errado?' Mas Hebreus 11:1 ensina que 'a fé é a certeza de coisas que se esperam, a convicção de coisas que não se veem.' A luz fraca é o começo — não o fim."
       }
     ]
