@@ -365,6 +365,18 @@ const PresentialMultiplayer = () => {
   const [phaseTransitionPendingAction, setPhaseTransitionPendingAction] = useState<(() => void) | null>(null);
   const lastPhaseAmbientRef = useRef(-1);
 
+  // ─── RPG System State ───
+  const [rpgDifficulty, setRpgDifficulty] = useState<Difficulty>('peregrino');
+  const [rpgGameMode, setRpgGameMode] = useState<GameMode>('cooperative');
+  const [rpgHostIndex, setRpgHostIndex] = useState(0);
+  const rotationStateRef = useRef<RotationState>(createRotationState());
+  const [rpgEvent, setRpgEvent] = useState<{
+    tileType: RPGTileEventType;
+    playerIdx: number;
+    prevPosition: number;
+    newPosition: number;
+  } | null>(null);
+
   const addPlayer = () => {
     if (players.length >= 8) return;
     setPlayers(prev => [...prev, createPlayer(prev.length)]);
