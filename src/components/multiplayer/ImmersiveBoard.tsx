@@ -26,6 +26,16 @@ interface ImmersiveBoardProps {
   onTokenArrived?: () => void;
 }
 
+/** Estimate scroll position for a tile that may be virtualized (not in DOM) */
+function scrollToEstimatedPosition(board: HTMLElement | null, tileGlobalIdx: number) {
+  if (!board) return;
+  const totalTiles = IMMERSIVE_BOARD_SIZE;
+  const totalHeight = board.scrollHeight || document.documentElement.scrollHeight;
+  const ratio = tileGlobalIdx / totalTiles;
+  const targetY = ratio * totalHeight - window.innerHeight / 2;
+  window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+}
+
 export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTileClick, onTokenArrived }: ImmersiveBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
   const trailPositions = useMemo(() => getTrailPositions(), []);
