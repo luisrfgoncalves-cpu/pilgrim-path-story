@@ -1739,6 +1739,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Feira da Vaidade",
     characters: ["cristao"],
     sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'O fogo consome a estaca...' },
+    narrative: [
       "{{tremor}}O tribunal condena Fiel.{{/tremor}} Ele é açoitado, apedrejado, esfaqueado e, por fim, queimado na estaca. {{heart}}Fiel não grita de dor. Seu rosto, mesmo no fogo, irradia paz.{{/heart}}",
       "{{divine}}Bunyan escreveu que uma carruagem celestial desceu e levou Fiel através das nuvens, ao som de trombetas, direto para a Porta Celestial.{{/divine}}",
       "{{fade}}Você está sozinho novamente. Mas o sacrifício de Fiel muda algo em você. Se ele suportou a morte sem recuar, o que é o desconforto diante disso?{{/fade}}"
