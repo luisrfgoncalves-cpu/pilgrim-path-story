@@ -36,12 +36,13 @@ const DIFFICULTY_CONFIG: Record<Difficulty, { label: string; desc: string; icon:
 const DEFAULT_NAMES = ['Cristão', 'Fiel', 'Esperança', 'Misericórdia', 'Valente', 'Honesto', 'Prudência', 'Caridade'];
 
 export default function RPGBriefing({ onStart, onBack }: RPGBriefingProps) {
-  const [step, setStep] = useState<'briefing' | 'config'>('briefing');
+  const [step, setStep] = useState<'briefing' | 'tutorial' | 'config'>('briefing');
   const [difficulty, setDifficulty] = useState<Difficulty>('peregrino');
   const [gameMode, setGameMode] = useState<GameMode>('cooperative');
   const [playerCount, setPlayerCount] = useState(3);
   const [playerNames, setPlayerNames] = useState<string[]>(DEFAULT_NAMES.slice(0, 8));
   const [hostIndex, setHostIndex] = useState(0);
+  const [tutorialSection, setTutorialSection] = useState<string | null>(null);
 
   const stats = getContentStats();
 
