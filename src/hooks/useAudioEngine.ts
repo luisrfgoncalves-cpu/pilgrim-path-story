@@ -448,7 +448,61 @@ export function useAudioEngine() {
     // Change seed per scene so phrases are different
     sceneSeed = chapterId.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
 
-    // Map by phase + tone for maximum variety
+    // ── Scene-specific ambience for maximum immersion ──
+    const sceneAmbience: Record<string, AmbienceType> = {
+      // Cidade da Destruição — oppressive
+      'cena1': 'solemn', 'cena1b': 'solemn', 'cena2': 'solemn',
+      'cena3': 'solemn', 'cena4': 'solemn',
+      // Evangelista — hope
+      'cena5': 'contemplative',
+      // Dorminhocoes — eerie
+      'cena5b': 'shadow', 'cena6': 'shadow',
+      // Porta Estreita — glory
+      'cena7': 'glory', 'cena7b': 'solemn',
+      // Prudência Mundana — temptation
+      'cena8': 'contemplative',
+      // Sinai — dark
+      'cena10': 'shadow',
+      // Pântano — dread
+      'cena11': 'shadow', 'cena11b': 'shadow',
+      'cena12': 'shadow', 'cena13': 'shadow',
+      // Auxílio
+      'cena14': 'contemplative', 'cena14b': 'pastoral',
+      // Cruz — glory!
+      'cena15': 'glory', 'cena15b': 'glory',
+      // Casa do Intérprete
+      'fase2-cena1': 'contemplative', 'fase2-cena8': 'shadow',
+      'fase2-cena9': 'glory', 'fase2-cena10': 'glory',
+      // Colina + Leões
+      'fase2-cena11': 'solemn', 'fase2-cena14': 'solemn',
+      // Vale da Humilhação + Apolião
+      'fase3-cena1': 'shadow', 'fase3-cena2': 'shadow',
+      'fase3-cena3': 'shadow', 'fase3-cena4': 'contemplative',
+      'fase3-cena5': 'shadow', 'fase3-cena6': 'shadow',
+      'fase3-cena8': 'pastoral',
+      // Feira da Vaidade
+      'fase4-cena1': 'solemn', 'fase4-cena4': 'shadow',
+      'fase4-cena6': 'shadow', 'fase4-cena7': 'solemn',
+      'fase4-cena8': 'contemplative',
+      // Castelo da Dúvida
+      'fase5-cena3': 'shadow', 'fase5-cena4': 'shadow',
+      'fase5-cena5': 'shadow',
+      'fase5-cena6': 'glory', 'fase5-cena7': 'glory',
+      'fase5-cena9': 'pastoral', 'fase5-cena14': 'pastoral',
+      // Rio + Celestial
+      'fase6-cena1': 'solemn', 'fase6-cena2': 'shadow',
+      'fase6-cena3': 'contemplative',
+      'fase6-cena5': 'glory', 'fase6-cena7': 'glory',
+      'fase6-cena8': 'glory', 'fase6-cena9': 'glory',
+    };
+
+    // Check scene-specific first
+    if (sceneAmbience[chapterId]) {
+      startAmbience(sceneAmbience[chapterId]);
+      return;
+    }
+
+    // Fallback: Map by phase + tone
     if (chapterId.startsWith('fase6')) { startAmbience('glory'); return; }
     if (chapterId.startsWith('fase5')) {
       startAmbience(tone === 'hopeful' ? 'contemplative' : 'solemn');

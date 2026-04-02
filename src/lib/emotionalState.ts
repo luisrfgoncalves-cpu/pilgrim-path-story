@@ -30,6 +30,106 @@ const FLAG_OVERRIDES: Record<string, PostureState> = {
   recuperacao_espiritual: 'recuperacao',
 };
 
+/**
+ * Scene-specific posture overrides — ensures the pilgrim avatar
+ * matches the narrative context of each chapter, not just attributes.
+ */
+const SCENE_POSTURE_OVERRIDES: Record<string, PostureState> = {
+  // FASE 1 — Cidade da Destruição
+  'cena1': 'abatido',
+  'cena1b': 'abatido',
+  'cena2': 'em_conflito',
+  'cena3': 'em_dificuldade',
+  'cena4': 'abatido',
+  'cena5': 'esperancoso',        // Evangelista appears
+  'cena5b': 'confuso',
+  'cena6': 'abatido',
+  'cena7': 'esperancoso',        // Porta Estreita
+  'cena7b': 'em_dificuldade',    // Flechas
+  'cena8': 'confuso',            // Prudência Mundana
+  'cena9': 'determinado',
+  'cena9b': 'determinado',
+  'cena10': 'em_dificuldade',    // Monte Sinai
+  'cena11': 'em_dificuldade',    // Pântano
+  'cena11b': 'em_dificuldade',
+  'cena12': 'abatido',           // Afundando
+  'cena13': 'abatido',           // Quase morrendo
+  'cena14': 'recuperacao',       // Auxílio
+  'cena14b': 'recuperacao',
+  'cena15': 'livre',             // Cruz!
+  'cena15b': 'vitoria_final',    // Três Resplandecentes
+
+  // FASE 2 — Casa do Intérprete
+  'fase2-cena1': 'esperancoso',
+  'fase2-cena2': 'confuso',
+  'fase2-cena3': 'determinado',
+  'fase2-cena4': 'confuso',
+  'fase2-cena5': 'esperancoso',
+  'fase2-cena6': 'determinado',
+  'fase2-cena7': 'esperancoso',
+  'fase2-cena8': 'em_conflito',   // Homem na Gaiola
+  'fase2-cena9': 'determinado',
+  'fase2-cena10': 'determinado',  // Armadura
+  'fase2-cena11': 'em_dificuldade', // Colina
+  'fase2-cena12': 'em_dificuldade',
+  'fase2-cena13': 'recuperacao',
+  'fase2-cena14': 'em_conflito',  // Leões
+
+  // FASE 3 — Vale da Humilhação
+  'fase3-cena1': 'em_dificuldade',
+  'fase3-cena2': 'em_conflito',
+  'fase3-cena3': 'em_conflito',   // Apolião
+  'fase3-cena4': 'recuperacao',
+  'fase3-cena5': 'abatido',       // Vale da Sombra
+  'fase3-cena6': 'abatido',
+  'fase3-cena7': 'recuperacao',
+  'fase3-cena8': 'esperancoso',   // Fiel
+  'fase3-cena9': 'determinado',
+  'fase3-cena10': 'determinado',
+
+  // FASE 4 — Feira da Vaidade
+  'fase4-cena1': 'em_conflito',
+  'fase4-cena2': 'em_dificuldade',
+  'fase4-cena3': 'em_conflito',
+  'fase4-cena4': 'em_dificuldade', // Julgamento
+  'fase4-cena5': 'determinado',
+  'fase4-cena6': 'em_dificuldade',
+  'fase4-cena7': 'abatido',       // Morte de Fiel
+  'fase4-cena8': 'recuperacao',   // Esperança
+  'fase4-cena9': 'determinado',
+  'fase4-cena10': 'em_conflito',
+  'fase4-cena11': 'em_conflito',
+  'fase4-cena11b': 'confuso',
+  'fase4-cena12': 'determinado',
+
+  // FASE 5 — Castelo da Dúvida
+  'fase5-cena1': 'confuso',
+  'fase5-cena2': 'em_dificuldade',
+  'fase5-cena3': 'abatido',       // Gigante
+  'fase5-cena4': 'abatido',
+  'fase5-cena5': 'em_dificuldade',
+  'fase5-cena6': 'esperancoso',   // Chave
+  'fase5-cena7': 'livre',
+  'fase5-cena8': 'determinado',
+  'fase5-cena9': 'esperancoso',   // Montanhas
+  'fase5-cena10': 'esperancoso',
+  'fase5-cena11': 'confuso',
+  'fase5-cena12': 'em_dificuldade',
+  'fase5-cena13': 'confuso',
+  'fase5-cena14': 'esperancoso',
+
+  // FASE 6 — Rio e Cidade Celestial
+  'fase6-cena1': 'em_conflito',
+  'fase6-cena2': 'em_dificuldade',
+  'fase6-cena3': 'esperancoso',
+  'fase6-cena4': 'em_dificuldade',
+  'fase6-cena5': 'esperancoso',
+  'fase6-cena6': 'determinado',
+  'fase6-cena7': 'esperancoso',
+  'fase6-cena8': 'vitoria_final',
+  'fase6-cena9': 'vitoria_final',
+};
+
 const atmosphereLines: Record<PostureState, string[]> = {
   abatido: [
     'Um peso invisível pressiona seus ombros.',
@@ -240,6 +340,18 @@ export function resolveEmotionalState(
         flagOverride: flag,
       };
     }
+  }
+
+  // 1b. Scene-specific posture overrides (narrative context)
+  if (SCENE_POSTURE_OVERRIDES[chapterId]) {
+    const posture = SCENE_POSTURE_OVERRIDES[chapterId];
+    const lines = atmosphereLines[posture];
+    return {
+      posture,
+      intensity: 0.7,
+      atmosphereLine: lines.length > 0 ? lines[seed % lines.length] : undefined,
+      sceneClass: sceneClasses[posture],
+    };
   }
 
   // 2. Phase baseline — the story phase sets gravitational pull
