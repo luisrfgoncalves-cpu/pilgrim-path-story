@@ -48,8 +48,8 @@ export const part2Chapters: Record<string, StoryChapter> = {
     sceneEvent: { type: 'suspense', delay: 1500, duration: 3000, message: 'Um sonho... uma carta...' },
     narrative: [
       "Anos se passaram desde que Cristão partiu da Cidade da Destruição. Sua esposa, Cristã, ficou para trás com quatro filhos — Mateus, Tiago, Samuel e José.",
-      "Uma noite, ela tem um sonho: vê o marido na Cidade Celestial, vestido de branco, entre anjos, olhando para ela com saudade e amor.",
-      "Ao acordar, encontra uma carta deixada à sua porta. É do Rei da Cidade Celestial: \"Convido-te, Cristã, a vir ao meu palácio. O mesmo caminho que teu marido percorreu está aberto para ti e teus filhos.\""
+      "Uma noite, ela tem um sonho: {{divine}}vê o marido na Cidade Celestial, vestido de branco, entre anjos, olhando para ela com saudade e amor.{{/divine}}",
+      "Ao acordar, encontra uma carta deixada à sua porta. É do Rei da Cidade Celestial: {{divine}}\"Convido-te, Cristã, a vir ao meu palácio. O mesmo caminho que teu marido percorreu está aberto para ti e teus filhos.\"{{/divine}}"
     ],
     adaptiveNarrative: [
       { minAttr: "fe", minValue: 0, text: "Cristã reconhece o caminho que seu marido percorreu. Cada marco que ele enfrentou — o pântano, a cruz, o vale, a feira — agora aguarda por ela." }
@@ -62,13 +62,15 @@ export const part2Chapters: Record<string, StoryChapter> = {
         text: "Aceitar o convite e preparar a partida imediatamente",
         nextChapterId: "p2-cena2",
         effects: { fe: 2, coragem: 1 },
-        flag: "aceitou_convite_imediato"
+        flag: "aceitou_convite_imediato",
+        consequence: "A obediência pronta é a marca da fé genuína. Cristã não esperou sinais adicionais — a carta do Rei foi suficiente. — Hebreus 11:8: \"Pela fé Abraão, sendo chamado, obedeceu, indo para um lugar que havia de receber por herança; e saiu, sem saber para onde ia.\""
       },
       {
         text: "Hesitar — o caminho é perigoso para uma mãe com filhos",
         nextChapterId: "p2-cena2",
         effects: { discernimento: 1 },
-        flag: "hesitou_convite"
+        flag: "hesitou_convite",
+        consequence: "A prudência não é pecado quando nasce do amor materno. Mas o medo pode se disfarçar de cautela. — 2 Timóteo 1:7: \"Porque Deus não nos deu o espírito de temor, mas de fortaleza, e de amor, e de moderação.\""
       }
     ]
   },
