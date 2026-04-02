@@ -712,9 +712,9 @@ const ScenePage = () => {
         {/* Scene content — hidden when inline mini-game is active */}
         {!(miniGameReady && !miniGameDone && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id]?.type)) && (
         <>
-        {/* Scene image with preloading */}
+        {/* Scene image with preloading — BRIGHT and visible */}
         {bgImage && (
-          <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px', minHeight: '180px', background: 'hsl(var(--card))' }}>
+          <div className="relative w-full overflow-hidden" style={{ maxHeight: '320px', minHeight: '200px', background: 'hsl(var(--card))' }}>
             {(() => {
               const imgVar = getSceneImageVariation(chapter.id);
               return (
@@ -734,7 +734,7 @@ const ScenePage = () => {
                     transform: imgVar.transform,
                     transformOrigin: 'center center',
                     filter: [
-                      getSceneAtmosphere(chapter.id).imageFilter || (atmosphere.imageStyle as any)?.filter || '',
+                      getSceneAtmosphere(chapter.id).imageFilter || 'brightness(1.05) saturate(1.0)',
                       imgVar.extraFilter || '',
                     ].filter(Boolean).join(' ') || undefined,
                   }}
