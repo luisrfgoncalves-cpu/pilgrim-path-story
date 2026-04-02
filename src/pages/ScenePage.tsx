@@ -36,6 +36,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { trackPageView, trackSceneComplete } from '@/lib/analytics';
 import { shareResult } from '@/lib/socialShare';
 import { toast } from 'sonner';
+import { renderNarrative, getSceneAtmosphere } from '@/lib/narrativeRenderer';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
   fe: { label: 'Fé', emoji: '🔥', icon: Flame },
@@ -601,7 +602,10 @@ const ScenePage = () => {
               fetchPriority="high"
               onLoad={() => setImageLoaded(true)}
               className="w-full h-auto object-cover scene-image scene-image-alive"
-              style={atmosphere.imageStyle}
+              style={{
+                ...atmosphere.imageStyle,
+                filter: getSceneAtmosphere(chapter.id).imageFilter || (atmosphere.imageStyle as any)?.filter,
+              }}
             />
             {/* Particle effects overlay */}
             {imageLoaded && (() => {
@@ -609,6 +613,16 @@ const ScenePage = () => {
               return pType ? <ParticleEffects type={pType} intensity={0.6} /> : null;
             })()}
             <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+            {/* Scene atmosphere overlay */}
+            {(() => {
+              const atmo = getSceneAtmosphere(chapter.id);
+              return atmo.overlayColor || atmo.bgTint ? (
+                <div className="absolute inset-0 pointer-events-none transition-all duration-[2000ms]" style={{
+                  background: atmo.bgTint || atmo.overlayColor,
+                  mixBlendMode: 'multiply',
+                }} />
+              ) : null;
+            })()}
             <div className="absolute bottom-2 left-3 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-md border border-primary/20">
               <MapPin className="w-3 h-3 text-primary/80" />
               <span className="text-xs uppercase tracking-widest text-amber-300 font-display font-bold" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}>{chapter.location}</span>
@@ -680,15 +694,24 @@ const ScenePage = () => {
 
           <div className="space-y-3 mb-6" style={atmosphere.textStyle}>
             {currentNarrative && (
-              <div
+              (() => {
+                const sceneAtmo = getSceneAtmosphere(chapter.id);
+                return <div
                 key={`${chapter.id}-${narrativeIndex}`}
-                className="fade-in rounded-xl border border-border/60 bg-card/55 px-4 py-4"
-                style={{ boxShadow: '0 8px 20px hsl(0 0% 0% / 0.14)' }}
+                className="fade-in rounded-xl border px-4 py-4"
+                style={{
+                  boxShadow: sceneAtmo.textGlow
+                    ? `0 8px 20px hsl(0 0% 0% / 0.14), 0 0 20px ${sceneAtmo.textGlow}`
+                    : '0 8px 20px hsl(0 0% 0% / 0.14)',
+                  background: sceneAtmo.cardBg || 'hsl(var(--card) / 0.55)',
+                  borderColor: sceneAtmo.borderAccent || 'hsl(var(--border) / 0.6)',
+                }}
               >
-                <p className="narrative-text text-foreground/90">
-                  {currentNarrative}
+                <p className="narrative-text text-foreground/90" style={sceneAtmo.textColor ? { color: sceneAtmo.textColor } : undefined}>
+                  {renderNarrative(currentNarrative)}
                 </p>
-              </div>
+              </div>;
+              })()
             )}
 
             {fullNarrative.length > 0 && !showChoices && (
