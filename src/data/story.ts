@@ -1650,9 +1650,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Sedução da Feira",
     location: "Feira da Vaidade",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'As ofertas brilham ao seu redor...' },
     narrative: [
-      "As barracas oferecem tudo que seu coração poderia desejar. Comida abundante, roupas finas, poder, reconhecimento. Vendedores sorriem e dizem: \"Apenas prove. Sem compromisso.\"",
-      "Fiel te puxa pelo braço: \"Cristão, lembre-se do homem na gaiola de ferro. Ele também começou apenas olhando.\""
+      "{{fade}}As barracas oferecem tudo que seu coração poderia desejar.{{/fade}} Comida abundante, roupas finas, poder, reconhecimento. {{villain}}Vendedores sorriem e dizem: \"Apenas prove. Sem compromisso.\"{{/villain}}",
+      "{{heart}}Fiel te puxa pelo braço:{{/heart}} {{dialog}}\"Cristão, lembre-se do homem na gaiola de ferro. Ele também começou apenas olhando.\"{{/dialog}}"
     ],
     adaptiveNarrative: [
       { minAttr: "fe", minValue: 8, text: "Sua fé resiste. Mesmo diante da beleza das ofertas, algo dentro de você reconhece: nada aqui vale o pergaminho no seu bolso." }
