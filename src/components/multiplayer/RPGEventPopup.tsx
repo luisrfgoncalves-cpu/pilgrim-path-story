@@ -667,7 +667,7 @@ export default function RPGEventPopup({
           )}
         </div>
 
-        <div className="p-4 space-y-4">
+        <div className="p-6 space-y-5">
           {/* CONTEXT PHASE */}
           {phase === 'context' && !showResult && (
             <>
