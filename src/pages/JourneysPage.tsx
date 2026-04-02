@@ -116,6 +116,13 @@ const JourneysPage = () => {
 
   const handlePhaseReplay = (phaseId: string, campaign: 'part1' | 'part2') => {
     const phaseChapters = getPhaseChapterIds(phaseId, campaign);
+    if (isOwner && phaseChapters.length > 0) {
+      goToChapter(phaseChapters[0]);
+      startJourney();
+      navigate('/jornada', { replace: true });
+      setTimeout(() => navigate('/cena'), 50);
+      return;
+    }
     const firstVisited = phaseChapters.find(id => progress.visitedChapters.includes(id));
     if (firstVisited) {
       goToChapter(firstVisited);
