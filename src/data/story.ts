@@ -199,11 +199,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     sceneEvent: { type: 'tension', intensity: 1, duration: 3000, message: 'Um peso esmagador cai sobre seus ombros...' },
     narrative: [
       "Você está em casa, na Cidade da Destruição, quando abre um livro antigo.",
-      "As palavras falam de juízo. De uma cidade condenada. {{emphasis}}Da sua cidade.{{/emphasis}}",
-      "Suas mãos tremem.",
+      "{{tremor}}As palavras falam de juízo. De uma cidade condenada. {{emphasis}}Da sua cidade.{{/emphasis}}{{/tremor}}",
+      "Suas mãos tremem. As páginas parecem brilhar com uma luz própria.",
       "{{tremor}}Um peso surge nas suas costas, como se cada frase virasse pedra.{{/tremor}}",
-      "Você tenta arrancá-lo. Não consegue.",
-      "À noite, uma frase não sai da sua cabeça: {{heart}}\"Fugi da ira vindoura.\"{{/heart}}"
+      "Você tenta arrancá-lo. Não consegue. {{heart}}O fardo é real.{{/heart}}",
+      "{{fade}}À noite, uma frase não sai da sua cabeça:{{/fade}} {{divine}}\"Fugi da ira vindoura.\"{{/divine}}"
     ],
     replayNarrative: [
       "O livro está aqui de novo. O fardo, também. Mas desta vez você sabe — sabe que há uma porta, um caminho, e que cada escolha adiante moldará quem você se tornará."

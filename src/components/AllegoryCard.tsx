@@ -114,8 +114,12 @@ const allegoryMeanings: Record<string, { meaning: string; verse?: string; type: 
     verse: '1 Timóteo 6:10 — "O amor ao dinheiro é raiz de todos os males."',
     type: 'villain',
   },
+  livro_antigo: {
+    meaning: 'O Livro que Cristão abre representa a Bíblia — a Palavra de Deus que revela a verdade sobre o pecado e a condenação. É o instrumento que desperta a consciência adormecida.',
+    verse: 'Hebreus 4:12 — "A palavra de Deus é viva e eficaz, e mais penetrante do que qualquer espada de dois gumes."',
+    type: 'divine',
+  },
 };
-
 interface AllegoryCardProps {
   characterId: string;
   onDismiss: () => void;
