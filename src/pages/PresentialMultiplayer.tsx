@@ -30,7 +30,7 @@ import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown } from 'lucide-reac
 import ScreenHero from '@/components/ScreenHero';
 
 const COLORS = ['#E8724A', '#4CAF50', '#42A5F5', '#FFD54F', '#AB47BC', '#EF5350', '#26C6DA', '#FF7043'];
-const DEFAULT_NAMES = ['Cristão', 'Fiel', 'Esperança', 'Misericórdia', 'Valente', 'Honesto', 'Prudência', 'Caridade'];
+const DEFAULT_NAMES = ['Cristão', 'Fiel', 'Esperança', 'Prudência', 'Caridade', 'Piedade', 'Evangelista', 'Socorro'];
 
 // ─── Stats tracking ───
 interface PlayerStats {
