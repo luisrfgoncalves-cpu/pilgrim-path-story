@@ -29,6 +29,7 @@ import { MiniGame, MiniGameResult } from '@/components/MiniGames';
 import { FullscreenMiniGame, FULLSCREEN_GAMES } from '@/components/FullscreenMiniGame';
 import { miniGameMappings } from '@/data/miniGameMappings';
 import { playGameSfx } from '@/lib/gameSfx';
+import { playRealSfx } from '@/lib/realSfx';
 import GameNotification from '@/components/GameNotification';
 import { MapPin, Home, ScrollText, Lock, Trophy, AlertTriangle, XCircle, Volume2, VolumeX, Compass, Heart, TrendingUp, TrendingDown, ArrowRight, ArrowLeft, Zap, Star, Shield, Flame, Share2 } from 'lucide-react';
 import { useSupportBonus } from '@/hooks/useSupportBonus';
