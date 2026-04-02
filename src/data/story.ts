@@ -1166,7 +1166,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "\"Essas lições ficarão comigo. Obrigado.\"",
         nextChapterId: "fase2-cena10",
-        effects: { fe: 1, discernimento: 1 }
+        effects: { fe: 1, discernimento: 1 },
+        consequence: "As visões do Intérprete são arsenal para a jornada. Cada parábola é arma contra uma tentação específica. Efésios 6:17: 'Tomai a espada do Espírito, que é a Palavra de Deus.'"
       },
       {
         text: "Sentir-se perturbado e querer ir embora",
