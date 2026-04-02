@@ -857,7 +857,7 @@ export default function RPGEventPopup({
                     key={i}
                     onClick={() => handleDilemmaChoice(i)}
                     disabled={selectedAnswer !== null}
-                    className="p-3 rounded-xl border border-border bg-card/50 text-left text-sm text-foreground hover:border-primary/30 transition-all"
+                    className="p-4 rounded-xl border border-border bg-card/50 text-left text-base text-foreground hover:border-primary/30 transition-all"
                   >
                     {choice.text}
                   </button>
