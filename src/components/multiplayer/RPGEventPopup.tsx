@@ -168,7 +168,7 @@ export default function RPGEventPopup({
       });
     }
 
-    return () => 
+    return () => {};
   }, [visible, tileEventType, difficulty, playerNames, rotationState]);
 
   // ─── STAGED NARRATIVE: Dramatic suspense intro before context ───
