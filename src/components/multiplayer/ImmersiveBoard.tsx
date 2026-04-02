@@ -200,7 +200,7 @@ const PhaseSection = memo(function PhaseSection({
   currentTurnId?: string;
   onTileClick?: (position: number, tileType: TileType) => void;
   getDisplayPosition: (player: Player) => number;
-  animatingPlayerId: string | null;
+  animatingPlayerId: string[];
   capability: ReturnType<typeof useDeviceCapability>;
 }) {
   const startIdx = phaseIdx * TILES_PER_PHASE;
