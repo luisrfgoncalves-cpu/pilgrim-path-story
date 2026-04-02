@@ -194,6 +194,13 @@ export const part2Chapters: Record<string, StoryChapter> = {
       "O guardião do portão intervém e os afugenta, mas não antes de Cristã e Misericórdia sentirem o terror de um ataque real.",
       "{{divine}}\"Isto é normal\"{{/divine}}, diz o guardião. \"Todo peregrino que passa por esta porta é atacado logo depois. Seu marido também foi. {{divine}}Mas o Senhor vos guardará.{{/divine}}\""
     ],
+    toneNarrative: [
+      { attr: "coragem", highThreshold: 6, highText: "Cristã se coloca na frente dos filhos com uma determinação que surpreende até o guardião.", lowThreshold: 3, lowText: "O ataque paralisa Cristã por um momento. Os filhos se agarram a ela. O medo é real e cru." }
+    ],
+    flagNarrative: [
+      { flag: "intercedeu_por_misericordia", text: "Misericórdia se esconde atrás de Cristã — a mesma que intercedeu por ela no portão agora a protege com o corpo." },
+      { flag: "ajudou_misericordia_pantano", text: "A parceria forjada no pântano se mostra aqui: Misericórdia e Cristã lutam lado a lado contra os Mal-Encarados." }
+    ],
     choices: [
       {
         text: "\"Se meu marido suportou isto, eu também suportarei.\"",
