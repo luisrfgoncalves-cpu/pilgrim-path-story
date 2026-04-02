@@ -305,12 +305,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Fugir da cidade esta noite, mesmo sozinho",
         nextChapterId: "cena5",
-        effects: { fe: 1, coragem: 1 }
+        effects: { fe: 1, coragem: 1 },
+        consequence: "Bunyan escreveu que Cristão tapou os ouvidos e correu gritando 'Vida! Vida eterna!' Quando Deus abre nossos olhos para o perigo, a urgência de fugir do pecado é mais forte que qualquer laço terreno. Lucas 14:26 fala do custo de seguir a Cristo."
       },
       {
         text: "Aguentar mais um dia, talvez o peso passe",
         nextChapterId: "cena6",
-        effects: { coragem: -1, perseveranca: -1 }
+        effects: { coragem: -1, perseveranca: -1 },
+        consequence: "A procrastinação espiritual é uma das maiores armadilhas. Cada dia que Cristão adiou a partida, o fardo ficou mais pesado. 'Eis aqui agora o dia da salvação' (2 Coríntios 6:2). O amanhã nunca é garantido."
       }
     ]
   },
