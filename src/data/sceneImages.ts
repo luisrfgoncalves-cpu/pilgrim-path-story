@@ -76,7 +76,7 @@ export const sceneImages: Record<string, string> = {
   'fase2-cena10': palacioBelo,
   'fase2-cena11': colinaDificuldade,
   'fase2-cena12': colinaDificuldadeSubida,
-  'fase2-cena13': colinaDificuldadeSubida,
+  'fase2-cena13': caramanchaoColina,
   'fase2-cena14': leoesPalacio,
 
   // FASE 3: Vale da Humilhação e Apolião
