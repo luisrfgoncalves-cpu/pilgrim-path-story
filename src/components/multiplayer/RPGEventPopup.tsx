@@ -987,7 +987,7 @@ export default function RPGEventPopup({
                 background: 'linear-gradient(135deg, hsl(45 30% 10%), hsl(30 20% 8%))',
                 borderColor: 'hsl(45 40% 30%)',
               }}>
-                <p className="text-sm leading-relaxed" style={{ color: 'hsl(45 30% 80%)' }}>
+                <p className="text-base leading-relaxed" style={{ color: 'hsl(45 30% 80%)', lineHeight: '1.7' }}>
                   {currentRevelation.deepTeaching}
                 </p>
               </div>
