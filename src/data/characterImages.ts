@@ -116,4 +116,6 @@ export const characterImages: Record<string, string> = {
   valente_pela_verdade: valentePelaVerdade,
   firme,
   madame_bolha: madameBolha,
+  gigante_maul: giganteMaul,
+  gigante_mata_bons: giganteMataBons,
 };
