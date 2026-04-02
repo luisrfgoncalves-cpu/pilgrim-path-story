@@ -446,7 +446,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     id: "p2-fase3-cena3",
     title: "O Gigante Maul",
     location: "Saída do Vale",
-    characters: ["crista", "grande_coracao"],
+    characters: ["crista", "grande_coracao", "gigante_maul"],
     sceneEvent: { type: 'tension', duration: 5000, message: 'A terra treme!', intensity: 0.9 },
     narrative: [
       "Na saída do vale, um gigante chamado {{villain}}Maul{{/villain}} bloqueia o caminho. Ele é menor que Desespero, mas feroz: {{villain}}\"Mulheres peregrinas? Fácil demais!\"{{/villain}}",
