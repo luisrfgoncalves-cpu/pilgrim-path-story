@@ -467,6 +467,7 @@ const PresentialMultiplayer = () => {
     playTurnStart();
     playGameSfx('gameStart');
     playPhaseAmbient(0);
+    startAmbientMusic(0);
     lastPhaseAmbientRef.current = 0;
     setTurnAnnounce(`Vez de ${finalPlayers[0].name}!`);
     setShowPhaseTransition(0);
