@@ -270,12 +270,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Procurar alguém que conheça o caminho",
         nextChapterId: "cena5",
-        effects: { fe: 1, discernimento: 1 }
+        effects: { fe: 1, discernimento: 1 },
+        consequence: "Buscar orientação é sabedoria. Provérbios 12:15 diz: 'O caminho do tolo parece-lhe reto, mas o sábio dá ouvidos ao conselho.' Evangelista é a figura do pregador fiel que aponta para Cristo — não para si mesmo."
       },
       {
         text: "Tentar encontrar a porta por conta própria",
         nextChapterId: "cena6",
-        effects: { perseveranca: 1, coragem: 1 }
+        effects: { perseveranca: 1, coragem: 1 },
+        consequence: "A coragem de tentar sozinho é admirável, mas perigosa. Sem orientação, o caminho se perde facilmente. Bunyan mostra que o orgulho espiritual — achar que não precisa de guia — é um dos primeiros tropeços do peregrino."
       }
     ]
   },
