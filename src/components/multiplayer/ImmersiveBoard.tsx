@@ -304,8 +304,11 @@ const PhaseSection = memo(function PhaseSection({
           const isBoss = tileType === 'giant' || tileType === 'challenge';
           const tileCharKey = config.characterKey;
           const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
-          // Only show images on special tiles to reduce repetition
-          const tileEnvImg = isSpecial ? (config.tileImage || null) : null;
+          const prevTileType = globalIdx > 0 ? tileTypes[globalIdx - 1] : null;
+          const prevTileConfig = prevTileType ? TILE_TYPES[prevTileType] : null;
+          const repeatedImageSequence = !tileCharImg && !!config.tileImage && !!prevTileConfig?.tileImage && prevTileConfig.tileImage === config.tileImage;
+          // Hide repeated environment art on consecutive tiles so the board feels less duplicated
+          const tileEnvImg = isSpecial && !repeatedImageSequence ? (config.tileImage || null) : null;
           const tileImg = tileCharImg || tileEnvImg;
           const tileSize = isBoss ? 88 : isSpecial ? 78 : 66;
 
