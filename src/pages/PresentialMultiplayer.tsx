@@ -1180,23 +1180,10 @@ const PresentialMultiplayer = () => {
     if (rpgFeedbackTimerRef.current) clearTimeout(rpgFeedbackTimerRef.current);
     if (rpgResolutionTimerRef.current) clearTimeout(rpgResolutionTimerRef.current);
 
-    // Clear RPG popup FIRST — then show result feedback after a short delay
+    // Clear RPG popup — no redundant ResultFeedback since RPGEventPopup already showed the result
     setRpgEvent(null);
 
-    // Show dramatic result feedback overlay AFTER RPG popup is gone
-    rpgFeedbackTimerRef.current = window.setTimeout(() => {
-      setResultFeedback({
-        visible: true,
-        success: result.success,
-        message: result.message,
-        emoji: result.emoji,
-        posAdjust: result.posAdjust,
-        attrChanges: result.attrChanges,
-      });
-    }, 400);
-
-    // RPG popup already showed the result — skip redundant TileEventPopup
-    // Delay pending moves/next turn until ResultFeedback finishes (~4.5s)
+    // Process pending moves/next turn after a short delay for visual breathing room
     const pendingMove = pendingMoveAfterPopup.current;
     const rpgPlayerIdx = playerIdx;
     rpgResolutionTimerRef.current = window.setTimeout(() => {
@@ -1231,7 +1218,7 @@ const PresentialMultiplayer = () => {
           nextTurn();
         }
       }
-    }, 4500); // Wait for ResultFeedback to finish
+    }, 800); // Short delay for visual transition after RPG popup closes
   }, [rpgEvent, players, rpgGameMode]);
 
   // ─── SETUP ───
