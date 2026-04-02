@@ -22,6 +22,28 @@ export type TileEventType =
   | 'special'      // Evento especial surpresa
   | 'narrative';   // Casa narrativa (fixa, conta a história)
 
+// Revelação Oculta — desbloqueada após acerto
+export interface HiddenRevelation {
+  title: string;              // Ex: "O Significado Oculto"
+  deepTeaching: string;       // Explicação espiritual/histórica profunda
+  historicalContext?: string;  // Contexto histórico (época de Bunyan, etc.)
+  practicalApplication?: string; // Aplicação prática para o grupo
+  bibleDeepDive?: string;     // Referência bíblica extra para estudo
+}
+
+// Consequência em cadeia — eventos passados afetam o futuro
+export interface ChainTrigger {
+  flag: string;               // Nome da flag (ex: 'rescued_prisoners')
+  description: string;        // Descrição para debug
+}
+
+export interface ChainCondition {
+  requiredFlag: string;       // Flag que deve existir
+  altContext?: string;        // Contexto narrativo alternativo se flag ativa
+  altEffect?: DilemmaEffect;  // Efeito alternativo
+  altNarrative?: string;      // Narrativa alterada
+}
+
 export interface ScriptureQuestion {
   id: string;
   difficulty: Difficulty;
@@ -33,6 +55,9 @@ export interface ScriptureQuestion {
   explanation: string;       // Explicação após resposta
   timerSeconds: number;      // Tempo após clicar no cronômetro
   narrativeLink?: string;    // Conexão com cena da Parte 1
+  revelation?: HiddenRevelation; // Revelação profunda após acerto
+  chainTrigger?: ChainTrigger;   // Flag que esta pergunta ativa ao acertar
+  chainCondition?: ChainCondition; // Condição de cadeia
 }
 
 export interface Riddle {
