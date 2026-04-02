@@ -146,4 +146,5 @@ export interface RotationState {
   usedBosses: Set<string>;
   usedSpecials: Set<string>;
   usedTraps: Set<string>;
+  usedRefuges: Set<string>;
 }

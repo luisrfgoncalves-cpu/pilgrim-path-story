@@ -8,6 +8,7 @@ import {
   RotationState,
 } from '@/data/rpg/rotationEngine';
 import { TileEventType } from '@/data/rpg/types';
+import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { playGameSfx, GameSfx } from '@/lib/gameSfx';
 import { narrate, stopNarration, getNarrationStyle } from '@/lib/narrator';
 import { Clock, PlayCircle } from 'lucide-react';
@@ -27,6 +28,7 @@ interface RPGEventPopupProps {
   playerNames: string[];
   currentPlayerIdx: number;
   tileEventType: TileEventType;
+  sourceTileType?: TileType;
   onResult: (result: {
     success: boolean;
     posAdjust?: number;
@@ -45,7 +47,7 @@ type PopupPhase = 'context' | 'mode_reveal' | 'player_select' | 'challenge' | 'r
 
 export default function RPGEventPopup({
   visible, difficulty, playerNames, currentPlayerIdx,
-  tileEventType, onResult, onDismiss, rotationState,
+  tileEventType, sourceTileType, onResult, onDismiss, rotationState,
 }: RPGEventPopupProps) {
   const [phase, setPhase] = useState<PopupPhase>('context');
   const [responseMode, setResponseMode] = useState<ResponseMode>('group_consensus');
@@ -396,7 +398,7 @@ export default function RPGEventPopup({
 
   if (!visible) return null;
 
-  const tileInfo = getTileEventLabel(tileEventType);
+  const tileInfo = sourceTileType ? TILE_TYPES[sourceTileType] : getTileEventLabel(tileEventType);
 
   // ─── RENDER ───
   return (
@@ -471,14 +473,17 @@ export default function RPGEventPopup({
                   onClick={() => {
                     const isPositive = !!specialEvent || !!refugeEvent;
                     playGameSfx(rpgSfx(isPositive ? 'blessing' : 'trap'));
+
+                    const resolvedMessage = specialEvent
+                      ? `${specialEvent.narrative}\n\nEfeito: ${specialEvent.title}`
+                      : trapEvent
+                        ? `${trapEvent.narrative}${trapEvent.escapeChallenge ? `\n\nDesafio de fuga: ${trapEvent.escapeChallenge.question}` : ''}`
+                        : `${refugeEvent!.narrative}\n\n📖 ${refugeEvent!.bibleVerse}`;
+
                     setShowResult(true);
                     setResultData({
                       success: isPositive,
-                      message: specialEvent
-                        ? `${specialEvent.emoji} ${specialEvent.title}`
-                        : trapEvent
-                          ? `${trapEvent.emoji} ${trapEvent.title}${trapEvent.escapeChallenge ? '\n\n(Sem chance de escapar desta vez...)' : ''}`
-                          : `${refugeEvent!.emoji} ${refugeEvent!.title}`,
+                      message: resolvedMessage,
                       emoji: specialEvent?.emoji || trapEvent?.emoji || refugeEvent?.emoji || '✨',
                     });
                   }}

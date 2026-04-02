@@ -409,6 +409,7 @@ const PresentialMultiplayer = () => {
   const rotationStateRef = useRef<RotationState>(createRotationState());
   const [rpgEvent, setRpgEvent] = useState<{
     tileType: RPGTileEventType;
+    sourceTileType: TileType;
     playerIdx: number;
     prevPosition: number;
     newPosition: number;
@@ -543,20 +544,15 @@ const PresentialMultiplayer = () => {
       }
 
       // Check if this tile should use the RPG popup
-      let rpgEventType = TILE_TO_RPG_EVENT[tileType] as RPGTileEventType | undefined;
+      const rpgEventType = TILE_TO_RPG_EVENT[tileType] as RPGTileEventType | undefined;
       if (rpgEventType) {
-        // Add variety: scripture tiles sometimes become riddles or dilemmas
-        if (rpgEventType === 'scripture') {
-          const variety = Math.random();
-          if (variety < 0.25) rpgEventType = 'riddle';
-          else if (variety < 0.4) rpgEventType = 'dilemma';
-        }
-        // Challenge tiles sometimes become active challenges
-        if (rpgEventType === 'challenge') {
-          const variety = Math.random();
-          if (variety < 0.3) rpgEventType = 'riddle';
-        }
-        setRpgEvent({ tileType: rpgEventType, playerIdx: turnIdx, prevPosition: prevPos, newPosition: newPos });
+        setRpgEvent({
+          tileType: rpgEventType,
+          sourceTileType: tileType,
+          playerIdx: turnIdx,
+          prevPosition: prevPos,
+          newPosition: newPos,
+        });
         return;
       }
 
@@ -897,74 +893,6 @@ const PresentialMultiplayer = () => {
 
       // After token arrives at destination
       pendingActionRef.current = () => {
-        // RETURN MOVES (retreat after losing) — just go to next turn, no tile events
-        if (isReturnMove) {
-          const p = players[playerIdx];
-          if (p?.extraTurn) {
-            setTurnAnnounce(`🎲 ${p.name} joga de novo!`);
-          } else {
-            nextTurn();
-          }
-          return;
-        }
-
-        // FORWARD MOVES (advance after winning) — check destination tile
-        const newTileType = tileTypes[targetPos] || 'normal';
-
-        // If new tile is a mini-game tile, trigger it
-        if (EXPANDED_MINI_GAME_TILES.includes(newTileType)) {
-          setMiniGame({ tileType: newTileType, playerIdx, prevPosition: targetPos, newPosition: targetPos });
-          return;
-        }
-
-        // If new tile has a non-normal event, show its popup
-        if (newTileType !== 'normal' && newTileType !== 'start') {
-          const phaseIdx = Math.floor(targetPos / TILES_PER_PHASE);
-          const player = players[playerIdx];
-          const effect = resolveTileEffect(newTileType, player, players, Date.now() + targetPos, phaseIdx);
-
-          // Apply secondary tile effects (position adjustments, etc.)
-          let finalPos = targetPos;
-          if (effect.resetToStart) finalPos = 0;
-          else if (effect.resetToCheckpoint) finalPos = player.checkpoint;
-          else finalPos = Math.max(0, Math.min(targetPos + effect.posAdjust, IMMERSIVE_BOARD_SIZE - 1));
-
-          if (finalPos !== targetPos) {
-            // Store another pending move for after THIS popup closes
-            pendingMoveAfterPopup.current = {
-              playerIdx,
-              targetPos: finalPos,
-              attrs: effect.attrChanges,
-              shield: effect.shield ? true : undefined,
-              stats: effect.statUpdate,
-              isReturnMove: finalPos < targetPos, // retreating = return move
-            };
-          } else {
-            // Apply attr changes in place
-            updatePlayerStats(playerIdx, effect.statUpdate);
-            setPlayers(prev => prev.map((p, i) => {
-              if (i !== playerIdx) return p;
-              const newAttrs = { ...p.attributes };
-              for (const [key, val] of Object.entries(effect.attrChanges)) {
-                (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
-              }
-              return {
-                ...p,
-                isStunned: effect.stun,
-                stunTurns: effect.stunTurns,
-                hasShield: effect.shield ? true : (newTileType === 'trap' || newTileType === 'giant' ? false : p.hasShield),
-                checkpoint: newTileType === 'checkpoint' ? targetPos : p.checkpoint,
-                extraTurn: effect.extraTurn,
-                attributes: newAttrs,
-              };
-            }));
-          }
-
-          setTileMessage({ message: effect.message, emoji: effect.emoji, tileType: newTileType, playerName: players[playerIdx]?.name });
-          return;
-        }
-
-        // Normal tile — just go to next turn
         const p = players[playerIdx];
         if (p?.extraTurn) {
           setTurnAnnounce(`🎲 ${p.name} joga de novo!`);
@@ -1240,6 +1168,7 @@ const PresentialMultiplayer = () => {
         playerNames={players.map(p => p.name)}
         currentPlayerIdx={rpgEvent?.playerIdx || currentTurn}
         tileEventType={rpgEvent?.tileType || 'scripture'}
+        sourceTileType={rpgEvent?.sourceTileType}
         onResult={handleRpgEventResult}
         onDismiss={() => {
           setRpgEvent(null);
