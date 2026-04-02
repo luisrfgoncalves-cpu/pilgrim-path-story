@@ -1501,10 +1501,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Fiel, o Companheiro",
     location: "Além do Vale",
     characters: ["cristao", "fiel"],
+    sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'Uma figura familiar surge à frente...' },
     narrative: [
-      "Do outro lado do vale, uma surpresa: outro peregrino. Seu nome é Fiel. Ele também veio da Cidade da Destruição, por um caminho diferente.",
-      "\"Eu também carreguei o fardo\", diz Fiel. \"Eu também passei pela cruz. O meu caminho foi diferente do seu, mas chegamos ao mesmo ponto.\"",
-      "Pela primeira vez na jornada, você tem um companheiro verdadeiro. Alguém que entende o peso, a luta, e a esperança. Juntos, vocês seguem em direção à Feira da Vaidade."
+      "Do outro lado do vale, uma surpresa: {{emphasis}}outro peregrino{{/emphasis}}. Seu nome é {{emphasis}}Fiel{{/emphasis}}. Ele também veio da Cidade da Destruição, por um caminho diferente.",
+      "{{dialog}}\"Eu também carreguei o fardo\"{{/dialog}}, diz Fiel. {{dialog}}\"Eu também passei pela cruz. O meu caminho foi diferente do seu, mas chegamos ao mesmo ponto.\"{{/dialog}}",
+      "{{heart}}Pela primeira vez na jornada, você tem um companheiro verdadeiro. Alguém que entende o peso, a luta, e a esperança.{{/heart}} Juntos, vocês seguem em direção à Feira da Vaidade."
     ],
     choices: [
       {
