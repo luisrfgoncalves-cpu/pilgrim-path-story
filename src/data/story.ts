@@ -337,12 +337,14 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Seguir a luz que Evangelista apontou",
         nextChapterId: "cena5b",
         effects: { discernimento: 1, fe: 1 },
-        flag: "seguiu_evangelista"
+        flag: "seguiu_evangelista",
+        consequence: "Evangelista aponta para a Porta Estreita — que é Cristo (João 10:9: 'Eu sou a porta; se alguém entrar por mim, salvar-se-á'). A luz é fraca não porque seja falsa, mas porque a fé começa pequena. Como um grão de mostarda que se torna árvore."
       },
       {
         text: "Hesitar — a luz é fraca demais, o caminho incerto",
         nextChapterId: "cena6",
-        effects: { fe: -1 }
+        effects: { fe: -1 },
+        consequence: "A hesitação de Cristão representa a dúvida que todo crente enfrenta: 'E se eu estiver errado?' Mas Hebreus 11:1 ensina que 'a fé é a certeza de coisas que se esperam, a convicção de coisas que não se veem.' A luz fraca é o começo — não o fim."
       }
     ]
   },
