@@ -989,10 +989,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     ],
     choices: [
       {
-        text: "Voltar e entrar na casa",
-        nextChapterId: "fase2-cena2",
+        text: "Voltar e entrar na casa — ainda há tempo",
+        nextChapterId: "fase2-cena4",
         effects: { discernimento: 1, fe: 1 },
-        consequence: "Reconhecer o erro e voltar atrás é humildade — a virtude que abre portas que o orgulho tranca. A Casa ainda está de portas abertas."
+        flag: "voltou_casa_interprete",
+        consequence: "Reconhecer o erro e buscar instrução é humildade. O Intérprete te recebe com graça e te mostra o que precisava ver."
       },
       {
         text: "Seguir em frente sem instrução",
