@@ -608,21 +608,32 @@ const ScenePage = () => {
         {/* Scene image with preloading */}
         {bgImage && (
           <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px', minHeight: '180px', background: 'hsl(var(--card))' }}>
-            <img
-              src={bgImage}
-              alt={chapter.title}
-              width={1024}
-              height={576}
-              loading="eager"
-              decoding="async"
-              fetchPriority="high"
-              onLoad={() => setImageLoaded(true)}
-              className="w-full h-auto object-cover scene-image scene-image-alive"
-              style={{
-                ...atmosphere.imageStyle,
-                filter: getSceneAtmosphere(chapter.id).imageFilter || (atmosphere.imageStyle as any)?.filter,
-              }}
-            />
+            {(() => {
+              const imgVar = getSceneImageVariation(chapter.id);
+              return (
+                <img
+                  src={bgImage}
+                  alt={chapter.title}
+                  width={1024}
+                  height={576}
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
+                  onLoad={() => setImageLoaded(true)}
+                  className="w-full h-auto object-cover scene-image scene-image-alive transition-all duration-[2000ms] ease-in-out"
+                  style={{
+                    ...atmosphere.imageStyle,
+                    objectPosition: imgVar.objectPosition,
+                    transform: imgVar.transform,
+                    transformOrigin: 'center center',
+                    filter: [
+                      getSceneAtmosphere(chapter.id).imageFilter || (atmosphere.imageStyle as any)?.filter || '',
+                      imgVar.extraFilter || '',
+                    ].filter(Boolean).join(' ') || undefined,
+                  }}
+                />
+              );
+            })()}
             {/* Particle effects overlay */}
             {imageLoaded && (() => {
               const pType = getParticleTypeForScene(chapter.id, legacyTone);
