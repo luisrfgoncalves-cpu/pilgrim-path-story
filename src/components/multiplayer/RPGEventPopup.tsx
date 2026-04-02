@@ -194,6 +194,19 @@ export default function RPGEventPopup({
     return '';
   };
 
+  // Play contextual SFX based on event type
+  const playContextSfx = useCallback((eventType: string) => {
+    switch (eventType) {
+      case 'boss': playEvilLaugh(); break;
+      case 'trap': playTensionDrum(); break;
+      case 'refuge': case 'special': playHolyChime(); break;
+      case 'scripture': playNarrativeChime(); break;
+      case 'riddle': playDramaticReveal(); break;
+      case 'challenge': playTensionDrum(); break;
+      default: playNarrativeChime();
+    }
+  }, []);
+
   // Narrate context on mount (only once)
   useEffect(() => {
     if (!visible || phase !== 'context' || showResult) return;
@@ -204,6 +217,9 @@ export default function RPGEventPopup({
     const key = `context:${tileEventType}:${text.slice(0, 50)}`;
     if (narratedKeyRef.current === key) return;
     narratedKeyRef.current = key;
+
+    // Play contextual SFX first
+    playContextSfx(tileEventType);
 
     const timer = window.setTimeout(() => {
       narrate(text, { style: getNarrationStyle(tileEventType), force: true });
