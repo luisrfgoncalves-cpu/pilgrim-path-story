@@ -587,7 +587,7 @@ const PresentialMultiplayer = () => {
 
   const handleDiceRoll = useCallback((value?: number) => {
     const player = players[currentTurn];
-    if (!player || player.finished || isTokenMoving || !!tileMessage || !!miniGame || !!rpgEvent || showRiverOfDeath || showPhaseTransition !== null) return;
+    if (!player || player.finished || isTokenMoving || !!tileMessage || !!miniGame || !!rpgEvent || !!resultFeedback || showRiverOfDeath || showPhaseTransition !== null) return;
 
     if (player.isStunned) {
       setPlayers(prev => prev.map((p, i) => i === currentTurn ? {
@@ -1137,52 +1137,59 @@ const PresentialMultiplayer = () => {
       }
     }
 
-    // Show dramatic result feedback overlay
-    setResultFeedback({
-      visible: true,
-      success: result.success,
-      message: result.message,
-      emoji: result.emoji,
-      posAdjust: result.posAdjust,
-      attrChanges: result.attrChanges,
-    });
+    // Clear RPG popup FIRST — then show result feedback after a short delay
+    // This prevents two popups appearing simultaneously
+    setRpgEvent(null);
+
+    // Show dramatic result feedback overlay AFTER RPG popup is gone
+    setTimeout(() => {
+      setResultFeedback({
+        visible: true,
+        success: result.success,
+        message: result.message,
+        emoji: result.emoji,
+        posAdjust: result.posAdjust,
+        attrChanges: result.attrChanges,
+      });
+    }, 400);
 
     // RPG popup already showed the result — skip redundant TileEventPopup
-    // Just process pending moves or go to next turn
+    // Delay pending moves/next turn until ResultFeedback finishes (~4.5s)
     const pendingMove = pendingMoveAfterPopup.current;
-    if (pendingMove) {
-      // There's a pending move — trigger it
-      const { playerIdx: pIdx, targetPos, attrs, stats, shield, isReturnMove } = pendingMove;
-      pendingMoveAfterPopup.current = null;
-      if (isReturnMove) {
-        const currentPos = players[pIdx]?.position ?? 0;
-        const casasDiff = Math.abs(currentPos - targetPos);
-        setReturnMoveInfo(`↩️ Voltando ${casasDiff} casa${casasDiff > 1 ? 's' : ''}...`);
-      }
-      setIsTokenMoving(true);
-      setPlayers(prev => prev.map((p, i) => {
-        const shouldMove = rpgGameMode === 'cooperative' || i === pIdx;
-        if (!shouldMove) return p;
-        const newAttrs = { ...p.attributes };
-        for (const [key, val] of Object.entries(attrs)) {
-          (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+    const rpgPlayerIdx = rpgEvent.playerIdx;
+    setTimeout(() => {
+      if (pendingMove) {
+        const { playerIdx: pIdx, targetPos, attrs, stats, shield, isReturnMove } = pendingMove;
+        pendingMoveAfterPopup.current = null;
+        if (isReturnMove) {
+          const currentPos = players[pIdx]?.position ?? 0;
+          const casasDiff = Math.abs(currentPos - targetPos);
+          setReturnMoveInfo(`↩️ Voltando ${casasDiff} casa${casasDiff > 1 ? 's' : ''}...`);
         }
-        return { ...p, position: targetPos, attributes: newAttrs, hasShield: shield !== undefined ? shield : p.hasShield };
-      }));
-      pendingActionRef.current = () => {
-        if (isReturnMove) { nextTurn(); return; }
-        const p2 = players[pIdx];
-        if (p2?.extraTurn) { setTurnAnnounce(`🎲 ${p2.name} joga de novo!`); } else { nextTurn(); }
-      };
-    } else {
-      // No pending move — just next turn
-      const p = players[rpgEvent.playerIdx];
-      if (p?.extraTurn) {
-        setTurnAnnounce(`🎲 ${p.name} joga de novo!`);
+        setIsTokenMoving(true);
+        setPlayers(prev => prev.map((p, i) => {
+          const shouldMove = rpgGameMode === 'cooperative' || i === pIdx;
+          if (!shouldMove) return p;
+          const newAttrs = { ...p.attributes };
+          for (const [key, val] of Object.entries(attrs)) {
+            (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+          }
+          return { ...p, position: targetPos, attributes: newAttrs, hasShield: shield !== undefined ? shield : p.hasShield };
+        }));
+        pendingActionRef.current = () => {
+          if (isReturnMove) { nextTurn(); return; }
+          const p2 = players[pIdx];
+          if (p2?.extraTurn) { setTurnAnnounce(`🎲 ${p2.name} joga de novo!`); } else { nextTurn(); }
+        };
       } else {
-        nextTurn();
+        const p = players[rpgPlayerIdx];
+        if (p?.extraTurn) {
+          setTurnAnnounce(`🎲 ${p.name} joga de novo!`);
+        } else {
+          nextTurn();
+        }
       }
-    }
+    }, 4500); // Wait for ResultFeedback to finish
   }, [rpgEvent, players, rpgGameMode]);
 
   // ─── SETUP ───
@@ -1399,7 +1406,7 @@ const PresentialMultiplayer = () => {
         />
 
         {/* Dice section */}
-        {phase === 'playing' && !currentPlayer?.finished && !tileMessage && !miniGame && !rpgEvent && !showRiverOfDeath && showPhaseTransition === null && (
+        {phase === 'playing' && !currentPlayer?.finished && !tileMessage && !miniGame && !rpgEvent && !resultFeedback && !showRiverOfDeath && showPhaseTransition === null && (
           <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background via-background/95 to-transparent pt-10 pb-5 px-4">
             <div className="max-w-lg mx-auto">
               {currentPlayer?.isStunned ? (
@@ -1425,7 +1432,7 @@ const PresentialMultiplayer = () => {
                         }, 1200);
                       }}
                       className="focus:outline-none active:scale-95 transition-transform"
-                      disabled={diceRolling || isTokenMoving || !!tileMessage || !!miniGame || !!rpgEvent || showRiverOfDeath !== null || showPhaseTransition !== null}
+                      disabled={diceRolling || isTokenMoving || !!tileMessage || !!miniGame || !!rpgEvent || !!resultFeedback || showRiverOfDeath !== null || showPhaseTransition !== null}
                     >
                       <Dice3D value={diceValue} rolling={diceRolling} size={90} color="gold" />
                     </button>
@@ -1445,7 +1452,7 @@ const PresentialMultiplayer = () => {
                       <button
                         key={n}
                         onClick={() => handleDiceRoll(n)}
-                        disabled={diceRolling || isTokenMoving || !!tileMessage || !!miniGame || !!rpgEvent || showRiverOfDeath !== null || showPhaseTransition !== null}
+                        disabled={diceRolling || isTokenMoving || !!tileMessage || !!miniGame || !!rpgEvent || !!resultFeedback || showRiverOfDeath !== null || showPhaseTransition !== null}
                         className="w-12 h-12 rounded-xl bg-card border-2 border-border text-foreground font-bold text-lg hover:border-primary/40 hover:bg-primary/5 active:scale-95 transition-all font-display disabled:opacity-40"
                         style={{ boxShadow: '0 3px 8px rgba(0,0,0,0.3)' }}
                       >
