@@ -1397,6 +1397,33 @@ const ScenePage = () => {
           </div>
         </div>
       )}
+
+      {/* ═══ ALLEGORY CARD — first encounter explanation ═══ */}
+      {allegoryCardChar && (
+        <AllegoryCard
+          characterId={allegoryCardChar}
+          onDismiss={() => {
+            setAllegoryCardChar(null);
+            setCharRevealDone(true);
+            // Build persistent chars from current scene
+            const allChars = [...characters, ...part2Characters];
+            const isPart2 = progress.campaign === 'part2';
+            const protagonistId = isPart2 ? 'crista' : 'cristao';
+            const sceneCharIds = chapter?.characters || [];
+            const npcs = sceneCharIds
+              .filter(id => id !== protagonistId)
+              .map(id => {
+                const char = allChars.find(c => c.id === id);
+                const img = characterImages[id];
+                if (!char || !img) return null;
+                return { name: char.name, img, role: char.role };
+              })
+              .filter(Boolean) as { name: string; img: string; role?: string }[];
+            setAllPersistentChars(npcs);
+            if (npcs[0]) setPersistentChar(npcs[0]);
+          }}
+        />
+      )}
     </div>
   );
 };
