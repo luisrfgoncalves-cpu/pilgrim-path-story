@@ -266,10 +266,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "flexivel"],
     reflection: "r3",
     narrative: [
-      "Você corre para fora da cidade com o livro apertado no peito.",
+      "{{tremor}}Você corre para fora da cidade com o livro apertado no peito.{{/tremor}}",
       "Para não ouvir os gritos atrás de você, tapa os próprios ouvidos.",
       "{{shout}}\"Vida! Vida eterna!\"{{/shout}}",
-      "A cidade fica menor. O campo à frente parece imenso. {{whisper}}E sem direção.{{/whisper}}"
+      "{{fade}}A cidade fica menor. O campo à frente parece imenso.{{/fade}} {{whisper}}E sem direção.{{/whisper}}"
     ],
     flagNarrative: [
       { flag: "convidou_flexivel", text: "Flexível corre ao seu lado, ofegante: \"Onde vamos? Mostre-me esse lugar de que você fala!\" Sua companhia é reconfortante, mas será que ele aguentará o caminho?" }
