@@ -1876,11 +1876,12 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Demas e a Mina de Prata",
     location: "Colina de Lucro",
     characters: ["cristao", "esperanca", "demas"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'Uma luz prateada brilha na colina...' },
     narrative: [
-      "Na estrada, um homem acena de uma colina próxima. Seu nome é Demas. Ao seu lado, a entrada de uma mina brilha com veios de prata.",
-      "\"Peregrinos! Venham ver! Há uma mina de prata aqui — basta cavar um pouco e ficarão ricos! Muitos peregrinos já se desviaram para cá. É seguro.\"",
-      "Esperança te puxa: \"Ouvi dizer que essa mina é traiçoeira. O chão cede, e quem entra raramente sai. Interesses e seus amigos provavelmente estão lá dentro.\"",
-      "Bunyan nos diz que Demas era descendente de Geazi e de Judas — homens que venderam a eternidade por prata."
+      "Na estrada, um homem acena de uma colina próxima. Seu nome é {{emphasis}}Demas{{/emphasis}}. Ao seu lado, a entrada de uma mina brilha com veios de prata.",
+      "{{villain}}\"Peregrinos! Venham ver! Há uma mina de prata aqui — basta cavar um pouco e ficarão ricos! Muitos peregrinos já se desviaram para cá. É seguro.\"{{/villain}}",
+      "{{dialog}}Esperança te puxa: \"Ouvi dizer que essa mina é traiçoeira. O chão cede, e quem entra raramente sai.\"{{/dialog}}",
+      "{{whisper}}Bunyan nos diz que Demas era descendente de Geazi e de Judas — homens que venderam a eternidade por prata.{{/whisper}}"
     ],
     toneNarrative: [
       { attr: "discernimento", highThreshold: 7, highText: "A prata brilha, mas você reconhece o brilho: é o mesmo das barracas da feira. Beleza superficial escondendo ruína.", lowThreshold: 3, lowText: "A prata é real. Brilha ao sol. E você está tão cansado de caminhar sem nada..." }
