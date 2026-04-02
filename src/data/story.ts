@@ -255,6 +255,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena3",
     title: "O Clamor",
     location: "Cidade da Destruição",
+    sceneEvent: { type: 'tension', intensity: 1, duration: 2000 },
     characters: ["cristao"],
     reflection: "r3",
     narrative: [
