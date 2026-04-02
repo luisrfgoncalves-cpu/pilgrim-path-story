@@ -146,9 +146,9 @@ export const part2Chapters: Record<string, StoryChapter> = {
     interactionType: 'hold',
     sceneEvent: { type: 'tension', duration: 5000, message: 'O cachorro late furiosamente!', intensity: 0.7 },
     narrative: [
-      "Cristã chega ao Portão Estreito e bate. Ninguém responde de imediato. Ela bate de novo. E de novo.",
-      "Um cachorro enorme late do outro lado, aterrorizado. Misericórdia, que ficou um pouco atrás, desmaia de medo ao ouvir os latidos.",
-      "Finalmente, o portão se abre. O guardião olha para Cristã: \"Quem bate assim, com tanta insistência?\" Cristã responde: \"Sou a esposa de Cristão. Venho com meus filhos e uma amiga.\""
+      "Cristã chega ao Portão Estreito e bate. Ninguém responde de imediato. Ela bate de novo. {{shout}}E de novo.{{/shout}}",
+      "Um cachorro enorme late do outro lado, aterrorizado. Misericórdia, que ficou um pouco atrás, {{tremor}}desmaia de medo{{/tremor}} ao ouvir os latidos.",
+      "Finalmente, o portão se abre. O guardião olha para Cristã: {{divine}}\"Quem bate assim, com tanta insistência?\"{{/divine}} Cristã responde: \"Sou a esposa de Cristão. Venho com meus filhos e uma amiga.\""
     ],
     flagNarrative: [
       { flag: "ajudou_misericordia_pantano", text: "Cristã corre de volta para socorrer Misericórdia desmaiada. A compaixão do pântano se repete aqui." }
