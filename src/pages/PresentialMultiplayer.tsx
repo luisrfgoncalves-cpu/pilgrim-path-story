@@ -119,40 +119,14 @@ function getRpgEventKey(event: {
   return `${event.playerIdx}:${event.tileType}:${event.sourceTileType}:${event.prevPosition}:${event.newPosition}`;
 }
 
-// Now ALL special tiles trigger mini-games (more interactive!)
-const EXPANDED_MINI_GAME_TILES: TileType[] = ['giant', 'challenge', 'scripture', 'surprise', 'blessing', 'trap', 'shield', 'current', 'swap'];
-
-// Map board tile types to RPG event types for the RPG popup
+// Only tiles that require INTERACTIVE Q&A trigger the RPG popup.
+// All other tiles (blessing, surprise, refuge, shield, swap, current, narrative locations)
+// auto-resolve with their rich dramatic text from resolveTileEffect.
 const TILE_TO_RPG_EVENT: Partial<Record<TileType, RPGTileEventType>> = {
   scripture: 'scripture',
   challenge: 'challenge',
   giant: 'boss',
-  surprise: 'special',
-  blessing: 'refuge',
   trap: 'trap',
-  // Narrative story tiles → RPG events based on story context
-  wicket_gate: 'scripture',
-  interpreter_house: 'riddle',
-  hill_difficulty: 'challenge',
-  palace_beautiful: 'refuge',
-  valley_humiliation: 'boss',
-  valley_shadow: 'dilemma',
-  vanity_fair: 'dilemma',
-  doubting_castle: 'boss',
-  delectable_mountains: 'refuge',
-  enchanted_ground: 'trap',
-  beulah_land: 'special',
-  // New narrative tiles
-  slough_despond: 'dilemma',
-  cross_sepulchre: 'refuge',
-  simple_sloth_presumption: 'riddle',
-  hill_lucre: 'dilemma',
-  by_path_meadow: 'dilemma',
-  flatterer_net: 'trap',
-  atheist_encounter: 'riddle',
-  ignorance_path: 'dilemma',
-  little_faith: 'scripture',
-  river_of_life: 'refuge',
 };
 
 // ─── River of Death tiles: last 5 tiles before finish ───
@@ -688,10 +662,7 @@ const PresentialMultiplayer = () => {
         return;
       }
 
-      if (EXPANDED_MINI_GAME_TILES.includes(tileType)) {
-        setMiniGame({ tileType, playerIdx: turnIdx, prevPosition: prevPos, newPosition: newPos });
-        return;
-      }
+      // All non-RPG tiles auto-resolve with their narrative text
 
       const phaseIdx = Math.floor(newPos / TILES_PER_PHASE);
       const effect = resolveTileEffect(tileType, player, players, Date.now() + newPos, phaseIdx);
