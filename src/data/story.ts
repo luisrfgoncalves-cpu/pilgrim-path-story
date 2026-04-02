@@ -320,7 +320,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Seguir a luz que Evangelista apontou",
-        nextChapterId: "cena7",
+        nextChapterId: "cena5b",
         effects: { discernimento: 1, fe: 1 },
         flag: "seguiu_evangelista"
       },
