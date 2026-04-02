@@ -1,12 +1,13 @@
 import { HiddenRevelation } from './types';
+import { revelationMapExpansion } from './revelationsExpansion';
 
 // ═══════════════════════════════════════════════════════
 // REVELAÇÕES OCULTAS — Desbloqueadas após acerto
 // Ensino profundo, contexto histórico, aplicação prática
-// Cobertura: 80%+ de todos os itens de conteúdo
+// Cobertura: 100% de todos os itens de conteúdo
 // ═══════════════════════════════════════════════════════
 
-export const revelationMap: Record<string, HiddenRevelation> = {
+const baseRevelationMap: Record<string, HiddenRevelation> = {
   // ═══════════════════════════════════════
   // PERGUNTAS — APRENDIZ
   // ═══════════════════════════════════════
@@ -528,6 +529,12 @@ export const revelationMap: Record<string, HiddenRevelation> = {
     practicalApplication: 'Quem são os companheiros de jornada de vocês? Nomeiem e agradeçam a Deus por eles.',
     bibleDeepDive: 'Eclesiastes 4:9-12 — "O cordão de três dobras não se rebenta facilmente."',
   },
+};
+
+// Merge base + expansion for full coverage
+export const revelationMap: Record<string, HiddenRevelation> = {
+  ...baseRevelationMap,
+  ...revelationMapExpansion,
 };
 
 /** Get revelation for a content ID, if exists */
