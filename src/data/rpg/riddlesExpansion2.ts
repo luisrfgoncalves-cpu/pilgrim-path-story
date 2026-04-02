@@ -83,4 +83,59 @@ export const riddlesExpansion2: Riddle[] = [
     answer: 'Esperança — a virtude teologal que sustenta na travessia da morte',
     bibleReference: 'Romanos 5:5', explanation: '"A esperança não decepciona." Esperança não é otimismo humano — é certeza divina de que o que Deus prometeu, cumprirá.', timerSeconds: 60,
   },
+
+  // ═══════ APRENDIZ — LOTE 4 ═══════
+  {
+    id: 'r-a-024', difficulty: 'aprendiz',
+    context: 'Dois animais guardavam a entrada de um lugar seguro...',
+    riddle: 'Rugimos com força, mas não podemos morder. Assustamos quem passa, mas somos prisioneiros. Nosso mestre nos acorrentou para testar os corajosos. Quem somos e o que ensinamos?',
+    hints: ['Estamos na porta do Palácio Belo', 'Somos dois', 'Cristão teve medo de nós'],
+    answer: 'Os dois leões acorrentados — que representam o medo: parece real, mas não pode ferir quem avança com fé',
+    bibleReference: '1 Pedro 5:8-9', explanation: 'O diabo ruge como leão, mas está acorrentado pelo poder de Deus. O medo é a corrente que ele usa para nos parar — mas não tem dentes reais contra quem avança em fé.', timerSeconds: 40,
+  },
+  {
+    id: 'r-a-025', difficulty: 'aprendiz',
+    context: 'Algo misterioso aconteceu ao pé de uma cruz antiga...',
+    riddle: 'Carregado por anos, perdido em segundos. Não foi tirado — caiu. Não foi jogado — rolou. Entrou num buraco e nunca mais voltou. O que aconteceu?',
+    hints: ['Aconteceu ao pé da Cruz', 'Era algo que Cristão carregava', 'Desapareceu dentro de um sepulcro'],
+    answer: 'O fardo do pecado de Cristão caiu e rolou para dentro do sepulcro ao pé da Cruz',
+    bibleReference: 'Colossenses 2:14', explanation: '"Tendo cancelado o escrito de dívida que era contra nós... cravando-o na cruz." O fardo não foi removido por esforço — caiu pela graça.', timerSeconds: 35,
+  },
+
+  // ═══════ PEREGRINO — LOTE 4 ═══════
+  {
+    id: 'r-p-019', difficulty: 'peregrino',
+    context: 'Na Casa do Intérprete, um cômodo cheio de pó quase sufocou todos...',
+    riddle: 'Quanto mais me varrem, mais sufoco. Quanto mais me limpam com força, mais cresço. Só uma coisa me acalma — e não é esforço. O que sou e o que me vence?',
+    hints: ['Estou em uma sala do Intérprete', 'A vassoura sou a Lei', 'O que me vence é líquido'],
+    answer: 'O pecado (a poeira) — vencido pela água do evangelho, não pela vassoura da Lei',
+    bibleReference: 'Romanos 3:20', explanation: '"Pela lei vem o conhecimento do pecado" — mas não a limpeza. Só o evangelho (a água da graça) limpa de verdade. A Lei mostra a sujeira; a graça a remove.', timerSeconds: 50,
+  },
+  {
+    id: 'r-p-020', difficulty: 'peregrino',
+    context: 'Um personagem entrou no caminho pela porta errada e chegou ao destino final...',
+    riddle: 'Andei o caminho certo, mas não entrei pela porta certa. Cheguei ao final, mas não tinha a chave. Bati com confiança, mas ninguém me conhecia. Minha história é a mais triste de todas. Quem sou e por que sou triste?',
+    hints: ['Sou o último personagem do livro', 'Meu nome é o oposto de sabedoria', 'Cheguei ao céu mas fui levado ao inferno'],
+    answer: 'Ignorância — que foi levado ao inferno após chegar à porta da Cidade Celestial, porque nunca passou pela Porta Estreita (Cristo)',
+    bibleReference: 'Mateus 7:21-23', explanation: '"Nunca vos conheci." A história de Ignorância é um aviso eterno: religiosidade sem regeneração é a tragédia suprema.', timerSeconds: 55,
+  },
+
+  // ═══════ VETERANO — LOTE 4 ═══════
+  {
+    id: 'r-v-024', difficulty: 'veterano',
+    context: 'Bunyan construiu sua obra sobre uma estrutura que conecta o Antigo e o Novo Testamento...',
+    riddle: 'Israel saiu do Egito (Cidade da Destruição), atravessou o Mar Vermelho (a Cruz), vagou no deserto (os Vales), recebeu a Lei no Sinai (desvio de Sabedoria Mundana), e entrou em Canaã (Cidade Celestial). Que princípio hermenêutico Bunyan usou para construir O Peregrino?',
+    hints: ['É um método de interpretação bíblica', 'Conecta AT e NT', 'Cada evento histórico prefigura uma realidade espiritual'],
+    answer: 'A tipologia bíblica — onde eventos do Antigo Testamento são "tipos" (sombras) de realidades do Novo Testamento e da vida cristã',
+    bibleReference: '1 Coríntios 10:11', explanation: '"Estas coisas aconteceram como exemplo e foram escritas para advertência nossa." Bunyan leu toda a Escritura como um mapa espiritual — e criou O Peregrino como sua aplicação prática.', timerSeconds: 70,
+  },
+  {
+    id: 'r-v-025', difficulty: 'veterano',
+    context: 'Um elemento literário sutil percorre TODO o livro de O Peregrino...',
+    riddle: 'Estou no início e no fim. Começo na caverna e termino na caverna. Tudo que aconteceu foi dentro de mim. Sou o recurso literário mais antigo da humanidade. O que sou?',
+    hints: ['Bunyan dormiu e me teve', 'José no AT era famoso por me interpretar', 'Sou o enquadramento narrativo do livro inteiro'],
+    answer: 'O sonho — toda a história de O Peregrino é contada como um sonho de Bunyan, enquadrada por uma narrativa de vigília',
+    bibleReference: 'Joel 2:28', explanation: '"Vossos velhos sonharão sonhos." O sonho como recurso literário dá a Bunyan liberdade para a alegoria — e conecta com a tradição bíblica de revelação através de sonhos (José, Daniel, João em Apocalipse).', timerSeconds: 65,
+  },
 ];
+

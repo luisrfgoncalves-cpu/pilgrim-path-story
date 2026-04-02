@@ -77,4 +77,67 @@ export const moralDilemmasExpansion2: MoralDilemma[] = [
     ],
     bibleReference: '1 João 4:1', lesson: '"Não creiais em todo espírito, mas provai se os espíritos são de Deus." Nem toda mensagem sobrenatural é divina. O critério é SEMPRE a Escritura.',
   },
+
+  // ═══════ APRENDIZ — LOTE 4 ═══════
+  {
+    id: 'd-a-013', difficulty: 'aprendiz',
+    context: 'Vocês encontram uma criança perdida no caminho. Ela diz ser filha de um peregrino que ficou para trás. Ela chora e pede ajuda.',
+    situation: '"Meu pai disse para eu seguir em frente, mas estou com medo! Vocês podem me carregar?" A criança está exausta.',
+    choices: [
+      { text: 'Carregar a criança e caminhar mais devagar', consequence: 'Vocês cuidaram de um dos "pequeninos" de Cristo. "Quem recebe uma criança em meu nome, a mim me recebe!" O grupo é abençoado.', effect: { type: 'boost', attribute: 'fe', amount: 2, affectsGroup: true } },
+      { text: 'Dizer que ela precisa ser forte e andar sozinha', consequence: 'A criança caiu e ficou mais para trás. Misericórdia é ação, não conselho. "Não impeçais que os pequeninos venham a mim."', effect: { type: 'penalty', attribute: 'fe', amount: -1, affectsGroup: true } },
+      { text: 'Voltar para encontrar o pai e devolver a criança', consequence: 'Vocês encontraram o pai ferido. Cuidaram dos dois! A compaixão completa vai além do pedido. O pai se juntou ao grupo.', effect: { type: 'boost', attribute: 'coragem', amount: 2, affectsGroup: true } },
+    ],
+    bibleReference: 'Mateus 18:5', lesson: '"Quem recebe uma criança em meu nome, a mim me recebe." Cuidar dos vulneráveis é servir a Cristo diretamente.',
+  },
+  {
+    id: 'd-a-014', difficulty: 'aprendiz',
+    context: 'Uma tempestade terrível cai sobre o grupo. Trovões, relâmpagos e chuva fortíssima. Um membro do grupo diz: "Deus está nos punindo!"',
+    situation: 'Outro responde: "Não! Deus nos abandonou!" O medo cresce. O grupo precisa de uma resposta.',
+    choices: [
+      { text: 'Concordar — a tempestade é castigo de Deus', consequence: 'Vocês confundiram provação com punição. A chuva cai sobre justos e injustos (Mt 5:45). Nem toda dificuldade é castigo.', effect: { type: 'penalty', attribute: 'fe', amount: -1, affectsGroup: true } },
+      { text: 'Lembrar do Salmo 46:1 — "Deus é nosso refúgio e fortaleza"', consequence: 'A Escritura acalmou o grupo! "Deus é nosso refúgio, socorro bem presente na angústia." O medo se transformou em confiança.', effect: { type: 'boost', attribute: 'fe', amount: 2, affectsGroup: true } },
+      { text: 'Correr para se abrigar fora do caminho', consequence: 'Vocês saíram do caminho por medo da tempestade. A tempestade passou, mas agora estão perdidos fora do caminho estreito.', effect: { type: 'retreat', positions: 2, affectsGroup: true } },
+    ],
+    bibleReference: 'Salmos 46:1', lesson: '"Deus é o nosso refúgio e fortaleza, socorro bem presente na angústia." Tempestades não são sinais de abandono — são oportunidades de fé.',
+  },
+
+  // ═══════ PEREGRINO — LOTE 4 ═══════
+  {
+    id: 'd-p-012', difficulty: 'peregrino',
+    context: 'Vocês encontram um peregrino ferido que confessa ter SAÍDO do caminho por orgulho e agora quer voltar. Ele está arrependido, mas outros peregrinos dizem: "Quem sai não volta."',
+    situation: '"Eu errei... sei que errei. Mas estou arrependido. O Rei me aceitará de volta?" Ele chora de vergonha.',
+    choices: [
+      { text: 'Dizer que quem saiu não pode voltar', consequence: 'Vocês negaram a graça restauradora! O filho pródigo voltou e o pai CORREU ao seu encontro. A porta nunca se fecha para quem se arrepende.', effect: { type: 'penalty', attribute: 'fe', amount: -2, affectsGroup: true } },
+      { text: 'Acolhê-lo e ajudá-lo a voltar ao caminho', consequence: '"Há alegria no céu por um pecador que se arrepende!" Vocês refletiram o coração do Pai. O peregrino restaurado se tornou um dos mais zelosos do grupo.', effect: { type: 'boost', attribute: 'fe', amount: 3, affectsGroup: true } },
+      { text: 'Aceitar, mas com condições e período probatório', consequence: 'Vocês impuseram condições que o Pai não impõe. A graça é incondicional. "Trazei o melhor vestido e vesti-o!" — sem condições.', effect: { type: 'penalty', attribute: 'discernimento', amount: -1, affectsGroup: true } },
+    ],
+    bibleReference: 'Lucas 15:20-24', lesson: 'O pai do filho pródigo não exigiu explicações, período probatório ou penitência. CORREU, abraçou, vestiu e celebrou. A graça restauradora é incondicional.',
+    chainTrigger: { flag: 'restored_fallen_pilgrim', description: 'Grupo restaurou um peregrino caído' },
+  },
+
+  // ═══════ VETERANO — LOTE 4 ═══════
+  {
+    id: 'd-v-015', difficulty: 'veterano',
+    context: 'Vocês chegam a uma encruzilhada onde AMBOS os caminhos parecem corretos. Há evidências bíblicas para os dois. Outros peregrinos sinceros discordam entre si sobre qual é o certo.',
+    situation: 'Um peregrino cita Romanos para justificar o caminho da esquerda. Outro cita Tiago para o da direita. Ambos parecem sinceros e biblicamente fundamentados.',
+    choices: [
+      { text: 'Seguir o que tem mais argumentos bíblicos', consequence: 'Quantidade de versículos não determina verdade. Satanás citou Escritura para tentar Jesus (Mt 4:6). Discernimento exige mais que contagem de versículos.', effect: { type: 'penalty', attribute: 'discernimento', amount: -1, affectsGroup: true } },
+      { text: 'Parar, orar e buscar o Espírito Santo antes de decidir', consequence: '"Se algum de vós tem falta de sabedoria, peça a Deus" (Tg 1:5). Vocês oraram, e a paz de Deus indicou a direção. A oração é o GPS espiritual.', effect: { type: 'boost', attribute: 'discernimento', amount: 3, affectsGroup: true } },
+      { text: 'Dividir o grupo — cada um segue o caminho que acha melhor', consequence: 'A divisão enfraqueceu o grupo. "Uma casa dividida contra si mesma não subsistirá." A unanimidade na oração teria mostrado o caminho.', effect: { type: 'penalty', attribute: 'perseveranca', amount: -2, affectsGroup: true } },
+    ],
+    bibleReference: 'Tiago 1:5', lesson: '"Se algum de vós tem falta de sabedoria, peça-a a Deus, que a todos dá liberalmente." Quando a Bíblia parece ambígua, a oração traz clareza. O Espírito Santo é o intérprete final.',
+  },
+  {
+    id: 'd-v-016', difficulty: 'veterano',
+    context: 'Um dos membros do grupo está passando por sofrimento intenso — doença na família, perda financeira, solidão. Ele pergunta ao grupo: "Por que Deus permite isso se eu estou no caminho certo?"',
+    situation: '"Estou obedecendo! Estou no caminho estreito! Por que a dor só aumenta? Talvez eu esteja no caminho errado..."',
+    choices: [
+      { text: 'Dizer que sofrimento é sinal de pecado oculto', consequence: 'Vocês cometeram o erro dos amigos de Jó! Sofrimento NÃO é prova de pecado. Jó era "íntegro e reto" e sofreu terrivelmente. Vocês feriram em vez de curar.', effect: { type: 'penalty', attribute: 'fe', amount: -2, affectsGroup: true } },
+      { text: 'Sentar ao lado, chorar junto e lembrar de Romanos 8:28', consequence: '"Chorai com os que choram." Vocês não explicaram a dor — compartilharam. Às vezes, presença vale mais que palavras. O amigo sentiu-se amado.', effect: { type: 'boost', attribute: 'fe', amount: 2, affectsGroup: true } },
+      { text: 'Dar conselhos práticos para resolver os problemas', consequence: 'Bem-intencionado, mas fora de hora. Ele não precisava de soluções — precisava de presença. "Há tempo para calar" (Ec 3:7).', effect: { type: 'boost', attribute: 'discernimento', amount: 1, affectsGroup: true } },
+    ],
+    bibleReference: 'Romanos 12:15', lesson: '"Chorai com os que choram." O ministério da presença é mais poderoso que o ministério da explicação. Jó melhorou quando Deus apareceu — não quando os amigos explicaram.',
+  },
 ];
+
