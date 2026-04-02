@@ -171,23 +171,80 @@ export default function RPGEventPopup({
     return () => stopNarration();
   }, [visible, tileEventType, difficulty, playerNames, rotationState]);
 
-  // Build dramatic RPG master intro for the context
+  // ─── STAGED NARRATIVE: Dramatic suspense intro before context ───
+  const getSuspenseText = (): { emoji: string; text: string } => {
+    const playerName = playerNames[currentPlayerIdx] || 'Peregrino';
+    switch (tileEventType) {
+      case 'boss': return { emoji: '👹', text: `${playerName}... algo terrível se aproxima...` };
+      case 'trap': return { emoji: '⚠️', text: 'O chão treme sob seus pés...' };
+      case 'scripture': return { emoji: '📖', text: 'O Mestre abre o Livro Sagrado...' };
+      case 'riddle': return { emoji: '🧩', text: 'Uma voz enigmática ecoa no ar...' };
+      case 'challenge': return { emoji: '⚔️', text: `${playerName}, prepare-se para a provação...` };
+      case 'dilemma': return { emoji: '⚖️', text: 'Uma escolha impossível se apresenta...' };
+      case 'refuge': return { emoji: '🏰', text: 'Uma luz quente brilha adiante...' };
+      case 'special': return { emoji: '✨', text: 'Algo inesperado acontece...' };
+      default: return { emoji: '📜', text: 'O Mestre prepara suas palavras...' };
+    }
+  };
+
+  // Auto-transition from suspense_intro to context
+  useEffect(() => {
+    if (!visible || phase !== 'suspense_intro') return;
+    
+    // Play dramatic sound for suspense
+    playTensionDrum();
+    if (tileEventType === 'boss') playRealSfx('trap', 0.3);
+    else if (tileEventType === 'refuge' || tileEventType === 'special') playRealSfx('chime', 0.3);
+    else playRealSfx('bell', 0.2);
+
+    // Narrate the suspense text
+    const suspense = getSuspenseText();
+    narrate(suspense.text, { style: 'whisper', force: true });
+
+    const timer = window.setTimeout(() => {
+      setPhase('context');
+      // Play the main contextual SFX when transitioning
+      playContextSfx(tileEventType);
+    }, 2500); // 2.5 second dramatic buildup
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, phase]);
+
+  // Build dramatic RPG master intro for the context (staged — more elaborate)
   const buildRPGIntro = (baseContext: string): string => {
     const playerName = playerNames[currentPlayerIdx] || 'Peregrino';
+    // Chain modifier — adds continuity from past events
+    const chainMod = chainState ? getChainNarrativeModifier(chainState.current) : '';
+    
     const intros = [
-      `O Mestre ergue a voz: "${playerName}, ouça bem..."`,
-      `Uma sombra cai sobre o grupo. O Mestre narra: `,
-      `O vento silencia. O Mestre fala com gravidade: `,
-      `Todos se aproximam. O Mestre declara: `,
-      `O Mestre bate o cajado no chão e anuncia: `,
-      `Com olhar penetrante, o Mestre revela: `,
+      `O Mestre ergue a voz e o silêncio pesa como chumbo. "${playerName}, ouça bem..." `,
+      `Uma sombra cai sobre o grupo. O ar fica denso. O Mestre fala com gravidade de quem viu o invisível: `,
+      `O vento cessa. Os pássaros silenciam. Até as folhas param de cair. O Mestre declara: `,
+      `Todos se aproximam, os rostos iluminados pela luz trêmula. O Mestre bate o cajado no chão TRÊS VEZES e anuncia: `,
+      `Com olhar penetrante que parece ler a alma de cada um, o Mestre revela o que está por vir: `,
+      `O Mestre fecha os olhos por um instante, como se recebesse uma visão. Quando os abre, há urgência em sua voz: `,
     ];
     const intro = intros[Math.floor(Math.random() * intros.length)];
-    return `${intro}${baseContext}`;
+    const chainPrefix = chainMod ? `${chainMod} ` : '';
+    return `${chainPrefix}${intro}${baseContext}`;
+  };
+
+  // Apply chain conditions to modify context
+  const getContextWithChain = () => {
+    const item = question || riddle || dilemma;
+    if (item && 'chainCondition' in item && item.chainCondition && chainState) {
+      const result = applyChainCondition(chainState.current, item.chainCondition);
+      if (result.modified && result.altContext) {
+        return result.altContext;
+      }
+    }
+    return null;
   };
 
   const getContextNarrationText = () => {
-    const raw = question?.context || riddle?.context || dilemma?.context || challenge?.context
+    // Check for chain-modified context first
+    const chainContext = getContextWithChain();
+    const raw = chainContext || question?.context || riddle?.context || dilemma?.context || challenge?.context
       || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
       || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative || '';
     return raw ? buildRPGIntro(raw) : '';
@@ -217,7 +274,7 @@ export default function RPGEventPopup({
     }
   }, []);
 
-  // Narrate context on mount (only once)
+  // Narrate context when entering context phase
   useEffect(() => {
     if (!visible || phase !== 'context' || showResult) return;
 
@@ -228,8 +285,6 @@ export default function RPGEventPopup({
     if (narratedKeyRef.current === key) return;
     narratedKeyRef.current = key;
 
-    // Play contextual SFX (synth + real audio)
-    playContextSfx(tileEventType);
     // Play real narrative SFX based on context text
     const rawContext = question?.context || riddle?.context || dilemma?.context || challenge?.context
       || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative || '';
