@@ -82,6 +82,8 @@ export default function RPGEventPopup({
   const [bossWins, setBossWins] = useState(0);
   const [hintIndex, setHintIndex] = useState(0);
   const [riddleAnswerRevealed, setRiddleAnswerRevealed] = useState(false);
+  const [currentRevelation, setCurrentRevelation] = useState<HiddenRevelation | null>(null);
+  const [narrativeStage, setNarrativeStage] = useState(0); // 0=intro dramática, 1=contexto, 2=pergunta retórica
 
   const timerRef = useRef<number | null>(null);
   const narratedKeyRef = useRef('');
