@@ -37,6 +37,7 @@ import { trackPageView, trackSceneComplete } from '@/lib/analytics';
 import { shareResult } from '@/lib/socialShare';
 import { toast } from 'sonner';
 import { renderNarrative, getSceneAtmosphere } from '@/lib/narrativeRenderer';
+import { getSceneImageVariation } from '@/lib/sceneImageVariation';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
   fe: { label: 'Fé', emoji: '🔥', icon: Flame },
