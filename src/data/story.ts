@@ -2227,10 +2227,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "As Montanhas Deleitosas",
     location: "Montanhas Deleitosas",
     characters: ["cristao", "esperanca", "pastores"],
+    sceneEvent: { type: 'suspense', delay: 800, duration: 3000, message: 'A Cidade Celestial brilha no horizonte...' },
     narrative: [
-      "Além do castelo, montanhas verdes se erguem — as Montanhas Deleitosas, propriedade do Rei Emanuel. Pastores chamados Conhecimento, Experiência, Vigilante e Sincero os recebem.",
-      "Dali, com uma luneta, eles mostram ao longe os portões da Cidade Celestial, brilhando como ouro no horizonte.",
-      "\"Vocês estão perto\", dizem os pastores. \"Mas cuidado com o Adulador e o Caminho Torto. Não se desviem outra vez.\""
+      "{{divine}}Além do castelo, montanhas verdes se erguem — as Montanhas Deleitosas, propriedade do Rei Emanuel.{{/divine}} Pastores chamados {{emphasis}}Conhecimento, Experiência, Vigilante e Sincero{{/emphasis}} os recebem.",
+      "{{heart}}Dali, com uma luneta, eles mostram ao longe os portões da Cidade Celestial, brilhando como ouro no horizonte.{{/heart}}",
+      "{{whisper}}\"Vocês estão perto\"{{/whisper}}, dizem os pastores. {{emphasis}}\"Mas cuidado com o Adulador e o Caminho Torto. Não se desviem outra vez.\"{{/emphasis}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "Ao ver a Cidade Celestial, mesmo à distância, seus olhos se enchem de lágrimas. Todo sofrimento tem um propósito. O fim está à vista.", lowThreshold: 4, lowText: "Você olha pela luneta, mas a cidade parece distante demais. Será que realmente chegará lá?" }
