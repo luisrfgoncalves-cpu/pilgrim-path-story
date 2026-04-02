@@ -1137,15 +1137,21 @@ const PresentialMultiplayer = () => {
       }
     }
 
-    // Show dramatic result feedback overlay
-    setResultFeedback({
-      visible: true,
-      success: result.success,
-      message: result.message,
-      emoji: result.emoji,
-      posAdjust: result.posAdjust,
-      attrChanges: result.attrChanges,
-    });
+    // Clear RPG popup FIRST — then show result feedback after a short delay
+    // This prevents two popups appearing simultaneously
+    setRpgEvent(null);
+
+    // Show dramatic result feedback overlay AFTER RPG popup is gone
+    setTimeout(() => {
+      setResultFeedback({
+        visible: true,
+        success: result.success,
+        message: result.message,
+        emoji: result.emoji,
+        posAdjust: result.posAdjust,
+        attrChanges: result.attrChanges,
+      });
+    }, 400);
 
     // RPG popup already showed the result — skip redundant TileEventPopup
     // Just process pending moves or go to next turn
