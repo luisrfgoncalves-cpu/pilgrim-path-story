@@ -195,7 +195,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena1",
     title: "O Livro e o Fardo",
     location: "Cidade da Destruição",
-    characters: ["cristao", "esposa_cristao"],
+    characters: ["cristao", "esposa_cristao", "livro_antigo"],
     sceneEvent: { type: 'tension', intensity: 1, duration: 3000, message: 'Um peso esmagador cai sobre seus ombros...' },
     narrative: [
       "Você está em casa, na Cidade da Destruição, quando abre um livro antigo.",
