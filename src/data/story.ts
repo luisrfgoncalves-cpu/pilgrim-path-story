@@ -975,9 +975,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "interprete"],
     interactionType: 'hold',
     narrative: [
-      "A segunda sala está coberta de poeira espessa — nunca foi varrida. O Intérprete chama um homem com uma vassoura. Ele varre furiosamente, mas a poeira sobe em nuvens sufocantes, enchendo o ar até que ninguém consegue respirar.",
-      "Então uma jovem entra com um jarro de água e borrifa o chão. A poeira se assenta. O ar se limpa. O chão aparece limpo.",
-      "\"A poeira é o pecado\", explica o Intérprete. \"A vassoura é a Lei, que revela o pecado mas não pode limpá-lo — apenas levanta mais poeira. A água é a Graça, que purifica o coração onde a Lei apenas condena.\""
+      "A segunda sala está coberta de poeira espessa — nunca foi varrida. O Intérprete chama um homem com uma vassoura. {{tremor}}Ele varre furiosamente, mas a poeira sobe em nuvens sufocantes, enchendo o ar até que ninguém consegue respirar.{{/tremor}}",
+      "{{fade}}Então uma jovem entra com um jarro de água e borrifa o chão. A poeira se assenta. O ar se limpa. O chão aparece limpo.{{/fade}}",
+      "{{divine}}\"A poeira é o pecado\"{{/divine}}, explica o Intérprete. \"A vassoura é a Lei, que revela o pecado mas não pode limpá-lo — apenas levanta mais poeira. {{emphasis}}A água é a Graça, que purifica o coração onde a Lei apenas condena.{{/emphasis}}\""
     ],
     flagNarrative: [
       { flag: "pediu_ajuda_pantano", text: "Você se lembra do pântano. Lá, tentar sozinho te afundou. Aqui, a lição se repete: a vassoura sozinha piora tudo. Só a água limpa." },
