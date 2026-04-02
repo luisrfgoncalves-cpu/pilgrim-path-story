@@ -75,10 +75,9 @@ const ScenePage = () => {
   // Inline consequence overlay state
   const [inlineConsequence, setInlineConsequence] = useState<InlineConsequence | null>(null);
   const [consequencePhase, setConsequencePhase] = useState<'enter' | 'attrs' | 'ready'>('enter');
-  // Streak/combo counter
+  // Streak counter (internal only — no popup)
   const [streak, setStreak] = useState(0);
   const [lastStreakEffect, setLastStreakEffect] = useState<'positive' | 'negative' | null>(null);
-  const [showStreakBurst, setShowStreakBurst] = useState(false);
   // Mini-game state
   const [miniGameDone, setMiniGameDone] = useState(false);
   const [miniGameResult, setMiniGameResult] = useState<MiniGameResult | null>(null);
