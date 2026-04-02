@@ -83,7 +83,7 @@ export async function loadProgressFromCloud(
     items: data.items as string[],
     started: data.started,
     playthrough: data.playthrough,
-    campaign: (data as any).campaign || 'part1',
+    campaign: (data as any).campaign || (data.flags as any)?.__campaign || 'part1',
   };
 
   return { data: progress, error: null };
