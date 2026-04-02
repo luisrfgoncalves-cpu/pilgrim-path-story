@@ -712,9 +712,9 @@ const ScenePage = () => {
         {/* Scene content — hidden when inline mini-game is active */}
         {!(miniGameReady && !miniGameDone && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id]?.type)) && (
         <>
-        {/* Scene image with preloading */}
+        {/* Scene image with preloading — BRIGHT and visible */}
         {bgImage && (
-          <div className="relative w-full overflow-hidden" style={{ maxHeight: '280px', minHeight: '180px', background: 'hsl(var(--card))' }}>
+          <div className="relative w-full overflow-hidden" style={{ maxHeight: '320px', minHeight: '200px', background: 'hsl(var(--card))' }}>
             {(() => {
               const imgVar = getSceneImageVariation(chapter.id);
               return (
@@ -734,7 +734,7 @@ const ScenePage = () => {
                     transform: imgVar.transform,
                     transformOrigin: 'center center',
                     filter: [
-                      getSceneAtmosphere(chapter.id).imageFilter || (atmosphere.imageStyle as any)?.filter || '',
+                      getSceneAtmosphere(chapter.id).imageFilter || 'brightness(1.05) saturate(1.0)',
                       imgVar.extraFilter || '',
                     ].filter(Boolean).join(' ') || undefined,
                   }}
@@ -746,7 +746,7 @@ const ScenePage = () => {
               const pType = getParticleTypeForScene(chapter.id, legacyTone);
               return pType ? <ParticleEffects type={pType} intensity={0.6} /> : null;
             })()}
-            <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+            <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background/60 via-transparent to-transparent" />
             {/* Scene atmosphere overlay */}
             {(() => {
               const atmo = getSceneAtmosphere(chapter.id);
@@ -796,23 +796,39 @@ const ScenePage = () => {
               );
             })()}
 
-            {/* Persistent NPC portraits — ALL characters in scene */}
+            {/* Persistent NPC portraits — clickable to reopen allegory card */}
             {charRevealDone && allPersistentChars.length > 0 && (
-              <div className="flex items-center gap-2 flex-shrink-0 animate-fade-in ml-auto overflow-hidden">
-                {allPersistentChars.slice(0, 3).map((npc, idx) => (
-                  <div key={idx} className="flex flex-col items-center flex-shrink-0">
-                    <img
-                      src={npc.img}
-                      alt={npc.name}
-                      className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl object-cover"
-                      style={{
-                        border: '2px solid hsl(35 40% 40%)',
-                        boxShadow: '0 4px 12px hsl(0 0% 0% / 0.4), 0 0 8px hsl(35 40% 40% / 0.2)',
+              <div className="flex items-center gap-3 flex-shrink-0 animate-fade-in ml-auto overflow-hidden">
+                {allPersistentChars.slice(0, 3).map((npc, idx) => {
+                  // Find the character ID for this NPC
+                  const allCharsLookup = [...characters, ...part2Characters];
+                  const npcChar = allCharsLookup.find(c => c.name === npc.name);
+                  const npcId = npcChar?.id;
+                  const hasAllegory = npcId && allegoryMeanings[npcId];
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        if (hasAllegory && npcId) {
+                          setAllegoryCardChar(npcId);
+                        }
                       }}
-                    />
-                    <p className="text-[8px] sm:text-[10px] font-display font-bold leading-tight mt-0.5 text-center max-w-[56px] truncate" style={{ color: 'hsl(35 50% 65%)' }}>{npc.name}</p>
-                  </div>
-                ))}
+                      className="flex flex-col items-center flex-shrink-0 active:scale-95 transition-transform"
+                    >
+                      <img
+                        src={npc.img}
+                        alt={npc.name}
+                        className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover object-top"
+                        style={{
+                          border: '2px solid hsl(35 40% 40%)',
+                          boxShadow: '0 4px 12px hsl(0 0% 0% / 0.4), 0 0 8px hsl(35 40% 40% / 0.2)',
+                        }}
+                      />
+                      <p className="text-[9px] sm:text-[11px] font-display font-bold leading-tight mt-1 text-center max-w-[64px] truncate" style={{ color: 'hsl(35 50% 65%)' }}>{npc.name}</p>
+                      {hasAllegory && <p className="text-[7px] text-primary/50 font-display uppercase tracking-wider">toque p/ ler</p>}
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -850,26 +866,38 @@ const ScenePage = () => {
             )}
 
             {fullNarrative.length > 0 && !showChoices && (
-              <div className="space-y-2">
-                {/* Back to previous beat */}
-                {narrativeIndex > 0 && (
+              <div className="space-y-2 sticky bottom-0 z-10 pb-2 pt-2" style={{ background: 'linear-gradient(to top, hsl(var(--background)) 60%, transparent)' }}>
+                {/* Navigation: back + forward buttons always visible */}
+                <div className="flex items-center gap-2 rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm px-3 py-2.5">
+                  {/* Back button */}
                   <button
-                    onClick={() => setNarrativeIndex(prev => Math.max(0, prev - 1))}
-                    className="flex items-center gap-2 text-[11px] font-display text-primary/70 hover:text-primary transition-colors uppercase tracking-wider"
+                    onClick={() => {
+                      if (narrativeIndex > 0) {
+                        setNarrativeIndex(prev => Math.max(0, prev - 1));
+                      } else {
+                        // Go to previous scene
+                        const visited = progress.visitedChapters;
+                        const currentIdx = visited.indexOf(progress.currentChapterId);
+                        const prevId = currentIdx > 0 ? visited[currentIdx - 1] : visited[visited.length - 2];
+                        if (prevId && prevId !== progress.currentChapterId) goToChapter(prevId);
+                      }
+                    }}
+                    className="btn-medieval-secondary px-3 py-2 text-xs flex items-center gap-1.5 flex-shrink-0"
                   >
-                    <ArrowLeft className="w-3 h-3" /> Reler trecho anterior
+                    <ArrowLeft className="w-3.5 h-3.5" /> Voltar
                   </button>
-                )}
-                <div className="flex items-center justify-between gap-3 rounded-xl border border-border/50 bg-card/40 px-4 py-3">
-                  <p className="text-[11px] font-display uppercase tracking-[0.2em] text-muted-foreground">
-                    Trecho {Math.min(narrativeIndex + 1, fullNarrative.length)} de {fullNarrative.length}
+                  {/* Progress indicator */}
+                  <p className="text-[10px] font-display uppercase tracking-[0.15em] text-muted-foreground flex-1 text-center">
+                    {Math.min(narrativeIndex + 1, fullNarrative.length)}/{fullNarrative.length}
                   </p>
+                  {/* Continue button */}
                   <button
                     onClick={handleAdvanceNarrative}
                     disabled={!hasMoreNarrative && !canShowChoices}
-                    className="btn-medieval-secondary min-w-[132px] px-4 py-2 text-xs disabled:pointer-events-none disabled:opacity-60"
+                    className="btn-medieval min-w-[120px] px-4 py-2 text-xs disabled:pointer-events-none disabled:opacity-60 flex items-center justify-center gap-1.5"
                   >
-                    {hasMoreNarrative ? 'Continuar' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'}
+                    {hasMoreNarrative ? 'Continuar' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'} 
+                    {hasMoreNarrative && <ArrowRight className="w-3.5 h-3.5" />}
                   </button>
                 </div>
               </div>
