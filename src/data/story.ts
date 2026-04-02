@@ -949,10 +949,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Caminho Sem Instrução",
     location: "Caminho Estreito",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'Uma sensação de vazio te acompanha...' },
     narrative: [
-      "Você segue adiante sem entrar na casa. O caminho parece igual, mas algo falta. Sem as lições do Intérprete, cada decisão futura será mais difícil.",
-      "Na estrada, um sentimento de perda te acompanha. Os perigos à frente exigirão sabedoria que você não tem.",
-      "Ao longe, a porta da Casa do Intérprete ainda está aberta."
+      "{{fade}}Você segue adiante sem entrar na casa. O caminho parece igual, mas algo falta.{{/fade}} Sem as lições do Intérprete, cada decisão futura será mais difícil.",
+      "{{whisper}}Na estrada, um sentimento de perda te acompanha. Os perigos à frente exigirão sabedoria que você não tem.{{/whisper}}",
+      "Ao longe, {{divine}}a porta da Casa do Intérprete ainda está aberta.{{/divine}}"
     ],
     choices: [
       {
@@ -1003,8 +1004,8 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
     narrative: [
-      "\"A Lei não é inútil\", responde o Intérprete. \"Ela revela a doença. Mas não é o remédio. Quem tenta se curar pela Lei apenas sufoca na própria poeira.\"",
-      "Ele te olha fixamente: \"Lembre-se disso no caminho. Muitos tentarão te dizer que basta ser bom o suficiente, seguir regras o suficiente. Mas o fardo que caiu na cruz não caiu por suas obras — caiu pela Graça.\""
+      "{{dialog}}\"A Lei não é inútil\"{{/dialog}}, responde o Intérprete. {{emphasis}}\"Ela revela a doença. Mas não é o remédio.{{/emphasis}} Quem tenta se curar pela Lei apenas sufoca na própria poeira.\"",
+      "Ele te olha fixamente: {{divine}}\"Lembre-se disso no caminho. Muitos tentarão te dizer que basta ser bom o suficiente, seguir regras o suficiente. Mas o fardo que caiu na cruz não caiu por suas obras — caiu pela Graça.\"{{/divine}}"
     ],
     choices: [
       {
@@ -1050,11 +1051,12 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Palácio Belo",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'Uma batalha feroz se desenrola diante de seus olhos...' },
     narrative: [
-      "A visão seguinte mostra um palácio magnífico. Na porta, guardas armados impedem a entrada. Uma multidão observa de longe, com medo.",
-      "Então um homem de rosto determinado se aproxima da mesa de registro, escreve seu nome, e avança de espada em punho contra os guardas. A batalha é feroz. Ele recebe golpes, sangra, mas não recua. Finalmente, atravessa a porta.",
-      "De dentro do palácio, vozes cantam: \"Entra, entra! A glória eterna será tua.\"",
-      "\"O Reino dos Céus padece violência\", murmura o Intérprete, \"e são os violentos que o tomam por força.\""
+      "A visão seguinte mostra um palácio magnífico. Na porta, guardas armados impedem a entrada. {{fade}}Uma multidão observa de longe, com medo.{{/fade}}",
+      "{{tremor}}Então um homem de rosto determinado se aproxima da mesa de registro, escreve seu nome, e avança de espada em punho contra os guardas.{{/tremor}} A batalha é feroz. Ele recebe golpes, sangra, mas não recua. {{emphasis}}Finalmente, atravessa a porta.{{/emphasis}}",
+      "{{divine}}De dentro do palácio, vozes cantam: \"Entra, entra! A glória eterna será tua.\"{{/divine}}",
+      "{{whisper}}\"O Reino dos Céus padece violência\"{{/whisper}}, murmura o Intérprete, {{emphasis}}\"e são os violentos que o tomam por força.\"{{/emphasis}}"
     ],
     flagNarrative: [
       { flag: "ignorou_inquietacao", text: "Você pensa em como quase ignorou o chamado. Aquele homem corajoso não hesitou — e você?" }
@@ -1102,10 +1104,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Sonho do Julgamento",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Trovões soam e o céu se abre...' },
     narrative: [
-      "Na última visão, o Intérprete mostra um homem que acordou tremendo de um sonho. No sonho, o céu se abriu, trovões soaram, e um Juiz no trono ordenou: \"Recolhei o trigo e queimem o joio.\"",
-      "O homem viu a si mesmo entre o joio — e acordou gritando.",
-      "\"O dia do juízo vem\", diz o Intérprete. \"Lembre-se disso quando o caminho parecer difícil demais, quando a tentação for doce demais. Há um final para esta história. Certifique-se de estar do lado certo.\""
+      "Na última visão, o Intérprete mostra um homem que acordou tremendo de um sonho. {{tremor}}No sonho, o céu se abriu, trovões soaram, e um Juiz no trono ordenou: \"Recolhei o trigo e queimem o joio.\"{{/tremor}}",
+      "{{heart}}O homem viu a si mesmo entre o joio — e acordou gritando.{{/heart}}",
+      "{{divine}}\"O dia do juízo vem\"{{/divine}}, diz o Intérprete. {{emphasis}}\"Lembre-se disso quando o caminho parecer difícil demais, quando a tentação for doce demais. Há um final para esta história. Certifique-se de estar do lado certo.\"{{/emphasis}}"
     ],
     choices: [
       {
@@ -1127,9 +1130,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
     narrative: [
-      "Na porta, o Intérprete coloca as mãos nos seus ombros.",
-      "\"O Consolador esteja sempre contigo, bom Cristão, para te guiar no caminho que leva à Cidade Celestial.\"",
-      "Ele aperta sua mão. Seus olhos brilham — não de tristeza, mas de esperança firme."
+      "{{heart}}Na porta, o Intérprete coloca as mãos nos seus ombros.{{/heart}}",
+      "{{divine}}\"O Consolador esteja sempre contigo, bom Cristão, para te guiar no caminho que leva à Cidade Celestial.\"{{/divine}}",
+      "{{fade}}Ele aperta sua mão. Seus olhos brilham — não de tristeza, mas de esperança firme.{{/fade}}"
     ],
     flagNarrative: [
       { flag: "escolheu_caminho_estreito", text: "\"Você já escolheu o caminho difícil antes\", ele diz. \"Essa coragem será testada. Não a abandone.\"" },
@@ -1157,9 +1160,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Além da Casa",
     location: "O Caminho Adiante",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'O caminho se inclina para cima...' },
     narrative: [
-      "A casa fica para trás, mas suas lições caminham com você. A poeira e a vassoura. O fogo que não apaga. O homem na gaiola. O palácio que exige luta.",
-      "O caminho sobe agora. Uma colina íngreme se ergue à frente — a Colina da Dificuldade."
+      "{{fade}}A casa fica para trás, mas suas lições caminham com você.{{/fade}} A poeira e a vassoura. O fogo que não apaga. O homem na gaiola. O palácio que exige luta.",
+      "{{tremor}}O caminho sobe agora. Uma colina íngreme se ergue à frente — a Colina da Dificuldade.{{/tremor}}"
     ],
     choices: [
       {
@@ -1175,10 +1179,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Colina da Dificuldade",
     location: "Colina da Dificuldade",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'A colina se ergue como um muro...' },
     narrative: [
-      "A Colina da Dificuldade se ergue como um muro de pedra. Bunyan a descreve como tão íngreme que só se pode subir de mãos e joelhos. No pé da colina, uma fonte de água fresca — para fortalecer o peregrino antes da escalada.",
-      "Dois caminhos alternativos contornam a colina: um chamado Perigo, cheio de bosques escuros, e outro chamado Destruição, que leva a um campo de pedras traiçoeiras. Formalista e Hipocrisia, que pularam o muro, tomaram esses atalhos — e nunca mais foram vistos.",
-      "Não há atalho para a colina. É subir — ou desistir."
+      "{{tremor}}A Colina da Dificuldade se ergue como um muro de pedra.{{/tremor}} Bunyan a descreve como tão íngreme que só se pode subir de mãos e joelhos. No pé da colina, uma fonte de água fresca — para fortalecer o peregrino antes da escalada.",
+      "Dois caminhos alternativos contornam a colina: um chamado {{villain}}Perigo{{/villain}}, cheio de bosques escuros, e outro chamado {{villain}}Destruição{{/villain}}, que leva a um campo de pedras traiçoeiras. {{emphasis}}Formalista e Hipocrisia, que pularam o muro, tomaram esses atalhos — e nunca mais foram vistos.{{/emphasis}}",
+      "{{heart}}Não há atalho para a colina. É subir — ou desistir.{{/heart}}"
     ],
     toneNarrative: [
       { attr: "perseveranca", highThreshold: 7, highText: "Sua perseverança faz cada degrau natural parecer um convite. Difícil, sim — mas possível.", lowThreshold: 3, lowText: "A colina parece infinita. Seus joelhos gritam de dor antes mesmo do primeiro terço." }
@@ -1208,9 +1213,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     timeLimit: 15,
     timeoutChoiceIndex: 1,
     narrative: [
-      "Na metade da subida, um caramanchão de pedra oferece sombra e descanso. Bunyan nos diz que o Senhor o construiu para alívio dos peregrinos cansados.",
-      "Você se senta. O cansaço é imenso. As pálpebras pesam. O vento é morno. O caramanchão é tão confortável...",
-      "No livro original, Cristão adormeceu aqui — e o pergaminho selado caiu de suas mãos. Quando acordou e descobriu a perda, teve que descer toda a colina para buscá-lo, chorando e se recriminando."
+      "Na metade da subida, um caramanchão de pedra oferece sombra e descanso. {{whisper}}Bunyan nos diz que o Senhor o construiu para alívio dos peregrinos cansados.{{/whisper}}",
+      "{{fade}}Você se senta. O cansaço é imenso. As pálpebras pesam. O vento é morno. O caramanchão é tão confortável...{{/fade}}",
+      "{{emphasis}}No livro original, Cristão adormeceu aqui — e o pergaminho selado caiu de suas mãos.{{/emphasis}} Quando acordou e descobriu a perda, teve que descer toda a colina para buscá-lo, {{heart}}chorando e se recriminando.{{/heart}}"
     ],
     flagNarrative: [
       { flag: "tentou_atalho_colina", text: "O atalho te trouxe de volta ao mesmo ponto, mais cansado. A colina não aceita atalhos." }
@@ -1239,11 +1244,12 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Os Leões Acorrentados",
     location: "Portão do Palácio Belo",
     characters: ["cristao", "discricao"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Rugidos ecoam entre os muros!' },
     narrative: [
-      "No topo da colina, o caminho estreita entre muros altos. E ali, bloqueando a passagem, dois leões enormes rugem com ferocidade.",
-      "Dois homens correm na direção oposta — Timidez e Desconfiança. \"Volte!\", gritam. \"Os leões nos devorarão!\"",
-      "Mas um porteiro chamado Vigilante grita do outro lado: \"Não tema! Os leões estão acorrentados! Mantenha-se no meio do caminho e eles não poderão tocá-lo!\"",
-      "Bunyan usa os leões para ensinar que os perigos no caminho cristão são muitas vezes mais aparentes do que reais — desde que o peregrino permaneça no centro do caminho estreito."
+      "No topo da colina, o caminho estreita entre muros altos. {{tremor}}E ali, bloqueando a passagem, dois leões enormes rugem com ferocidade.{{/tremor}}",
+      "Dois homens correm na direção oposta — Timidez e Desconfiança. {{shout}}\"Volte!\"{{/shout}}, gritam. {{villain}}\"Os leões nos devorarão!\"{{/villain}}",
+      "Mas um porteiro chamado {{emphasis}}Vigilante{{/emphasis}} grita do outro lado: {{divine}}\"Não tema! Os leões estão acorrentados! Mantenha-se no meio do caminho e eles não poderão tocá-lo!\"{{/divine}}",
+      "{{whisper}}Bunyan usa os leões para ensinar que os perigos no caminho cristão são muitas vezes mais aparentes do que reais — desde que o peregrino permaneça no centro do caminho estreito.{{/whisper}}"
     ],
     flagNarrative: [
       { flag: "dormiu_caramanchao", text: "Você acorda em pânico e descobre que o pergaminho caiu. Corre colina abaixo, encontra-o no caramanchão, e sobe tudo de novo — exausto, mas aliviado. A lição: não durma no caminho." }
@@ -1276,10 +1282,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Descida ao Vale",
     location: "Vale da Humilhação",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2500, message: 'Algo se move nas sombras...' },
     narrative: [
-      "O Vale da Humilhação é estreito e escuro. Paredes de rocha se erguem dos dois lados. O sol desaparece atrás das nuvens.",
-      "O silêncio aqui é diferente. Não é paz — é espera. Como se o próprio vale prendesse a respiração.",
-      "Seus passos ecoam entre as pedras. A armadura da fé que você recebeu parece fina demais. O pergaminho pesa no bolso como um lembrete: você tem algo pelo que lutar."
+      "{{fade}}O Vale da Humilhação é estreito e escuro. Paredes de rocha se erguem dos dois lados. O sol desaparece atrás das nuvens.{{/fade}}",
+      "{{whisper}}O silêncio aqui é diferente. Não é paz — é espera. Como se o próprio vale prendesse a respiração.{{/whisper}}",
+      "{{tremor}}Seus passos ecoam entre as pedras. A armadura da fé que você recebeu parece fina demais.{{/tremor}} O pergaminho pesa no bolso como um lembrete: {{emphasis}}você tem algo pelo que lutar.{{/emphasis}}"
     ],
     replayNarrative: [
       "O vale é o mesmo. Mas você sabe quem espera nas sombras. Da última vez, enfrentou Apolião — ou fugiu. Desta vez, o que fará?"
@@ -1308,10 +1315,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Voz nas Sombras",
     location: "Vale da Humilhação",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'O chão vibra sob seus pés...' },
     narrative: [
-      "Uma voz troveja entre as rochas, fazendo o chão vibrar:",
-      "\"Eu te conheço, Cristão. Você veio da minha cidade — a Cidade da Destruição. Toda aquela terra é minha. Você é meu servo.\"",
-      "A voz é de Apolião. Ele ainda não se mostra, mas seu hálito quente faz o ar feder a enxofre. O som de escamas raspando pedra ecoa nas paredes do vale."
+      "{{tremor}}Uma voz troveja entre as rochas, fazendo o chão vibrar:{{/tremor}}",
+      "{{villain}}\"Eu te conheço, Cristão. Você veio da minha cidade — a Cidade da Destruição. Toda aquela terra é minha. Você é meu servo.\"{{/villain}}",
+      "{{fade}}A voz é de Apolião. Ele ainda não se mostra, mas seu hálito quente faz o ar feder a enxofre.{{/fade}} {{whisper}}O som de escamas raspando pedra ecoa nas paredes do vale.{{/whisper}}"
     ],
     toneNarrative: [
       { attr: "coragem", highThreshold: 7, highText: "Seu coração dispara, mas suas mãos não tremem. Você já sabia que esse encontro viria.", lowThreshold: 3, lowText: "Cada palavra de Apolião te encolhe. A tentação de correr é quase física." },
@@ -1371,6 +1379,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Batalha",
     location: "Vale da Humilhação",
     characters: ["cristao", "apolion"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'Dardos flamejantes cortam o ar!' },
     narrative: [
       "{{tremor}}A batalha dura horas. Apolião lança dardos flamejantes.{{/tremor}} Você os apara com o escudo da fé, mas alguns passam e ferem suas mãos, sua cabeça, seu pé.",
       "Em um momento terrível, {{tremor}}Apolião te derruba. Sua espada voa de suas mãos.{{/tremor}} Ele se ergue sobre você, pronto para o golpe final.",
@@ -1405,10 +1414,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Vale da Sombra da Morte",
     location: "Vale da Sombra da Morte",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'A escuridão é quase total...' },
     narrative: [
-      "Além da batalha (ou da fuga), o vale se torna ainda mais escuro. Este é o Vale da Sombra da Morte — um lugar que Bunyan descreve como tendo um fosso sem fundo de um lado e um pântano de lama do outro.",
-      "Demônios sussurram blasfêmias ao seu ouvido, tão perto que você pensa que são seus próprios pensamentos. O chão está coberto de armadilhas.",
-      "A escuridão é tão densa que nem a espada é visível na sua mão."
+      "{{fade}}Além da batalha (ou da fuga), o vale se torna ainda mais escuro.{{/fade}} Este é o {{emphasis}}Vale da Sombra da Morte{{/emphasis}} — um lugar que Bunyan descreve como tendo um fosso sem fundo de um lado e um pântano de lama do outro.",
+      "{{villain}}Demônios sussurram blasfêmias ao seu ouvido, tão perto que você pensa que são seus próprios pensamentos.{{/villain}} {{tremor}}O chão está coberto de armadilhas.{{/tremor}}",
+      "{{whisper}}A escuridão é tão densa que nem a espada é visível na sua mão.{{/whisper}}"
     ],
     choices: [
       {
@@ -1429,10 +1439,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Aurora no Vale",
     location: "Vale da Sombra da Morte",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 3000, message: 'Uma luz dourada rompe a escuridão...' },
     narrative: [
-      "Quando a situação parece impossível, o sol nasce. A luz invade o vale como uma lâmina, dispersando as sombras. Os demônios recuam. As armadilhas ficam visíveis.",
-      "Bunyan escreveu: \"Então Cristão disse: 'Ele transformou a sombra da morte em manhã.'\"",
-      "À luz do dia, você vê o caminho que percorreu no escuro — cheio de fossos, redes e armadilhas. É um milagre ter passado. Não foi habilidade sua. Foi providência."
+      "{{divine}}Quando a situação parece impossível, o sol nasce. A luz invade o vale como uma lâmina, dispersando as sombras.{{/divine}} Os demônios recuam. As armadilhas ficam visíveis.",
+      "Bunyan escreveu: {{emphasis}}\"Então Cristão disse: 'Ele transformou a sombra da morte em manhã.'\"{{/emphasis}}",
+      "{{fade}}À luz do dia, você vê o caminho que percorreu no escuro — cheio de fossos, redes e armadilhas. É um milagre ter passado.{{/fade}} {{divine}}Não foi habilidade sua. Foi providência.{{/divine}}"
     ],
     adaptiveNarrative: [
       { minAttr: "fe", minValue: 8, text: "Sua fé acumulada brilha neste momento. A luz parece mais forte ao seu redor, como se respondesse à sua confiança." }
@@ -1462,10 +1473,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Os Gigantes na Caverna",
     location: "Saída do Vale",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'Ossos rangem na escuridão...' },
     narrative: [
-      "Na saída do vale, duas cavernas se abrem. Dentro, os esqueletos de peregrinos que não conseguiram passar. Gigantes antigos — Papa e Pagão — vigiavam este lugar. Um já morreu, o outro está velho demais para atacar.",
-      "O gigante sobrevivente range os dentes, mas só consegue gritar: \"Vocês nunca mudarão!\"",
-      "Você passa por ele. Suas ameaças são vazias. Mas os esqueletos são um lembrete: nem todos que começaram a jornada chegaram ao fim."
+      "Na saída do vale, duas cavernas se abrem. {{fade}}Dentro, os esqueletos de peregrinos que não conseguiram passar.{{/fade}} Gigantes antigos — {{villain}}Papa e Pagão{{/villain}} — vigiavam este lugar. Um já morreu, o outro está velho demais para atacar.",
+      "{{villain}}O gigante sobrevivente range os dentes, mas só consegue gritar: \"Vocês nunca mudarão!\"{{/villain}}",
+      "{{heart}}Você passa por ele. Suas ameaças são vazias.{{/heart}} Mas os esqueletos são um lembrete: {{emphasis}}nem todos que começaram a jornada chegaram ao fim.{{/emphasis}}"
     ],
     flagNarrative: [
       { flag: "escolheu_caminho_estreito", text: "Você olha os esqueletos e pensa: qualquer um deles poderia ter sido você, se tivesse escolhido diferente naquela encruzilhada." }
@@ -1489,10 +1501,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Fiel, o Companheiro",
     location: "Além do Vale",
     characters: ["cristao", "fiel"],
+    sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'Uma figura familiar surge à frente...' },
     narrative: [
-      "Do outro lado do vale, uma surpresa: outro peregrino. Seu nome é Fiel. Ele também veio da Cidade da Destruição, por um caminho diferente.",
-      "\"Eu também carreguei o fardo\", diz Fiel. \"Eu também passei pela cruz. O meu caminho foi diferente do seu, mas chegamos ao mesmo ponto.\"",
-      "Pela primeira vez na jornada, você tem um companheiro verdadeiro. Alguém que entende o peso, a luta, e a esperança. Juntos, vocês seguem em direção à Feira da Vaidade."
+      "Do outro lado do vale, uma surpresa: {{emphasis}}outro peregrino{{/emphasis}}. Seu nome é {{emphasis}}Fiel{{/emphasis}}. Ele também veio da Cidade da Destruição, por um caminho diferente.",
+      "{{dialog}}\"Eu também carreguei o fardo\"{{/dialog}}, diz Fiel. {{dialog}}\"Eu também passei pela cruz. O meu caminho foi diferente do seu, mas chegamos ao mesmo ponto.\"{{/dialog}}",
+      "{{heart}}Pela primeira vez na jornada, você tem um companheiro verdadeiro. Alguém que entende o peso, a luta, e a esperança.{{/heart}} Juntos, vocês seguem em direção à Feira da Vaidade."
     ],
     choices: [
       {
@@ -1508,10 +1521,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Peso do Medo",
     location: "Saída do Vale",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'O medo paralisa seus membros...' },
     narrative: [
-      "Os esqueletos te paralisam. Cada um deles foi um peregrino como você. Eles tinham fé, coragem, pergaminhos — e mesmo assim morreram aqui.",
-      "A pergunta martela: se eles não conseguiram, como você conseguiria?",
-      "Mas então você olha para suas mãos. O pergaminho ainda está ali. O selo na sua testa ainda brilha. Você ainda está de pé."
+      "{{tremor}}Os esqueletos te paralisam. Cada um deles foi um peregrino como você.{{/tremor}} Eles tinham fé, coragem, pergaminhos — e mesmo assim morreram aqui.",
+      "{{whisper}}A pergunta martela: se eles não conseguiram, como você conseguiria?{{/whisper}}",
+      "Mas então você olha para suas mãos. {{divine}}O pergaminho ainda está ali. O selo na sua testa ainda brilha.{{/divine}} {{emphasis}}Você ainda está de pé.{{/emphasis}}"
     ],
     flagNarrative: [
       { flag: "pediu_ajuda_pantano", text: "No pântano, a mão de Auxílio te salvou. Você não precisa vencer sozinho." }
@@ -1542,9 +1556,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Estrada para a Feira da Vaidade",
     characters: ["cristao", "fiel"],
     narrative: [
-      "Com Fiel ao seu lado, a estrada parece menos solitária. Vocês conversam sobre o vale, sobre Apolião, sobre as lições do Intérprete.",
-      "\"A Feira da Vaidade fica adiante\", diz Fiel com seriedade. \"Lá, tudo tem um preço. Tudo está à venda. Menos uma coisa: a Verdade.\"",
-      "Ele te olha: \"Quando chegarmos lá, vão nos odiar. Porque não queremos comprar o que eles vendem.\""
+      "{{heart}}Com Fiel ao seu lado, a estrada parece menos solitária.{{/heart}} Vocês conversam sobre o vale, sobre Apolião, sobre as lições do Intérprete.",
+      "{{emphasis}}\"A Feira da Vaidade fica adiante\"{{/emphasis}}, diz Fiel com seriedade. {{dialog}}\"Lá, tudo tem um preço. Tudo está à venda. Menos uma coisa: a Verdade.\"{{/dialog}}",
+      "Ele te olha: {{whisper}}\"Quando chegarmos lá, vão nos odiar. Porque não queremos comprar o que eles vendem.\"{{/whisper}}"
     ],
     flagNarrative: [
       { flag: "enfrentou_presenca", text: "Fiel te olha com respeito: \"Ouvi que você enfrentou Apolião face a face. Poucos sobrevivem a isso. Será preciso a mesma coragem na Feira.\"" }
@@ -1568,6 +1582,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Feira da Vaidade",
     location: "Feira da Vaidade",
     characters: ["cristao", "fiel"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'O barulho da feira é ensurdecedor...' },
     narrative: [
       "{{tremor}}O barulho atinge você antes de ver a feira.{{/tremor}} Gritos de vendedores, música, gargalhadas. A Feira da Vaidade existe há séculos — fundada por Belzebu, Apolião e Legião quando descobriram que o caminho dos peregrinos passava por esta cidade.",
       "Aqui, tudo está à venda: casas, terras, honras, títulos, reinos, prazeres, esposas, maridos, corpos, almas. {{fade}}As barracas se estendem até onde a vista alcança.{{/fade}}",
@@ -1607,10 +1622,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Escárnio",
     location: "Feira da Vaidade",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'A multidão se volta contra vocês!' },
     narrative: [
-      "Sua recusa em comprar provoca escárnio. Vendedores zombam. A multidão começa a cercá-los. Alguns cospem em vocês. Outros jogam lama.",
-      "\"Loucos!\", gritam. \"Fanáticos! Quem vem à feira e não compra nada?\"",
-      "Fiel permanece firme ao seu lado. Seu rosto sangra onde uma pedra o atingiu, mas ele não recua."
+      "{{tremor}}Sua recusa em comprar provoca escárnio. Vendedores zombam. A multidão começa a cercá-los.{{/tremor}} Alguns cospem em vocês. Outros jogam lama.",
+      "{{shout}}\"Loucos!\"{{/shout}}, gritam. {{villain}}\"Fanáticos! Quem vem à feira e não compra nada?\"{{/villain}}",
+      "{{heart}}Fiel permanece firme ao seu lado. Seu rosto sangra onde uma pedra o atingiu, mas ele não recua.{{/heart}}"
     ],
     flagNarrative: [
       { flag: "escolheu_caminho_estreito", text: "O caminho estreito te ensinou a suportar dor. Os espinhos daquela trilha te prepararam para as pedras desta feira." }
@@ -1634,9 +1650,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Sedução da Feira",
     location: "Feira da Vaidade",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'As ofertas brilham ao seu redor...' },
     narrative: [
-      "As barracas oferecem tudo que seu coração poderia desejar. Comida abundante, roupas finas, poder, reconhecimento. Vendedores sorriem e dizem: \"Apenas prove. Sem compromisso.\"",
-      "Fiel te puxa pelo braço: \"Cristão, lembre-se do homem na gaiola de ferro. Ele também começou apenas olhando.\""
+      "{{fade}}As barracas oferecem tudo que seu coração poderia desejar.{{/fade}} Comida abundante, roupas finas, poder, reconhecimento. {{villain}}Vendedores sorriem e dizem: \"Apenas prove. Sem compromisso.\"{{/villain}}",
+      "{{heart}}Fiel te puxa pelo braço:{{/heart}} {{dialog}}\"Cristão, lembre-se do homem na gaiola de ferro. Ele também começou apenas olhando.\"{{/dialog}}"
     ],
     adaptiveNarrative: [
       { minAttr: "fe", minValue: 8, text: "Sua fé resiste. Mesmo diante da beleza das ofertas, algo dentro de você reconhece: nada aqui vale o pergaminho no seu bolso." }
@@ -1660,10 +1677,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Julgamento",
     location: "Feira da Vaidade",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'O tribunal se ergue diante de vocês!' },
     narrative: [
-      "A confusão cresce. Os donos da feira decidem prender vocês. São levados a um tribunal presidido pelo juiz Ódio-ao-Bem. O júri é formado por Cego, Sem-Bem, Malícia, Luxúria, Vive-no-Prazer, Imprudente e outros.",
-      "As acusações: perturbação do comércio, desprezo pela cultura local, e influência perigosa sobre cidadãos honestos.",
-      "Fiel é chamado primeiro. Ele fala com coragem: \"Tudo que se opõe à verdade se opõe ao Rei dos reis. Eu respondo apenas a Ele.\""
+      "{{tremor}}A confusão cresce. Os donos da feira decidem prender vocês.{{/tremor}} São levados a um tribunal presidido pelo juiz {{villain}}Ódio-ao-Bem{{/villain}}. O júri é formado por Cego, Sem-Bem, Malícia, Luxúria, Vive-no-Prazer, Imprudente e outros.",
+      "As acusações: {{emphasis}}perturbação do comércio, desprezo pela cultura local, e influência perigosa sobre cidadãos honestos.{{/emphasis}}",
+      "{{divine}}Fiel é chamado primeiro. Ele fala com coragem: \"Tudo que se opõe à verdade se opõe ao Rei dos reis. Eu respondo apenas a Ele.\"{{/divine}}"
     ],
     flagNarrative: [
       { flag: "enfrentou_presenca", text: "Você enfrentou Apolião. Este tribunal é assustador, mas os juízes são humanos — não monstros." }
@@ -1692,9 +1710,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Preço do Silêncio",
     location: "Feira da Vaidade",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 2500, message: 'A pressão aumenta...' },
     narrative: [
-      "Seu silêncio não te protege. A multidão te identifica como companheiro de Fiel. A pressão aumenta. Olhares hostis de todos os lados.",
-      "Fiel olha para você. Seus olhos não acusam — mas perguntam: \"Onde está sua coragem?\""
+      "{{fade}}Seu silêncio não te protege. A multidão te identifica como companheiro de Fiel.{{/fade}} {{tremor}}A pressão aumenta. Olhares hostis de todos os lados.{{/tremor}}",
+      "{{heart}}Fiel olha para você. Seus olhos não acusam — mas perguntam: \"Onde está sua coragem?\"{{/heart}}"
     ],
     toneNarrative: [
       { attr: "coragem", highThreshold: 7, highText: "A vergonha te atinge como um golpe. Você enfrentou Apolião e agora se esconde de comerciantes?", lowThreshold: 3, lowText: "O medo te congela. São tantos contra vocês dois. O que um pode fazer?" }
@@ -1719,6 +1738,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Martírio de Fiel",
     location: "Feira da Vaidade",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'O fogo consome a estaca...' },
     narrative: [
       "{{tremor}}O tribunal condena Fiel.{{/tremor}} Ele é açoitado, apedrejado, esfaqueado e, por fim, queimado na estaca. {{heart}}Fiel não grita de dor. Seu rosto, mesmo no fogo, irradia paz.{{/heart}}",
       "{{divine}}Bunyan escreveu que uma carruagem celestial desceu e levou Fiel através das nuvens, ao som de trombetas, direto para a Porta Celestial.{{/divine}}",
@@ -1746,10 +1766,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Tentação de Desistir",
     location: "Feira da Vaidade",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'A solidão pesa sem Fiel...' },
     narrative: [
-      "Sem Fiel, a solidão é esmagadora. Os vendedores da feira percebem sua fraqueza e se aproximam com ofertas mais tentadoras.",
-      "\"Fique conosco. Aqui ninguém te persegue. Aqui, o fardo não existe. Aqui, não há vales escuros nem rios para atravessar.\"",
-      "O homem na gaiola de ferro surge na sua memória. Ele também achou que podia ficar \"só um pouco\"."
+      "{{fade}}Sem Fiel, a solidão é esmagadora.{{/fade}} Os vendedores da feira percebem sua fraqueza e se aproximam com ofertas mais tentadoras.",
+      "{{villain}}\"Fique conosco. Aqui ninguém te persegue. Aqui, o fardo não existe. Aqui, não há vales escuros nem rios para atravessar.\"{{/villain}}",
+      "{{emphasis}}O homem na gaiola de ferro surge na sua memória. Ele também achou que podia ficar \"só um pouco\".{{/emphasis}}"
     ],
     adaptiveNarrative: [
       { minAttr: "discernimento", minValue: 7, text: "Seu discernimento grita: este é exatamente o momento que o Intérprete te mostrou. O fogo tentam apagar — mas a mão oculta continua alimentando." }
@@ -1773,10 +1794,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Esperança, o Novo Companheiro",
     location: "Saída da Feira",
     characters: ["cristao", "esperanca"],
+    sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'Alguém se aproxima por trás...' },
     narrative: [
-      "Na saída da feira, alguém te alcança. Seu nome é Esperança. Ele viu tudo — o julgamento, o martírio de Fiel, sua coragem (ou falta dela).",
-      "\"O sacrifício de Fiel me convenceu\", diz Esperança. \"Quero seguir o mesmo caminho. Posso ir com você?\"",
-      "Bunyan nos diz que a morte de Fiel converteu mais pessoas na feira do que anos de pregação teriam feito. O sangue do mártir é semente."
+      "Na saída da feira, alguém te alcança. Seu nome é {{emphasis}}Esperança{{/emphasis}}. Ele viu tudo — o julgamento, o martírio de Fiel, sua coragem (ou falta dela).",
+      "{{dialog}}\"O sacrifício de Fiel me convenceu\"{{/dialog}}, diz Esperança. {{heart}}\"Quero seguir o mesmo caminho. Posso ir com você?\"{{/heart}}",
+      "{{divine}}Bunyan nos diz que a morte de Fiel converteu mais pessoas na feira do que anos de pregação teriam feito. O sangue do mártir é semente.{{/divine}}"
     ],
     flagNarrative: [
       { flag: "entrou_casa_interprete", text: "As lições do Intérprete ganham peso: o fogo não apagou. O sangue de Fiel é o óleo que alimenta a chama." },
@@ -1805,10 +1827,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Preso na Feira",
     location: "Feira da Vaidade",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 1, duration: 3000, message: 'Os dias se perdem na feira...' },
     narrative: [
-      "Um dia se torna dois. Dois se tornam uma semana. As barracas se tornam familiares. O caminho se torna uma memória distante.",
-      "O pergaminho no seu bolso parece mais leve — não porque o destino está mais perto, mas porque você quase esqueceu que ele existe.",
-      "Uma noite, acordando em suor, as palavras do livro queimam novamente na sua mente: \"Fugi da ira vindoura.\""
+      "{{fade}}Um dia se torna dois. Dois se tornam uma semana.{{/fade}} As barracas se tornam familiares. O caminho se torna uma memória distante.",
+      "{{whisper}}O pergaminho no seu bolso parece mais leve — não porque o destino está mais perto, mas porque você quase esqueceu que ele existe.{{/whisper}}",
+      "{{tremor}}Uma noite, acordando em suor, as palavras do livro queimam novamente na sua mente:{{/tremor}} {{divine}}\"Fugi da ira vindoura.\"{{/divine}}"
     ],
     flagNarrative: [
       { flag: "pediu_ajuda_pantano", text: "No pântano, você aprendeu a pedir ajuda. Talvez precise fazer isso novamente — antes que a gaiola de ferro se feche." }
@@ -1833,9 +1856,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Estrada além da Feira",
     characters: ["cristao"],
     narrative: [
-      "A feira fica para trás. A estrada é silenciosa novamente. Mas o silêncio não é vazio — está cheio de tudo que aconteceu.",
-      "Fiel morreu. Mas Esperança nasceu do seu sacrifício. E você carrega a memória de ambos como uma tocha.",
-      "\"Para onde vamos agora?\", pergunta Esperança. Você aponta para frente: \"Para a Cidade Celestial. Não importa o que estiver no caminho.\""
+      "{{fade}}A feira fica para trás. A estrada é silenciosa novamente.{{/fade}} Mas o silêncio não é vazio — está cheio de tudo que aconteceu.",
+      "{{heart}}Fiel morreu. Mas Esperança nasceu do seu sacrifício.{{/heart}} E você carrega a memória de ambos como uma tocha.",
+      "{{dialog}}\"Para onde vamos agora?\"{{/dialog}}, pergunta Esperança. Você aponta para frente: {{emphasis}}\"Para a Cidade Celestial. Não importa o que estiver no caminho.\"{{/emphasis}}"
     ],
     flagNarrative: [
       { flag: "aceitou_custo_feira", text: "O custo da feira foi alto — o mais alto até agora. Mas você pagou e seguiu. Isso é fé." }
@@ -1854,11 +1877,12 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Demas e a Mina de Prata",
     location: "Colina de Lucro",
     characters: ["cristao", "esperanca", "demas"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'Uma luz prateada brilha na colina...' },
     narrative: [
-      "Na estrada, um homem acena de uma colina próxima. Seu nome é Demas. Ao seu lado, a entrada de uma mina brilha com veios de prata.",
-      "\"Peregrinos! Venham ver! Há uma mina de prata aqui — basta cavar um pouco e ficarão ricos! Muitos peregrinos já se desviaram para cá. É seguro.\"",
-      "Esperança te puxa: \"Ouvi dizer que essa mina é traiçoeira. O chão cede, e quem entra raramente sai. Interesses e seus amigos provavelmente estão lá dentro.\"",
-      "Bunyan nos diz que Demas era descendente de Geazi e de Judas — homens que venderam a eternidade por prata."
+      "Na estrada, um homem acena de uma colina próxima. Seu nome é {{emphasis}}Demas{{/emphasis}}. Ao seu lado, a entrada de uma mina brilha com veios de prata.",
+      "{{villain}}\"Peregrinos! Venham ver! Há uma mina de prata aqui — basta cavar um pouco e ficarão ricos! Muitos peregrinos já se desviaram para cá. É seguro.\"{{/villain}}",
+      "{{dialog}}Esperança te puxa: \"Ouvi dizer que essa mina é traiçoeira. O chão cede, e quem entra raramente sai.\"{{/dialog}}",
+      "{{whisper}}Bunyan nos diz que Demas era descendente de Geazi e de Judas — homens que venderam a eternidade por prata.{{/whisper}}"
     ],
     toneNarrative: [
       { attr: "discernimento", highThreshold: 7, highText: "A prata brilha, mas você reconhece o brilho: é o mesmo das barracas da feira. Beleza superficial escondendo ruína.", lowThreshold: 3, lowText: "A prata é real. Brilha ao sol. E você está tão cansado de caminhar sem nada..." }
@@ -1889,9 +1913,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Estrada além da Feira",
     characters: ["cristao", "esperanca", "interesses"],
     narrative: [
-      "Na estrada, um homem bem-vestido se junta a vocês. Seu nome é Interesses, da cidade de Bom-Discurso. Ele é primo do Sr. Volta-Suave e sobrinho do Sr. Duas-Línguas.",
-      "\"Também sou peregrino!\", diz ele sorrindo. \"Mas confesso que prefiro seguir a religião quando ela caminha com chinelos de prata — sob o sol, com aplausos do povo.\"",
-      "Esperança te cutuca: \"Pergunte a ele se seguiria a religião descalço, na chuva, sem plateia.\""
+      "Na estrada, um homem bem-vestido se junta a vocês. Seu nome é {{emphasis}}Interesses{{/emphasis}}, da cidade de Bom-Discurso. Ele é primo do Sr. Volta-Suave e sobrinho do Sr. Duas-Línguas.",
+      "{{dialog}}\"Também sou peregrino!\"{{/dialog}}, diz ele sorrindo. {{villain}}\"Mas confesso que prefiro seguir a religião quando ela caminha com chinelos de prata — sob o sol, com aplausos do povo.\"{{/villain}}",
+      "{{whisper}}Esperança te cutuca: \"Pergunte a ele se seguiria a religião descalço, na chuva, sem plateia.\"{{/whisper}}"
     ],
     toneNarrative: [
       { attr: "discernimento", highThreshold: 7, highText: "Você reconhece o tipo. Interesses ama a religião como ornamento, não como sacrifício. Sua fé é uma roupa para dias de sol.", lowThreshold: 3, lowText: "O homem parece razoável. Por que sofrer quando se pode servir a Deus com conforto?" }
