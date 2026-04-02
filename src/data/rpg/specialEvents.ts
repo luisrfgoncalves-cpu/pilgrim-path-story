@@ -232,8 +232,8 @@ export const refugeEvents: RefugeEvent[] = [
   },
   {
     id: 'ref-006',
-    title: 'Hospedaria de Gaio',
-    narrative: '🏨 Gaio, o hospitaleiro, os recebe com um banquete! Histórias de peregrinos anteriores são contadas ao redor da mesa. Vocês são fortalecidos pela comunhão!',
+    title: 'Gazebo à Beira do Caminho',
+    narrative: '🏨 Um gazebo acolhedor aparece no caminho com água fresca e pão. Uma placa diz: "Provisões do Rei para Seus peregrinos." Vocês descansam e são fortalecidos pela bondade de Deus!',
     effect: { type: 'boost', attribute: 'coragem', amount: 2, affectsGroup: true },
     bibleVerse: '"Não vos esqueçais da hospitalidade, porque por ela alguns, sem o saberem, hospedaram anjos." — Hebreus 13:2',
     emoji: '🏨'
