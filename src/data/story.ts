@@ -454,6 +454,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena9",
     title: "A Porta Estreita",
     location: "Porta Estreita",
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 2000, message: 'A porta se ergue diante de você...' },
     characters: ["cristao"],
     narrative: [
       "A subida é árdua. Os espinhos rasgam suas roupas e a inclinação faz o fardo pesar ainda mais. Várias vezes você escorrega e cai de joelhos.",
