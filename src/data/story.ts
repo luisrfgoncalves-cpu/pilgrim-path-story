@@ -160,9 +160,9 @@ export const reflections: Reflection[] = [
 ];
 
 export const chapterOrder = [
-  "cena1", "cena2", "cena3", "cena4", "cena5",
-  "cena6", "cena7", "cena8", "cena9", "cena10",
-  "cena11", "cena12", "cena13", "cena14", "cena15",
+  "cena1", "cena1b", "cena2", "cena3", "cena4", "cena5", "cena5b",
+  "cena6", "cena7", "cena7b", "cena8", "cena9", "cena9b", "cena10",
+  "cena11", "cena11b", "cena12", "cena13", "cena14", "cena14b", "cena15", "cena15b",
   "fase2-cena1", "fase2-cena2", "fase2-cena3", "fase2-cena4", "fase2-cena5",
   "fase2-cena6", "fase2-cena7", "fase2-cena8", "fase2-cena9", "fase2-cena10",
   "fase2-cena11", "fase2-cena12", "fase2-cena13", "fase2-cena14",
