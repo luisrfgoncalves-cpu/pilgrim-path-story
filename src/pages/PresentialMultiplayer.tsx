@@ -653,7 +653,8 @@ const PresentialMultiplayer = () => {
       } else {
         // No position change — apply everything now
         setPlayers(prev => prev.map((p, i) => {
-          if (i !== turnIdx) return p;
+          const shouldApply = rpgGameMode === 'cooperative' || i === turnIdx;
+          if (!shouldApply) return p;
           const newAttrs = { ...p.attributes };
           for (const [key, val] of Object.entries(effect.attrChanges)) {
             (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
@@ -662,7 +663,7 @@ const PresentialMultiplayer = () => {
             ...p,
             position: finalPos,
             finished: isFinished,
-            finishOrder: isFinished ? newFinishCount : null,
+            finishOrder: isFinished ? (rpgGameMode === 'cooperative' ? 1 : newFinishCount) : null,
             isStunned: effect.stun,
             stunTurns: effect.stunTurns,
             hasShield: effect.shield ? true : (tileType === 'trap' || tileType === 'giant' ? false : p.hasShield),
