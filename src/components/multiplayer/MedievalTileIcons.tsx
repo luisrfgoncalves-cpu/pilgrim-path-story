@@ -242,6 +242,17 @@ const ICON_MAP: Record<TileType, (p: IconProps) => JSX.Element> = {
   delectable_mountains: BlessingIcon,
   enchanted_ground: TrapIcon,
   beulah_land: BlessingIcon,
+  // NEW narrative locations
+  slough_despond: TrapIcon,
+  cross_sepulchre: BlessingIcon,
+  simple_sloth_presumption: TrapIcon,
+  hill_lucre: SurpriseIcon,
+  by_path_meadow: CurrentIcon,
+  flatterer_net: TrapIcon,
+  atheist_encounter: ChallengeIcon,
+  ignorance_path: NormalIcon,
+  little_faith: ShieldIcon,
+  river_of_life: CurrentIcon,
 };
 
 export function MedievalTileIcon({ tileType, size = 28, color, glowColor }: { tileType: TileType } & IconProps) {

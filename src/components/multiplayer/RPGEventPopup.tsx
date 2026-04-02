@@ -11,6 +11,10 @@ import { TileEventType } from '@/data/rpg/types';
 import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { playGameSfx, GameSfx } from '@/lib/gameSfx';
 import { narrate, stopNarration, getNarrationStyle, isCurrentlySpeaking } from '@/lib/narrator';
+import {
+  playEvilLaugh, playCrowdCheer, playTensionDrum,
+  playHolyChime, playDramaticReveal, playNarrativeChime,
+} from './BoardSounds';
 import { Clock, PlayCircle } from 'lucide-react';
 
 // Map RPG sound intents to available GameSfx types
@@ -157,10 +161,26 @@ export default function RPGEventPopup({
     return () => stopNarration();
   }, [visible, tileEventType, difficulty, playerNames, rotationState]);
 
+  // Build dramatic RPG master intro for the context
+  const buildRPGIntro = (baseContext: string): string => {
+    const playerName = playerNames[currentPlayerIdx] || 'Peregrino';
+    const intros = [
+      `O Mestre ergue a voz: "${playerName}, ouça bem..."`,
+      `Uma sombra cai sobre o grupo. O Mestre narra: `,
+      `O vento silencia. O Mestre fala com gravidade: `,
+      `Todos se aproximam. O Mestre declara: `,
+      `O Mestre bate o cajado no chão e anuncia: `,
+      `Com olhar penetrante, o Mestre revela: `,
+    ];
+    const intro = intros[Math.floor(Math.random() * intros.length)];
+    return `${intro}${baseContext}`;
+  };
+
   const getContextNarrationText = () => {
-    return question?.context || riddle?.context || dilemma?.context || challenge?.context
+    const raw = question?.context || riddle?.context || dilemma?.context || challenge?.context
       || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
       || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative || '';
+    return raw ? buildRPGIntro(raw) : '';
   };
 
   const getChallengeNarrationText = () => {
@@ -174,6 +194,19 @@ export default function RPGEventPopup({
     return '';
   };
 
+  // Play contextual SFX based on event type
+  const playContextSfx = useCallback((eventType: string) => {
+    switch (eventType) {
+      case 'boss': playEvilLaugh(); break;
+      case 'trap': playTensionDrum(); break;
+      case 'refuge': case 'special': playHolyChime(); break;
+      case 'scripture': playNarrativeChime(); break;
+      case 'riddle': playDramaticReveal(); break;
+      case 'challenge': playTensionDrum(); break;
+      default: playNarrativeChime();
+    }
+  }, []);
+
   // Narrate context on mount (only once)
   useEffect(() => {
     if (!visible || phase !== 'context' || showResult) return;
@@ -184,6 +217,9 @@ export default function RPGEventPopup({
     const key = `context:${tileEventType}:${text.slice(0, 50)}`;
     if (narratedKeyRef.current === key) return;
     narratedKeyRef.current = key;
+
+    // Play contextual SFX first
+    playContextSfx(tileEventType);
 
     const timer = window.setTimeout(() => {
       narrate(text, { style: getNarrationStyle(tileEventType), force: true });
@@ -213,13 +249,20 @@ export default function RPGEventPopup({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, phase, bossPhaseIdx, showResult]);
 
-  // Narrate result when shown
+  // Narrate result when shown + SFX
   useEffect(() => {
     if (!visible || !showResult || !resultData?.message) return;
 
     const key = `result:${resultData.message.slice(0, 50)}`;
     if (narratedKeyRef.current === key) return;
     narratedKeyRef.current = key;
+
+    // Play result SFX
+    if (resultData.success) {
+      playCrowdCheer();
+    } else if (boss) {
+      playEvilLaugh();
+    }
 
     const timer = window.setTimeout(() => {
       narrate(resultData.message, {
@@ -522,10 +565,13 @@ export default function RPGEventPopup({
               {/* Context text */}
               <div className="p-4 rounded-xl bg-background/50 border border-border">
                 <p className="text-sm text-muted-foreground leading-relaxed italic">
-                  {question?.context || riddle?.context || dilemma?.context || challenge?.context
-                    || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
-                    || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative
-                    || ''}
+                  {(() => {
+                    const raw = question?.context || riddle?.context || dilemma?.context || challenge?.context
+                      || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
+                      || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative
+                      || '';
+                    return raw;
+                  })()}
                 </p>
                 {refugeEvent?.bibleVerse && (
                   <p className="mt-2 text-xs text-primary italic">📖 {refugeEvent.bibleVerse}</p>

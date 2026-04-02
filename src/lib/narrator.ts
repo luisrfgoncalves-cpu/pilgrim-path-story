@@ -17,13 +17,29 @@ function loadVoice() {
   if (voices.length === 0) return;
   voicesLoaded = true;
 
-  // Priority: pt-BR Google > pt-BR any > pt any > default
-  const ptBrGoogle = voices.find(v => v.lang.startsWith('pt-BR') && v.name.includes('Google'));
-  const ptBrMale = voices.find(v => v.lang.startsWith('pt') && v.name.toLowerCase().includes('male'));
-  const ptBr = voices.find(v => v.lang.startsWith('pt-BR'));
-  const pt = voices.find(v => v.lang.startsWith('pt'));
+  // Priority: Natural/Premium voices > Google > Microsoft > any pt-BR > pt > default
+  // Filter pt-BR voices first
+  const ptBrVoices = voices.filter(v => v.lang.startsWith('pt-BR'));
+  const ptVoices = voices.filter(v => v.lang.startsWith('pt'));
+  
+  // Prefer "natural", "premium", "enhanced", "neural" voices (more realistic)
+  const naturalKeywords = ['natural', 'premium', 'enhanced', 'neural', 'wavenet', 'online'];
+  const findNatural = (list: SpeechSynthesisVoice[]) =>
+    list.find(v => naturalKeywords.some(k => v.name.toLowerCase().includes(k)));
+  
+  const ptBrGoogle = ptBrVoices.find(v => v.name.includes('Google'));
+  const ptBrMicrosoft = ptBrVoices.find(v => v.name.includes('Microsoft'));
+  const ptBrNatural = findNatural(ptBrVoices);
+  const ptBrMale = ptBrVoices.find(v => v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('daniel') || v.name.toLowerCase().includes('luciano'));
+  const ptBr = ptBrVoices[0];
+  const ptNatural = findNatural(ptVoices);
+  const pt = ptVoices[0];
 
-  selectedVoice = ptBrGoogle || ptBrMale || ptBr || pt || voices[0] || null;
+  selectedVoice = ptBrNatural || ptBrGoogle || ptBrMicrosoft || ptBrMale || ptBr || ptNatural || pt || voices[0] || null;
+  
+  if (selectedVoice) {
+    console.log(`[Narrator] Voice selected: ${selectedVoice.name} (${selectedVoice.lang})`);
+  }
 }
 
 export function prewarmNarrator() {
@@ -53,11 +69,11 @@ interface NarrationOptions {
 }
 
 const STYLE_PRESETS: Record<NarrationStyle, { rate: number; pitch: number; volume: number }> = {
-  dramatic:   { rate: 0.92, pitch: 0.85, volume: 1.0 },
-  calm:       { rate: 0.95, pitch: 1.0,  volume: 1.0 },
-  urgent:     { rate: 1.08, pitch: 0.80, volume: 1.0 },
-  whisper:    { rate: 0.88, pitch: 0.70, volume: 0.90 },
-  triumphant: { rate: 0.90, pitch: 0.95, volume: 1.0 },
+  dramatic:   { rate: 0.88, pitch: 0.80, volume: 1.0 },
+  calm:       { rate: 0.85, pitch: 1.05, volume: 0.95 },
+  urgent:     { rate: 1.02, pitch: 0.75, volume: 1.0 },
+  whisper:    { rate: 0.82, pitch: 0.65, volume: 0.85 },
+  triumphant: { rate: 0.85, pitch: 0.90, volume: 1.0 },
 };
 
 // Chrome has a bug where utterances >~15s get paused/killed.
