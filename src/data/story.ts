@@ -2312,9 +2312,10 @@ export const storyChapters: Record<string, StoryChapter> = {
       },
       {
         text: "Fechar os olhos e esperar o golpe",
-        nextChapterId: "fase5-cena7",
-        effects: {},
-        consequence: "A passividade total na masmorra é rendição ao desespero. Mas mesmo aqui, a chave permanece no peito. Enquanto ela existir, a porta pode ser aberta."
+        nextChapterId: "fase5-cena8",
+        effects: { fe: -1 },
+        flag: "rendeu_se_ao_gigante",
+        consequence: "A passividade total na masmorra é rendição ao desespero. Mas Deus não abandona os seus — mesmo quando eles desistem de si mesmos. A chave permanece no peito."
       }
     ]
   },
