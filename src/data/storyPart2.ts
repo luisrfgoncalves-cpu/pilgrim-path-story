@@ -568,9 +568,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "Pronto-para-Parar",
     location: "Caminho Estreito",
     characters: ["crista", "grande_coracao", "pronto_para_parar"],
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 3000, message: 'Um homem com muletas no caminho...' },
     narrative: [
       "No caminho, encontram um homem aleijado caminhando dolorosamente com muletas. Cada passo parece ser o último.",
-      "\"Me chamam de Pronto-para-Parar\", diz ele com um sorriso triste. \"Porque a cada metro dizem que vou desistir. Mas aqui estou — ainda caminhando.\"",
+      "{{whisper}}\"Me chamam de Pronto-para-Parar\"{{/whisper}}, diz ele com um sorriso triste. \"Porque a cada metro dizem que vou desistir. {{shout}}Mas aqui estou — ainda caminhando.{{/shout}}\"",
       "Seu corpo é fraco, seus pés sangram, mas sua determinação faz o grupo inteiro parar em admiração."
     ],
     choices: [
@@ -578,13 +579,15 @@ export const part2Chapters: Record<string, StoryChapter> = {
         text: "Oferecer apoio — ele caminhará com o grupo",
         nextChapterId: "p2-fase4-cena2",
         effects: { perseveranca: 2, fe: 1 },
-        flag: "apoiou_pronto_para_parar"
+        flag: "apoiou_pronto_para_parar",
+        consequence: "Pronto-para-Parar é a imagem da fé que persevera quando o corpo falha. Suas muletas são testemunho de que a jornada não exige pernas fortes, mas coração inabalável. — 2 Coríntios 12:9: \"A minha graça te basta, porque o meu poder se aperfeiçoa na fraqueza.\""
       },
       {
         text: "Perguntar como ele mantém a esperança com tanta dor",
         nextChapterId: "p2-fase4-cena2",
         effects: { discernimento: 2 },
-        flag: "ouviu_pronto_para_parar"
+        flag: "ouviu_pronto_para_parar",
+        consequence: "A resposta de Pronto-para-Parar é simples: 'Olho para a Cidade, não para meus pés.' A esperança que ultrapassa a dor física é a marca dos santos sofredores. — Romanos 8:18: \"As aflições do tempo presente não são para comparar com a glória que em nós há de ser revelada.\""
       }
     ]
   },
@@ -594,22 +597,25 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "A Mina de Demas — De Novo",
     location: "Colina de Lucro",
     characters: ["crista", "grande_coracao"],
+    sceneEvent: { type: 'tension', duration: 4000, message: 'O brilho da prata cega...', intensity: 0.6 },
     narrative: [
-      "A mina de Demas ainda está ali. Mas Demas não. Dizem que ele próprio entrou na mina buscando mais prata — e nunca mais saiu.",
+      "A mina de Demas ainda está ali. Mas Demas não. {{villain}}Dizem que ele próprio entrou na mina buscando mais prata — e nunca mais saiu.{{/villain}}",
       "A entrada da mina brilha com um reflexo dourado tentador. Alguns dos filhos olham com curiosidade.",
-      "Grande-Coração fala severamente: \"Não olhem. Não cheguem perto. Muitos peregrinos morreram ali dentro. A ganância é uma porta sem volta.\""
+      "Grande-Coração fala severamente: {{shout}}\"Não olhem. Não cheguem perto. Muitos peregrinos morreram ali dentro. A ganância é uma porta sem volta.\"{{/shout}}"
     ],
     choices: [
       {
         text: "Ensinar os filhos sobre o perigo da ganância e seguir",
         nextChapterId: "p2-fase4-cena3",
         effects: { discernimento: 2, fe: 1 },
-        flag: "ensinou_filhos_ganancia"
+        flag: "ensinou_filhos_ganancia",
+        consequence: "Ensinar os filhos no caminho é mandamento divino. A ganância que destruiu Demas serve de lição eterna para a próxima geração. — 1 Timóteo 6:10: \"Porque o amor ao dinheiro é a raiz de toda a espécie de males.\""
       },
       {
         text: "Cobrir os olhos dos filhos e passar correndo",
         nextChapterId: "p2-fase4-cena3",
-        effects: { coragem: 1 }
+        effects: { coragem: 1 },
+        consequence: "Proteger os olhos da tentação é sábio, mas fugir sem ensinar é perder a oportunidade de fortalecer. As tentações voltarão — e os filhos precisarão saber por que resistir. — Deuteronômio 6:7: \"E as ensinarás a teus filhos e delas falarás assentado em tua casa, e andando pelo caminho.\""
       }
     ]
   },
@@ -619,23 +625,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "Valente-pela-Verdade",
     location: "Caminho Estreito",
     characters: ["crista", "grande_coracao", "valente_pela_verdade"],
+    sceneEvent: { type: 'tension', duration: 4000, message: 'Sangue e espada no caminho!', intensity: 0.8 },
     narrative: [
       "O grupo encontra um homem coberto de sangue, espada em punho, cercado por três bandidos derrotados no chão.",
-      "\"Sou Valente-pela-Verdade\", diz ele, limpando a lâmina. \"Três ladrões — Coração-Fraco, Desconfiança e Culpa — me emboscaram. Eles tentam roubar a fé de todo peregrino. Mas esta espada é uma lâmina legítima de Jerusalém.\"",
-      "Grande-Coração sorri com aprovação: \"Um guerreiro de verdade. Junte-se a nós.\""
+      "\"Sou {{shout}}Valente-pela-Verdade{{/shout}}\", diz ele, limpando a lâmina. \"Três ladrões — {{villain}}Coração-Fraco, Desconfiança e Culpa{{/villain}} — me emboscaram. Eles tentam roubar a fé de todo peregrino. Mas esta espada é uma lâmina legítima de Jerusalém.\"",
+      "Grande-Coração sorri com aprovação: {{divine}}\"Um guerreiro de verdade. Junte-se a nós.\"{{/divine}}"
     ],
     choices: [
       {
         text: "Receber Valente-pela-Verdade como companheiro de armas",
         nextChapterId: "p2-fase4-cena4",
         effects: { coragem: 2, fe: 1 },
-        flag: "aceitou_valente"
+        flag: "aceitou_valente",
+        consequence: "Valente-pela-Verdade empunha a Palavra como espada. Seus três inimigos — dúvida, desconfiança e culpa — são os mesmos que atacam todo crente. — Efésios 6:17: \"Tomai o capacete da salvação, e a espada do Espírito, que é a palavra de Deus.\""
       },
       {
         text: "Cuidar de seus ferimentos — ele lutou até o limite",
         nextChapterId: "p2-fase4-cena4",
         effects: { perseveranca: 1, fe: 1 },
-        flag: "cuidou_valente"
+        flag: "cuidou_valente",
+        consequence: "Cuidar de um guerreiro ferido é honrar quem lutou pela verdade. As cicatrizes de Valente são medalhas de fidelidade. — Gálatas 6:17: \"Eu trago no meu corpo as marcas do Senhor Jesus.\""
       }
     ]
   },
@@ -645,22 +654,25 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Prado Agradável — Lição Aprendida",
     location: "Prado Agradável",
     characters: ["crista", "grande_coracao"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 3000, message: 'O prado verde seduz...' },
     narrative: [
       "O Prado Agradável que seduziu Cristão e Esperançoso para o Castelo da Dúvida aparece à esquerda do caminho.",
-      "\"Aqui\", diz Grande-Coração, apontando as marcas na cerca. \"Aqui seu marido escalou a cerca e foi capturado pelo Gigante Desespero. Mas nós não repetiremos esse erro.\"",
-      "Os filhos olham o prado verde e tentador. É lindo. É convidativo. E é uma armadilha."
+      "\"Aqui\", diz Grande-Coração, apontando as marcas na cerca. {{shout}}\"Aqui seu marido escalou a cerca e foi capturado pelo Gigante Desespero. Mas nós não repetiremos esse erro.\"{{/shout}}",
+      "Os filhos olham o prado verde e tentador. {{whisper}}É lindo. É convidativo. E é uma armadilha.{{/whisper}}"
     ],
     choices: [
       {
         text: "\"Mantenhamo-nos no caminho estreito, não importa quão duro seja\"",
         nextChapterId: "p2-fase5-cena1",
         effects: { discernimento: 2, perseveranca: 1 },
-        flag: "ficou_no_caminho_p2"
+        flag: "ficou_no_caminho_p2",
+        consequence: "O caminho estreito é árduo, mas é o único que leva à Cidade. O prado é largo e bonito, mas termina nas mãos do Gigante Desespero. — Mateus 7:14: \"Estreita é a porta, e apertado o caminho que leva à vida, e poucos há que a encontrem.\""
       },
       {
         text: "Olhar para o prado com saudade mas obedecer a Grande-Coração",
         nextChapterId: "p2-fase5-cena1",
-        effects: { perseveranca: 1 }
+        effects: { perseveranca: 1 },
+        consequence: "A obediência mesmo com saudade é mais forte que a obediência sem luta. Cristã deseja o descanso, mas escolhe a segurança do caminho reto. — Provérbios 3:5-6: \"Confia no Senhor de todo o teu coração, e não te estribes no teu próprio entendimento.\""
       },
       {
         text: "Sentar no prado para descansar — os filhos estão exaustos",
@@ -668,7 +680,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
         effects: { fe: -2, perseveranca: -2 },
         requires: { fe: -99 },
         flag: "desistiu_prado_p2",
-        consequence: "O prado é confortável. Perigosamente confortável. Os olhos pesam..."
+        consequence: "O prado é confortável. Perigosamente confortável. Os olhos pesam... — Provérbios 14:12: \"Há caminho que ao homem parece direito, mas o fim dele são os caminhos da morte.\""
       }
     ]
   },
