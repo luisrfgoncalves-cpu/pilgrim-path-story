@@ -1855,6 +1855,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Legado de Fiel",
     location: "Estrada além da Feira",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2500, message: 'O silêncio carrega o peso do sacrifício...' },
     narrative: [
       "{{fade}}A feira fica para trás. A estrada é silenciosa novamente.{{/fade}} Mas o silêncio não é vazio — está cheio de tudo que aconteceu.",
       "{{heart}}Fiel morreu. Mas Esperança nasceu do seu sacrifício.{{/heart}} E você carrega a memória de ambos como uma tocha.",
@@ -1912,6 +1913,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Interesses, o Companheiro Conveniente",
     location: "Estrada além da Feira",
     characters: ["cristao", "esperanca", "interesses"],
+    sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'Um estranho se aproxima sorrindo...' },
     narrative: [
       "Na estrada, um homem bem-vestido se junta a vocês. Seu nome é {{emphasis}}Interesses{{/emphasis}}, da cidade de Bom-Discurso. Ele é primo do Sr. Volta-Suave e sobrinho do Sr. Duas-Línguas.",
       "{{dialog}}\"Também sou peregrino!\"{{/dialog}}, diz ele sorrindo. {{villain}}\"Mas confesso que prefiro seguir a religião quando ela caminha com chinelos de prata — sob o sol, com aplausos do povo.\"{{/villain}}",
@@ -1940,10 +1942,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Pequena-Fé Assaltado",
     location: "Caminho Estreito",
     characters: ["cristao", "esperanca", "pequena_fe"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'Um homem chora à beira do caminho...' },
     narrative: [
-      "Na estrada, encontram um homem esfarrapado sentado numa pedra, chorando. Seu nome é Pequena-Fé, da cidade de Sinceridade.",
-      "\"Três ladrões me atacaram\", soluça ele. \"Coração-Fraco, Desconfiança e Culpa. Roubaram todo o meu dinheiro. Quase levaram meu pergaminho — mas o esconderam-se quando ouviram uma voz de Grande-Graça ao longe.\"",
-      "Esperança sussurra: \"Ele ainda tem o pergaminho. Ainda pode entrar na cidade. Mas caminha como um mendigo quando poderia caminhar como um príncipe.\""
+      "Na estrada, encontram um homem esfarrapado sentado numa pedra, chorando. Seu nome é {{emphasis}}Pequena-Fé{{/emphasis}}, da cidade de Sinceridade.",
+      "{{heart}}\"Três ladrões me atacaram\"{{/heart}}, soluça ele. {{villain}}\"Coração-Fraco, Desconfiança e Culpa. Roubaram todo o meu dinheiro.{{/villain}} Quase levaram meu pergaminho — mas fugiram quando ouviram a voz de {{divine}}Grande-Graça{{/divine}} ao longe.\"",
+      "{{whisper}}Esperança sussurra: \"Ele ainda tem o pergaminho. Ainda pode entrar na cidade. Mas caminha como um mendigo quando poderia caminhar como um príncipe.\"{{/whisper}}"
     ],
     flagNarrative: [
       { flag: "rejeitou_interesses", text: "Interesses teria rido de Pequena-Fé. Você fez bem em se separar dele." },
@@ -1974,10 +1977,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Desvio Fatal",
     location: "Prado Agradável",
     characters: ["cristao", "esperanca"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2500, message: 'A grama parece tão convidativa...' },
     narrative: [
-      "O caminho se torna pedregoso e doloroso para os pés. Ao lado da estrada, um prado verde e macio corre paralelo — o Prado Agradável. Uma cerca baixa é a única separação.",
-      "\"Olhe\", diz Esperança. \"O prado segue na mesma direção. Podemos caminhar na grama e voltar ao caminho depois.\"",
-      "Parece sensato. Os pés sangram. A grama é suave. A cerca é fácil de pular. Mas Bunyan nos avisa: desviar-se, mesmo um passo, do caminho estreito é o começo da ruína."
+      "{{fade}}O caminho se torna pedregoso e doloroso para os pés.{{/fade}} Ao lado da estrada, um prado verde e macio corre paralelo — o {{emphasis}}Prado Agradável{{/emphasis}}. Uma cerca baixa é a única separação.",
+      "{{dialog}}\"Olhe\"{{/dialog}}, diz Esperança. {{dialog}}\"O prado segue na mesma direção. Podemos caminhar na grama e voltar ao caminho depois.\"{{/dialog}}",
+      "{{whisper}}Parece sensato. Os pés sangram. A grama é suave. A cerca é fácil de pular.{{/whisper}} Mas Bunyan nos avisa: {{emphasis}}desviar-se, mesmo um passo, do caminho estreito é o começo da ruína.{{/emphasis}}"
     ],
     replayNarrative: [
       "O prado está ali de novo, verde e convidativo. Da última vez, você sabe — ou deveria saber — para onde ele leva. O Castelo da Dúvida espera quem se desvia."
@@ -2009,10 +2013,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Perdidos no Prado",
     location: "Prado Agradável",
     characters: ["cristao", "esperanca", "gigante_desespero"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Mãos brutais sacodem vocês!' },
     narrative: [
-      "A noite cai. A chuva começa. Trovões rasgam o céu. O prado se transforma em lamaçal. Vocês tentam voltar ao caminho, mas a cerca desapareceu na escuridão.",
-      "Perdidos e encharcados, vocês tropeçam até que o sono vence. Deitam-se no chão encharcado.",
-      "Pela manhã, mãos brutais os sacodem. O Gigante Desespero está de pé sobre vocês. \"Vocês estão na minha terra. São meus prisioneiros.\""
+      "{{tremor}}A noite cai. A chuva começa. Trovões rasgam o céu.{{/tremor}} O prado se transforma em lamaçal. Vocês tentam voltar ao caminho, mas {{fade}}a cerca desapareceu na escuridão.{{/fade}}",
+      "{{whisper}}Perdidos e encharcados, vocês tropeçam até que o sono vence.{{/whisper}} Deitam-se no chão encharcado.",
+      "{{villain}}Pela manhã, mãos brutais os sacodem. O Gigante Desespero está de pé sobre vocês.{{/villain}} {{shout}}\"Vocês estão na minha terra. São meus prisioneiros.\"{{/shout}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "Mesmo nas garras do gigante, uma voz interior insiste: há saída. Sempre há.", lowThreshold: 3, lowText: "O gigante é imenso. Sua voz faz o chão tremer. Toda esperança parece morrer." }
@@ -2035,11 +2040,12 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase5-cena3",
     title: "A Masmorra",
     location: "Castelo da Dúvida",
-    characters: ["cristao", "gigante_desespero"],
+    characters: ["cristao", "gigante_desespero", "desconfianca"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'A escuridão é total...' },
     narrative: [
-      "O Gigante Desespero os arrasta para seu castelo e os joga numa masmorra escura, fétida e sem esperança. Não há luz. Não há comida. Apenas pedra úmida e correntes.",
-      "A esposa do gigante, Desconfiança, sussurra ao marido: \"Bata neles pela manhã. Faça-os desejar nunca ter nascido.\"",
-      "Na escuridão, Esperança murmura: \"Cristão... o que fizemos?\""
+      "{{tremor}}O Gigante Desespero os arrasta para seu castelo e os joga numa masmorra escura, fétida e sem esperança.{{/tremor}} {{fade}}Não há luz. Não há comida. Apenas pedra úmida e correntes.{{/fade}}",
+      "{{villain}}A esposa do gigante, Desconfiança, sussurra ao marido: \"Bata neles pela manhã. Faça-os desejar nunca ter nascido.\"{{/villain}}",
+      "{{whisper}}Na escuridão, Esperança murmura: \"Cristão... o que fizemos?\"{{/whisper}}"
     ],
     toneNarrative: [
       { attr: "coragem", highThreshold: 6, highText: "Mesmo acorrentado, algo em você se recusa a quebrar. Você já enfrentou Apolião. Este gigante é grande, mas não é invencível.", lowThreshold: 3, lowText: "As correntes pesam. A escuridão é total. Você se pergunta se alguém sequer sabe que está aqui." }
@@ -2066,10 +2072,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Os Golpes do Gigante",
     location: "Castelo da Dúvida",
     characters: ["cristao", "gigante_desespero"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'O bastão do gigante esmaga sem piedade!' },
     narrative: [
-      "Pela manhã, o Gigante Desespero desce à masmorra com um bastão. Ele bate em vocês sem misericórdia até que não consigam se mover.",
-      "\"Por que não acabam com isso?\", rosna ele. \"Usem uma faca, uma corda, veneno. Qualquer coisa é melhor do que essa existência miserável.\"",
-      "A proposta é horrível — mas na escuridão da masmorra, depois dos golpes, a tentação de desistir de tudo é real."
+      "{{tremor}}Pela manhã, o Gigante Desespero desce à masmorra com um bastão. Ele bate em vocês sem misericórdia até que não consigam se mover.{{/tremor}}",
+      "{{villain}}\"Por que não acabam com isso?\"{{/villain}}, rosna ele. {{villain}}\"Usem uma faca, uma corda, veneno. Qualquer coisa é melhor do que essa existência miserável.\"{{/villain}}",
+      "{{heart}}A proposta é horrível — mas na escuridão da masmorra, depois dos golpes, a tentação de desistir de tudo é real.{{/heart}}"
     ],
     toneNarrative: [
       { attr: "discernimento", highThreshold: 7, highText: "Você analisa: o gigante quer que desistam. Se a situação fosse sem saída, ele não precisaria convencer.", lowThreshold: 3, lowText: "As palavras do gigante ecoam: acabar com tudo... seria tão fácil... a dor pararia..." }
@@ -2096,10 +2103,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Abismo do Desespero",
     location: "Castelo da Dúvida",
     characters: ["cristao"],
+    sceneEvent: { type: 'sinking', duration: 10000, message: 'O desespero te puxa para o abismo...' },
     narrative: [
-      "A escuridão da masmorra penetra sua alma. O gigante tem razão? Todo o sofrimento, toda a luta — para quê?",
-      "Esperança te sacode: \"Cristão! Lembre-se da cruz! Lembre-se do fardo que caiu! Lembre-se de Fiel, que morreu sem recuar! Vamos desistir quando estamos tão perto?\"",
-      "As palavras perfuram a névoa do desespero como agulhas de luz."
+      "{{fade}}A escuridão da masmorra penetra sua alma.{{/fade}} O gigante tem razão? Todo o sofrimento, toda a luta — para quê?",
+      "{{heart}}Esperança te sacode: \"Cristão! Lembre-se da cruz! Lembre-se do fardo que caiu! Lembre-se de Fiel, que morreu sem recuar! Vamos desistir quando estamos tão perto?\"{{/heart}}",
+      "{{divine}}As palavras perfuram a névoa do desespero como agulhas de luz.{{/divine}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 6, highText: "No fundo, uma chama resiste. O fogo que o Intérprete mostrou — o fogo que não apaga. Ele ainda está ali.", lowThreshold: 3, lowText: "A escuridão é quase completa. A chama bruxuleia, prestes a se apagar." },
@@ -2130,6 +2138,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Chave da Promessa",
     location: "Castelo da Dúvida",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 3000, message: 'Uma lembrança surge como um raio!' },
     narrative: [
       "Na terceira noite, enquanto oram, Cristão dá um salto: {{shout}}\"Que tolo eu sou! Tenho no meu peito uma chave chamada Promessa. Ela pode abrir qualquer fechadura do Castelo da Dúvida!\"{{/shout}}",
       "Esperança se anima: {{dialog}}\"Tire-a, irmão! Experimente!\"{{/dialog}}",
@@ -2167,10 +2176,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Os Portões do Castelo",
     location: "Castelo da Dúvida",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Passos pesados se aproximam!' },
     narrative: [
-      "A masmorra se fecha ao redor de vocês. As paredes parecem encolher. O Gigante Desespero ruge nos corredores superiores.",
-      "Esperança repete baixinho: \"A chave. Use a chave. Toda promessa de Deus é sim e amém.\"",
-      "O som de passos pesados se aproxima. O gigante está descendo."
+      "{{tremor}}A masmorra se fecha ao redor de vocês. As paredes parecem encolher.{{/tremor}} {{villain}}O Gigante Desespero ruge nos corredores superiores.{{/villain}}",
+      "{{whisper}}Esperança repete baixinho: \"A chave. Use a chave. Toda promessa de Deus é sim e amém.\"{{/whisper}}",
+      "{{tremor}}O som de passos pesados se aproxima. O gigante está descendo.{{/tremor}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 5, highText: "Impossível não é sem esperança. A chave ainda está no seu peito. Use-a.", lowThreshold: 2, lowText: "Você não acredita mais em nada. A masmorra venceu?" }
@@ -2194,10 +2204,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Fuga do Castelo",
     location: "Castelo da Dúvida",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 300, duration: 3000, message: 'A chave gira... e a porta cede!' },
     narrative: [
-      "A chave abre cada porta — a da masmorra, a do corredor, a do pátio, a do portão exterior. Cada fechadura cede com um clique que ecoa como um trovão de libertação.",
-      "O Gigante Desespero corre atrás de vocês, mas ao cruzar o portão, ele tem um ataque e cai. Suas pernas cedem. Ele é forte dentro de suas muralhas, mas impotente fora delas.",
-      "Vocês correm até estarem longe. Sob a luz do sol, olham para trás. O castelo parece menor. As muralhas, que pareciam infinitas, são apenas pedra velha."
+      "{{divine}}A chave abre cada porta — a da masmorra, a do corredor, a do pátio, a do portão exterior.{{/divine}} {{emphasis}}Cada fechadura cede com um clique que ecoa como um trovão de libertação.{{/emphasis}}",
+      "{{tremor}}O Gigante Desespero corre atrás de vocês, mas ao cruzar o portão, ele tem um ataque e cai.{{/tremor}} {{fade}}Suas pernas cedem. Ele é forte dentro de suas muralhas, mas impotente fora delas.{{/fade}}",
+      "{{heart}}Vocês correm até estarem longe. Sob a luz do sol, olham para trás. O castelo parece menor.{{/heart}} As muralhas, que pareciam infinitas, são apenas pedra velha."
     ],
     toneNarrative: [
       { attr: "coragem", highThreshold: 6, highText: "Sem hesitar, você planta um marco de aviso na estrada: \"Este é o caminho para o Castelo da Dúvida. Nenhum peregrino deve pisar aqui.\"", lowThreshold: 3, lowText: "Com as mãos tremendo, você marca o caminho para que outros não cometam o mesmo erro." }
@@ -2216,10 +2227,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "As Montanhas Deleitosas",
     location: "Montanhas Deleitosas",
     characters: ["cristao", "esperanca", "pastores"],
+    sceneEvent: { type: 'suspense', delay: 800, duration: 3000, message: 'A Cidade Celestial brilha no horizonte...' },
     narrative: [
-      "Além do castelo, montanhas verdes se erguem — as Montanhas Deleitosas, propriedade do Rei Emanuel. Pastores chamados Conhecimento, Experiência, Vigilante e Sincero os recebem.",
-      "Dali, com uma luneta, eles mostram ao longe os portões da Cidade Celestial, brilhando como ouro no horizonte.",
-      "\"Vocês estão perto\", dizem os pastores. \"Mas cuidado com o Adulador e o Caminho Torto. Não se desviem outra vez.\""
+      "{{divine}}Além do castelo, montanhas verdes se erguem — as Montanhas Deleitosas, propriedade do Rei Emanuel.{{/divine}} Pastores chamados {{emphasis}}Conhecimento, Experiência, Vigilante e Sincero{{/emphasis}} os recebem.",
+      "{{heart}}Dali, com uma luneta, eles mostram ao longe os portões da Cidade Celestial, brilhando como ouro no horizonte.{{/heart}}",
+      "{{whisper}}\"Vocês estão perto\"{{/whisper}}, dizem os pastores. {{emphasis}}\"Mas cuidado com o Adulador e o Caminho Torto. Não se desviem outra vez.\"{{/emphasis}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "Ao ver a Cidade Celestial, mesmo à distância, seus olhos se enchem de lágrimas. Todo sofrimento tem um propósito. O fim está à vista.", lowThreshold: 4, lowText: "Você olha pela luneta, mas a cidade parece distante demais. Será que realmente chegará lá?" }
@@ -2238,10 +2250,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Lição do Castelo",
     location: "Além das Montanhas",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'A jornada ganha novo sentido...' },
     narrative: [
-      "O castelo ensinou uma verdade que o Intérprete não pôde mostrar — porque só se aprende na dor: a promessa de Deus é uma chave que abre qualquer prisão, mas você precisa se lembrar de usá-la.",
-      "Fiel morreu, mas seu legado vive em Esperança. O prado era bonito, mas levava à masmorra. O gigante era grande, mas a chave era maior.",
-      "A Cidade Celestial espera. Há apenas um obstáculo final: o Rio."
+      "{{emphasis}}O castelo ensinou uma verdade que o Intérprete não pôde mostrar — porque só se aprende na dor:{{/emphasis}} {{divine}}a promessa de Deus é uma chave que abre qualquer prisão, mas você precisa se lembrar de usá-la.{{/divine}}",
+      "{{heart}}Fiel morreu, mas seu legado vive em Esperança.{{/heart}} O prado era bonito, mas levava à masmorra. O gigante era grande, mas a chave era maior.",
+      "{{fade}}A Cidade Celestial espera. Há apenas um obstáculo final: o Rio.{{/fade}}"
     ],
     flagNarrative: [
       { flag: "escapou_castelo_fe", text: "A chave da Promessa salvou você. Não por méritos, não por força — pela fé que se lembrou das promessas quando tudo parecia perdido." },
@@ -2266,10 +2279,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Rede do Lisonjeiro",
     location: "Caminho Estreito",
     characters: ["cristao", "esperanca", "lisonjeiro"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2500, message: 'Um estranho sorridente se aproxima...' },
     narrative: [
-      "Além das montanhas, o caminho se divide. Vocês hesitam. Um homem de pele escura, vestido com uma túnica branca brilhante, se aproxima sorrindo.",
-      "\"Amigos peregrinos! Vocês parecem perdidos. Eu conheço o caminho para a Cidade Celestial. Sigam-me.\"",
-      "Sua voz é doce, seu sorriso convincente. Ele os leva por um caminho lateral que parece seguro — até que uma rede cai sobre vocês, prendendo-os completamente."
+      "{{fade}}Além das montanhas, o caminho se divide. Vocês hesitam.{{/fade}} Um homem de pele escura, vestido com uma túnica branca brilhante, se aproxima sorrindo.",
+      "{{villain}}\"Amigos peregrinos! Vocês parecem perdidos. Eu conheço o caminho para a Cidade Celestial. Sigam-me.\"{{/villain}}",
+      "{{whisper}}Sua voz é doce, seu sorriso convincente.{{/whisper}} Ele os leva por um caminho lateral que parece seguro — {{tremor}}até que uma rede cai sobre vocês, prendendo-os completamente.{{/tremor}}"
     ],
     toneNarrative: [
       { attr: "discernimento", highThreshold: 7, highText: "Algo no sorriso dele te incomoda. Os pastores alertaram sobre o Adulador. Este homem... será ele?", lowThreshold: 3, lowText: "O homem parece confiável. Sua túnica branca irradia autoridade. Por que duvidar?" }
@@ -2298,10 +2312,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Resgate e o Ateísmo",
     location: "Caminho Estreito",
     characters: ["cristao", "esperanca", "ateismo"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'Um riso zombeteiro ecoa na estrada...' },
     narrative: [
-      "Um Ser Resplandecente aparece com um chicote de cordas. Ele corta a rede e os liberta — mas não sem repreensão: \"Os pastores não os avisaram? O Lisonjeiro engana com palavras doces e aparência de luz.\"",
-      "Envergonhados mas livres, vocês retomam o caminho certo. Mas logo encontram outro obstáculo: um homem que ri alto, caminhando na direção oposta.",
-      "\"Vocês ainda buscam a Cidade Celestial?\", ele gargalha. \"Eu a busquei por vinte anos e nunca a encontrei! Ela não existe! Voltem para casa antes que desperdicem mais da vida de vocês.\""
+      "{{divine}}Um Ser Resplandecente aparece com um chicote de cordas. Ele corta a rede e os liberta{{/divine}} — mas não sem repreensão: {{emphasis}}\"Os pastores não os avisaram? O Lisonjeiro engana com palavras doces e aparência de luz.\"{{/emphasis}}",
+      "{{fade}}Envergonhados mas livres, vocês retomam o caminho certo.{{/fade}} Mas logo encontram outro obstáculo: um homem que ri alto, caminhando na direção oposta.",
+      "{{villain}}\"Vocês ainda buscam a Cidade Celestial?\"{{/villain}}, ele gargalha. {{villain}}\"Eu a busquei por vinte anos e nunca a encontrei! Ela não existe! Voltem para casa antes que desperdicem mais da vida de vocês.\"{{/villain}}"
     ],
     flagNarrative: [
       { flag: "caiu_na_rede", text: "A vergonha da rede ainda arde. E agora este homem diz que a cidade nem existe? A dúvida é uma ferida aberta." },
@@ -2328,9 +2343,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "esperanca"],
     sceneEvent: { type: 'suspense', duration: 3000, message: 'O ar pesado te envolve...' },
     narrative: [
-      "O caminho entra numa região estranha. O ar é pesado, perfumado, intoxicante. Cada passo exige mais esforço. As pálpebras pesam como chumbo.",
-      "A Terra Encantada — Bunyan a descreve como um lugar onde o próprio ar faz os peregrinos adormecerem para sempre. Quem dorme aqui, nunca mais acorda.",
-      "Esperança começa a cambalear: \"Cristão... estou tão cansado... apenas um momento de descanso...\""
+      "{{fade}}O caminho entra numa região estranha. O ar é pesado, perfumado, intoxicante.{{/fade}} {{whisper}}Cada passo exige mais esforço. As pálpebras pesam como chumbo.{{/whisper}}",
+      "{{emphasis}}A Terra Encantada{{/emphasis}} — Bunyan a descreve como um lugar onde o próprio ar faz os peregrinos adormecerem para sempre. {{villain}}Quem dorme aqui, nunca mais acorda.{{/villain}}",
+      "{{heart}}Esperança começa a cambalear:{{/heart}} {{dialog}}\"Cristão... estou tão cansado... apenas um momento de descanso...\"{{/dialog}}"
     ],
     toneNarrative: [
       { attr: "perseveranca", highThreshold: 7, highText: "Sua perseverança acumulada te mantém acordado. Cada passo do pântano, cada noite no castelo construiu resistência contra este sono.", lowThreshold: 3, lowText: "O sono é irresistível. As flores ao redor exalam um perfume que adormece a alma. Seus olhos se fecham..." },
@@ -2357,10 +2372,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "País de Beulá",
     characters: ["cristao", "esperanca"],
     reflection: "r13",
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 4000, message: 'Uma paz sobrenatural enche o ar...' },
     narrative: [
-      "Além da Terra Encantada, tudo muda. O ar se torna doce — não intoxicante, mas revigorante. Flores de todas as cores cobrem os campos. Árvores carregadas de frutos dourados bordam o caminho.",
-      "Este é o País de Beulá — a terra onde o sol nunca se põe, onde os pássaros cantam sem cessar, e onde o perfume das flores vem do próprio jardim do Rei.",
-      "Bunyan escreveu que aqui os peregrinos ouviam continuamente vozes cantando: 'Dize à filha de Sião: Eis que vem o teu Salvador.' A Cidade Celestial brilha no horizonte, tão perto que seus portões são visíveis a olho nu."
+      "{{divine}}Além da Terra Encantada, tudo muda. O ar se torna doce — não intoxicante, mas revigorante.{{/divine}} Flores de todas as cores cobrem os campos. {{heart}}Árvores carregadas de frutos dourados bordam o caminho.{{/heart}}",
+      "Este é o {{emphasis}}País de Beulá{{/emphasis}} — a terra onde o sol nunca se põe, onde os pássaros cantam sem cessar, e onde o perfume das flores vem do próprio jardim do Rei.",
+      "{{divine}}Bunyan escreveu que aqui os peregrinos ouviam continuamente vozes cantando: 'Dize à filha de Sião: Eis que vem o teu Salvador.'{{/divine}} {{heart}}A Cidade Celestial brilha no horizonte, tão perto que seus portões são visíveis a olho nu.{{/heart}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "As lágrimas rolam livremente. Não de dor — de alegria absoluta. Tudo pelo que você lutou está diante de seus olhos. A fé virou quase visão.", lowThreshold: 4, lowText: "A beleza é avassaladora. Você não sabia que algo assim era possível. A dúvida se dissolve como névoa ao sol." }
@@ -2389,10 +2405,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Rio sem Ponte",
     location: "Margem do Rio",
     characters: ["cristao", "esperanca"],
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 4000, message: 'A Cidade Celestial brilha do outro lado...' },
     narrative: [
-      "A Cidade Celestial brilha do outro lado de um rio largo e profundo. Não há ponte. Não há barco. Bunyan nos diz que cada peregrino deve atravessá-lo a pé — e a profundidade varia conforme a fé de cada um.",
-      "Esperança olha para a água escura: \"Temos que passar por isso?\"",
-      "Você olha para a cidade. As torres brilham. Os portões parecem abertos. Anjos se movem nas muralhas. Tudo pelo que você lutou está ali — separado apenas por esta última travessia."
+      "{{divine}}A Cidade Celestial brilha do outro lado de um rio largo e profundo.{{/divine}} {{fade}}Não há ponte. Não há barco.{{/fade}} Bunyan nos diz que cada peregrino deve atravessá-lo a pé — e {{emphasis}}a profundidade varia conforme a fé de cada um.{{/emphasis}}",
+      "{{heart}}Esperança olha para a água escura:{{/heart}} {{dialog}}\"Temos que passar por isso?\"{{/dialog}}",
+      "Você olha para a cidade. {{divine}}As torres brilham. Os portões parecem abertos. Anjos se movem nas muralhas.{{/divine}} {{emphasis}}Tudo pelo que você lutou está ali — separado apenas por esta última travessia.{{/emphasis}}"
     ],
     replayNarrative: [
       "O rio. Da última vez, talvez você tenha hesitado. Talvez tenha afundado. Desta vez, o que mudou? Sua fé está mais funda ou mais rasa?"
@@ -2431,10 +2448,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Travessia",
     location: "No Rio",
     characters: ["cristao", "esperanca"],
+    sceneEvent: { type: 'sinking', duration: 15000, message: 'As águas sobem... a correnteza puxa...' },
     narrative: [
-      "A água sobe rápido. Até a cintura, até o peito. A correnteza puxa. A cidade brilha à frente, mas a água escura enche seus olhos.",
-      "No livro de Bunyan, Cristão começa a afundar. O terror dos pecados passados volta com força — cada erro, cada desvio, cada momento de dúvida. As águas representam a morte, e na morte, todas as fraquezas retornam.",
-      "Esperança, ao seu lado, grita: \"Sinto o fundo! É firme! Ânimo, irmão!\""
+      "{{tremor}}A água sobe rápido. Até a cintura, até o peito. A correnteza puxa.{{/tremor}} {{divine}}A cidade brilha à frente{{/divine}}, mas {{fade}}a água escura enche seus olhos.{{/fade}}",
+      "{{heart}}No livro de Bunyan, Cristão começa a afundar.{{/heart}} {{villain}}O terror dos pecados passados volta com força — cada erro, cada desvio, cada momento de dúvida.{{/villain}} As águas representam a morte, e na morte, todas as fraquezas retornam.",
+      "{{shout}}Esperança, ao seu lado, grita: \"Sinto o fundo! É firme! Ânimo, irmão!\"{{/shout}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "As palavras de Esperança penetram. Seus pés encontram rocha firme. A água está até o pescoço, mas você está de pé. A cidade brilha mais forte a cada passo.", lowThreshold: 3, lowText: "A água sobe acima da sua cabeça. Você não sente o fundo. Memórias de todos os fracassos da jornada te puxam para baixo como correntes." },
@@ -2468,10 +2486,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Recordações à Beira do Rio",
     location: "Margem do Rio",
     characters: ["cristao", "esperanca"],
+    sceneEvent: { type: 'suspense', delay: 800, duration: 3000, message: 'Memórias da jornada surgem como ondas...' },
     narrative: [
-      "Antes de entrar nas águas, Esperança e você sentam-se na margem. O País de Beulá perfuma o ar atrás de vocês. O rio corre à frente, escuro e profundo.",
-      "\"Lembra-se de Fiel?\", pergunta Esperança. \"Ele não precisou atravessar o rio. A carruagem celestial o levou direto. Mas nós... nós temos que passar por aqui.\"",
-      "Vocês relembram toda a jornada: o fardo, o pântano, o vale, a feira, o castelo. Cada memória é uma pedra no alicerce da fé que os sustentará nas águas."
+      "{{heart}}Antes de entrar nas águas, Esperança e você sentam-se na margem.{{/heart}} {{fade}}O País de Beulá perfuma o ar atrás de vocês. O rio corre à frente, escuro e profundo.{{/fade}}",
+      "{{dialog}}\"Lembra-se de Fiel?\"{{/dialog}}, pergunta Esperança. {{heart}}\"Ele não precisou atravessar o rio. A carruagem celestial o levou direto. Mas nós... nós temos que passar por aqui.\"{{/heart}}",
+      "{{emphasis}}Vocês relembram toda a jornada: o fardo, o pântano, o vale, a feira, o castelo.{{/emphasis}} {{divine}}Cada memória é uma pedra no alicerce da fé que os sustentará nas águas.{{/divine}}"
     ],
     flagNarrative: [
       { flag: "permaneceu_diferente", text: "\"Você defendeu Fiel na feira\", diz Esperança. \"Essa coragem veio de algum lugar. Ela te carregará pelo rio também.\"" },
@@ -2498,10 +2517,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Afundando nas Águas",
     location: "No Rio",
     characters: ["cristao"],
+    sceneEvent: { type: 'sinking', duration: 12000, message: 'As águas escuras te cobrem!' },
     narrative: [
-      "Bunyan descreve este momento com dor: Cristão afunda nas águas escuras. As ondas cobrem sua cabeça. Todos os pecados, medos e dúvidas da jornada convergem.",
-      "\"Eu nunca verei a terra dos vivos\", ele geme. \"Nem a cidade que tanto busquei.\"",
-      "Mas Esperança não larga sua mão: \"Irmão! Vejo a porta! Há homens esperando por nós do outro lado! Mantenha a cabeça acima da água!\""
+      "{{tremor}}Bunyan descreve este momento com dor: Cristão afunda nas águas escuras.{{/tremor}} {{villain}}As ondas cobrem sua cabeça. Todos os pecados, medos e dúvidas da jornada convergem.{{/villain}}",
+      "{{heart}}\"Eu nunca verei a terra dos vivos\"{{/heart}}, ele geme. {{fade}}\"Nem a cidade que tanto busquei.\"{{/fade}}",
+      "{{shout}}Mas Esperança não larga sua mão: \"Irmão! Vejo a porta! Há homens esperando por nós do outro lado! Mantenha a cabeça acima da água!\"{{/shout}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 5, highText: "Uma última faísca de fé queima: \"Quando passares pelas águas, estarei contigo.\" A promessa. A chave. Ela funciona até aqui.", lowThreshold: 2, lowText: "A escuridão é completa. A cidade brilha ao longe, inalcançável. Você afunda." }
@@ -2525,10 +2545,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Outro Lado",
     location: "Margem Celestial",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 4000, message: 'Solo firme... luz... paz...' },
     narrative: [
-      "Seus pés tocam solo firme. A água fica para trás. Do outro lado do rio, tudo muda.",
-      "Bunyan descreve: os corpos mortais ficaram no rio. As roupas de peregrino se transformam em vestes resplandecentes. Os rostos brilham como o sol.",
-      "Dois Seres Resplandecentes os recebem: \"O restante do caminho é plano. A cidade está ali.\""
+      "{{divine}}Seus pés tocam solo firme. A água fica para trás. Do outro lado do rio, tudo muda.{{/divine}}",
+      "{{emphasis}}Bunyan descreve: os corpos mortais ficaram no rio.{{/emphasis}} {{divine}}As roupas de peregrino se transformam em vestes resplandecentes. Os rostos brilham como o sol.{{/divine}}",
+      "{{divine}}Dois Seres Resplandecentes os recebem:{{/divine}} {{dialog}}\"O restante do caminho é plano. A cidade está ali.\"{{/dialog}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "A paz é absoluta. Não é a ausência de dor — é a certeza de que toda dor teve propósito. Cada lágrima, cada ferida, cada noite no castelo.", lowThreshold: 4, lowText: "Você mal acredita. Depois de tudo — o pântano, Apolião, a feira, o castelo, o rio — você está aqui. Isso basta." }
@@ -2547,10 +2568,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Jornada Interrompida",
     location: "No Rio",
     characters: ["cristao"],
+    sceneEvent: { type: 'sinking', duration: 10000, message: 'As águas te cobrem por completo...' },
     narrative: [
-      "As águas te cobrem. A Cidade Celestial brilha ao longe, mas cada segundo ela fica mais distante.",
-      "No livro de Bunyan, Cristão quase afunda — mas é salvo. Na sua versão da história, suas escolhas te trouxeram aqui, e a fé que você construiu não foi suficiente para esta última travessia.",
-      "Mas lembre-se: este não é necessariamente o fim. A jornada do peregrino é feita de tentativas, de quedas e de recomeços. A porta continua aberta."
+      "{{fade}}As águas te cobrem. A Cidade Celestial brilha ao longe, mas cada segundo ela fica mais distante.{{/fade}}",
+      "{{heart}}No livro de Bunyan, Cristão quase afunda — mas é salvo.{{/heart}} Na sua versão da história, suas escolhas te trouxeram aqui, e {{emphasis}}a fé que você construiu não foi suficiente para esta última travessia.{{/emphasis}}",
+      "{{divine}}Mas lembre-se: este não é necessariamente o fim. A jornada do peregrino é feita de tentativas, de quedas e de recomeços. A porta continua aberta.{{/divine}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 5, highText: "Mesmo neste fracasso, algo permanece: a convicção de que a cidade é real. Na próxima vez — e haverá uma próxima vez — você estará mais forte.", lowThreshold: 2, lowText: "O silêncio é total. A cidade brilha ao longe, um lembrete do que poderia ter sido." }
@@ -2568,9 +2590,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Os Portões da Cidade Celestial",
     location: "Cidade Celestial",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 5000, message: 'Trombetas soam... os portões se abrem...' },
     narrative: [
-      "{{divine}}A subida até os portões é a parte mais bela de toda a jornada.{{/divine}} O caminho é pavimentado de ouro. Anjos os acompanham. O ar cheira a flores que não existem na terra.",
-      "Nos portões, gravada em letras de fogo, a inscrição: {{divine}}\"Bem-aventurados os que entram pelos portões da Cidade.\"{{/divine}}",
+      "{{divine}}A subida até os portões é a parte mais bela de toda a jornada.{{/divine}} O caminho é pavimentado de ouro. {{divine}}Anjos os acompanham. O ar cheira a flores que não existem na terra.{{/divine}}",
+      "{{emphasis}}Nos portões, gravada em letras de fogo, a inscrição:{{/emphasis}} {{divine}}\"Bem-aventurados os que entram pelos portões da Cidade.\"{{/divine}}",
       "{{heart}}Você apresenta o pergaminho — o selo que recebeu na cruz.{{/heart}} {{divine}}Os portões se abrem. De dentro, uma multidão incontável canta em boas-vindas.{{/divine}}"
     ],
     toneNarrative: [
@@ -2594,10 +2617,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Fim da Peregrinação",
     location: "Cidade Celestial",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 5000, message: 'Sinos soam... vozes cantam...' },
     narrative: [
-      "Bunyan encerra assim a jornada de Cristão: ele entrou pela porta, e foi transfigurado. Vestes de glória lhe foram dadas. Sinos soaram. Vozes cantaram: \"Bendito o que vem em nome do Senhor.\"",
-      "Suas decisões te trouxeram aqui. Cada prova — o fardo, o pântano, a encruzilhada, Apolião, a feira, o castelo, o rio — foi um degrau. Nenhum foi desperdiçado.",
-      "A peregrinação terminou. Mas a história continua — porque há sempre mais peregrinos na estrada, e a Cidade da Destruição ainda está de pé."
+      "{{divine}}Bunyan encerra assim a jornada de Cristão: ele entrou pela porta, e foi transfigurado. Vestes de glória lhe foram dadas. Sinos soaram. Vozes cantaram: \"Bendito o que vem em nome do Senhor.\"{{/divine}}",
+      "{{emphasis}}Suas decisões te trouxeram aqui. Cada prova — o fardo, o pântano, a encruzilhada, Apolião, a feira, o castelo, o rio — foi um degrau. Nenhum foi desperdiçado.{{/emphasis}}",
+      "{{heart}}A peregrinação terminou. Mas a história continua — porque há sempre mais peregrinos na estrada, e a Cidade da Destruição ainda está de pé.{{/heart}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "A certeza que começou como uma inquietação na Cidade da Destruição agora é visão. Você vê o que antes apenas cria. A fé se transformou em vista.", lowThreshold: 4, lowText: "O caminho foi tortuoso, cheio de dúvidas e desvios. Mas você chegou. E no final, é isso que importa." }
@@ -2617,12 +2641,13 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Portões da Cidade Celestial",
     characters: ["cristao", "ignorancia"],
     reflection: "r15",
+    sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'Uma cena solene se desenrola...' },
     narrative: [
-      "Antes que os portões se fechem, Bunyan mostra uma última cena — a mais solene de todo o livro.",
-      "Ignorância chega aos portões. Ele também fez a jornada — mas nunca passou pela Porta Estreita. Nunca carregou o fardo à cruz. Nunca recebeu o pergaminho selado.",
-      "\"Boas obras são meu passaporte\", diz ele confiante. Mas quando buscam seu nome no livro, ele não está lá. Os portões não se abrem. Dois Seres Resplandecentes o tomam pelos braços e o levam embora — não para a Cidade, mas para uma porta lateral no monte que leva ao abismo.",
-      "Bunyan termina com uma frase que ecoa pelos séculos: \"Então vi que havia um caminho para o inferno, mesmo dos portões do Céu.\"",
-      "A jornada terminou. A graça triunfou — não por suas forças, mas pela fidelidade de Quem prometeu."
+      "{{fade}}Antes que os portões se fechem, Bunyan mostra uma última cena — a mais solene de todo o livro.{{/fade}}",
+      "{{emphasis}}Ignorância chega aos portões.{{/emphasis}} Ele também fez a jornada — mas {{villain}}nunca passou pela Porta Estreita. Nunca carregou o fardo à cruz. Nunca recebeu o pergaminho selado.{{/villain}}",
+      "{{dialog}}\"Boas obras são meu passaporte\"{{/dialog}}, diz ele confiante. Mas quando buscam seu nome no livro, {{tremor}}ele não está lá.{{/tremor}} {{villain}}Os portões não se abrem. Dois Seres Resplandecentes o tomam pelos braços e o levam embora — não para a Cidade, mas para uma porta lateral no monte que leva ao abismo.{{/villain}}",
+      "{{emphasis}}Bunyan termina com uma frase que ecoa pelos séculos:{{/emphasis}} {{divine}}\"Então vi que havia um caminho para o inferno, mesmo dos portões do Céu.\"{{/divine}}",
+      "{{heart}}A jornada terminou. A graça triunfou — não por suas forças, mas pela fidelidade de Quem prometeu.{{/heart}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "A cena de Ignorância te faz estremecer mesmo na glória. A graça não é merecida — é recebida. E você a recebeu.", lowThreshold: 4, lowText: "O destino de Ignorância é um aviso final: boas intenções não bastam. A porta estreita existe por uma razão." }

@@ -159,6 +159,46 @@ const allegoryMeanings: Record<string, { meaning: string; verse?: string; type: 
     verse: 'Tiago 1:22 — "Sede cumpridores da palavra e não somente ouvintes, enganando-vos a vós mesmos."',
     type: 'warning',
   },
+  desconfianca: {
+    meaning: 'Esposa do Gigante Desespero, que sussurra conselhos cruéis ao marido sobre como torturar os prisioneiros. Representa a voz interior que amplifica a dúvida e incentiva a destruição.',
+    verse: 'Provérbios 12:25 — "A ansiedade no coração do homem o abate, mas a boa palavra o alegra."',
+    type: 'villain',
+  },
+  juiz_odio_ao_bem: {
+    meaning: 'O juiz cruel da Feira da Vaidade que condena Fiel à morte. Seu nome revela sua natureza: ele odeia tudo que é bom porque a bondade expõe sua corrupção.',
+    verse: 'João 15:18 — "Se o mundo vos odeia, sabei que, primeiro do que a vós, me odiou a mim."',
+    type: 'villain',
+  },
+  amor_dinheiro: {
+    meaning: 'Um cavalheiro da Feira da Vaidade que ensina que servir a Deus e buscar riquezas são perfeitamente compatíveis. Representa a teologia da prosperidade.',
+    verse: 'Mateus 6:24 — "Ninguém pode servir a dois senhores; porque ou há de odiar um e amar o outro."',
+    type: 'villain',
+  },
+  prudencia: {
+    meaning: 'Donzela do Palácio Belo que questiona Cristão sobre suas motivações internas. Representa o autoexame necessário antes de cada batalha espiritual.',
+    verse: 'Lamentações 3:40 — "Esquadrinhemos os nossos caminhos, e provemo-los, e voltemos para o Senhor."',
+    type: 'ally',
+  },
+  piedade: {
+    meaning: 'Donzela do Palácio Belo que fortalece a esperança do peregrino falando das maravilhas da Cidade Celestial. Representa a contemplação devocional.',
+    verse: 'Filipenses 3:14 — "Prossigo para o alvo, pelo prêmio da soberana vocação de Deus em Cristo Jesus."',
+    type: 'ally',
+  },
+  caridade: {
+    meaning: 'Donzela do Palácio Belo que pergunta sobre a família de Cristão e o encoraja à compaixão. Representa o amor cristão que não abandona ninguém.',
+    verse: '1 Coríntios 13:13 — "Agora, pois, permanecem a fé, a esperança e a caridade, estas três; mas a maior destas é a caridade."',
+    type: 'ally',
+  },
+  timidez_desconfianca: {
+    meaning: 'Dois homens que fogem dos leões acorrentados, representando os que abandonam a jornada por medo de perigos que na verdade estão sob controle divino.',
+    verse: '2 Timóteo 1:7 — "Deus não nos deu o espírito de temor, mas de fortaleza, de amor e de moderação."',
+    type: 'warning',
+  },
+  volta_atras: {
+    meaning: 'Um apóstata capturado por sete demônios e levado de volta ao abismo. Visto nas Montanhas Deleitosas como aviso solene de que abandonar o caminho tem consequências eternas.',
+    verse: '2 Pedro 2:21 — "Melhor lhes fora não terem conhecido o caminho da justiça do que, conhecendo-o, desviarem-se do santo mandamento."',
+    type: 'warning',
+  },
 };
 
 interface AllegoryCardProps {
