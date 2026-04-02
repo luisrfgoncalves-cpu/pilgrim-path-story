@@ -892,9 +892,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Casa do Intérprete",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'Uma presença sábia aguarda dentro...' },
     narrative: [
-      "O caminho leva a uma casa grande e sóbria. Uma placa sobre a porta diz: \"Casa do Intérprete.\" Antes de bater, você hesita. A casa emana silêncio — o tipo de silêncio que precede revelações.",
-      "A porta se abre antes de você bater. Um homem de olhar profundo e voz calma diz: \"Eu estava te esperando. Entre. Vou te mostrar coisas que serão úteis para o restante da sua jornada.\""
+      "O caminho leva a uma casa grande e sóbria. Uma placa sobre a porta diz: {{emphasis}}\"Casa do Intérprete.\"{{/emphasis}} Antes de bater, você hesita. {{fade}}A casa emana silêncio — o tipo de silêncio que precede revelações.{{/fade}}",
+      "A porta se abre antes de você bater. Um homem de olhar profundo e voz calma diz: {{divine}}\"Eu estava te esperando. Entre. Vou te mostrar coisas que serão úteis para o restante da sua jornada.\"{{/divine}}"
     ],
     replayNarrative: [
       "A casa é a mesma. Mas seus olhos mudaram. Desta vez, o que você verá nas salas do Intérprete?"
@@ -921,9 +922,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
     narrative: [
-      "A primeira sala contém apenas um retrato. O homem pintado tem olhos erguidos ao céu, o melhor dos livros nas mãos, a lei da verdade escrita nos lábios e o mundo atrás de si. Ele está de pé, como se suplicasse aos homens.",
-      "\"Grave este rosto\", diz o Intérprete. \"Este homem é o único guia autorizado para o caminho que você percorre. Muitos vão se oferecer para guiá-lo — Prudência Mundana, Legalidade, outros. Mas só este homem conhece a verdade.\"",
-      "Você estuda o retrato. Os olhos do homem pintado parecem vivos, cheios de urgência e compaixão."
+      "A primeira sala contém apenas um retrato. O homem pintado tem {{divine}}olhos erguidos ao céu{{/divine}}, o melhor dos livros nas mãos, a lei da verdade escrita nos lábios e o mundo atrás de si. Ele está de pé, como se suplicasse aos homens.",
+      "{{dialog}}\"Grave este rosto\"{{/dialog}}, diz o Intérprete. {{emphasis}}\"Este homem é o único guia autorizado para o caminho que você percorre.\"{{/emphasis}} \"Muitos vão se oferecer para guiá-lo — Prudência Mundana, Legalidade, outros. Mas só este homem conhece a verdade.\"",
+      "{{fade}}Você estuda o retrato. Os olhos do homem pintado parecem vivos, cheios de urgência e compaixão.{{/fade}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "Olhando o retrato, você reconhece algo. É como se já conhecesse esse homem — não pelo rosto, mas pelo que ele representa.", lowThreshold: 3, lowText: "O retrato é perturbador. Você não entende por que deveria confiar em alguém que nunca viu." },
@@ -974,9 +975,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "interprete"],
     interactionType: 'hold',
     narrative: [
-      "A segunda sala está coberta de poeira espessa — nunca foi varrida. O Intérprete chama um homem com uma vassoura. Ele varre furiosamente, mas a poeira sobe em nuvens sufocantes, enchendo o ar até que ninguém consegue respirar.",
-      "Então uma jovem entra com um jarro de água e borrifa o chão. A poeira se assenta. O ar se limpa. O chão aparece limpo.",
-      "\"A poeira é o pecado\", explica o Intérprete. \"A vassoura é a Lei, que revela o pecado mas não pode limpá-lo — apenas levanta mais poeira. A água é a Graça, que purifica o coração onde a Lei apenas condena.\""
+      "A segunda sala está coberta de poeira espessa — nunca foi varrida. O Intérprete chama um homem com uma vassoura. {{tremor}}Ele varre furiosamente, mas a poeira sobe em nuvens sufocantes, enchendo o ar até que ninguém consegue respirar.{{/tremor}}",
+      "{{fade}}Então uma jovem entra com um jarro de água e borrifa o chão. A poeira se assenta. O ar se limpa. O chão aparece limpo.{{/fade}}",
+      "{{divine}}\"A poeira é o pecado\"{{/divine}}, explica o Intérprete. \"A vassoura é a Lei, que revela o pecado mas não pode limpá-lo — apenas levanta mais poeira. {{emphasis}}A água é a Graça, que purifica o coração onde a Lei apenas condena.{{/emphasis}}\""
     ],
     flagNarrative: [
       { flag: "pediu_ajuda_pantano", text: "Você se lembra do pântano. Lá, tentar sozinho te afundou. Aqui, a lição se repete: a vassoura sozinha piora tudo. Só a água limpa." },
@@ -1026,9 +1027,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "interprete"],
     sceneEvent: { type: 'suspense', duration: 2000, message: 'As chamas dançam diante de seus olhos...' },
     narrative: [
-      "Na terceira sala, um fogo arde contra uma parede. Um homem se posta diante dele e derrama água sem parar, tentando apagá-lo. Mas o fogo não diminui — pelo contrário, cresce mais forte a cada balde.",
-      "O Intérprete te leva para trás da parede. Ali, escondido, outro homem despeja óleo continuamente sobre o fogo, através de uma abertura que o primeiro homem não consegue ver.",
-      "\"O fogo é a obra da Graça no coração\", explica o Intérprete. \"O diabo tenta apagá-lo com tentações. Mas Cristo, de modo secreto e contínuo, alimenta essa chama. É por isso que ela nunca se apaga.\""
+      "Na terceira sala, {{tremor}}um fogo arde contra uma parede{{/tremor}}. Um homem se posta diante dele e derrama água sem parar, tentando apagá-lo. {{emphasis}}Mas o fogo não diminui — pelo contrário, cresce mais forte a cada balde.{{/emphasis}}",
+      "O Intérprete te leva para trás da parede. Ali, escondido, {{divine}}outro homem despeja óleo continuamente sobre o fogo{{/divine}}, através de uma abertura que o primeiro homem não consegue ver.",
+      "{{dialog}}\"O fogo é a obra da Graça no coração\"{{/dialog}}, explica o Intérprete. \"O diabo tenta apagá-lo com tentações. Mas {{divine}}Cristo, de modo secreto e contínuo, alimenta essa chama. É por isso que ela nunca se apaga.{{/divine}}\""
     ],
     choices: [
       {
@@ -1078,9 +1079,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
     narrative: [
-      "A última sala contém uma gaiola de ferro. Dentro, um homem em trapos, de cabeça baixa. Seus olhos estão vazios.",
-      "\"Eu já fui um peregrino como você\", diz o homem da gaiola. \"Eu era cheio de fé. Mas me deixei levar pelos prazeres e pecados do mundo. Abandonei o caminho. E agora...\" Sua voz falha. \"Agora estou trancado no desespero. A Graça me foi oferecida, e eu a rejeitei tantas vezes que ela se retirou.\"",
-      "O Intérprete se vira para você com seriedade mortal: \"Grave isso no seu coração. Para que nunca lhe aconteça o mesmo.\""
+      "A última sala contém uma gaiola de ferro. Dentro, um homem em trapos, de cabeça baixa. {{fade}}Seus olhos estão vazios.{{/fade}}",
+      "{{villain}}\"Eu já fui um peregrino como você\"{{/villain}}, diz o homem da gaiola. \"Eu era cheio de fé. Mas me deixei levar pelos prazeres e pecados do mundo. Abandonei o caminho. E agora...\" {{heart}}Sua voz falha.{{/heart}} \"Agora estou trancado no desespero. A Graça me foi oferecida, e eu a rejeitei tantas vezes que ela se retirou.\"",
+      "{{tremor}}O Intérprete se vira para você com seriedade mortal: \"Grave isso no seu coração. Para que nunca lhe aconteça o mesmo.\"{{/tremor}}"
     ],
     choices: [
       {
@@ -1336,9 +1337,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Vale da Humilhação",
     characters: ["cristao", "apolion"],
     narrative: [
-      "Apolião emerge das sombras. Bunyan o descreve assim: coberto de escamas como um peixe, asas como de dragão, pés de urso, boca de leão, e de seu ventre saem fogo e fumaça.",
-      "\"Servo ingrato!\", ruge a criatura, bloqueando o caminho inteiro. \"Quantas vezes você quase desistiu? No pântano, na encruzilhada, nas noites de dúvida? Você é fraco. Volte para mim e eu te pouparei.\"",
-      "Ele oferece riquezas, conforto, o fim do sofrimento. Tudo que você precisa fazer é largar o pergaminho e voltar."
+      "{{tremor}}Apolião emerge das sombras.{{/tremor}} Bunyan o descreve assim: coberto de escamas como um peixe, asas como de dragão, pés de urso, boca de leão, e de seu ventre saem fogo e fumaça.",
+      "{{villain}}\"Servo ingrato!\"{{/villain}}, ruge a criatura, bloqueando o caminho inteiro. \"Quantas vezes você quase desistiu? No pântano, na encruzilhada, nas noites de dúvida? {{villain}}Você é fraco. Volte para mim e eu te pouparei.{{/villain}}\"",
+      "{{fade}}Ele oferece riquezas, conforto, o fim do sofrimento. Tudo que você precisa fazer é largar o pergaminho e voltar.{{/fade}}"
     ],
     toneNarrative: [
       { attr: "coragem", highThreshold: 8, highText: "Apolião é terrível. Mas dentro de você, uma chama responde: \"Eu já passei pelo pântano, pela cruz, pelo fogo que não apaga. Não vou voltar.\"", lowThreshold: 3, lowText: "Suas pernas tremem. Apolião é imenso. O pergaminho na sua mão parece frágil como papel diante daquelas garras." }
@@ -1371,10 +1372,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Vale da Humilhação",
     characters: ["cristao", "apolion"],
     narrative: [
-      "A batalha dura horas. Apolião lança dardos flamejantes. Você os apara com o escudo da fé, mas alguns passam e ferem suas mãos, sua cabeça, seu pé.",
-      "Em um momento terrível, Apolião te derruba. Sua espada voa de suas mãos. Ele se ergue sobre você, pronto para o golpe final.",
-      "Mas sua mão encontra a espada novamente. Com um grito que não vem de você — vem de algo maior — você desfere um golpe que faz Apolião recuar. Ele abre as asas de dragão e foge, deixando para trás apenas o fedor de enxofre.",
-      "Você está ferido, sangrando, exausto. Mas vivo. E vitorioso."
+      "{{tremor}}A batalha dura horas. Apolião lança dardos flamejantes.{{/tremor}} Você os apara com o escudo da fé, mas alguns passam e ferem suas mãos, sua cabeça, seu pé.",
+      "Em um momento terrível, {{tremor}}Apolião te derruba. Sua espada voa de suas mãos.{{/tremor}} Ele se ergue sobre você, pronto para o golpe final.",
+      "Mas sua mão encontra a espada novamente. {{divine}}Com um grito que não vem de você — vem de algo maior — você desfere um golpe que faz Apolião recuar.{{/divine}} {{fade}}Ele abre as asas de dragão e foge, deixando para trás apenas o fedor de enxofre.{{/fade}}",
+      "{{heart}}Você está ferido, sangrando, exausto. Mas vivo. E vitorioso.{{/heart}}"
     ],
     adaptiveNarrative: [
       { minAttr: "perseveranca", minValue: 8, text: "Cada cicatriz da jornada preparou você para este momento. A perseverança acumulada sustentou cada golpe." }
@@ -1568,9 +1569,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Feira da Vaidade",
     characters: ["cristao", "fiel"],
     narrative: [
-      "O barulho atinge você antes de ver a feira. Gritos de vendedores, música, gargalhadas. A Feira da Vaidade existe há séculos — fundada por Belzebu, Apolião e Legião quando descobriram que o caminho dos peregrinos passava por esta cidade.",
-      "Aqui, tudo está à venda: casas, terras, honras, títulos, reinos, prazeres, esposas, maridos, corpos, almas. As barracas se estendem até onde a vista alcança.",
-      "Ao entrarem, vocês causam comoção. Suas roupas são diferentes. Seu idioma — a língua de Canaã — soa estranho. E quando os vendedores gritam: \"O que desejam comprar?\", vocês respondem: \"Compramos apenas a Verdade.\""
+      "{{tremor}}O barulho atinge você antes de ver a feira.{{/tremor}} Gritos de vendedores, música, gargalhadas. A Feira da Vaidade existe há séculos — fundada por Belzebu, Apolião e Legião quando descobriram que o caminho dos peregrinos passava por esta cidade.",
+      "Aqui, tudo está à venda: casas, terras, honras, títulos, reinos, prazeres, esposas, maridos, corpos, almas. {{fade}}As barracas se estendem até onde a vista alcança.{{/fade}}",
+      "Ao entrarem, vocês causam comoção. Suas roupas são diferentes. Seu idioma — a língua de Canaã — soa estranho. E quando os vendedores gritam: {{dialog}}\"O que desejam comprar?\"{{/dialog}}, vocês respondem: {{divine}}\"Compramos apenas a Verdade.\"{{/divine}}"
     ],
     replayNarrative: [
       "A feira continua a mesma — barulhenta, sedutora, hostil. Mas você já sabe o preço que ela cobra. Da última vez, Fiel pagou com a vida. O que mudará agora?"
@@ -1719,9 +1720,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Feira da Vaidade",
     characters: ["cristao"],
     narrative: [
-      "O tribunal condena Fiel. Ele é açoitado, apedrejado, esfaqueado e, por fim, queimado na estaca. Fiel não grita de dor. Seu rosto, mesmo no fogo, irradia paz.",
-      "Bunyan escreveu que uma carruagem celestial desceu e levou Fiel através das nuvens, ao som de trombetas, direto para a Porta Celestial.",
-      "Você está sozinho novamente. Mas o sacrifício de Fiel muda algo em você. Se ele suportou a morte sem recuar, o que é o desconforto diante disso?"
+      "{{tremor}}O tribunal condena Fiel.{{/tremor}} Ele é açoitado, apedrejado, esfaqueado e, por fim, queimado na estaca. {{heart}}Fiel não grita de dor. Seu rosto, mesmo no fogo, irradia paz.{{/heart}}",
+      "{{divine}}Bunyan escreveu que uma carruagem celestial desceu e levou Fiel através das nuvens, ao som de trombetas, direto para a Porta Celestial.{{/divine}}",
+      "{{fade}}Você está sozinho novamente. Mas o sacrifício de Fiel muda algo em você. Se ele suportou a morte sem recuar, o que é o desconforto diante disso?{{/fade}}"
     ],
     flagNarrative: [
       { flag: "permaneceu_diferente", text: "Você defendeu Fiel. Ele morreu sabendo que seu companheiro não o abandonou. Essa memória te fortalecerá para sempre." }
@@ -2106,10 +2107,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Castelo da Dúvida",
     characters: ["cristao"],
     narrative: [
-      "Na terceira noite, enquanto oram, Cristão dá um salto: \"Que tolo eu sou! Tenho no meu peito uma chave chamada Promessa. Ela pode abrir qualquer fechadura do Castelo da Dúvida!\"",
-      "Esperança se anima: \"Tire-a, irmão! Experimente!\"",
-      "Com mãos trêmulas, você tira a chave — as promessas de Deus, guardadas durante toda a jornada. Cada lição, cada versículo, cada momento de fé solidificou essa chave.",
-      "Ela gira na fechadura. A porta se abre."
+      "Na terceira noite, enquanto oram, Cristão dá um salto: {{shout}}\"Que tolo eu sou! Tenho no meu peito uma chave chamada Promessa. Ela pode abrir qualquer fechadura do Castelo da Dúvida!\"{{/shout}}",
+      "Esperança se anima: {{dialog}}\"Tire-a, irmão! Experimente!\"{{/dialog}}",
+      "{{heart}}Com mãos trêmulas, você tira a chave — as promessas de Deus, guardadas durante toda a jornada.{{/heart}} Cada lição, cada versículo, cada momento de fé solidificou essa chave.",
+      "{{divine}}Ela gira na fechadura. A porta se abre.{{/divine}}"
     ],
     toneNarrative: [
       { attr: "discernimento", highThreshold: 7, highText: "As lições do Intérprete iluminam sua mente. A poeira, o fogo, o palácio — tudo converge neste momento.", lowThreshold: 3, lowText: "Você mal acredita que a chave existe. Mas ela está nas suas mãos." }
@@ -2544,9 +2545,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Cidade Celestial",
     characters: ["cristao"],
     narrative: [
-      "A subida até os portões é a parte mais bela de toda a jornada. O caminho é pavimentado de ouro. Anjos os acompanham. O ar cheira a flores que não existem na terra.",
-      "Nos portões, gravada em letras de fogo, a inscrição: \"Bem-aventurados os que entram pelos portões da Cidade.\"",
-      "Você apresenta o pergaminho — o selo que recebeu na cruz. Os portões se abrem. De dentro, uma multidão incontável canta em boas-vindas."
+      "{{divine}}A subida até os portões é a parte mais bela de toda a jornada.{{/divine}} O caminho é pavimentado de ouro. Anjos os acompanham. O ar cheira a flores que não existem na terra.",
+      "Nos portões, gravada em letras de fogo, a inscrição: {{divine}}\"Bem-aventurados os que entram pelos portões da Cidade.\"{{/divine}}",
+      "{{heart}}Você apresenta o pergaminho — o selo que recebeu na cruz.{{/heart}} {{divine}}Os portões se abrem. De dentro, uma multidão incontável canta em boas-vindas.{{/divine}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "As portas se abrem como se te esperassem. Cada decisão de fé ao longo da jornada construiu o caminho até este exato momento.", lowThreshold: 4, lowText: "Você quase não acredita que está aqui. Depois de tudo, depois de tantos quase-desistimentos — os portões se abrem." }
