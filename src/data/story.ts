@@ -1282,10 +1282,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Descida ao Vale",
     location: "Vale da Humilhação",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2500, message: 'Algo se move nas sombras...' },
     narrative: [
-      "O Vale da Humilhação é estreito e escuro. Paredes de rocha se erguem dos dois lados. O sol desaparece atrás das nuvens.",
-      "O silêncio aqui é diferente. Não é paz — é espera. Como se o próprio vale prendesse a respiração.",
-      "Seus passos ecoam entre as pedras. A armadura da fé que você recebeu parece fina demais. O pergaminho pesa no bolso como um lembrete: você tem algo pelo que lutar."
+      "{{fade}}O Vale da Humilhação é estreito e escuro. Paredes de rocha se erguem dos dois lados. O sol desaparece atrás das nuvens.{{/fade}}",
+      "{{whisper}}O silêncio aqui é diferente. Não é paz — é espera. Como se o próprio vale prendesse a respiração.{{/whisper}}",
+      "{{tremor}}Seus passos ecoam entre as pedras. A armadura da fé que você recebeu parece fina demais.{{/tremor}} O pergaminho pesa no bolso como um lembrete: {{emphasis}}você tem algo pelo que lutar.{{/emphasis}}"
     ],
     replayNarrative: [
       "O vale é o mesmo. Mas você sabe quem espera nas sombras. Da última vez, enfrentou Apolião — ou fugiu. Desta vez, o que fará?"
