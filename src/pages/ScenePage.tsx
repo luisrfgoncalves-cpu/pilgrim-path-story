@@ -1522,9 +1522,9 @@ const ScenePage = () => {
                   const char = allChars.find(c => c.id === id);
                   const img = characterImages[id];
                   if (!char || !img) return null;
-                  return { name: char.name, img, role: char.role };
+                  return { id, name: char.name, img, role: char.role };
                 })
-                .filter(Boolean) as { name: string; img: string; role?: string }[];
+                .filter(Boolean) as { id: string; name: string; img: string; role?: string }[];
               setAllPersistentChars(npcs);
               if (npcs[0]) setPersistentChar(npcs[0]);
             }
