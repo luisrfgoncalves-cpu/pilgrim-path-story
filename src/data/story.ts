@@ -1337,9 +1337,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Vale da Humilhação",
     characters: ["cristao", "apolion"],
     narrative: [
-      "Apolião emerge das sombras. Bunyan o descreve assim: coberto de escamas como um peixe, asas como de dragão, pés de urso, boca de leão, e de seu ventre saem fogo e fumaça.",
-      "\"Servo ingrato!\", ruge a criatura, bloqueando o caminho inteiro. \"Quantas vezes você quase desistiu? No pântano, na encruzilhada, nas noites de dúvida? Você é fraco. Volte para mim e eu te pouparei.\"",
-      "Ele oferece riquezas, conforto, o fim do sofrimento. Tudo que você precisa fazer é largar o pergaminho e voltar."
+      "{{tremor}}Apolião emerge das sombras.{{/tremor}} Bunyan o descreve assim: coberto de escamas como um peixe, asas como de dragão, pés de urso, boca de leão, e de seu ventre saem fogo e fumaça.",
+      "{{villain}}\"Servo ingrato!\"{{/villain}}, ruge a criatura, bloqueando o caminho inteiro. \"Quantas vezes você quase desistiu? No pântano, na encruzilhada, nas noites de dúvida? {{villain}}Você é fraco. Volte para mim e eu te pouparei.{{/villain}}\"",
+      "{{fade}}Ele oferece riquezas, conforto, o fim do sofrimento. Tudo que você precisa fazer é largar o pergaminho e voltar.{{/fade}}"
     ],
     toneNarrative: [
       { attr: "coragem", highThreshold: 8, highText: "Apolião é terrível. Mas dentro de você, uma chama responde: \"Eu já passei pelo pântano, pela cruz, pelo fogo que não apaga. Não vou voltar.\"", lowThreshold: 3, lowText: "Suas pernas tremem. Apolião é imenso. O pergaminho na sua mão parece frágil como papel diante daquelas garras." }
