@@ -1913,6 +1913,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Interesses, o Companheiro Conveniente",
     location: "Estrada além da Feira",
     characters: ["cristao", "esperanca", "interesses"],
+    sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'Um estranho se aproxima sorrindo...' },
     narrative: [
       "Na estrada, um homem bem-vestido se junta a vocês. Seu nome é {{emphasis}}Interesses{{/emphasis}}, da cidade de Bom-Discurso. Ele é primo do Sr. Volta-Suave e sobrinho do Sr. Duas-Línguas.",
       "{{dialog}}\"Também sou peregrino!\"{{/dialog}}, diz ele sorrindo. {{villain}}\"Mas confesso que prefiro seguir a religião quando ela caminha com chinelos de prata — sob o sol, com aplausos do povo.\"{{/villain}}",
