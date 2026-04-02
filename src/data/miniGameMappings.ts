@@ -11,59 +11,80 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
   // ║  FASE 1 — Início da Jornada         ║
   // ╚══════════════════════════════════════╝
 
-  // Fuga da Cidade — QTE (correr!)
+  // Fuga da Cidade — Discernir entre vozes: quem ouvir?
   'cena2': {
-    type: 'qte',
-    difficulty: 'easy',
-    intro: 'Você precisa correr! Os vizinhos tentam impedi-lo. Toque nos obstáculos para desviar!',
-    successBonus: { coragem: 1 },
-    failurePenalty: { coragem: -1 },
-  },
-
-  // Pântano do Desânimo — Stealth
-  'cena4': {
-    type: 'stealth',
-    difficulty: 'easy',
-    intro: 'O Pântano do Desânimo se abre diante de você. Cada passo deve ser calculado para não afundar na lama da dúvida.',
-    successBonus: { perseveranca: 1 },
-    failurePenalty: { perseveranca: -1 },
-  },
-
-  // Porta Estreita — Reflexo Divino
-  'cena6': {
-    type: 'reflex',
-    difficulty: 'easy',
-    intro: 'A luz da Porta Estreita pulsa em direções. Siga os sinais para encontrar o caminho!',
-    successBonus: { fe: 1 },
-    failurePenalty: { fe: -1 },
-  },
-
-  // Encontro com Prudência Mundana — Swipe
-  'cena8': {
     type: 'swipe',
     difficulty: 'easy',
-    intro: 'Prudência Mundana sussurra promessas sedutoras. Discerna entre as mentiras e a verdade!',
+    intro: 'Obstinado e Flexível gritam coisas diferentes. Discerna entre os conselhos que levam à vida e os que prendem na destruição.',
     successBonus: { discernimento: 1 },
     failurePenalty: { discernimento: -1 },
     swipeItems: [
-      { text: 'Caminho fácil', emoji: '🛤️', good: false },
-      { text: 'Riqueza rápida', emoji: '💰', good: false },
-      { text: 'Paz sem luta', emoji: '😴', good: false },
-      { text: 'Palavra de Deus', emoji: '📖', good: true },
-      { text: 'Porta Estreita', emoji: '🚪', good: true },
-      { text: 'Conforto vão', emoji: '🍷', good: false },
-      { text: 'Oração sincera', emoji: '🙏', good: true },
-      { text: 'Fé verdadeira', emoji: '✨', good: true },
+      { text: '"Volte! Está louco!"', emoji: '😤', good: false },
+      { text: '"Fique, é mais seguro"', emoji: '🏠', good: false },
+      { text: '"Fuja da ira vindoura"', emoji: '📖', good: true },
+      { text: '"Não vale a pena"', emoji: '🙄', good: false },
+      { text: '"Busque a Porta Estreita"', emoji: '🚪', good: true },
+      { text: '"Vida! Vida eterna!"', emoji: '🔥', good: true },
+      { text: '"Todo mundo fica"', emoji: '👥', good: false },
+      { text: '"Corra sem olhar para trás"', emoji: '🏃', good: true },
     ],
   },
 
-  // Monte Sinai — Tremor/Stealth
+  // Pântano do Desânimo — Agarrar-se às promessas
+  'cena4': {
+    type: 'swipe',
+    difficulty: 'easy',
+    intro: 'No Pântano do Desânimo, pensamentos de dúvida e promessas de Deus se misturam. Agarre-se às verdades que sustentam sua alma.',
+    successBonus: { perseveranca: 1, fe: 1 },
+    failurePenalty: { perseveranca: -1 },
+    swipeItems: [
+      { text: '"Deus me abandonou"', emoji: '😰', good: false },
+      { text: '"Não sou digno"', emoji: '😞', good: false },
+      { text: '"Deus é refúgio e fortaleza"', emoji: '🛡️', good: true },
+      { text: '"Melhor voltar atrás"', emoji: '↩️', good: false },
+      { text: '"Ele me tirará do lamaçal"', emoji: '🙌', good: true },
+      { text: '"Ninguém se importa"', emoji: '😢', good: false },
+      { text: '"Clama a mim e eu te responderei"', emoji: '🙏', good: true },
+      { text: '"A graça é suficiente"', emoji: '✨', good: true },
+    ],
+  },
+
+  // Porta Estreita — Montar o versículo que abre a porta
+  'cena6': {
+    type: 'wordpuzzle',
+    difficulty: 'easy',
+    intro: 'Para encontrar a Porta Estreita, monte o versículo que revela o caminho da vida.',
+    successBonus: { fe: 1, discernimento: 1 },
+    failurePenalty: { fe: -1 },
+  },
+
+  // Encontro com Prudência Mundana — Discernir engano
+  'cena8': {
+    type: 'swipe',
+    difficulty: 'easy',
+    intro: 'Prudência Mundana usa argumentos convincentes para desviar do caminho. Discerna entre a sabedoria do mundo e a sabedoria de Deus.',
+    successBonus: { discernimento: 1 },
+    failurePenalty: { discernimento: -1 },
+    swipeItems: [
+      { text: '"Busque conforto primeiro"', emoji: '🛋️', good: false },
+      { text: '"A moralidade basta"', emoji: '⚖️', good: false },
+      { text: '"Sem a Cruz, não há vida"', emoji: '✝️', good: true },
+      { text: '"Evite sofrimento"', emoji: '😴', good: false },
+      { text: '"A Porta Estreita é o único caminho"', emoji: '🚪', good: true },
+      { text: '"Deus vê o coração"', emoji: '👁️', good: true },
+      { text: '"Existem muitos caminhos"', emoji: '🛤️', good: false },
+      { text: '"Só pela graça"', emoji: '🙏', good: true },
+    ],
+  },
+
+  // Monte Sinai — Lembrar por que a Lei condena mas Cristo salva
   'cena10': {
-    type: 'stealth',
+    type: 'memory',
     difficulty: 'normal',
-    intro: 'O Monte Sinai treme! Avance com cuidado pelo caminho instável sem ser engolido pela terra.',
-    successBonus: { perseveranca: 1, coragem: 1 },
-    failurePenalty: { coragem: -1 },
+    intro: 'O Monte Sinai treme com a Lei de Deus. Memorize os símbolos que representam a diferença entre Lei e Graça — seu discernimento depende disso.',
+    successBonus: { discernimento: 1, fe: 1 },
+    failurePenalty: { fe: -1 },
+    memorySymbols: ['⚡', '📜', '✝️', '🕊️', '🔥', '💧', '⛰️', '🌟'],
   },
 
   // Caça ao Tesouro — antes de chegar à Porta
@@ -75,11 +96,11 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     failurePenalty: {},
   },
 
-  // Auxílio no Pântano — Memória
+  // Auxílio no Pântano — Memorizar as verdades que sustentam
   'cena13': {
     type: 'memory',
     difficulty: 'easy',
-    intro: 'Auxílio te ensina verdades para não afundar novamente. Memorize as lições!',
+    intro: 'Auxílio te ensina verdades para não afundar novamente. Memorize as promessas que são como pedras firmes no pântano!',
     successBonus: { fe: 1, discernimento: 1 },
     failurePenalty: { discernimento: -1 },
   },
