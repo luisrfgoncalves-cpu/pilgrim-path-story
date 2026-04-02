@@ -204,10 +204,11 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Banho e as Vestes",
     location: "Jardim do Intérprete",
     characters: ["crista", "misericordia", "interprete"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 4000, message: 'O selo do Rei...' },
     narrative: [
-      "O Intérprete recebe Cristã e seu grupo com alegria. \"A esposa de Cristão! Que honra.\"",
-      "Ele ordena que preparem um banho cerimonial. Cristã, os filhos e Misericórdia são lavados e vestidos com roupas novas e brilhantes. O selo do Rei é colocado em suas testas.",
-      "\"Agora estais marcadas\", diz o Intérprete. \"Todos verão a quem pertenceis. E quando a estrada escurecer, lembrai-vos deste momento.\""
+      "O Intérprete recebe Cristã e seu grupo com alegria. {{divine}}\"A esposa de Cristão! Que honra.\"{{/divine}}",
+      "Ele ordena que preparem um banho cerimonial. Cristã, os filhos e Misericórdia são lavados e vestidos com {{divine}}roupas novas e brilhantes{{/divine}}. O selo do Rei é colocado em suas testas.",
+      "{{divine}}\"Agora estais marcadas\"{{/divine}}, diz o Intérprete. \"Todos verão a quem pertenceis. E quando a estrada escurecer, lembrai-vos deste momento.\""
     ],
     choices: [
       {
@@ -215,13 +216,15 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase2-cena1",
         effects: { fe: 2, perseveranca: 1 },
         flag: "recebeu_selo_parte2",
-        item: "vestes_novas"
+        item: "vestes_novas",
+        consequence: "As vestes novas representam a justiça de Cristo imputada ao crente. O banho é o símbolo da regeneração. — Tito 3:5: \"Não pelas obras de justiça que houvéssemos feito, mas segundo a sua misericórdia, nos salvou pela lavagem da regeneração.\""
       },
       {
         text: "Perguntar ao Intérprete sobre as visões que mostrou a Cristão",
         nextChapterId: "p2-fase2-cena1",
         effects: { discernimento: 2 },
-        flag: "perguntou_visoes_interprete"
+        flag: "perguntou_visoes_interprete",
+        consequence: "A busca por entendimento espiritual é uma marca de maturidade. O Intérprete mostra verdades que os olhos carnais não veem. — 1 Coríntios 2:14: \"O homem natural não compreende as coisas do Espírito de Deus, porque lhe parecem loucura.\""
       }
     ]
   },
