@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, forwardRef } from 'react';
 
 /**
  * 3D CSS Dice Component
@@ -96,7 +96,10 @@ function DiceFace({ value, size, theme }: { value: number; size: number; theme: 
   );
 }
 
-export function Dice3D({ value, rolling, size = 80, color = 'gold', onRollEnd }: Dice3DProps) {
+export const Dice3D = forwardRef<HTMLDivElement, Dice3DProps>(function Dice3D(
+  { value, rolling, size = 80, color = 'gold', onRollEnd },
+  ref,
+) {
   const [displayValue, setDisplayValue] = useState(value);
   const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
   const rollRef = useRef<ReturnType<typeof setInterval>>();
@@ -137,7 +140,6 @@ export function Dice3D({ value, rolling, size = 80, color = 'gold', onRollEnd }:
     };
   }, [rolling, value, onRollEnd]);
 
-  // Build all 6 faces
   const faces = [
     { val: 1, transform: `translateZ(${half}px)` },
     { val: 6, transform: `rotateX(180deg) translateZ(${half}px)` },
@@ -149,6 +151,7 @@ export function Dice3D({ value, rolling, size = 80, color = 'gold', onRollEnd }:
 
   return (
     <div
+      ref={ref}
       className="relative"
       style={{
         width: size,
@@ -156,7 +159,6 @@ export function Dice3D({ value, rolling, size = 80, color = 'gold', onRollEnd }:
         perspective: size * 4,
       }}
     >
-      {/* Shadow under dice */}
       <div
         className="absolute rounded-full"
         style={{
@@ -171,7 +173,6 @@ export function Dice3D({ value, rolling, size = 80, color = 'gold', onRollEnd }:
         }}
       />
 
-      {/* 3D cube */}
       <div
         style={{
           width: size,
@@ -199,7 +200,6 @@ export function Dice3D({ value, rolling, size = 80, color = 'gold', onRollEnd }:
         ))}
       </div>
 
-      {/* Glow effect when rolling */}
       {rolling && (
         <div
           className="absolute inset-0 rounded-lg animate-pulse pointer-events-none"
@@ -210,6 +210,6 @@ export function Dice3D({ value, rolling, size = 80, color = 'gold', onRollEnd }:
       )}
     </div>
   );
-}
+});
 
 export default Dice3D;
