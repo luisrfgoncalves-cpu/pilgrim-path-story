@@ -178,7 +178,7 @@ export default function RPGEventPopup({
 
     const choice = dilemma.choices[choiceIdx];
     const isPositive = choice.effect.type === 'advance' || choice.effect.type === 'boost';
-    playGameSfx(isPositive ? 'blessing' : 'trap');
+    playGameSfx(rpgSfx(isPositive ? 'blessing' : 'trap'));
     setShowResult(true);
     setResultData({
       success: isPositive,
