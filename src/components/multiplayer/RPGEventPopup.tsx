@@ -10,7 +10,7 @@ import {
 import { TileEventType } from '@/data/rpg/types';
 import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { playGameSfx, GameSfx } from '@/lib/gameSfx';
-import { narrate, stopNarration, getNarrationStyle, isCurrentlySpeaking } from '@/lib/narrator';
+// Narration removed — text-only experience
 import {
   playEvilLaugh, playCrowdCheer, playTensionDrum,
   playHolyChime, playDramaticReveal, playNarrativeChime,
@@ -92,7 +92,7 @@ export default function RPGEventPopup({
   useEffect(() => {
     if (!visible) {
       narratedKeyRef.current = '';
-      stopNarration();
+      
       return;
     }
 
@@ -168,7 +168,7 @@ export default function RPGEventPopup({
       });
     }
 
-    return () => stopNarration();
+    return () => {};
   }, [visible, tileEventType, difficulty, playerNames, rotationState]);
 
   // ─── STAGED NARRATIVE: Dramatic suspense intro before context ───
@@ -199,8 +199,6 @@ export default function RPGEventPopup({
 
     // Narrate the suspense text
     const suspense = getSuspenseText();
-    narrate(suspense.text, { style: 'whisper', force: true });
-
     const timer = window.setTimeout(() => {
       setPhase('context');
       // Play the main contextual SFX when transitioning
@@ -329,7 +327,6 @@ export default function RPGEventPopup({
     if (rawContext) playNarrativeSfx(rawContext);
 
     const timer = window.setTimeout(() => {
-      narrate(text, { style: getNarrationStyle(tileEventType), force: true });
     }, 400);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -347,10 +344,6 @@ export default function RPGEventPopup({
     narratedKeyRef.current = key;
 
     const timer = window.setTimeout(() => {
-      narrate(text, {
-        style: boss ? 'urgent' : getNarrationStyle(tileEventType),
-        force: true,
-      });
     }, 300);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -376,11 +369,7 @@ export default function RPGEventPopup({
     }
 
     const timer = window.setTimeout(() => {
-      narrate(resultData.message, {
-        style: resultData.success ? 'triumphant' : 'whisper',
-        force: true,
-      });
-    }, 200);
+      }, 200);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, showResult, resultData]);
@@ -406,7 +395,7 @@ export default function RPGEventPopup({
     // For riddles: reveal the answer instead of auto-failing
     if (riddle) {
       setRiddleAnswerRevealed(true);
-      narrate(`Tempo esgotado! A resposta correta é: ${riddle.answer}. ${riddle.explanation}`, { style: 'calm', force: true });
+      
       return;
     }
     playGameSfx(rpgSfx('trap'));
@@ -840,7 +829,7 @@ export default function RPGEventPopup({
                     setRiddleAnswerRevealed(true);
                     setTimerActive(false);
                     if (timerRef.current) clearInterval(timerRef.current);
-                    narrate(`A resposta correta é: ${riddle.answer}. ${riddle.explanation}`, { style: 'calm', force: true });
+                    
                   }}
                   className="w-full py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-sm text-blue-300 font-display hover:bg-blue-500/30 transition-all"
                 >
@@ -975,7 +964,7 @@ export default function RPGEventPopup({
                       if (item && 'chainTrigger' in item && item.chainTrigger && chainState) {
                         setChainFlag(chainState.current, item.chainTrigger.flag, currentTurn || 0, playerNames[currentPlayerIdx] || '');
                       }
-                      narrate(`Revelação desbloqueada! ${rev.title}. ${rev.deepTeaching}`, { style: 'calm', force: true });
+                      
                     }
                   }}
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-display font-bold text-sm transition-all"

@@ -148,13 +148,6 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
 
   return (
     <div ref={boardRef} className="w-full">
-      {/* Single global tokenGlow keyframe — avoids duplicating per phase */}
-      <style>{`
-        @keyframes tokenGlow {
-          0% { transform: scale(1); }
-          100% { transform: scale(1.3); }
-        }
-      `}</style>
       {PHASES.map((phase, phaseIdx) => {
         // LAZY LOADING: only mount phases that are visible
         if (!visiblePhases.has(phaseIdx)) {
@@ -328,19 +321,16 @@ const PhaseSection = memo(function PhaseSection({
               {/* Tile body */}
               <div
                 className={`relative flex items-center justify-center overflow-hidden
-                  ${playersHere.length > 0 ? 'scale-125 ring-2 ring-white/50' : ''}
-                  ${isAnimatingHere ? 'ring-4 ring-yellow-400/70' : ''}
-                  ${isCurrentPlayerHere && !isAnimatingHere && capability.enableCssAnimations ? 'animate-pulse' : ''}
-                  transition-all duration-300 hover:scale-110
+                  ${playersHere.length > 0 ? 'scale-110 ring-2 ring-white/40' : ''}
+                  ${isAnimatingHere ? 'ring-2 ring-yellow-400/50' : ''}
+                  transition-all duration-300
                 `}
                 style={{
                   width: tileSize,
                   height: tileSize,
                   borderRadius: isBoss ? 18 : isSpecial ? 16 : 12,
                   background: tileImg ? 'none' : `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))`,
-                  boxShadow: capability.enableComplexShadows
-                    ? `0 0 ${playersHere.length > 0 ? '35' : '18'}px ${config.glowColor}, inset 0 2px 3px rgba(255,255,255,0.2), inset 0 -2px 4px rgba(0,0,0,0.4), 0 6px 20px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.5)`
-                    : `0 0 ${playersHere.length > 0 ? '15' : '8'}px ${config.glowColor}, 0 4px 12px rgba(0,0,0,0.5)`,
+                  boxShadow: `0 3px 10px rgba(0,0,0,0.5)`,
                   border: `2.5px solid ${config.color}`,
                 }}
               >
@@ -366,24 +356,17 @@ const PhaseSection = memo(function PhaseSection({
                   borderRadius: '50%',
                   padding: isBoss ? 5 : 4,
                   border: `2px solid ${config.color}`,
-                  boxShadow: capability.enableComplexShadows ? `0 0 10px ${config.glowColor}` : undefined,
                 }}
               >
                 <MedievalTileIcon
                   tileType={tileType}
                   size={isBoss ? 18 : isSpecial ? 16 : 14}
                   color={config.color}
-                  glowColor={capability.enableComplexShadows ? config.glowColor : undefined}
                 />
               </div>
 
               {/* Boss indicator */}
-              {isBoss && capability.enableCssAnimations && (
-                <div className="absolute -top-2 -right-2 text-xs z-10 animate-bounce">
-                  {tileType === 'giant' ? '💀' : '⚔️'}
-                </div>
-              )}
-              {isBoss && !capability.enableCssAnimations && (
+              {isBoss && (
                 <div className="absolute -top-2 -right-2 text-xs z-10">
                   {tileType === 'giant' ? '💀' : '⚔️'}
                 </div>
@@ -412,12 +395,8 @@ const PhaseSection = memo(function PhaseSection({
                         background: 'rgba(0,0,0,0.9)',
                         color: '#FFFFFF',
                         border: `2px solid ${config.color}`,
-                        boxShadow: capability.enableComplexShadows
-                          ? `0 0 16px ${config.glowColor}, 0 4px 12px rgba(0,0,0,0.7)`
-                          : `0 2px 8px rgba(0,0,0,0.5)`,
-                        textShadow: capability.enableComplexShadows
-                          ? `0 0 10px ${config.color}, 0 1px 3px rgba(0,0,0,0.8)`
-                          : `0 1px 3px rgba(0,0,0,0.8)`,
+                        boxShadow: `0 2px 8px rgba(0,0,0,0.5)`,
+                        textShadow: `0 1px 3px rgba(0,0,0,0.8)`,
                         letterSpacing: '0.06em',
                         wordSpacing: '0.2em',
                         fontSize: isBoss ? '15px' : '13px',
@@ -444,13 +423,10 @@ const PhaseSection = memo(function PhaseSection({
                   {playersHere.map(p => (
                     <div
                       key={p.id}
-                      className="w-6 h-6 rounded-full border-2 border-white/60 shadow-lg"
+                      className="w-6 h-6 rounded-full border-2 border-white/60"
                       style={{
                         backgroundColor: p.color,
-                        boxShadow: `0 0 ${animatingPlayerId.includes(p.id) ? '20' : '12'}px ${p.color}90`,
-                        animation: animatingPlayerId.includes(p.id)
-                          ? 'tokenGlow 0.35s ease-in-out infinite alternate'
-                          : p.id === currentTurnId && capability.enableCssAnimations ? 'bounce 1s infinite' : undefined,
+                        boxShadow: `0 2px 6px rgba(0,0,0,0.5)`,
                       }}
                       title={p.name}
                     />
@@ -459,7 +435,7 @@ const PhaseSection = memo(function PhaseSection({
               )}
 
               {playersHere.some(p => p.isStunned) && (
-                <div className="absolute -top-7 right-0 text-base animate-bounce z-20">😵</div>
+                <div className="absolute -top-7 right-0 text-base z-20">😵</div>
               )}
             </div>
           );

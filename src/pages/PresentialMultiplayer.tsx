@@ -30,8 +30,7 @@ import { startAmbientMusic, stopAmbientMusic, updateAmbientPhase } from '@/compo
 import { playGameSfx } from '@/lib/gameSfx';
 import { preloadRealSfx, playRealSfx } from '@/lib/realSfx';
 import { useAudioPrewarm } from '@/hooks/useAudioPrewarm';
-import { prewarmNarrator, setNarratorEnabled, stopNarration } from '@/lib/narrator';
-import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown } from 'lucide-react';
 import ScreenHero from '@/components/ScreenHero';
 
 const COLORS = ['#E8724A', '#4CAF50', '#42A5F5', '#FFD54F', '#AB47BC', '#EF5350', '#26C6DA', '#FF7043'];
@@ -179,19 +178,19 @@ function resolveTileEffect(
   switch (tileType) {
     case 'refuge':
       result.attrChanges = { fe: 1, perseveranca: 1 };
-      result.message = narrative || '🏠 Refúgio! Você descansa e recupera forças.';
+      result.message = narrative || '🏠 Um lugar de descanso se revela no caminho — muros antigos, uma lareira crepitante e o silêncio que só a paz verdadeira oferece. Suas forças se renovam como raízes que encontram água após longa seca.';
       result.emoji = '🏠';
       break;
     case 'challenge':
       if (rng >= 40) {
         result.posAdjust = 3;
         result.attrChanges = { coragem: 2 };
-        result.message = narrative || '⚔️ Desafio vencido! Avance 3 casas!';
+        result.message = narrative || '⚔️ O desafio era brutal — mas algo dentro de você se ergueu mais forte que o medo. Com determinação que surpreendeu até a você mesmo, a vitória foi conquistada! O caminho adiante se abre com 3 passos de vantagem!';
         result.statUpdate.challengesWon = 1;
       } else {
         result.posAdjust = -2;
         result.attrChanges = { coragem: -1 };
-        result.message = narrative || '⚔️ Desafio perdido! Recue 2 casas.';
+        result.message = narrative || '⚔️ O adversário era mais astuto do que parecia. O golpe veio de onde não se esperava, e a derrota cobra seu preço — 2 passos para trás, e a coragem precisa ser reconstruída.';
         result.statUpdate.challengesLost = 1;
       }
       result.emoji = '⚔️';
@@ -200,20 +199,20 @@ function resolveTileEffect(
       if (rng >= 50) {
         result.posAdjust = 2;
         result.attrChanges = { fe: 1 };
-        result.message = narrative || '🎁 Surpresa boa! Avance 2 casas!';
+        result.message = narrative || '🎁 O inesperado nem sempre é inimigo! Uma provisão divina aparece onde menos se esperava — como maná no deserto. Avance 2 casas com a fé renovada de quem sabe que não caminha sozinho!';
         if (rng > 80) {
           result.collectiveEffect = {
             type: 'blessing_all',
-            message: '✨ Bênção coletiva! Todos os peregrinos ganham +1 Fé!',
+            message: '✨ A bênção transborda! Como chuva que não escolhe onde cai, todos os peregrinos são alcançados. Cada alma ganha +1 em Fé — pois onde um é abençoado, todos celebram!',
           };
         }
       } else {
         result.posAdjust = -1;
-        result.message = narrative || '🎁 Surpresa ruim... Recue 1 casa.';
+        result.message = narrative || '🎁 Nem toda surpresa é presente — esta veio com espinhos. O caminho que parecia promissor era desvio, e o preço é 1 passo para trás. Mas até os tropeços ensinam algo a quem presta atenção.';
         if (rng < 15) {
           result.collectiveEffect = {
             type: 'curse_all',
-            message: '⚠️ Provação coletiva! Todos os peregrinos perdem -1 Perseverança!',
+            message: '⚠️ Uma provação coletiva se abate como nuvem escura sobre todos os peregrinos! A perseverança de cada um é testada — todos perdem -1 em Perseverança. Resistam juntos!',
           };
         }
       }
@@ -223,41 +222,41 @@ function resolveTileEffect(
       if (rng >= 35) {
         result.posAdjust = 2;
         result.attrChanges = { discernimento: 2, fe: 1 };
-        result.message = narrative || '📖 Palavra acertada! Discernimento +2, avance 2!';
+        result.message = narrative || '📖 As palavras sagradas se abrem como chave em fechadura — o entendimento inunda sua mente como rio que rompe represa! Discernimento +2, Fé +1, e o caminho à frente se ilumina com 2 passos de avanço!';
         result.statUpdate.scripturesCorrect = 1;
       } else {
         result.attrChanges = { discernimento: -1 };
-        result.message = narrative || '📖 Resposta errada... Discernimento -1.';
+        result.message = narrative || '📖 A resposta escapou como areia entre os dedos... As escrituras são profundas e nem sempre revelam seus segredos na primeira leitura. O discernimento diminui, mas a lição permanece.';
         result.statUpdate.scripturesWrong = 1;
       }
       result.emoji = '📖';
       break;
     case 'trap':
       if (player.hasShield) {
-        result.message = '🛡️ Seu escudo te protegeu da armadilha!';
+        result.message = '🛡️ A armadilha se arma com violência — mas o escudo da fé absorve o golpe como rocha absorve a chuva! O inimigo preparou o ataque, mas não contava com a proteção que você carrega!';
         result.emoji = '🛡️';
       } else {
         result.posAdjust = -3;
         result.attrChanges = { perseveranca: -1 };
-        result.message = narrative || '🔙 Armadilha! Recue 3 casas!';
+        result.message = narrative || '🔙 O chão cede sob seus pés! Uma armadilha engenhosamente disfarçada — quando você percebe, já caiu 3 casas para trás. A perseverança sangra, mas peregrinos de verdade se levantam.';
         result.emoji = '🔙';
         result.statUpdate.trapsHit = 1;
       }
       break;
     case 'giant':
       if (player.hasShield) {
-        result.message = '🛡️ Seu escudo te protegeu do Gigante!';
+        result.message = '🛡️ O Gigante ataca com fúria descomunal — mas seu escudo resplandece com luz que cega a criatura! O monstro recua urra de dor, incapaz de penetrar a proteção divina!';
         result.emoji = '🛡️';
       } else if (rng >= 70) {
         result.stun = true;
         result.stunTurns = 1;
-        result.message = narrative || '💀 O Gigante te capturou! Perde 1 turno.';
+        result.message = narrative || '💀 O Gigante te captura com mãos do tamanho de troncos! Seus dedos se fecham como gaiolas de ferro. Você perde 1 turno preso em suas garras — ore para que a libertação venha antes que seja tarde.';
         result.emoji = '💀';
         result.statUpdate.giantsLost = 1;
       } else {
         result.resetToCheckpoint = true;
         result.attrChanges = { coragem: -2 };
-        result.message = narrative || '💀 O Gigante te esmaga! Volta ao checkpoint!';
+        result.message = narrative || '💀 O golpe do Gigante é devastador — como montanha desabando. Seus ossos tremem, sua visão escurece. Quando acorda, está de volta ao último checkpoint, com a coragem em frangalhos. Mas viver para contar a história já é vitória.';
         result.emoji = '💀';
         result.statUpdate.giantsLost = 1;
       }
@@ -265,120 +264,148 @@ function resolveTileEffect(
     case 'shield':
       result.shield = true;
       result.attrChanges = { coragem: 1 };
-      result.message = narrative || '🛡️ Armadura de Deus! Proteção ativada!';
+      result.message = narrative || '🛡️ A Armadura de Deus se materializa diante de seus olhos — cada peça pulsando com poder ancestral! Ao vesti-la, seus ombros se endireitam, sua coluna se firma. Você não é mais apenas um viajante — é um guerreiro protegido pelo próprio Criador.';
       result.emoji = '🛡️';
       result.statUpdate.shieldsGained = 1;
       break;
     case 'blessing':
       result.posAdjust = 4;
       result.attrChanges = { fe: 2 };
-      result.message = narrative || '⭐ Bênção divina! Avance 4 casas!';
+      result.message = narrative || '⭐ Uma bênção inconfundível desce sobre você como chuva dourada em pleno deserto! O ar muda, o passo se torna leve, e o caminho que antes parecia infinito agora mostra 4 casas a menos entre você e a glória. A fé explode como fogo sagrado!';
       result.emoji = '⭐';
       result.statUpdate.blessingsReceived = 1;
       if (rng < 25) {
         result.collectiveEffect = {
           type: 'blessing_all',
-          message: '🌟 Bênção irradiante! Todos ganham +1 em todos os atributos!',
+          message: '🌟 A bênção é tão poderosa que irradia para todos os peregrinos como sol nascendo no horizonte! Todos ganham +1 em TODOS os atributos — porque quando Deus abençoa, Ele abençoa abundantemente!',
         };
       }
       break;
     case 'swap':
-      result.message = narrative || '🔄 Troca de caminhos! Posições trocadas!';
+      result.message = narrative || '🔄 O caminho se distorce como espelho d\'água perturbado — e quando a realidade se estabiliza, os peregrinos percebem que suas posições foram completamente trocadas! O destino tem senso de humor.';
       result.emoji = '🔄';
       result.statUpdate.swapsTriggered = 1;
       break;
     case 'double_dice':
       result.extraTurn = true;
-      result.message = '🎲 Dado duplo! Jogue novamente!';
+      result.message = '🎲 Os dados tremem com energia sobrenatural — eles QUEREM ser lançados novamente! Uma segunda chance, uma jogada extra. O destino sorri para você: jogue novamente, peregrino!';
       result.emoji = '🎲';
       break;
     case 'current':
       if (rng >= 50) {
         result.posAdjust = 3;
-        result.message = narrative || '🌊 Correnteza favorável! Avance 3!';
+        result.message = narrative || '🌊 Uma corrente poderosa — não de água, mas de propósito — agarra seus pés e te impulsiona adiante com força irresistível! 3 casas avançadas num instante glorioso! O vento está a seu favor!';
       } else {
         result.posAdjust = -2;
-        result.message = narrative || '🌊 Correnteza adversa! Recue 2!';
+        result.message = narrative || '🌊 A correnteza vira traiçoeira sem aviso — o que parecia águas calmas revela força brutal na direção errada! 2 casas para trás antes que você consiga fincar os pés. A corrente não pede licença.';
       }
       result.emoji = '🌊';
       break;
     case 'checkpoint':
       result.attrChanges = { perseveranca: 1 };
-      result.message = '🏰 Checkpoint salvo! Perseverança +1.';
+      result.message = '🏰 Um marco de pedra se ergue no caminho — antigo, gravado com os nomes de mil peregrinos que passaram antes de você. Ao tocá-lo, sua posição é salva como âncora na rocha. Perseverança +1, pois quem chega até aqui não é qualquer um.';
       result.emoji = '🏰';
       break;
     case 'back_to_start':
       if (player.hasShield) {
-        result.message = '🛡️ Seu escudo te salvou da maldição! Você não voltou ao início!';
+        result.message = '🛡️ Uma força maligna tenta arrastá-lo de volta ao início — mas o escudo da fé irrompe em luz tão intensa que a maldição se despedaça como vidro! Você permanece firme. O inimigo uiva de frustração.';
         result.emoji = '🛡️';
       } else {
         result.resetToStart = true;
         result.stun = true;
         result.stunTurns = 1;
         result.attrChanges = { coragem: -2, perseveranca: -1 };
-        result.message = '☠️ PUNIÇÃO! Uma força sombria te arrasta de volta ao início da jornada!';
+        result.message = '☠️ MALDIÇÃO DEVASTADORA! Uma força sombria — antiga e implacável — te agarra como corrente de ferro e te ARRASTA de volta ao início da jornada! Cada metro percorrido de volta é uma ferida na alma. Coragem despedaçada, perseverança em frangalhos. Mas lembre-se: peregrinos caem. Peregrinos de verdade se levantam.';
         result.emoji = '☠️';
         result.statUpdate.backToStartCount = 1;
       }
       break;
-    // Narrative story tiles — handled by RPG popup, but fallback here
+    // Narrative story tiles
     case 'wicket_gate':
-      result.attrChanges = { fe: 1 }; result.message = '🚪 A Porta Estreita! Boa Vontade os recebe.'; result.emoji = '🚪'; break;
+      result.attrChanges = { fe: 1 };
+      result.message = '🚪 A Porta Estreita! Boa Vontade abre com urgência: "Entre depressa, pois flechas do inimigo voam nesta direção!" A passagem é apertada, mas do outro lado, o ar é diferente — limpo, livre, cheio de promessa.';
+      result.emoji = '🚪'; break;
     case 'interpreter_house':
-      result.attrChanges = { discernimento: 2 }; result.message = '🏛️ O Intérprete revela verdades profundas!'; result.emoji = '🏛️'; break;
+      result.attrChanges = { discernimento: 2 };
+      result.message = '🏛️ O Intérprete conduz vocês por salões repletos de quadros vivos que revelam verdades que os olhos carnais jamais perceberiam. Cada cômodo é uma revelação. Cada parede, um sermão.';
+      result.emoji = '🏛️'; break;
     case 'hill_difficulty':
-      result.attrChanges = { perseveranca: 1 }; result.message = '⛰️ Monte Dificuldade — a subida fortalece!'; result.emoji = '⛰️'; break;
+      result.attrChanges = { perseveranca: 1 };
+      result.message = '⛰️ O Monte Dificuldade se ergue como muralha natural — íngreme, escorregadio, impiedoso. Mas cada metro escalado fortalece músculos que você nem sabia que tinha. No topo, a vista é recompensa que vale cada gota de suor.';
+      result.emoji = '⛰️'; break;
     case 'palace_beautiful':
-      result.attrChanges = { fe: 1, coragem: 1 }; result.message = '🏰 Palácio Formoso! Prudência, Piedade e Caridade acolhem vocês.'; result.emoji = '🏰'; break;
+      result.attrChanges = { fe: 1, coragem: 1 };
+      result.message = '🏰 O Palácio Belo! Prudência, Piedade e Caridade descem as escadarias com braços abertos e olhos brilhantes. Mesa farta, conversas profundas, armadura preparada. Aqui, peregrinos feridos se tornam guerreiros prontos.';
+      result.emoji = '🏰'; break;
     case 'valley_humiliation':
-      result.attrChanges = { coragem: -1 }; result.message = '⚔️ Vale da Humilhação — Apolião se aproxima!'; result.emoji = '⚔️'; break;
+      result.attrChanges = { coragem: -1 };
+      result.message = '⚔️ O Vale da Humilhação se abre como goela de fera — e lá no fundo, asas de couro se desdobram. Apolião se levanta. Seus olhos são fornalhas, sua voz é terremoto. "AQUI É MEU TERRITÓRIO!"';
+      result.emoji = '⚔️'; break;
     case 'valley_shadow':
-      result.attrChanges = { fe: -1 }; result.message = '💀 Vale da Sombra da Morte — trevas envolvem!'; result.emoji = '💀'; break;
+      result.attrChanges = { fe: -1 };
+      result.message = '💀 O Vale da Sombra da Morte engole a luz como boca faminta. À esquerda, pântano sem fundo. À direita, abismo sem fim. E por todos os lados, vozes que não são deste mundo sussurram coisas que congelam o sangue.';
+      result.emoji = '💀'; break;
     case 'vanity_fair':
-      result.message = '🎪 Feira da Vaidade — tentações por toda parte!'; result.emoji = '🎪'; break;
+      result.message = '🎪 A Feira da Vaidade! Cada barraca é uma tentação perfeitamente embalada — riqueza, poder, prazer, fama — tudo com etiqueta de preço em forma de alma. O barulho é ensurdecedor. A sedução, quase irresistível.';
+      result.emoji = '🎪'; break;
     case 'doubting_castle':
       result.attrChanges = { coragem: -2 }; result.stun = true; result.stunTurns = 1;
-      result.message = '🏴 Castelo da Dúvida — Gigante Desespero captura os peregrinos!'; result.emoji = '🏴'; break;
+      result.message = '🏴 O Castelo da Dúvida! Gigante Desespero captura os peregrinos com mãos que parecem feitas da própria escuridão. Sua masmorra é fria, úmida, e cheira a desespero. "NINGUÉM SAI DAQUI", ele cospe. Mas no fundo do bolso... há uma chave.';
+      result.emoji = '🏴'; break;
     case 'delectable_mountains':
-      result.attrChanges = { fe: 2, discernimento: 1 }; result.message = '🏔️ Montanhas Deleitosas! Os pastores mostram a Cidade Celestial ao longe.'; result.emoji = '🏔️'; break;
+      result.attrChanges = { fe: 2, discernimento: 1 };
+      result.message = '🏔️ As Montanhas Deleitosas! Os pastores Conhecimento, Experiência, Vigia e Sincero mostram através de telescópios sagrados a Cidade Celestial brilhando no horizonte. O coração explode de saudade por um lugar onde ainda não esteve.';
+      result.emoji = '🏔️'; break;
     case 'enchanted_ground':
       result.stun = true; result.stunTurns = 1;
-      result.message = '😴 Terra Encantada — o sono tenta vencê-los!'; result.emoji = '😴'; break;
+      result.message = '😴 A Terra Encantada! O ar aqui é pesado como mel e doce como veneno. Os olhos pesam, as pernas amolecem. "Durma... descanse... esqueça a jornada..." — a tentação do conforto é o último teste antes da glória.';
+      result.emoji = '😴'; break;
     case 'beulah_land':
       result.attrChanges = { fe: 2, coragem: 2, perseveranca: 1 };
-      result.message = '🌸 Terra de Beulá! Ar doce, flores eternas — a Cidade está próxima!'; result.emoji = '🌸'; break;
+      result.message = '🌸 Terra de Beulá! O ar é perfume vivo, flores eternas cobrem cada centímetro de chão, e a Cidade Celestial brilha tão perto que seus portões dourados já são visíveis a olho nu. Toda dor vivida na jornada começa a fazer sentido.';
+      result.emoji = '🌸'; break;
     case 'slough_despond':
       result.attrChanges = { perseveranca: -1 }; result.posAdjust = -2;
-      result.message = '🏚️ Pântano do Desânimo — a lama da dúvida puxa para baixo!'; result.emoji = '🏚️'; break;
+      result.message = '🏚️ O Pântano do Desânimo! A lama não é feita de barro — é feita de culpa, dúvida e autopiedade. Cada passo afunda mais. As vozes no pântano conhecem seu nome e seus fracassos. 2 casas perdidas para o barro do desespero.';
+      result.emoji = '🏚️'; break;
     case 'cross_sepulchre':
       result.attrChanges = { fe: 3, perseveranca: 1 };
-      result.message = '✝️ A Cruz! Sua carga pesada finalmente cai — liberdade em Cristo!'; result.emoji = '✝️'; break;
+      result.message = '✝️ A Cruz e o Sepulcro! Aqui, neste lugar sagrado, seu fardo — aquele peso impossível nas costas — se solta sozinho e rola morro abaixo até desaparecer para sempre numa fenda escura. Liberdade. Liberdade real. Lágrimas de uma alegria que não cabe em palavras.';
+      result.emoji = '✝️'; break;
     case 'simple_sloth_presumption':
       result.stun = true; result.stunTurns = 1;
-      result.message = '😴 Simples, Preguiça e Presunção dormem acorrentados à beira do caminho!'; result.emoji = '😴'; break;
+      result.message = '😴 Simples, Preguiça e Presunção! Três figuras acorrentadas dormem à beira do caminho — e suas correntes são contagiosas. O sono deles puxa o seu. Cuidado: a indiferença é a armadilha mais silenciosa de todas.';
+      result.emoji = '😴'; break;
     case 'hill_lucre':
       result.attrChanges = { discernimento: -1 }; result.posAdjust = -2;
-      result.message = '💰 A Mina de Demas! A prata brilha, mas o chão é traiçoeiro!'; result.emoji = '💰'; break;
+      result.message = '💰 A Mina de Demas! Prata brilha nas paredes como estrelas caídas. "Venham! Um desvio rápido! Fiquem ricos!" — mas o chão é traiçoeiro, e quem entra descobre que o brilho era isca. 2 passos perdidos para a ganância.';
+      result.emoji = '💰'; break;
     case 'by_path_meadow':
       result.posAdjust = -3;
-      result.message = '🌿 Prado do Atalho — o caminho fácil leva ao perigo!'; result.emoji = '🌿'; break;
+      result.message = '🌿 O Prado do Atalho! A grama é macia, o caminho parece mais fácil, e os pés agradecem. Mas atalhos na jornada da fé sempre cobram preço — e este cobra 3 casas de retrocesso quando o caminho suave termina em espinheiro.';
+      result.emoji = '🌿'; break;
     case 'flatterer_net':
       result.posAdjust = -2; result.attrChanges = { discernimento: -1 };
-      result.message = '🕸️ A Rede do Lisonjeiro! Palavras doces escondem armadilhas!'; result.emoji = '🕸️'; break;
+      result.message = '🕸️ A Rede do Lisonjeiro! Palavras doces como mel envolvem seus ouvidos: "Vocês são tão fortes, tão sábios..." — mas cada elogio é um fio de teia. Quando percebe, está preso. 2 casas perdidas e o discernimento abalado.';
+      result.emoji = '🕸️'; break;
     case 'atheist_encounter':
       result.attrChanges = { fe: -1 };
-      result.message = '🤷 O Ateu zomba da jornada — mas a fé permanece firme!'; result.emoji = '🤷'; break;
+      result.message = '🤷 O Ateu surge rindo às gargalhadas: "Cidade Celestial? Eu procurei por vinte anos e nunca achei nada! Vocês são tolos!" Suas palavras são ácido na fé — mas tolos são os que desistem quando a Cidade já brilha no horizonte.';
+      result.emoji = '🤷'; break;
     case 'ignorance_path':
       result.attrChanges = { discernimento: -1 };
-      result.message = '🚶 Ignorância segue seu próprio caminho tortuoso!'; result.emoji = '🚶'; break;
+      result.message = '🚶 Ignorância aparece por um atalho lateral, sorrindo com a confiança de quem nunca questionou nada. "Eu sei o caminho!", diz — sem jamais ter consultado o mapa. Seu exemplo é uma armadilha para o discernimento dos incautos.';
+      result.emoji = '🚶'; break;
     case 'little_faith':
       result.attrChanges = { fe: -1, coragem: -1 };
-      result.message = '😰 Pouca-Fé! Ladrões roubaram sua paz — mas não a salvação!'; result.emoji = '😰'; break;
+      result.message = '😰 Pouca-Fé jaz caído à beira do caminho, roubado por Covarde, Desconfiança e Culpa. "Levaram minhas joias...", chora. "Levaram tudo menos minha salvação." Sua história é um aviso que pesa no coração e drena a coragem.';
+      result.emoji = '😰'; break;
     case 'river_of_life':
       result.attrChanges = { fe: 1, perseveranca: 1 };
-      result.message = '💧 Rio da Vida! Águas cristalinas restauram a alma!'; result.emoji = '💧'; break;
+      result.message = '💧 O Rio da Vida! Águas cristalinas que parecem líquido de estrela — cada gole restaura o que pensava perdido, cada mergulho lava feridas que remédio nenhum curava. A alma bebe e se sacia de uma sede que carregava há jornadas inteiras.';
+      result.emoji = '💧'; break;
     default:
-      result.message = 'Caminho tranquilo...';
+      result.message = 'O caminho segue em silêncio... mas até o silêncio tem algo a ensinar ao peregrino atento.';
       result.emoji = '·';
   }
   return result;
@@ -387,7 +414,6 @@ function resolveTileEffect(
 const PresentialMultiplayer = () => {
   const navigate = useNavigate();
   useAudioPrewarm();
-  prewarmNarrator();
   preloadRealSfx();
   const [phase, setPhase] = useState<'setup' | 'playing' | 'finished'>('setup');
   const [players, setPlayers] = useState<LocalPlayer[]>([createPlayer(0), createPlayer(1)]);
@@ -411,7 +437,7 @@ const PresentialMultiplayer = () => {
     posAdjust?: number; attrChanges?: Record<string, number>;
   } | null>(null);
   const tokenMovingTimerRef = useRef<number | null>(null);
-  const [narrationEnabled, setNarrationEnabledState] = useState(true);
+  
 
   // Deferred move after mini-game popup closes
   const pendingMoveAfterPopup = useRef<{
@@ -1320,18 +1346,6 @@ const PresentialMultiplayer = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                const newState = !narrationEnabled;
-                setNarrationEnabledState(newState);
-                setNarratorEnabled(newState);
-                if (!newState) stopNarration();
-              }}
-              className="p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground transition-colors active:scale-95"
-              title={narrationEnabled ? 'Desativar narração' : 'Ativar narração'}
-            >
-              {narrationEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-            </button>
             <button
               onClick={() => setShowStats(true)}
               className="text-sm text-primary font-display font-bold bg-card px-4 py-2 rounded-lg border border-primary/30 hover:bg-primary/10 active:scale-95 transition-all"
