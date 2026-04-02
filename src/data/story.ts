@@ -2545,10 +2545,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Outro Lado",
     location: "Margem Celestial",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 4000, message: 'Solo firme... luz... paz...' },
     narrative: [
-      "Seus pés tocam solo firme. A água fica para trás. Do outro lado do rio, tudo muda.",
-      "Bunyan descreve: os corpos mortais ficaram no rio. As roupas de peregrino se transformam em vestes resplandecentes. Os rostos brilham como o sol.",
-      "Dois Seres Resplandecentes os recebem: \"O restante do caminho é plano. A cidade está ali.\""
+      "{{divine}}Seus pés tocam solo firme. A água fica para trás. Do outro lado do rio, tudo muda.{{/divine}}",
+      "{{emphasis}}Bunyan descreve: os corpos mortais ficaram no rio.{{/emphasis}} {{divine}}As roupas de peregrino se transformam em vestes resplandecentes. Os rostos brilham como o sol.{{/divine}}",
+      "{{divine}}Dois Seres Resplandecentes os recebem:{{/divine}} {{dialog}}\"O restante do caminho é plano. A cidade está ali.\"{{/dialog}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "A paz é absoluta. Não é a ausência de dor — é a certeza de que toda dor teve propósito. Cada lágrima, cada ferida, cada noite no castelo.", lowThreshold: 4, lowText: "Você mal acredita. Depois de tudo — o pântano, Apolião, a feira, o castelo, o rio — você está aqui. Isso basta." }
