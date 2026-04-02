@@ -119,20 +119,30 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     memorySymbols: ['✝️', '🕊️', '🔥', '💧', '⭐', '📖', '🛡️', '🗝️'],
   },
 
-  // Sala do fogo — Reflexo Divino
+  // Sala do fogo — Discernir o que alimenta e o que apaga a fé
   'fase2-cena3': {
-    type: 'reflex',
+    type: 'swipe',
     difficulty: 'easy',
-    intro: 'As chamas do Espírito dançam em padrões. Siga os movimentos para não ser queimado!',
-    successBonus: { fe: 1, coragem: 1 },
+    intro: 'Na sala do fogo, o Intérprete mostra: o diabo joga água para apagar a chama, mas Cristo derrama óleo por trás. Discerna o que fortalece e o que enfraquece sua fé.',
+    successBonus: { fe: 1, discernimento: 1 },
     failurePenalty: { fe: -1 },
+    swipeItems: [
+      { text: 'Dúvida persistente', emoji: '💧', good: false },
+      { text: 'Tentação mundana', emoji: '🌊', good: false },
+      { text: 'Óleo do Espírito', emoji: '🔥', good: true },
+      { text: 'Perseguição', emoji: '⚡', good: false },
+      { text: 'Graça de Cristo', emoji: '✨', good: true },
+      { text: 'Oração constante', emoji: '🙏', good: true },
+      { text: 'Preguiça espiritual', emoji: '😴', good: false },
+      { text: 'Palavra viva', emoji: '📖', good: true },
+    ],
   },
 
-  // A Cruz e o Fardo — QTE
+  // A Cruz e o Fardo — Montar versículo da libertação
   'fase2-cena4': {
-    type: 'qte',
+    type: 'wordpuzzle',
     difficulty: 'easy',
-    intro: 'As correntes do pecado se rompem! Toque nos grilhões para quebrá-los antes que se fechem novamente!',
+    intro: 'Ao pé da Cruz, o fardo finalmente pode cair! Monte o versículo que declara a libertação do pecado.',
     successBonus: { fe: 2 },
     failurePenalty: { fe: -1 },
   },
