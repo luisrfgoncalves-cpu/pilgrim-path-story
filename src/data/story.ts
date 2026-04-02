@@ -1372,10 +1372,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Vale da Humilhação",
     characters: ["cristao", "apolion"],
     narrative: [
-      "A batalha dura horas. Apolião lança dardos flamejantes. Você os apara com o escudo da fé, mas alguns passam e ferem suas mãos, sua cabeça, seu pé.",
-      "Em um momento terrível, Apolião te derruba. Sua espada voa de suas mãos. Ele se ergue sobre você, pronto para o golpe final.",
-      "Mas sua mão encontra a espada novamente. Com um grito que não vem de você — vem de algo maior — você desfere um golpe que faz Apolião recuar. Ele abre as asas de dragão e foge, deixando para trás apenas o fedor de enxofre.",
-      "Você está ferido, sangrando, exausto. Mas vivo. E vitorioso."
+      "{{tremor}}A batalha dura horas. Apolião lança dardos flamejantes.{{/tremor}} Você os apara com o escudo da fé, mas alguns passam e ferem suas mãos, sua cabeça, seu pé.",
+      "Em um momento terrível, {{tremor}}Apolião te derruba. Sua espada voa de suas mãos.{{/tremor}} Ele se ergue sobre você, pronto para o golpe final.",
+      "Mas sua mão encontra a espada novamente. {{divine}}Com um grito que não vem de você — vem de algo maior — você desfere um golpe que faz Apolião recuar.{{/divine}} {{fade}}Ele abre as asas de dragão e foge, deixando para trás apenas o fedor de enxofre.{{/fade}}",
+      "{{heart}}Você está ferido, sangrando, exausto. Mas vivo. E vitorioso.{{/heart}}"
     ],
     adaptiveNarrative: [
       { minAttr: "perseveranca", minValue: 8, text: "Cada cicatriz da jornada preparou você para este momento. A perseverança acumulada sustentou cada golpe." }
