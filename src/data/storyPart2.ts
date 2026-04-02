@@ -239,22 +239,25 @@ export const part2Chapters: Record<string, StoryChapter> = {
     location: "Casa do Intérprete",
     characters: ["crista", "misericordia", "grande_coracao"],
     reflection: "p2r3",
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 3000, message: 'Um guerreiro se apresenta...' },
     narrative: [
-      "O Intérprete chama um homem forte e armado: \"Este é Grande-Coração. Ele vos acompanhará até a Cidade Celestial. Onde Cristão caminhou sozinho, vocês terão um guia.\"",
+      "O Intérprete chama um homem forte e armado: {{divine}}\"Este é Grande-Coração. Ele vos acompanhará até a Cidade Celestial.\"{{/divine}} Onde Cristão caminhou sozinho, vocês terão um guia.",
       "Grande-Coração carrega uma espada enorme e um escudo gasto de muitas batalhas. Seus olhos são bondosos, mas sua postura é de quem já matou gigantes.",
-      "\"Senhoras\", diz ele com voz grave, \"o caminho é o mesmo que o marido de vocês percorreu. Mas desta vez, nenhum gigante tocará em vocês enquanto eu respirar.\""
+      "{{shout}}\"Senhoras\"{{/shout}}, diz ele com voz grave, \"o caminho é o mesmo que o marido de vocês percorreu. Mas desta vez, {{shout}}nenhum gigante tocará em vocês enquanto eu respirar.{{/shout}}\""
     ],
     choices: [
       {
         text: "\"Deus seja louvado por nos dar um protetor!\"",
         nextChapterId: "p2-fase2-cena2",
-        effects: { fe: 1, coragem: 1 }
+        effects: { fe: 1, coragem: 1 },
+        consequence: "Grande-Coração é a imagem do cuidado providencial de Deus. Onde Cristão andou desprotegido, Cristã recebe escolta. — Salmo 91:11: \"Porque aos seus anjos dará ordem a teu respeito, para te guardarem em todos os teus caminhos.\""
       },
       {
         text: "\"Precisaremos mesmo de proteção contra gigantes?\"",
         nextChapterId: "p2-fase2-cena2",
         effects: { discernimento: 1 },
-        flag: "questionou_perigo"
+        flag: "questionou_perigo",
+        consequence: "A pergunta revela prudência, mas o caminho estreito nunca é seguro por si só — é seguro porque há Quem guarda. — Salmo 121:7-8: \"O Senhor te guardará de todo o mal; guardará a tua alma.\""
       }
     ]
   },
@@ -267,20 +270,22 @@ export const part2Chapters: Record<string, StoryChapter> = {
     sceneEvent: { type: 'suspense', delay: 2000, duration: 5000, message: 'O lugar onde o fardo caiu...' },
     narrative: [
       "O grupo chega ao pé da Cruz — o mesmo lugar onde o fardo de Cristão caiu e rolou para dentro do sepulcro.",
-      "Cristã cai de joelhos. Lágrimas escorrem. \"Aqui\", sussurra. \"Foi aqui que ele foi livre.\"",
-      "Misericórdia chora ao lado dela. Os filhos observam em silêncio sagrado. O lugar onde o peso do pecado caiu ainda pulsa com uma presença que nenhum dos viajantes consegue explicar."
+      "Cristã cai de joelhos. {{whisper}}Lágrimas escorrem. \"Aqui\", sussurra. \"Foi aqui que ele foi livre.\"{{/whisper}}",
+      "Misericórdia chora ao lado dela. Os filhos observam em silêncio sagrado. {{divine}}O lugar onde o peso do pecado caiu ainda pulsa com uma presença que nenhum dos viajantes consegue explicar.{{/divine}}"
     ],
     choices: [
       {
         text: "Orar no lugar onde Cristão foi livre",
         nextChapterId: "p2-fase2-cena3",
         effects: { fe: 2, perseveranca: 1 },
-        flag: "orou_na_cruz_p2"
+        flag: "orou_na_cruz_p2",
+        consequence: "A cruz é o ponto central de toda a peregrinação. Aqui o fardo cai. Aqui a liberdade começa. Cristã ajoelha no mesmo lugar que libertou seu marido. — Gálatas 6:14: \"Mas longe esteja de mim gloriar-me, a não ser na cruz de nosso Senhor Jesus Cristo.\""
       },
       {
         text: "Tocar a cruz e seguir em silêncio reverente",
         nextChapterId: "p2-fase2-cena3",
-        effects: { fe: 1, coragem: 1 }
+        effects: { fe: 1, coragem: 1 },
+        consequence: "O silêncio reverente é uma forma legítima de adoração. Nem toda resposta a Deus precisa de palavras. — Habacuque 2:20: \"O Senhor está no seu santo templo; cale-se diante dele toda a terra.\""
       }
     ]
   },
@@ -293,21 +298,23 @@ export const part2Chapters: Record<string, StoryChapter> = {
     sceneEvent: { type: 'sinking', duration: 4000, message: 'A subida é íngreme...', intensity: 0.5 },
     narrative: [
       "A mesma colina íngreme que exauriu Cristão aparece diante do grupo. Grande-Coração caminha na frente, abrindo o caminho.",
-      "Os filhos de Cristã tropeçam nas pedras. Misericórdia ajuda os menores. Cristã puxa os maiores. A subida é lenta e dolorosa.",
-      "No caramanchão onde Cristão adormeceu e quase perdeu o pergaminho, Grande-Coração diz: \"Descansem. Mas não durmam como o marido de vocês. Esse erro quase lhe custou tudo.\""
+      "Os filhos de Cristã tropeçam nas pedras. Misericórdia ajuda os menores. Cristã puxa os maiores. {{tremor}}A subida é lenta e dolorosa.{{/tremor}}",
+      "No caramanchão onde Cristão adormeceu e quase perdeu o pergaminho, Grande-Coração diz: {{shout}}\"Descansem. Mas não durmam como o marido de vocês. Esse erro quase lhe custou tudo.\"{{/shout}}"
     ],
     choices: [
       {
         text: "Descansar brevemente sem adormecer — aprender com o erro de Cristão",
         nextChapterId: "p2-fase2-cena4",
         effects: { discernimento: 2, perseveranca: 1 },
-        flag: "aprendeu_erro_cristao"
+        flag: "aprendeu_erro_cristao",
+        consequence: "Aprender com os erros de quem veio antes é sabedoria. A segunda geração não precisa repetir as falhas da primeira. — Provérbios 22:3: \"O prudente vê o mal e esconde-se; mas os simples passam e sofrem a pena.\""
       },
       {
         text: "Não parar — subir sem descanso até o topo",
         nextChapterId: "p2-fase2-cena4",
         effects: { perseveranca: 2 },
-        flag: "nao_parou_colina"
+        flag: "nao_parou_colina",
+        consequence: "A determinação de não parar pode ser força ou imprudência. O corpo precisa de descanso, mas o espírito não deve adormecer. — Marcos 14:38: \"Vigiai e orai, para que não entreis em tentação; o espírito está pronto, mas a carne é fraca.\""
       }
     ]
   },
@@ -321,21 +328,23 @@ export const part2Chapters: Record<string, StoryChapter> = {
     interactionType: 'timed',
     timeLimit: 12,
     narrative: [
-      "Os leões acorrentados ainda estão ali. Cristã recua de medo, mas Grande-Coração ergue a espada e avança.",
-      "Os leões rugem. Grande-Coração não hesita. Ele bate no chão com a espada e os leões recuam, revelando que suas correntes são curtas — como Vigilante revelou a Cristão.",
-      "\"Viram?\", diz Grande-Coração. \"A mesma lição. O medo ruge alto, mas está acorrentado. Passem pelo centro.\""
+      "Os leões acorrentados ainda estão ali. Cristã recua de medo, mas {{shout}}Grande-Coração ergue a espada e avança.{{/shout}}",
+      "{{tremor}}Os leões rugem.{{/tremor}} Grande-Coração não hesita. Ele bate no chão com a espada e os leões recuam, revelando que suas correntes são curtas — como Vigilante revelou a Cristão.",
+      "\"Viram?\", diz Grande-Coração. \"A mesma lição. {{divine}}O medo ruge alto, mas está acorrentado. Passem pelo centro.{{/divine}}\""
     ],
     choices: [
       {
         text: "Passar pelos leões confiando em Grande-Coração",
         nextChapterId: "p2-fase2-cena5",
         effects: { coragem: 2, fe: 1 },
-        flag: "passou_leoes_p2"
+        flag: "passou_leoes_p2",
+        consequence: "Confiar no guia é confiar em Quem o enviou. Os leões rugem, mas estão presos. O medo é real, mas limitado. — 1 Pedro 5:8: \"Sede sóbrios; vigiai; porque o diabo, vosso adversário, anda em derredor, bramando como leão, buscando a quem possa tragar.\""
       },
       {
         text: "Fechar os olhos e correr pelo meio",
         nextChapterId: "p2-fase2-cena5",
-        effects: { coragem: 1 }
+        effects: { coragem: 1 },
+        consequence: "Correr com os olhos fechados é avançar na fé sem entendimento. É melhor do que recuar, mas a coragem consciente é mais sólida que o pânico. — 2 Coríntios 5:7: \"Porque andamos por fé, e não por vista.\""
       }
     ]
   },
@@ -345,11 +354,12 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Palácio Belo — O Reencontro",
     location: "Palácio Belo",
     characters: ["crista", "misericordia", "grande_coracao", "discricao", "prudencia", "piedade", "caridade"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 4000, message: 'O Palácio Belo se abre...' },
     narrative: [
       "O Palácio Belo recebe o grupo com festa. As donzelas — Discrição, Prudência, Piedade e Caridade — reconhecem Cristã como a esposa de Cristão.",
-      "\"Seu marido dormiu aqui. Comeu nesta mesa. Vestiu a armadura nesta sala\", diz Prudência com ternura.",
-      "Misericórdia recebe atenção especial de Caridade: \"Você veio sem carta do Rei, mas com o coração do Rei. Isso é mais raro.\"",
-      "Mateus, o filho mais velho, adoece após comer frutos de uma árvore proibida no caminho. O médico do palácio o cura com uma pílula amarga — arrependimento."
+      "{{divine}}\"Seu marido dormiu aqui. Comeu nesta mesa. Vestiu a armadura nesta sala\"{{/divine}}, diz Prudência com ternura.",
+      "Misericórdia recebe atenção especial de Caridade: {{divine}}\"Você veio sem carta do Rei, mas com o coração do Rei. Isso é mais raro.\"{{/divine}}",
+      "Mateus, o filho mais velho, adoece após comer frutos de uma árvore proibida no caminho. O médico do palácio o cura com uma pílula amarga — {{whisper}}arrependimento{{/whisper}}."
     ],
     choices: [
       {
@@ -357,14 +367,16 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase3-cena1",
         effects: { fe: 1, perseveranca: 1, discernimento: 1 },
         flag: "descansou_palacio_p2",
-        item: "armadura_fe"
+        item: "armadura_fe",
+        consequence: "O descanso no Palácio Belo é a comunhão dos santos — a igreja como refúgio e preparo para as batalhas adiante. A cura de Mateus pela pílula amarga ensina que o arrependimento é remédio, não castigo. — Apocalipse 3:19: \"Eu repreendo e castigo a todos quantos amo; sê pois zeloso, e arrepende-te.\""
       },
       {
         text: "Pedir para ver a armadura que Cristão usou contra Apolião",
         nextChapterId: "p2-fase3-cena1",
         effects: { coragem: 2, fe: 1 },
         flag: "viu_armadura_cristao",
-        item: "espada_espirito"
+        item: "espada_espirito",
+        consequence: "A armadura de Deus usada por Cristão está preservada como testemunho de que a batalha espiritual é real e a vitória é possível. — Efésios 6:13: \"Tomai toda a armadura de Deus, para que possais resistir no dia mau.\""
       }
     ]
   },
