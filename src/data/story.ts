@@ -1977,10 +1977,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Desvio Fatal",
     location: "Prado Agradável",
     characters: ["cristao", "esperanca"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2500, message: 'A grama parece tão convidativa...' },
     narrative: [
-      "O caminho se torna pedregoso e doloroso para os pés. Ao lado da estrada, um prado verde e macio corre paralelo — o Prado Agradável. Uma cerca baixa é a única separação.",
-      "\"Olhe\", diz Esperança. \"O prado segue na mesma direção. Podemos caminhar na grama e voltar ao caminho depois.\"",
-      "Parece sensato. Os pés sangram. A grama é suave. A cerca é fácil de pular. Mas Bunyan nos avisa: desviar-se, mesmo um passo, do caminho estreito é o começo da ruína."
+      "{{fade}}O caminho se torna pedregoso e doloroso para os pés.{{/fade}} Ao lado da estrada, um prado verde e macio corre paralelo — o {{emphasis}}Prado Agradável{{/emphasis}}. Uma cerca baixa é a única separação.",
+      "{{dialog}}\"Olhe\"{{/dialog}}, diz Esperança. {{dialog}}\"O prado segue na mesma direção. Podemos caminhar na grama e voltar ao caminho depois.\"{{/dialog}}",
+      "{{whisper}}Parece sensato. Os pés sangram. A grama é suave. A cerca é fácil de pular.{{/whisper}} Mas Bunyan nos avisa: {{emphasis}}desviar-se, mesmo um passo, do caminho estreito é o começo da ruína.{{/emphasis}}"
     ],
     replayNarrative: [
       "O prado está ali de novo, verde e convidativo. Da última vez, você sabe — ou deveria saber — para onde ele leva. O Castelo da Dúvida espera quem se desvia."
