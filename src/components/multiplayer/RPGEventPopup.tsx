@@ -8,6 +8,7 @@ import {
   RotationState,
 } from '@/data/rpg/rotationEngine';
 import { TileEventType } from '@/data/rpg/types';
+import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { playGameSfx, GameSfx } from '@/lib/gameSfx';
 import { narrate, stopNarration, getNarrationStyle } from '@/lib/narrator';
 import { Clock, PlayCircle } from 'lucide-react';
