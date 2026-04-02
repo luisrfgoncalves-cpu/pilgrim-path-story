@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Difficulty } from '@/data/rpg/types';
 import { getContentStats } from '@/data/rpg/rotationEngine';
-import { BookOpen, Users, Shield, Swords, Crown, ChevronRight, AlertTriangle } from 'lucide-react';
+import { BookOpen, Users, Shield, Swords, Crown, ChevronRight, AlertTriangle, Heart, Sword, Star, Zap, ChevronDown } from 'lucide-react';
 
 export type GameMode = 'cooperative' | 'individual';
 
