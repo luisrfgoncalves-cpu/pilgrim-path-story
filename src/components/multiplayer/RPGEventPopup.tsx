@@ -262,11 +262,15 @@ export default function RPGEventPopup({
     if (narratedKeyRef.current === key) return;
     narratedKeyRef.current = key;
 
-    // Play result SFX
+    // Play result SFX (synth + real)
     if (resultData.success) {
       playCrowdCheer();
-    } else if (boss) {
-      playEvilLaugh();
+      const realSfx = getSfxForTileEvent(tileEventType, true);
+      if (realSfx) playRealSfx(realSfx, 0.5);
+    } else {
+      if (boss) playEvilLaugh();
+      const realSfx = getSfxForTileEvent(tileEventType, false);
+      if (realSfx) playRealSfx(realSfx, 0.4);
     }
 
     const timer = window.setTimeout(() => {
