@@ -2308,7 +2308,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Usar a Chave da Promessa antes que o gigante chegue",
-        nextChapterId: "fase5-cena6",
+        nextChapterId: "fase5-cena8",
         effects: { fe: 1 },
         consequence: "A urgência salva. Cada segundo de hesitação fortalece o gigante. Hebreus 3:15: 'Hoje, se ouvirdes a sua voz, não endureçais os vossos corações.'"
       },
