@@ -469,26 +469,46 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     ],
   },
 
-  // Terra Encantada — Stealth
+  // Terra Encantada — Discernir entre sono espiritual e vigília
   'fase5-cena12': {
-    type: 'stealth',
+    type: 'swipe',
     difficulty: 'hard',
-    intro: 'A Terra Encantada tenta fazê-los dormir! Avance sem ceder ao sono mortal.',
+    intro: 'A Terra Encantada é um lugar de sono mortal. Discerna entre o que adormece sua alma e o que a mantém desperta!',
     successBonus: { perseveranca: 2 },
     failurePenalty: { perseveranca: -2 },
+    swipeItems: [
+      { text: '"Descanse um pouco..."', emoji: '😴', good: false },
+      { text: '"Vigiai e orai!"', emoji: '🔥', good: true },
+      { text: '"Já fizemos o suficiente"', emoji: '🛋️', good: false },
+      { text: '"Estamos quase lá!"', emoji: '🏔️', good: true },
+      { text: '"O caminho pode esperar"', emoji: '⏸️', good: false },
+      { text: '"O inimigo ronda como leão"', emoji: '🦁', good: true },
+      { text: '"Um cochilo não faz mal"', emoji: '💤', good: false },
+      { text: '"Corramos com perseverança"', emoji: '🏃', good: true },
+    ],
   },
 
   // ╔══════════════════════════════════════╗
   // ║  FASE 6 — Cidade Celestial          ║
   // ╚══════════════════════════════════════╝
 
-  // Rio da Morte — QTE final
+  // Rio da Morte — Discernir entre medo e fé
   'fase6-cena1': {
-    type: 'qte',
+    type: 'swipe',
     difficulty: 'normal',
-    intro: 'O Rio da Morte se interpõe entre você e a Cidade Celestial. Lute para atravessar!',
+    intro: 'O Rio da Morte é a última prova. Nas águas geladas, medos e promessas se misturam. Agarre-se às promessas de Deus para não afundar!',
     successBonus: { fe: 2, perseveranca: 1 },
     failurePenalty: { fe: -1 },
+    swipeItems: [
+      { text: '"As águas vão me engolir"', emoji: '🌊', good: false },
+      { text: '"Todos os meus pecados voltam"', emoji: '😱', good: false },
+      { text: '"Eu sou a ressurreição e a vida"', emoji: '✝️', good: true },
+      { text: '"Não há esperança"', emoji: '💀', good: false },
+      { text: '"Nem a morte nos separará de Deus"', emoji: '🕊️', good: true },
+      { text: '"Eu vejo terra firme do outro lado"', emoji: '🌅', good: true },
+      { text: '"A jornada foi em vão"', emoji: '😢', good: false },
+      { text: '"As portas estão abertas para mim"', emoji: '🏛️', good: true },
+    ],
   },
 
   // Travessia — Duelo Espiritual final
