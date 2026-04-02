@@ -424,13 +424,13 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     duelEnemy: { name: 'Gigante Desespero', emoji: '👹', power: 7 },
   },
 
-  // Fuga do Castelo — QTE
+  // Fuga do Castelo — A Chave da Promessa (versículo)
   'fase5-cena4': {
-    type: 'qte',
+    type: 'wordpuzzle',
     difficulty: 'hard',
-    intro: 'Corram! O Gigante os persegue! Desvie dos obstáculos na fuga desesperada!',
-    successBonus: { coragem: 2 },
-    failurePenalty: { coragem: -1, perseveranca: -1 },
+    intro: 'Cristão lembra: "Tenho uma chave chamada Promessa!" Monte o versículo que abre as portas do calabouço e liberta sua alma!',
+    successBonus: { fe: 2, perseveranca: 1 },
+    failurePenalty: { perseveranca: -1 },
   },
 
   // Montanhas Deleitosas — Reflexo Divino
