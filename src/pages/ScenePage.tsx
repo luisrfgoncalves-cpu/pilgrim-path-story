@@ -773,22 +773,23 @@ const ScenePage = () => {
               );
             })()}
 
-            {/* Persistent NPC portrait — appears after reveal animation finishes */}
-            {persistentChar && charRevealDone && (
-              <div className="flex items-center gap-3 flex-shrink-0 animate-fade-in ml-auto">
-                <div className="text-right">
-                  <p className="font-display text-sm font-bold leading-tight" style={{ color: 'hsl(35 50% 65%)' }}>{persistentChar.name}</p>
-                  <p className="text-[10px] text-muted-foreground">{persistentChar.role || 'Personagem'}</p>
-                </div>
-                <img
-                  src={persistentChar.img}
-                  alt={persistentChar.name}
-                  className="w-14 h-14 rounded-2xl object-cover"
-                  style={{
-                    border: '2px solid hsl(35 40% 40%)',
-                    boxShadow: '0 4px 16px hsl(0 0% 0% / 0.4), 0 0 10px hsl(35 40% 40% / 0.25)',
-                  }}
-                />
+            {/* Persistent NPC portraits — ALL characters in scene */}
+            {charRevealDone && allPersistentChars.length > 0 && (
+              <div className="flex items-center gap-2 flex-shrink-0 animate-fade-in ml-auto overflow-hidden">
+                {allPersistentChars.slice(0, 3).map((npc, idx) => (
+                  <div key={idx} className="flex flex-col items-center flex-shrink-0">
+                    <img
+                      src={npc.img}
+                      alt={npc.name}
+                      className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl object-cover"
+                      style={{
+                        border: '2px solid hsl(35 40% 40%)',
+                        boxShadow: '0 4px 12px hsl(0 0% 0% / 0.4), 0 0 8px hsl(35 40% 40% / 0.2)',
+                      }}
+                    />
+                    <p className="text-[8px] sm:text-[10px] font-display font-bold leading-tight mt-0.5 text-center max-w-[56px] truncate" style={{ color: 'hsl(35 50% 65%)' }}>{npc.name}</p>
+                  </div>
+                ))}
               </div>
             )}
           </div>
