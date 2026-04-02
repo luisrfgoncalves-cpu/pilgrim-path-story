@@ -748,6 +748,27 @@ export default function RPGEventPopup({
           )}
         </div>
       </div>
+
+      {/* Boss VFX animations */}
+      <style>{`
+        @keyframes bossScreenShake {
+          0%, 100% { transform: translate(0, 0); }
+          10% { transform: translate(-4px, -2px); }
+          30% { transform: translate(4px, 2px); }
+          50% { transform: translate(-3px, 3px); }
+          70% { transform: translate(3px, -3px); }
+          90% { transform: translate(-2px, 1px); }
+        }
+        @keyframes bossPulse {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 0.8; }
+        }
+        @keyframes bossFlame {
+          0% { transform: translateY(0) scaleY(1); opacity: 0.6; }
+          50% { transform: translateY(-30px) scaleY(1.3); opacity: 1; }
+          100% { transform: translateY(-60px) scaleY(0.5); opacity: 0; }
+        }
+      `}</style>
     </div>
   );
 }
