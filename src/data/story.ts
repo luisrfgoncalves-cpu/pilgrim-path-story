@@ -261,7 +261,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Clamor",
     location: "Cidade da Destruição",
     sceneEvent: { type: 'tension', intensity: 1, duration: 2000 },
-    characters: ["cristao"],
+    characters: ["cristao", "flexivel"],
     reflection: "r3",
     narrative: [
       "Você corre para fora da cidade com o livro apertado no peito.",
