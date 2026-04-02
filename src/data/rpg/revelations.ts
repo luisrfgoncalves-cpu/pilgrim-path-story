@@ -1,12 +1,13 @@
 import { HiddenRevelation } from './types';
+import { revelationMapExpansion } from './revelationsExpansion';
 
 // ═══════════════════════════════════════════════════════
 // REVELAÇÕES OCULTAS — Desbloqueadas após acerto
 // Ensino profundo, contexto histórico, aplicação prática
-// Cobertura: 80%+ de todos os itens de conteúdo
+// Cobertura: 100% de todos os itens de conteúdo
 // ═══════════════════════════════════════════════════════
 
-export const revelationMap: Record<string, HiddenRevelation> = {
+const baseRevelationMap: Record<string, HiddenRevelation> = {
   // ═══════════════════════════════════════
   // PERGUNTAS — APRENDIZ
   // ═══════════════════════════════════════
