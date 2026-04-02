@@ -510,6 +510,7 @@ const PresentialMultiplayer = () => {
     setCurrentTurn(0);
     playTurnStart();
     playGameSfx('gameStart');
+    playRealSfx('bell', 0.4);
     playPhaseAmbient(0);
     startAmbientMusic(0);
     lastPhaseAmbientRef.current = 0;
