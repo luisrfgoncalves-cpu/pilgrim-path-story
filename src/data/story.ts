@@ -1051,11 +1051,12 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Palácio Belo",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'Uma batalha feroz se desenrola diante de seus olhos...' },
     narrative: [
-      "A visão seguinte mostra um palácio magnífico. Na porta, guardas armados impedem a entrada. Uma multidão observa de longe, com medo.",
-      "Então um homem de rosto determinado se aproxima da mesa de registro, escreve seu nome, e avança de espada em punho contra os guardas. A batalha é feroz. Ele recebe golpes, sangra, mas não recua. Finalmente, atravessa a porta.",
-      "De dentro do palácio, vozes cantam: \"Entra, entra! A glória eterna será tua.\"",
-      "\"O Reino dos Céus padece violência\", murmura o Intérprete, \"e são os violentos que o tomam por força.\""
+      "A visão seguinte mostra um palácio magnífico. Na porta, guardas armados impedem a entrada. {{fade}}Uma multidão observa de longe, com medo.{{/fade}}",
+      "{{tremor}}Então um homem de rosto determinado se aproxima da mesa de registro, escreve seu nome, e avança de espada em punho contra os guardas.{{/tremor}} A batalha é feroz. Ele recebe golpes, sangra, mas não recua. {{emphasis}}Finalmente, atravessa a porta.{{/emphasis}}",
+      "{{divine}}De dentro do palácio, vozes cantam: \"Entra, entra! A glória eterna será tua.\"{{/divine}}",
+      "{{whisper}}\"O Reino dos Céus padece violência\"{{/whisper}}, murmura o Intérprete, {{emphasis}}\"e são os violentos que o tomam por força.\"{{/emphasis}}"
     ],
     flagNarrative: [
       { flag: "ignorou_inquietacao", text: "Você pensa em como quase ignorou o chamado. Aquele homem corajoso não hesitou — e você?" }
