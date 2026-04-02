@@ -27,6 +27,7 @@ import {
 } from '@/components/multiplayer/BoardSounds';
 import { startAmbientMusic, stopAmbientMusic, updateAmbientPhase } from '@/components/multiplayer/AmbientMusic';
 import { playGameSfx } from '@/lib/gameSfx';
+import { preloadRealSfx, playRealSfx } from '@/lib/realSfx';
 import { useAudioPrewarm } from '@/hooks/useAudioPrewarm';
 import { prewarmNarrator, setNarratorEnabled, stopNarration } from '@/lib/narrator';
 import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown, Volume2, VolumeX } from 'lucide-react';
