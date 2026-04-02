@@ -58,58 +58,152 @@ export const useVisualEffects = () => {
 
   /** Auto-trigger scene entry VFX based on chapter context */
   const triggerSceneEntryVFX = useCallback((chapterId: string) => {
-    // Battle scenes
-    if (chapterId.includes('fase3-cena3')) {
-      setTimeout(() => triggerEffect('earthquake'), 800);
-      setTimeout(() => triggerEffect('blood-pulse'), 1500);
+    // ── FASE 1 ──
+    // Cidade da Destruição — oppressive tremor
+    if (chapterId === 'cena1' || chapterId === 'cena1b') {
+      setTimeout(() => triggerEffect('tremor'), 600);
     }
-    // Vale da Sombra
-    else if (chapterId.includes('fase3-cena5')) {
+    // O Clamor — dramatic escape
+    else if (chapterId === 'cena3') {
+      setTimeout(() => triggerEffect('shake'), 400);
+      setTimeout(() => triggerEffect('flash-light'), 1000);
+    }
+    // Fardo Insuportável — heartbeat tension
+    else if (chapterId === 'cena4') {
+      setTimeout(() => triggerEffect('heartbeat'), 500);
+      setTimeout(() => triggerEffect('tremor'), 1500);
+    }
+    // Evangelista — divine encounter
+    else if (chapterId === 'cena5') {
+      setTimeout(() => triggerEffect('divine-light'), 800);
+    }
+    // Sozinho com o fardo — darkness
+    else if (chapterId === 'cena6') {
       setTimeout(() => triggerEffect('fade-black'), 500);
       setTimeout(() => triggerEffect('tremor'), 1800);
     }
-    // Cruz / Libertação
-    else if (chapterId.includes('fase2-cena4')) {
+    // Porta Estreita — divine light at the door
+    else if (chapterId === 'cena7') {
+      setTimeout(() => triggerEffect('divine-light'), 800);
+    }
+    // Flechas na Porta — impact and shake
+    else if (chapterId === 'cena7b') {
+      setTimeout(() => triggerEffect('shake'), 300);
+      setTimeout(() => triggerEffect('impact'), 800);
+      setTimeout(() => triggerEffect('flash-dark'), 1200);
+    }
+    // Monte Sinai — earthquake and fire
+    else if (chapterId === 'cena10') {
+      setTimeout(() => triggerEffect('earthquake'), 500);
+      setTimeout(() => triggerEffect('flash-dark'), 1200);
+      setTimeout(() => triggerEffect('blood-pulse'), 2000);
+    }
+    // Pântano — sinking tremor
+    else if (chapterId === 'cena11' || chapterId === 'cena11b') {
+      setTimeout(() => triggerEffect('tremor'), 600);
+      setTimeout(() => triggerEffect('fade-black'), 1500);
+    }
+    // Afundando — desperate pulse
+    else if (chapterId === 'cena13') {
+      setTimeout(() => triggerEffect('heartbeat'), 400);
+      setTimeout(() => triggerEffect('tremor'), 1000);
+      setTimeout(() => triggerEffect('blood-pulse'), 2000);
+    }
+    // Cruz — golden burst of liberation
+    else if (chapterId === 'cena15') {
       setTimeout(() => triggerEffect('golden-burst'), 1000);
       setTimeout(() => triggerEffect('divine-light'), 2500);
     }
-    // Gigante Desespero
-    else if (chapterId.includes('fase5-cena3')) {
-      setTimeout(() => triggerEffect('earthquake'), 600);
-      setTimeout(() => triggerEffect('impact'), 1200);
+    // Três Seres Resplandecentes
+    else if (chapterId === 'cena15b') {
+      setTimeout(() => triggerEffect('flash-light'), 500);
+      setTimeout(() => triggerEffect('golden-burst'), 1200);
+      setTimeout(() => triggerEffect('divine-light'), 2500);
     }
+
+    // ── FASE 2 ──
+    else if (chapterId === 'fase2-cena1') {
+      setTimeout(() => triggerEffect('divine-light'), 1000);
+    }
+    // Homem na Gaiola
+    else if (chapterId === 'fase2-cena8') {
+      setTimeout(() => triggerEffect('heartbeat'), 800);
+      setTimeout(() => triggerEffect('flash-dark'), 1500);
+    }
+    // Armadura de Deus
+    else if (chapterId === 'fase2-cena9' || chapterId === 'fase2-cena10') {
+      setTimeout(() => triggerEffect('golden-burst'), 800);
+    }
+    // Colina da Dificuldade
+    else if (chapterId === 'fase2-cena11' || chapterId === 'fase2-cena12') {
+      setTimeout(() => triggerEffect('tremor'), 600);
+    }
+    // Leões
+    else if (chapterId === 'fase2-cena14') {
+      setTimeout(() => triggerEffect('shake'), 500);
+      setTimeout(() => triggerEffect('impact'), 1000);
+    }
+
+    // ── FASE 3 ──
+    // Vale da Humilhação
+    else if (chapterId === 'fase3-cena1' || chapterId === 'fase3-cena2') {
+      setTimeout(() => triggerEffect('tremor'), 500);
+      setTimeout(() => triggerEffect('fade-black'), 1200);
+    }
+    // Apolião — battle
+    else if (chapterId === 'fase3-cena3') {
+      setTimeout(() => triggerEffect('earthquake'), 800);
+      setTimeout(() => triggerEffect('blood-pulse'), 1500);
+    }
+    // Vale da Sombra da Morte
+    else if (chapterId === 'fase3-cena5' || chapterId === 'fase3-cena6') {
+      setTimeout(() => triggerEffect('fade-black'), 500);
+      setTimeout(() => triggerEffect('tremor'), 1800);
+    }
+
+    // ── FASE 4 ──
     // Feira da Vaidade
-    else if (chapterId.includes('fase4-cena1')) {
+    else if (chapterId === 'fase4-cena1') {
       setTimeout(() => triggerEffect('flash-light'), 500);
     }
+    // Julgamento
+    else if (chapterId === 'fase4-cena4' || chapterId === 'fase4-cena6') {
+      setTimeout(() => triggerEffect('blood-pulse'), 800);
+      setTimeout(() => triggerEffect('shake'), 1500);
+    }
     // Morte de Fiel
-    else if (chapterId.includes('fase4-cena8')) {
+    else if (chapterId === 'fase4-cena7' || chapterId === 'fase4-cena8') {
       setTimeout(() => triggerEffect('heartbeat'), 800);
       setTimeout(() => triggerEffect('fade-black'), 2000);
       setTimeout(() => triggerEffect('divine-light'), 3800);
     }
+
+    // ── FASE 5 ──
+    else if (chapterId === 'fase5-cena1' || chapterId === 'fase5-cena2') {
+      setTimeout(() => triggerEffect('tremor'), 800);
+    }
+    // Gigante Desespero
+    else if (chapterId === 'fase5-cena3' || chapterId === 'fase5-cena4') {
+      setTimeout(() => triggerEffect('earthquake'), 600);
+      setTimeout(() => triggerEffect('impact'), 1200);
+    }
+    // Chave da Promessa — light breaking through
+    else if (chapterId === 'fase5-cena6' || chapterId === 'fase5-cena7') {
+      setTimeout(() => triggerEffect('golden-burst'), 800);
+      setTimeout(() => triggerEffect('divine-light'), 1800);
+    }
+
+    // ── FASE 6 ──
     // Rio da Morte
-    else if (chapterId.includes('fase6-cena1')) {
+    else if (chapterId === 'fase6-cena1' || chapterId === 'fase6-cena2') {
       setTimeout(() => triggerEffect('tremor'), 500);
       setTimeout(() => triggerEffect('fade-black'), 1500);
     }
     // Cidade Celestial finale
-    else if (chapterId.includes('fase6-cena9') || chapterId.includes('fase6-cena8')) {
+    else if (chapterId.includes('fase6-cena8') || chapterId.includes('fase6-cena9')) {
       setTimeout(() => triggerEffect('golden-burst'), 500);
       setTimeout(() => triggerEffect('divine-light'), 1500);
-    }
-    // Castelo da Dúvida
-    else if (chapterId.startsWith('fase5-cena1') || chapterId.startsWith('fase5-cena2')) {
-      setTimeout(() => triggerEffect('tremor'), 800);
-    }
-    // Pântano do Desânimo
-    else if (chapterId === 'cena4') {
-      setTimeout(() => triggerEffect('tremor'), 600);
-    }
-    // Homem na Gaiola de Ferro
-    else if (chapterId === 'fase2-cena8') {
-      setTimeout(() => triggerEffect('heartbeat'), 800);
-      setTimeout(() => triggerEffect('flash-dark'), 1500);
+      setTimeout(() => triggerEffect('flash-light'), 3000);
     }
     // Storm scenes
     else if (chapterId.includes('tempestade') || chapterId.includes('storm')) {
