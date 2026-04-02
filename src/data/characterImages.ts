@@ -92,6 +92,13 @@ export const characterImages: Record<string, string> = {
   vergonha,
   volta_atras: voltaAtras,
 
+  // Personagens sem nome (ilustrativos)
+  esposa_cristao: esposaCristao,
+  vizinhos,
+  vigilante: vigilantePorteiro,
+  demas,
+  timidez_desconfianca: timidezDesconfiancaDupla,
+
   // Parte II — novos
   crista,
   misericordia,
