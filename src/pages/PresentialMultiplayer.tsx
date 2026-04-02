@@ -1259,6 +1259,8 @@ const PresentialMultiplayer = () => {
           nextTurn();
         }}
         rotationState={rotationStateRef}
+        chainState={chainStateRef}
+        currentTurn={currentTurn}
       />
 
       <header className="sticky top-0 z-20 bg-card/95 backdrop-blur-md border-b border-border px-4 py-2">
