@@ -164,15 +164,15 @@ export function getTileEventLabel(type: TileEventType): { emoji: string; label: 
 /** Get content stats for display */
 export function getContentStats() {
   return {
-    questions: scriptureQuestions.length,
-    riddles: riddles.length,
-    dilemmas: moralDilemmas.length,
+    questions: allQuestions.length,
+    riddles: allRiddles.length,
+    dilemmas: allDilemmas.length,
     challenges: activeChallenges.length,
     bosses: bossEncounters.length,
     specialEvents: specialEvents.length,
     traps: trapEvents.length,
     refuges: refugeEvents.length,
-    total: scriptureQuestions.length + riddles.length + moralDilemmas.length +
+    total: allQuestions.length + allRiddles.length + allDilemmas.length +
       activeChallenges.length + bossEncounters.length + specialEvents.length +
       trapEvents.length + refugeEvents.length,
   };
