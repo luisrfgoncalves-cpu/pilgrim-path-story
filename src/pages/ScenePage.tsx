@@ -281,13 +281,17 @@ const ScenePage = () => {
           // FASE 1
           'cena1':  [['defeat', 800]],                       // peso, opressão
           'cena1b': [['defeat', 600]],                       // angústia
+          'cena2':  [['negative', 500]],                     // família se opõe
           'cena3':  [['gameStart', 500]],                    // fuga dramática
           'cena4':  [['defeat', 400], ['defeat', 1200]],     // fardo insuportável
           'cena5':  [['pray', 800]],                         // Evangelista - momento divino
+          'cena5b': [['pray', 600], ['positive', 1200]],     // conselho do Evangelista
           'cena6':  [['defeat', 500]],                       // sozinho, escuridão
           'cena7':  [['pray', 600], ['itemFound', 1500]],    // Porta Estreita - revelação
           'cena7b': [['attack', 300], ['attack', 800], ['defend', 1400]], // flechas + proteção
           'cena8':  [['negative', 600]],                     // Prudência Mundana - tentação
+          'cena9':  [['negative', 400], ['defeat', 1000]],   // Legalista - peso da lei
+          'cena9b': [['defeat', 500]],                       // consequências do desvio
           'cena10': [['attack', 500], ['attack', 1200]],     // Sinai - terremoto + fogo
           'cena11': [['defeat', 400]],                       // Pântano
           'cena11b': [['defeat', 500]],                      // afundando
@@ -299,14 +303,18 @@ const ScenePage = () => {
           'cena15b': [['victory', 500], ['itemFound', 1200], ['pray', 2000]], // Três Resplandecentes
           // FASE 2
           'fase2-cena1': [['pray', 800]],                    // Casa do Intérprete
+          'fase2-cena2': [['positive', 500], ['pray', 1200]], // visões do Intérprete
+          'fase2-cena3': [['pray', 600]],                    // ensinamento profundo
           'fase2-cena4': [['negative', 600]],                // visão perturbadora
           'fase2-cena5': [['positive', 700]],                // aprendizado
+          'fase2-cena6': [['positive', 500], ['pray', 1200]],// lição espiritual
           'fase2-cena7': [['positive', 500]],                // Palácio Belo
           'fase2-cena8': [['defeat', 500], ['defeat', 1200]],// Homem na Gaiola
           'fase2-cena9': [['itemFound', 600], ['defend', 1200]], // Armadura de Deus
           'fase2-cena10': [['defend', 500], ['critical', 1200]], // equipando armadura
           'fase2-cena11': [['attack', 500]],                 // Colina da Dificuldade
           'fase2-cena12': [['defeat', 400]],                 // subida árdua
+          'fase2-cena13': [['defeat', 500], ['negative', 1200]], // dormindo no posto
           'fase2-cena14': [['attack', 400], ['attack', 900], ['defend', 1500]], // Leões
           // FASE 3
           'fase3-cena1': [['defeat', 500]],                  // Vale da Humilhação
@@ -324,12 +332,15 @@ const ScenePage = () => {
           'fase4-cena2': [['negative', 500]],                // pressão social
           'fase4-cena3': [['negative', 600]],                // Amor ao Dinheiro
           'fase4-cena4': [['attack', 500], ['defeat', 1200]],// Julgamento
+          'fase4-cena5': [['defeat', 400], ['negative', 1000]], // acusações
           'fase4-cena6': [['attack', 400], ['critical', 1000], ['defeat', 1800]], // sentença
           'fase4-cena7': [['defeat', 800], ['pray', 2000]],  // Morte de Fiel
           'fase4-cena8': [['heal', 600], ['positive', 1400]],// Esperança surge
           'fase4-cena9': [['positive', 500]],                // companheirismo
           'fase4-cena10': [['negative', 600]],               // tentação de Demas
+          'fase4-cena11': [['negative', 400], ['defeat', 1000]], // mina perigosa
           'fase4-cena11b': [['negative', 500]],              // mina de prata
+          'fase4-cena12': [['positive', 500], ['pray', 1200]], // memorial de Ló
           // FASE 5
           'fase5-cena1': [['negative', 500]],                // Interesses
           'fase5-cena2': [['defeat', 400]],                  // desvio do caminho
@@ -874,15 +885,10 @@ const ScenePage = () => {
                     onClick={() => {
                       if (narrativeIndex > 0) {
                         setNarrativeIndex(prev => Math.max(0, prev - 1));
-                      } else {
-                        // Go to previous scene
-                        const visited = progress.visitedChapters;
-                        const currentIdx = visited.indexOf(progress.currentChapterId);
-                        const prevId = currentIdx > 0 ? visited[currentIdx - 1] : visited[visited.length - 2];
-                        if (prevId && prevId !== progress.currentChapterId) goToChapter(prevId);
                       }
                     }}
-                    className="btn-medieval-secondary px-3 py-2 text-xs flex items-center gap-1.5 flex-shrink-0"
+                    disabled={narrativeIndex === 0}
+                    className="btn-medieval-secondary px-3 py-2 text-xs flex items-center gap-1.5 flex-shrink-0 disabled:opacity-40 disabled:pointer-events-none"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" /> Voltar
                   </button>
