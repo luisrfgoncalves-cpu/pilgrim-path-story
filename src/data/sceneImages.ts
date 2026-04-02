@@ -34,6 +34,9 @@ import valenteEncontro from '@/assets/scenes/valente-encontro.jpg';
 import masmorrasCastelo from '@/assets/scenes/masmorra-castelo.jpg';
 import gaiolaFerro from '@/assets/scenes/gaiola-ferro.jpg';
 import armaduraCrista from '@/assets/scenes/armadura-crista.jpg';
+import caramanchaoColina from '@/assets/scenes/caramanchao-colina.jpg';
+import minaPrataDemas from '@/assets/scenes/mina-prata-demas.jpg';
+import terraEncantadaFlores from '@/assets/scenes/terra-encantada-flores.jpg';
 
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
