@@ -864,8 +864,8 @@ const ScenePage = () => {
                           boxShadow: '0 4px 12px hsl(0 0% 0% / 0.4), 0 0 8px hsl(35 40% 40% / 0.2)',
                         }}
                       />
-                      <p className="text-[9px] sm:text-[11px] font-display font-bold leading-tight mt-1 text-center max-w-[64px] truncate" style={{ color: 'hsl(35 50% 65%)' }}>{npc.name}</p>
-                      {hasAllegory && <p className="text-[7px] text-primary/50 font-display uppercase tracking-wider">toque p/ ler</p>}
+                      <p className="text-[11px] sm:text-xs font-display font-bold leading-tight mt-1 text-center max-w-[72px] truncate" style={{ color: 'hsl(35 50% 65%)' }}>{npc.name}</p>
+                      {hasAllegory && <p className="text-[9px] text-primary/50 font-display uppercase tracking-wider">toque p/ ler</p>}
                     </button>
                   );
                 })}
