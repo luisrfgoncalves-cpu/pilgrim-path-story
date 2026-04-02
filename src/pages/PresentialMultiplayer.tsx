@@ -340,7 +340,8 @@ function resolveTileEffect(
 
 const PresentialMultiplayer = () => {
   const navigate = useNavigate();
-  useAudioPrewarm(); // Pre-warm audio engine for zero-delay sounds
+  useAudioPrewarm();
+  prewarmNarrator();
   const [phase, setPhase] = useState<'setup' | 'playing' | 'finished'>('setup');
   const [players, setPlayers] = useState<LocalPlayer[]>([createPlayer(0), createPlayer(1)]);
   const [editingNames, setEditingNames] = useState<Record<string, string>>({});
