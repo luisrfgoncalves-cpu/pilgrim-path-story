@@ -2,8 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { storyChapters, chapterOrder } from '@/data/story';
 import { part2Chapters, part2ChapterOrder } from '@/data/storyPart2';
-import { ArrowLeft, Lock, CheckCircle2, MapPin, ChevronDown, ChevronUp, RotateCcw, Compass } from 'lucide-react';
+import { ArrowLeft, Lock, CheckCircle2, MapPin, ChevronDown, ChevronUp, RotateCcw, Compass, Shield } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import ScreenHero from '@/components/ScreenHero';
 
 import mapFase1 from '@/assets/map-fase1.jpg';
