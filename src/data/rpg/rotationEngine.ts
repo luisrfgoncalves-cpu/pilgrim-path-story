@@ -1,10 +1,18 @@
 import { Difficulty, ResponseMode, TileEventType, RotationState, ScriptureQuestion } from './types';
 import { scriptureQuestions } from './questions';
+import { scriptureQuestionsExpansion } from './questionsExpansion';
 import { riddles } from './riddles';
+import { riddlesExpansion } from './riddlesExpansion';
 import { moralDilemmas } from './dilemmas';
+import { moralDilemmasExpansion } from './dilemmasExpansion';
 import { activeChallenges } from './challenges';
 import { bossEncounters } from './bosses';
 import { specialEvents, trapEvents, refugeEvents } from './specialEvents';
+
+// Merge all content pools
+const allQuestions = [...scriptureQuestions, ...scriptureQuestionsExpansion];
+const allRiddles = [...riddles, ...riddlesExpansion];
+const allDilemmas = [...moralDilemmas, ...moralDilemmasExpansion];
 
 export type { RotationState };
 
@@ -55,15 +63,15 @@ function pickRandom<T extends { id: string; difficulty?: Difficulty }>(
 // ═══════ PUBLIC API ═══════
 
 export function getRandomQuestion(state: RotationState, difficulty: Difficulty) {
-  return pickRandom(scriptureQuestions, state.usedQuestions, difficulty);
+  return pickRandom(allQuestions, state.usedQuestions, difficulty);
 }
 
 export function getRandomRiddle(state: RotationState, difficulty: Difficulty) {
-  return pickRandom(riddles, state.usedRiddles, difficulty);
+  return pickRandom(allRiddles, state.usedRiddles, difficulty);
 }
 
 export function getRandomDilemma(state: RotationState, difficulty: Difficulty) {
-  return pickRandom(moralDilemmas, state.usedDilemmas, difficulty);
+  return pickRandom(allDilemmas, state.usedDilemmas, difficulty);
 }
 
 export function getRandomChallenge(state: RotationState, difficulty: Difficulty) {
@@ -156,15 +164,15 @@ export function getTileEventLabel(type: TileEventType): { emoji: string; label: 
 /** Get content stats for display */
 export function getContentStats() {
   return {
-    questions: scriptureQuestions.length,
-    riddles: riddles.length,
-    dilemmas: moralDilemmas.length,
+    questions: allQuestions.length,
+    riddles: allRiddles.length,
+    dilemmas: allDilemmas.length,
     challenges: activeChallenges.length,
     bosses: bossEncounters.length,
     specialEvents: specialEvents.length,
     traps: trapEvents.length,
     refuges: refugeEvents.length,
-    total: scriptureQuestions.length + riddles.length + moralDilemmas.length +
+    total: allQuestions.length + allRiddles.length + allDilemmas.length +
       activeChallenges.length + bossEncounters.length + specialEvents.length +
       trapEvents.length + refugeEvents.length,
   };

@@ -22,6 +22,28 @@ export type TileEventType =
   | 'special'      // Evento especial surpresa
   | 'narrative';   // Casa narrativa (fixa, conta a história)
 
+// Revelação Oculta — desbloqueada após acerto
+export interface HiddenRevelation {
+  title: string;              // Ex: "O Significado Oculto"
+  deepTeaching: string;       // Explicação espiritual/histórica profunda
+  historicalContext?: string;  // Contexto histórico (época de Bunyan, etc.)
+  practicalApplication?: string; // Aplicação prática para o grupo
+  bibleDeepDive?: string;     // Referência bíblica extra para estudo
+}
+
+// Consequência em cadeia — eventos passados afetam o futuro
+export interface ChainTrigger {
+  flag: string;               // Nome da flag (ex: 'rescued_prisoners')
+  description: string;        // Descrição para debug
+}
+
+export interface ChainCondition {
+  requiredFlag: string;       // Flag que deve existir
+  altContext?: string;        // Contexto narrativo alternativo se flag ativa
+  altEffect?: DilemmaEffect;  // Efeito alternativo
+  altNarrative?: string;      // Narrativa alterada
+}
+
 export interface ScriptureQuestion {
   id: string;
   difficulty: Difficulty;
@@ -33,32 +55,41 @@ export interface ScriptureQuestion {
   explanation: string;       // Explicação após resposta
   timerSeconds: number;      // Tempo após clicar no cronômetro
   narrativeLink?: string;    // Conexão com cena da Parte 1
+  revelation?: HiddenRevelation; // Revelação profunda após acerto
+  chainTrigger?: ChainTrigger;   // Flag que esta pergunta ativa ao acertar
+  chainCondition?: ChainCondition; // Condição de cadeia
 }
 
 export interface Riddle {
   id: string;
   difficulty: Difficulty;
-  context: string;           // Contextualização
-  riddle: string;            // O enigma
-  hints: string[];           // Até 3 dicas progressivas
-  answer: string;            // Resposta
+  context: string;
+  riddle: string;
+  hints: string[];
+  answer: string;
   bibleReference: string;
   explanation: string;
   timerSeconds: number;
+  revelation?: HiddenRevelation;
+  chainTrigger?: ChainTrigger;
+  chainCondition?: ChainCondition;
 }
 
 export interface MoralDilemma {
   id: string;
   difficulty: Difficulty;
-  context: string;           // Contextualização narrativa
-  situation: string;         // A situação
+  context: string;
+  situation: string;
   choices: {
     text: string;
-    consequence: string;     // Revelado após escolha
+    consequence: string;
     effect: DilemmaEffect;
   }[];
   bibleReference: string;
-  lesson: string;            // Lição espiritual
+  lesson: string;
+  revelation?: HiddenRevelation;
+  chainTrigger?: ChainTrigger;
+  chainCondition?: ChainCondition;
 }
 
 export interface DilemmaEffect {
@@ -147,4 +178,10 @@ export interface RotationState {
   usedSpecials: Set<string>;
   usedTraps: Set<string>;
   usedRefuges: Set<string>;
+}
+
+// Estado de cadeia de consequências
+export interface ChainState {
+  flags: Set<string>;           // Flags ativas nesta sessão
+  history: { flag: string; turn: number; playerId: string }[];
 }

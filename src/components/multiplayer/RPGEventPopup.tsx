@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Difficulty, ResponseMode, ScriptureQuestion, Riddle, MoralDilemma, ActiveChallenge, BossEncounter, SpecialEvent, TrapEvent, RefugeEvent } from '@/data/rpg/types';
+import { Difficulty, ResponseMode, ScriptureQuestion, Riddle, MoralDilemma, ActiveChallenge, BossEncounter, SpecialEvent, TrapEvent, RefugeEvent, HiddenRevelation, ChainState } from '@/data/rpg/types';
 import {
   getRandomQuestion, getRandomRiddle,
   getRandomDilemma, getRandomChallenge, getRandomBoss,
@@ -16,7 +16,9 @@ import {
   playHolyChime, playDramaticReveal, playNarrativeChime,
 } from './BoardSounds';
 import { playRealSfx, getSfxForTileEvent, playNarrativeSfx } from '@/lib/realSfx';
-import { Clock, PlayCircle } from 'lucide-react';
+import { getRevelation } from '@/data/rpg/revelations';
+import { setChainFlag, hasChainFlag, applyChainCondition, getChainNarrativeModifier } from '@/data/rpg/chainSystem';
+import { Clock, PlayCircle, BookOpen, Sparkles } from 'lucide-react';
 
 // Map RPG sound intents to available GameSfx types
 const rpgSfx = (intent: string): GameSfx => {
@@ -46,15 +48,18 @@ interface RPGEventPopupProps {
   }) => void;
   onDismiss: () => void;
   rotationState: React.MutableRefObject<RotationState>;
+  chainState?: React.MutableRefObject<ChainState>;
+  currentTurn?: number;
 }
 
-type PopupPhase = 'context' | 'mode_reveal' | 'player_select' | 'challenge' | 'result';
+type PopupPhase = 'suspense_intro' | 'context' | 'mode_reveal' | 'player_select' | 'challenge' | 'result' | 'revelation';
 
 export default function RPGEventPopup({
   visible, difficulty, playerNames, currentPlayerIdx,
   tileEventType, sourceTileType, onResult, onDismiss, rotationState,
+  chainState, currentTurn,
 }: RPGEventPopupProps) {
-  const [phase, setPhase] = useState<PopupPhase>('context');
+  const [phase, setPhase] = useState<PopupPhase>('suspense_intro');
   const [responseMode, setResponseMode] = useState<ResponseMode>('group_consensus');
   const [selectedPlayer, setSelectedPlayer] = useState<string>('');
   const [timerActive, setTimerActive] = useState(false);
@@ -77,6 +82,8 @@ export default function RPGEventPopup({
   const [bossWins, setBossWins] = useState(0);
   const [hintIndex, setHintIndex] = useState(0);
   const [riddleAnswerRevealed, setRiddleAnswerRevealed] = useState(false);
+  const [currentRevelation, setCurrentRevelation] = useState<HiddenRevelation | null>(null);
+  const [narrativeStage, setNarrativeStage] = useState(0); // 0=intro dramática, 1=contexto, 2=pergunta retórica
 
   const timerRef = useRef<number | null>(null);
   const narratedKeyRef = useRef('');
@@ -89,7 +96,7 @@ export default function RPGEventPopup({
       return;
     }
 
-    setPhase('context');
+    setPhase('suspense_intro');
     setSelectedAnswer(null);
     setShowResult(false);
     setResultData(null);
@@ -99,6 +106,8 @@ export default function RPGEventPopup({
     setBossPhaseIdx(0);
     setBossWins(0);
     narratedKeyRef.current = '';
+    setCurrentRevelation(null);
+    setNarrativeStage(0);
 
     // Clear all content
     setQuestion(null); setRiddle(null); setDilemma(null);
@@ -162,23 +171,80 @@ export default function RPGEventPopup({
     return () => stopNarration();
   }, [visible, tileEventType, difficulty, playerNames, rotationState]);
 
-  // Build dramatic RPG master intro for the context
+  // ─── STAGED NARRATIVE: Dramatic suspense intro before context ───
+  const getSuspenseText = (): { emoji: string; text: string } => {
+    const playerName = playerNames[currentPlayerIdx] || 'Peregrino';
+    switch (tileEventType) {
+      case 'boss': return { emoji: '👹', text: `${playerName}... algo terrível se aproxima...` };
+      case 'trap': return { emoji: '⚠️', text: 'O chão treme sob seus pés...' };
+      case 'scripture': return { emoji: '📖', text: 'O Mestre abre o Livro Sagrado...' };
+      case 'riddle': return { emoji: '🧩', text: 'Uma voz enigmática ecoa no ar...' };
+      case 'challenge': return { emoji: '⚔️', text: `${playerName}, prepare-se para a provação...` };
+      case 'dilemma': return { emoji: '⚖️', text: 'Uma escolha impossível se apresenta...' };
+      case 'refuge': return { emoji: '🏰', text: 'Uma luz quente brilha adiante...' };
+      case 'special': return { emoji: '✨', text: 'Algo inesperado acontece...' };
+      default: return { emoji: '📜', text: 'O Mestre prepara suas palavras...' };
+    }
+  };
+
+  // Auto-transition from suspense_intro to context
+  useEffect(() => {
+    if (!visible || phase !== 'suspense_intro') return;
+    
+    // Play dramatic sound for suspense
+    playTensionDrum();
+    if (tileEventType === 'boss') playRealSfx('trap', 0.3);
+    else if (tileEventType === 'refuge' || tileEventType === 'special') playRealSfx('chime', 0.3);
+    else playRealSfx('bell', 0.2);
+
+    // Narrate the suspense text
+    const suspense = getSuspenseText();
+    narrate(suspense.text, { style: 'whisper', force: true });
+
+    const timer = window.setTimeout(() => {
+      setPhase('context');
+      // Play the main contextual SFX when transitioning
+      playContextSfx(tileEventType);
+    }, 2500); // 2.5 second dramatic buildup
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, phase]);
+
+  // Build dramatic RPG master intro for the context (staged — more elaborate)
   const buildRPGIntro = (baseContext: string): string => {
     const playerName = playerNames[currentPlayerIdx] || 'Peregrino';
+    // Chain modifier — adds continuity from past events
+    const chainMod = chainState ? getChainNarrativeModifier(chainState.current) : '';
+    
     const intros = [
-      `O Mestre ergue a voz: "${playerName}, ouça bem..."`,
-      `Uma sombra cai sobre o grupo. O Mestre narra: `,
-      `O vento silencia. O Mestre fala com gravidade: `,
-      `Todos se aproximam. O Mestre declara: `,
-      `O Mestre bate o cajado no chão e anuncia: `,
-      `Com olhar penetrante, o Mestre revela: `,
+      `O Mestre ergue a voz e o silêncio pesa como chumbo. "${playerName}, ouça bem..." `,
+      `Uma sombra cai sobre o grupo. O ar fica denso. O Mestre fala com gravidade de quem viu o invisível: `,
+      `O vento cessa. Os pássaros silenciam. Até as folhas param de cair. O Mestre declara: `,
+      `Todos se aproximam, os rostos iluminados pela luz trêmula. O Mestre bate o cajado no chão TRÊS VEZES e anuncia: `,
+      `Com olhar penetrante que parece ler a alma de cada um, o Mestre revela o que está por vir: `,
+      `O Mestre fecha os olhos por um instante, como se recebesse uma visão. Quando os abre, há urgência em sua voz: `,
     ];
     const intro = intros[Math.floor(Math.random() * intros.length)];
-    return `${intro}${baseContext}`;
+    const chainPrefix = chainMod ? `${chainMod} ` : '';
+    return `${chainPrefix}${intro}${baseContext}`;
+  };
+
+  // Apply chain conditions to modify context
+  const getContextWithChain = () => {
+    const item = question || riddle || dilemma;
+    if (item && 'chainCondition' in item && item.chainCondition && chainState) {
+      const result = applyChainCondition(chainState.current, item.chainCondition);
+      if (result.modified && result.altContext) {
+        return result.altContext;
+      }
+    }
+    return null;
   };
 
   const getContextNarrationText = () => {
-    const raw = question?.context || riddle?.context || dilemma?.context || challenge?.context
+    // Check for chain-modified context first
+    const chainContext = getContextWithChain();
+    const raw = chainContext || question?.context || riddle?.context || dilemma?.context || challenge?.context
       || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
       || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative || '';
     return raw ? buildRPGIntro(raw) : '';
@@ -208,7 +274,7 @@ export default function RPGEventPopup({
     }
   }, []);
 
-  // Narrate context on mount (only once)
+  // Narrate context when entering context phase
   useEffect(() => {
     if (!visible || phase !== 'context' || showResult) return;
 
@@ -219,8 +285,6 @@ export default function RPGEventPopup({
     if (narratedKeyRef.current === key) return;
     narratedKeyRef.current = key;
 
-    // Play contextual SFX (synth + real audio)
-    playContextSfx(tileEventType);
     // Play real narrative SFX based on context text
     const rawContext = question?.context || riddle?.context || dilemma?.context || challenge?.context
       || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative || '';
@@ -488,6 +552,9 @@ export default function RPGEventPopup({
   const isBossContext = isBoss && phase === 'context' && !showResult;
 
   // ─── RENDER ───
+  // Get content ID for revelation lookup
+  const getContentId = () => question?.id || riddle?.id || dilemma?.id || boss?.id || '';
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
       style={isBossContext ? { animation: 'bossScreenShake 0.5s ease-in-out 3' } : undefined}
@@ -515,12 +582,44 @@ export default function RPGEventPopup({
         </>
       )}
 
+      {/* ═══ SUSPENSE INTRO PHASE ═══ */}
+      {phase === 'suspense_intro' && (
+        <div className="relative z-10 flex flex-col items-center gap-6 text-center px-8">
+          <div className="relative">
+            <div className="text-7xl" style={{
+              animation: 'shake 0.15s infinite alternate',
+              filter: `drop-shadow(0 0 30px ${tileInfo.color}60)`,
+            }}>
+              {getSuspenseText().emoji}
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-32 h-32 rounded-full border-2 animate-ping opacity-30"
+                style={{ borderColor: tileInfo.color }} />
+            </div>
+          </div>
+          <p className="text-lg font-display font-bold tracking-wider uppercase animate-pulse"
+            style={{ color: tileInfo.color, textShadow: `0 0 20px ${tileInfo.color}60` }}
+          >
+            {getSuspenseText().text}
+          </p>
+          <div className="flex gap-1">
+            {[0, 1, 2].map(i => (
+              <div key={i} className="w-2 h-2 rounded-full animate-bounce"
+                style={{ background: tileInfo.color, animationDelay: `${i * 0.2}s` }} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ═══ MAIN POPUP (context, challenge, result, revelation) ═══ */}
+      {phase !== 'suspense_intro' && (
       <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border-2 bg-card"
         style={{
           borderColor: isBoss ? 'hsl(0 70% 45%)' : tileInfo.color,
           boxShadow: isBoss
             ? '0 0 60px hsl(0 70% 30% / 0.5), 0 0 120px hsl(0 50% 20% / 0.3)'
             : `0 0 40px ${tileInfo.color}40`,
+          animation: 'scaleReveal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
         }}
       >
         {/* Header */}
@@ -818,12 +917,43 @@ export default function RPGEventPopup({
           )}
 
           {/* RESULT PHASE */}
-          {showResult && resultData && (
+          {showResult && resultData && !currentRevelation && (
             <div className="space-y-4">
               <div className="text-center text-4xl">{resultData.emoji}</div>
               <div className={`p-4 rounded-xl border ${resultData.success ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
                 <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">{resultData.message}</p>
               </div>
+              {/* Revelation button — only on success */}
+              {resultData.success && getRevelation(getContentId()) && (
+                <button
+                  onClick={() => {
+                    const rev = getRevelation(getContentId());
+                    if (rev) {
+                      setCurrentRevelation(rev);
+                      playRealSfx('blessing', 0.5);
+                      playHolyChime();
+                      // Set chain flag if applicable
+                      const item = question || riddle || dilemma;
+                      if (item && 'chainTrigger' in item && item.chainTrigger && chainState) {
+                        setChainFlag(chainState.current, item.chainTrigger.flag, currentTurn || 0, playerNames[currentPlayerIdx] || '');
+                      }
+                      narrate(`Revelação desbloqueada! ${rev.title}. ${rev.deepTeaching}`, { style: 'calm', force: true });
+                    }
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-display font-bold text-sm transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, hsl(45 80% 25%), hsl(30 70% 20%))',
+                    border: '1px solid hsl(45 60% 40%)',
+                    color: 'hsl(45 80% 80%)',
+                    boxShadow: '0 0 20px hsl(45 60% 30% / 0.4)',
+                    animation: 'goldenPulse 2s ease-in-out infinite',
+                  }}
+                >
+                  <BookOpen className="w-4 h-4" />
+                  🔓 Desbloquear Revelação Oculta
+                  <Sparkles className="w-4 h-4" />
+                </button>
+              )}
               <button
                 onClick={handleFinalDismiss}
                 className={`w-full py-4 rounded-xl font-display font-bold text-sm ${
@@ -834,10 +964,48 @@ export default function RPGEventPopup({
               </button>
             </div>
           )}
+
+          {/* REVELATION PHASE — Deep biblical teaching */}
+          {showResult && currentRevelation && (
+            <div className="space-y-4">
+              <div className="text-center">
+                <Sparkles className="w-8 h-8 mx-auto mb-2" style={{ color: 'hsl(45 80% 60%)' }} />
+                <h3 className="font-display font-bold text-foreground text-lg">{currentRevelation.title}</h3>
+              </div>
+              <div className="p-4 rounded-xl border" style={{
+                background: 'linear-gradient(135deg, hsl(45 30% 10%), hsl(30 20% 8%))',
+                borderColor: 'hsl(45 40% 30%)',
+              }}>
+                <p className="text-sm leading-relaxed" style={{ color: 'hsl(45 30% 80%)' }}>
+                  {currentRevelation.deepTeaching}
+                </p>
+              </div>
+              {currentRevelation.historicalContext && (
+                <div className="p-3 rounded-xl bg-background/50 border border-border">
+                  <p className="text-xs text-muted-foreground"><strong>📚 Contexto Histórico:</strong> {currentRevelation.historicalContext}</p>
+                </div>
+              )}
+              {currentRevelation.practicalApplication && (
+                <div className="p-3 rounded-xl" style={{ background: 'hsl(120 20% 10%)', border: '1px solid hsl(120 30% 25%)' }}>
+                  <p className="text-xs" style={{ color: 'hsl(120 40% 70%)' }}><strong>💡 Para o Grupo:</strong> {currentRevelation.practicalApplication}</p>
+                </div>
+              )}
+              {currentRevelation.bibleDeepDive && (
+                <p className="text-xs text-muted-foreground text-center italic">📖 Aprofundamento: {currentRevelation.bibleDeepDive}</p>
+              )}
+              <button
+                onClick={() => { setCurrentRevelation(null); handleFinalDismiss(); }}
+                className="w-full py-4 rounded-xl bg-green-600 text-white font-display font-bold text-sm"
+              >
+                ✨ Continuar a Jornada Iluminado
+              </button>
+            </div>
+          )}
         </div>
       </div>
+      )}
 
-      {/* Boss VFX animations */}
+      {/* Animations */}
       <style>{`
         @keyframes bossScreenShake {
           0%, 100% { transform: translate(0, 0); }
@@ -855,6 +1023,18 @@ export default function RPGEventPopup({
           0% { transform: translateY(0) scaleY(1); opacity: 0.6; }
           50% { transform: translateY(-30px) scaleY(1.3); opacity: 1; }
           100% { transform: translateY(-60px) scaleY(0.5); opacity: 0; }
+        }
+        @keyframes shake {
+          0% { transform: translateX(-3px) rotate(-2deg); }
+          100% { transform: translateX(3px) rotate(2deg); }
+        }
+        @keyframes scaleReveal {
+          0% { transform: scale(0.3) rotate(-3deg); opacity: 0; }
+          100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        @keyframes goldenPulse {
+          0%, 100% { box-shadow: 0 0 20px hsl(45 60% 30% / 0.4); }
+          50% { box-shadow: 0 0 40px hsl(45 70% 40% / 0.6); }
         }
       `}</style>
     </div>
