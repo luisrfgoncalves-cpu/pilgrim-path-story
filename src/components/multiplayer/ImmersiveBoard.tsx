@@ -305,7 +305,7 @@ const PhaseSection = memo(function PhaseSection({
           const config = TILE_TYPES[tileType];
           const playersHere = players.filter(p => getDisplayPosition(p) === globalIdx && !p.finished);
           const isCurrentPlayerHere = playersHere.some(p => p.id === currentTurnId);
-          const isAnimatingHere = playersHere.some(p => p.id === animatingPlayerId);
+          const isAnimatingHere = playersHere.some(p => animatingPlayerId.includes(p.id));
 
           const tileCharKey = config.characterKey;
           const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
