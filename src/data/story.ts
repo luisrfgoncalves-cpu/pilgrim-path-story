@@ -582,12 +582,14 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Agarrar a mão de Auxílio",
         nextChapterId: "cena14",
         effects: { fe: 2, perseveranca: 1 },
-        flag: "pediu_ajuda_pantano"
+        flag: "pediu_ajuda_pantano",
+        consequence: "Aceitar ajuda não é fraqueza — é sabedoria. Auxílio representa a graça de Deus que se estende quando nossas forças acabam. 'A minha graça te basta, porque o meu poder se aperfeiçoa na fraqueza' (2 Coríntios 12:9). Cristão não saiu do pântano por mérito — saiu porque aceitou a mão estendida."
       },
       {
         text: "Tentar sair sozinho — por orgulho ou medo",
         nextChapterId: "cena15",
-        effects: { perseveranca: 1, fe: -1 }
+        effects: { perseveranca: 1, fe: -1 },
+        consequence: "O orgulho espiritual — recusar ajuda quando se está afundando — é perigoso. Provérbios 16:18 avisa: 'A soberba precede a ruína.' Deus envia Auxílio, mas não obriga ninguém a aceitar."
       }
     ]
   },
