@@ -38,7 +38,7 @@ export default function ResultFeedback({ visible, success, message, emoji, posAd
   const hasAttrs = attrChanges && Object.keys(attrChanges).length > 0;
 
   return (
-    <div className="fixed inset-0 z-[60] pointer-events-none flex items-center justify-center">
+    <div className="fixed inset-0 z-[60] pointer-events-none flex items-center justify-center px-6">
       {/* Screen flash */}
       {phase === 'impact' && (
         <div className="absolute inset-0" style={{
@@ -50,11 +50,11 @@ export default function ResultFeedback({ visible, success, message, emoji, posAd
       )}
 
       {/* Central impact */}
-      <div className={`relative flex flex-col items-center gap-3 transition-all duration-500 ${
+      <div className={`relative flex flex-col items-center gap-5 transition-all duration-500 ${
         phase === 'fade' ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
       }`}>
         {/* Big emoji */}
-        <div className="text-7xl" style={{
+        <div className="text-8xl" style={{
           animation: phase === 'impact' ? 'resultBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)' : undefined,
           filter: `drop-shadow(0 0 30px ${success ? 'hsl(45 80% 50% / 0.6)' : 'hsl(0 70% 40% / 0.6)'})`,
         }}>
@@ -63,7 +63,7 @@ export default function ResultFeedback({ visible, success, message, emoji, posAd
 
         {/* Position change */}
         {phase !== 'impact' && hasPositions && (
-          <div className="px-5 py-2 rounded-full font-display font-bold text-lg animate-in slide-in-from-bottom-4"
+          <div className="px-8 py-3 rounded-full font-display font-bold text-2xl animate-in slide-in-from-bottom-4"
             style={{
               background: posAdjust! > 0
                 ? 'hsl(120 40% 15% / 0.9)'
@@ -79,12 +79,12 @@ export default function ResultFeedback({ visible, success, message, emoji, posAd
 
         {/* Attribute changes */}
         {phase !== 'impact' && hasAttrs && (
-          <div className="flex flex-wrap gap-2 justify-center animate-in slide-in-from-bottom-4" style={{ animationDelay: '150ms' }}>
+          <div className="flex flex-wrap gap-3 justify-center animate-in slide-in-from-bottom-4" style={{ animationDelay: '150ms' }}>
             {Object.entries(attrChanges!).map(([key, val]) => (
-              <div key={key} className="px-3 py-1 rounded-full text-xs font-display font-bold"
+              <div key={key} className="px-5 py-2 rounded-full text-base font-display font-bold"
                 style={{
                   background: val > 0 ? 'hsl(45 40% 15% / 0.9)' : 'hsl(0 30% 15% / 0.9)',
-                  border: `1px solid ${val > 0 ? 'hsl(45 50% 40%)' : 'hsl(0 40% 35%)'}`,
+                  border: `2px solid ${val > 0 ? 'hsl(45 50% 40%)' : 'hsl(0 40% 35%)'}`,
                   color: val > 0 ? 'hsl(45 60% 70%)' : 'hsl(0 50% 65%)',
                   backdropFilter: 'blur(8px)',
                 }}
