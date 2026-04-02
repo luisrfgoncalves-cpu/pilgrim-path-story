@@ -652,17 +652,17 @@ export const scriptureQuestions: ScriptureQuestion[] = [
   },
   {
     id: 'q-v-003', difficulty: 'veterano',
-    context: 'A esposa de Cristão (Cristiana) fez a mesma jornada na Parte 2 do livro, mas com seus filhos e companheiras.',
-    question: 'Qual é a principal diferença teológica entre a jornada de Cristão (Parte 1) e a de Cristiana (Parte 2)?',
+    context: 'Bunyan estruturou a jornada de Cristão como uma peregrinação individual, onde cada desafio testa um aspecto diferente da fé.',
+    question: 'O conceito de "peregrinação" como metáfora da vida cristã aparece em qual epístola e de que forma?',
     options: [
-      'Cristiana tinha menos fé',
-      'Cristão enfrentou mais perigos',
-      'Cristão caminhou pela fé individual; Cristiana caminhou em comunidade, mostrando que a fé é vivida em comunhão',
-      'Não há diferença significativa'
+      'Romanos — os cristãos são atletas',
+      'Hebreus 11:13-16 — os patriarcas se declararam "peregrinos e estrangeiros na terra", buscando uma pátria celestial',
+      'Gálatas — os cristãos são soldados',
+      '1 Pedro — os cristãos são sacerdotes'
     ],
-    correctIndex: 2,
-    bibleReference: 'Hebreus 10:24-25',
-    explanation: 'Bunyan mostra dois aspectos da fé: a luta individual (Parte 1) e a jornada em comunidade (Parte 2). Ambos são bíblicos.',
+    correctIndex: 1,
+    bibleReference: 'Hebreus 11:13-16',
+    explanation: 'Bunyan fundamentou toda sua alegoria nesta metáfora bíblica: somos peregrinos rumo à pátria celestial, "estrangeiros e peregrinos sobre a terra."',
     timerSeconds: 60
   },
   {
