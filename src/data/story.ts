@@ -2072,10 +2072,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Os Golpes do Gigante",
     location: "Castelo da Dúvida",
     characters: ["cristao", "gigante_desespero"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'O bastão do gigante esmaga sem piedade!' },
     narrative: [
-      "Pela manhã, o Gigante Desespero desce à masmorra com um bastão. Ele bate em vocês sem misericórdia até que não consigam se mover.",
-      "\"Por que não acabam com isso?\", rosna ele. \"Usem uma faca, uma corda, veneno. Qualquer coisa é melhor do que essa existência miserável.\"",
-      "A proposta é horrível — mas na escuridão da masmorra, depois dos golpes, a tentação de desistir de tudo é real."
+      "{{tremor}}Pela manhã, o Gigante Desespero desce à masmorra com um bastão. Ele bate em vocês sem misericórdia até que não consigam se mover.{{/tremor}}",
+      "{{villain}}\"Por que não acabam com isso?\"{{/villain}}, rosna ele. {{villain}}\"Usem uma faca, uma corda, veneno. Qualquer coisa é melhor do que essa existência miserável.\"{{/villain}}",
+      "{{heart}}A proposta é horrível — mas na escuridão da masmorra, depois dos golpes, a tentação de desistir de tudo é real.{{/heart}}"
     ],
     toneNarrative: [
       { attr: "discernimento", highThreshold: 7, highText: "Você analisa: o gigante quer que desistam. Se a situação fosse sem saída, ele não precisaria convencer.", lowThreshold: 3, lowText: "As palavras do gigante ecoam: acabar com tudo... seria tão fácil... a dor pararia..." }
