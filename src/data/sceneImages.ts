@@ -35,20 +35,27 @@ import valenteEncontro from '@/assets/scenes/valente-encontro.jpg';
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
   'cena1': cidadeDestruicao,
+  'cena1b': cidadeDestruicao,
   'cena2': cidadeDestruicao,
   'cena3': cidadeDestruicao,
   'cena4': cidadeDestruicao,
   'cena5': sabedoriaMundana,
+  'cena5b': tresDorminhocoes,
   'cena6': tresDorminhocoes,
   'cena7': portaoEstreito,
+  'cena7b': portaoEstreito,
   'cena8': sabedoriaMundana,
   'cena9': portaoEstreito,
+  'cena9b': portaoEstreito,
   'cena10': monteSinai,
   'cena11': pantanoDesanimo,
+  'cena11b': pantanoDesanimo,
   'cena12': pantanoDesanimo,
   'cena13': pantanoDesanimo,
   'cena14': pantanoDesanimo,
+  'cena14b': pantanoDesanimo,
   'cena15': cruzFardo,
+  'cena15b': cruzFardo,
 
   // FASE 2: Casa do Intérprete + Colina + Leões
   'fase2-cena1': casaInterprete,
