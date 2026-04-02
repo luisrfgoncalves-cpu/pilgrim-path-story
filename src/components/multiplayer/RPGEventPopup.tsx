@@ -213,18 +213,56 @@ export default function RPGEventPopup({
   // Build dramatic RPG master intro for the context (staged — more elaborate)
   const buildRPGIntro = (baseContext: string): string => {
     const playerName = playerNames[currentPlayerIdx] || 'Peregrino';
-    // Chain modifier — adds continuity from past events
     const chainMod = chainState ? getChainNarrativeModifier(chainState.current) : '';
-    
-    const intros = [
+
+    // Intros diferenciadas por tipo de evento para máxima imersão
+    const introsByType: Record<string, string[]> = {
+      boss: [
+        `O chão estremece. Uma presença maligna envolve o ar. O Mestre grita: "PREPAREM-SE! Algo terrível se aproxima..." `,
+        `As tochas bruxuleiam e quase se apagam. Uma sombra gigantesca se projeta nas paredes. O Mestre sussurra com voz trêmula: "Ele está aqui..." `,
+        `Um rugido ensurdecedor ecoa pelo vale! O Mestre ergue o cajado e brada: "${playerName}, esta é a hora da provação suprema!" `,
+      ],
+      scripture: [
+        `O Mestre abre solenemente o Livro Sagrado. Suas páginas brilham como se iluminadas por dentro. "Está escrito..." ele começa com voz firme: `,
+        `Um silêncio sagrado cai sobre o grupo. O Mestre ajoelha, beija o Livro e declara: "A Palavra do Rei tem uma pergunta para vocês..." `,
+        `O Mestre ergue as Escrituras acima da cabeça. "Esta Palavra é espada e escudo. Mas só para quem a CONHECE. Provem seu conhecimento!" `,
+      ],
+      riddle: [
+        `O Mestre inclina a cabeça e um sorriso enigmático cruza seu rosto. "Tenho uma charada para vocês... e somente os sábios desvendará..." `,
+        `Uma voz antiga ecoa como se viesse das próprias pedras do caminho. O Mestre traduz: "Decifrem isto, peregrinos..." `,
+        `O Mestre traça símbolos no ar com o cajado. "O Intérprete deixou este enigma para os dignos. Vocês são dignos?" `,
+      ],
+      challenge: [
+        `O Mestre bate palmas TRÊS VEZES. "Chega de palavras! Agora é hora de AÇÃO! ${playerName}, prove sua fé com obras!" `,
+        `"A fé sem obras é morta!" declara o Mestre, apontando o cajado. "Este desafio exige mais que conhecimento — exige CORAGEM!" `,
+        `O Mestre cruza os braços e olha fixamente para o grupo. "Qualquer um pode falar de fé. Mas quem pode DEMONSTRÁ-LA?" `,
+      ],
+      dilemma: [
+        `O Mestre fecha os olhos como se carregasse um peso. "O caminho se divide diante de vocês. Não há resposta fácil. Cada escolha tem seu preço..." `,
+        `"Antes de decidir," o Mestre adverte com gravidade, "saibam: esta decisão deixará marcas. Pensem com o coração E com as Escrituras." `,
+        `O Mestre olha para cada um do grupo, um por um. "O que vocês fariam se ninguém estivesse olhando? Pois Deus está. Decidam..." `,
+      ],
+      refuge: [
+        `Uma brisa suave toca os rostos cansados. O Mestre sorri pela primeira vez em muito tempo. "Descansem, peregrinos. O Rei preparou um refúgio..." `,
+        `A luz muda. O ar fica mais doce. O Mestre fala com ternura: "Nem tudo nesta jornada é luta. Às vezes, Deus simplesmente abraça..." `,
+      ],
+      trap: [
+        `O Mestre grita: "CUIDADO! O chão não é o que parece!" Mas é tarde demais — `,
+        `Um estalo sinistro ecoa no ar. O Mestre empalidece. "Vocês ativaram algo... que Deus tenha misericórdia!" `,
+      ],
+      special: [
+        `Os olhos do Mestre se arregalam. "Isso... isso eu não esperava. Algo extraordinário está acontecendo!" `,
+        `O Mestre ri — uma risada de pura alegria e surpresa. "O Rei tem um presente inesperado para vocês!" `,
+      ],
+    };
+
+    const typeIntros = introsByType[tileEventType] || [
       `O Mestre ergue a voz e o silêncio pesa como chumbo. "${playerName}, ouça bem..." `,
-      `Uma sombra cai sobre o grupo. O ar fica denso. O Mestre fala com gravidade de quem viu o invisível: `,
-      `O vento cessa. Os pássaros silenciam. Até as folhas param de cair. O Mestre declara: `,
-      `Todos se aproximam, os rostos iluminados pela luz trêmula. O Mestre bate o cajado no chão TRÊS VEZES e anuncia: `,
-      `Com olhar penetrante que parece ler a alma de cada um, o Mestre revela o que está por vir: `,
-      `O Mestre fecha os olhos por um instante, como se recebesse uma visão. Quando os abre, há urgência em sua voz: `,
+      `Uma sombra cai sobre o grupo. O ar fica denso. O Mestre fala com gravidade: `,
+      `Todos se aproximam, os rostos iluminados pela luz trêmula. O Mestre anuncia: `,
     ];
-    const intro = intros[Math.floor(Math.random() * intros.length)];
+
+    const intro = typeIntros[Math.floor(Math.random() * typeIntros.length)];
     const chainPrefix = chainMod ? `${chainMod} ` : '';
     return `${chainPrefix}${intro}${baseContext}`;
   };

@@ -13,8 +13,9 @@ import RPGBriefing, { GameMode } from '@/components/multiplayer/RPGBriefing';
 import RPGEventPopup from '@/components/multiplayer/RPGEventPopup';
 import AttributePanel from '@/components/multiplayer/AttributePanel';
 import ResultFeedback from '@/components/multiplayer/ResultFeedback';
-import { Difficulty, TileEventType as RPGTileEventType } from '@/data/rpg/types';
+import { Difficulty, TileEventType as RPGTileEventType, ChainState } from '@/data/rpg/types';
 import { createRotationState, RotationState } from '@/data/rpg/rotationEngine';
+import { createChainState } from '@/data/rpg/chainSystem';
 import { boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
 import {
   IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, TileType, TILE_TYPES,
@@ -459,6 +460,8 @@ const PresentialMultiplayer = () => {
   const [rpgGameMode, setRpgGameMode] = useState<GameMode>('cooperative');
   const [rpgHostIndex, setRpgHostIndex] = useState(0);
   const rotationStateRef = useRef<RotationState>(createRotationState());
+  const chainStateRef = useRef<ChainState>(createChainState());
+  const [streakAnnounce, setStreakAnnounce] = useState<string | null>(null);
   const [rpgEvent, setRpgEvent] = useState<{
     tileType: RPGTileEventType;
     sourceTileType: TileType;
@@ -990,7 +993,8 @@ const PresentialMultiplayer = () => {
     setCurrentTurn(0);
     setFinishCount(0);
     setTileTypes(generateImmersiveTiles(Date.now()));
-    rotationStateRef.current = createRotationState(); // Reset RPG rotation
+    rotationStateRef.current = createRotationState();
+    chainStateRef.current = createChainState();
     setRpgEvent(null);
     setPhase('playing');
     playGameSfx('gameStart');
@@ -1083,6 +1087,29 @@ const PresentialMultiplayer = () => {
     }
 
     setRpgEvent(null);
+
+    // Streak feedback — notify when player hits 3+ correct in a row
+    if (result.success) {
+      const currentPlayer = players[playerIdx];
+      const newStreak = (currentPlayer?.stats.currentStreak || 0) + 1;
+      if (newStreak === 3) {
+        setStreakAnnounce(`🔥 ${currentPlayer.name} — Sequência de Fé! 3 acertos seguidos! O Mestre está impressionado!`);
+        playRealSfx('crowd_cheer', 0.5);
+        setTimeout(() => setStreakAnnounce(null), 5000);
+      } else if (newStreak === 5) {
+        setStreakAnnounce(`⚡ ${currentPlayer.name} — INABALÁVEL! 5 acertos! "Mais que vencedores!" (Rm 8:37)`);
+        playRealSfx('victory', 0.5);
+        setTimeout(() => setStreakAnnounce(null), 6000);
+      } else if (newStreak === 7) {
+        setStreakAnnounce(`👑 ${currentPlayer.name} — LENDÁRIO! 7 acertos seguidos! O grupo celebra este momento épico!`);
+        playRealSfx('fireworks', 0.6);
+        setTimeout(() => setStreakAnnounce(null), 7000);
+      } else if (newStreak >= 10) {
+        setStreakAnnounce(`🏆 ${currentPlayer.name} — IMBATÍVEL! ${newStreak} acertos! "Tudo posso naquele que me fortalece!" (Fp 4:13)`);
+        playRealSfx('fireworks', 0.7);
+        setTimeout(() => setStreakAnnounce(null), 8000);
+      }
+    }
 
     // Show dramatic result feedback overlay
     setResultFeedback({
@@ -1211,6 +1238,18 @@ const PresentialMultiplayer = () => {
         </div>
       </GameNotification>
 
+      {/* Streak feedback notification */}
+      <GameNotification visible={!!streakAnnounce} onDismiss={() => setStreakAnnounce(null)} duration={6000} position="top-offset">
+        <div className="px-6 py-3 rounded-2xl font-display text-base" style={{
+          background: 'linear-gradient(135deg, hsl(25 80% 20%), hsl(15 70% 15%))',
+          border: '1px solid hsl(30 80% 55% / 0.6)',
+          color: 'hsl(40 90% 80%)',
+          boxShadow: '0 0 50px hsl(30 80% 50% / 0.3)',
+        }}>
+          {streakAnnounce}
+        </div>
+      </GameNotification>
+
       {/* Collective event notification */}
       <GameNotification visible={!!collectiveMsg} onDismiss={() => setCollectiveMsg(null)} duration={4000} position="top-offset">
         <div className="px-6 py-3 rounded-2xl font-display text-base" style={{
@@ -1256,6 +1295,8 @@ const PresentialMultiplayer = () => {
           nextTurn();
         }}
         rotationState={rotationStateRef}
+        chainState={chainStateRef}
+        currentTurn={currentTurn}
       />
 
       <header className="sticky top-0 z-20 bg-card/95 backdrop-blur-md border-b border-border px-4 py-2">
