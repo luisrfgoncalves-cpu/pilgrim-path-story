@@ -1027,9 +1027,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "interprete"],
     sceneEvent: { type: 'suspense', duration: 2000, message: 'As chamas dançam diante de seus olhos...' },
     narrative: [
-      "Na terceira sala, um fogo arde contra uma parede. Um homem se posta diante dele e derrama água sem parar, tentando apagá-lo. Mas o fogo não diminui — pelo contrário, cresce mais forte a cada balde.",
-      "O Intérprete te leva para trás da parede. Ali, escondido, outro homem despeja óleo continuamente sobre o fogo, através de uma abertura que o primeiro homem não consegue ver.",
-      "\"O fogo é a obra da Graça no coração\", explica o Intérprete. \"O diabo tenta apagá-lo com tentações. Mas Cristo, de modo secreto e contínuo, alimenta essa chama. É por isso que ela nunca se apaga.\""
+      "Na terceira sala, {{tremor}}um fogo arde contra uma parede{{/tremor}}. Um homem se posta diante dele e derrama água sem parar, tentando apagá-lo. {{emphasis}}Mas o fogo não diminui — pelo contrário, cresce mais forte a cada balde.{{/emphasis}}",
+      "O Intérprete te leva para trás da parede. Ali, escondido, {{divine}}outro homem despeja óleo continuamente sobre o fogo{{/divine}}, através de uma abertura que o primeiro homem não consegue ver.",
+      "{{dialog}}\"O fogo é a obra da Graça no coração\"{{/dialog}}, explica o Intérprete. \"O diabo tenta apagá-lo com tentações. Mas {{divine}}Cristo, de modo secreto e contínuo, alimenta essa chama. É por isso que ela nunca se apaga.{{/divine}}\""
     ],
     choices: [
       {
