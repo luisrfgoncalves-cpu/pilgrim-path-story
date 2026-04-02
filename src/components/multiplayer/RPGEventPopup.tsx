@@ -683,7 +683,7 @@ export default function RPGEventPopup({
 
               {/* Context text */}
               <div className="p-5 rounded-xl bg-background/50 border border-border">
-                <p className="text-lg text-foreground/80 leading-relaxed italic font-display" style={{ lineHeight: '1.7' }}>
+                <p className="text-lg font-display leading-relaxed text-foreground/80 italic" style={{ lineHeight: '1.8' }}>
                   {(() => {
                     const raw = question?.context || riddle?.context || dilemma?.context || challenge?.context
                       || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
