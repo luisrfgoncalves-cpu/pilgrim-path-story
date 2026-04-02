@@ -2204,10 +2204,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Fuga do Castelo",
     location: "Castelo da Dúvida",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 300, duration: 3000, message: 'A chave gira... e a porta cede!' },
     narrative: [
-      "A chave abre cada porta — a da masmorra, a do corredor, a do pátio, a do portão exterior. Cada fechadura cede com um clique que ecoa como um trovão de libertação.",
-      "O Gigante Desespero corre atrás de vocês, mas ao cruzar o portão, ele tem um ataque e cai. Suas pernas cedem. Ele é forte dentro de suas muralhas, mas impotente fora delas.",
-      "Vocês correm até estarem longe. Sob a luz do sol, olham para trás. O castelo parece menor. As muralhas, que pareciam infinitas, são apenas pedra velha."
+      "{{divine}}A chave abre cada porta — a da masmorra, a do corredor, a do pátio, a do portão exterior.{{/divine}} {{emphasis}}Cada fechadura cede com um clique que ecoa como um trovão de libertação.{{/emphasis}}",
+      "{{tremor}}O Gigante Desespero corre atrás de vocês, mas ao cruzar o portão, ele tem um ataque e cai.{{/tremor}} {{fade}}Suas pernas cedem. Ele é forte dentro de suas muralhas, mas impotente fora delas.{{/fade}}",
+      "{{heart}}Vocês correm até estarem longe. Sob a luz do sol, olham para trás. O castelo parece menor.{{/heart}} As muralhas, que pareciam infinitas, são apenas pedra velha."
     ],
     toneNarrative: [
       { attr: "coragem", highThreshold: 6, highText: "Sem hesitar, você planta um marco de aviso na estrada: \"Este é o caminho para o Castelo da Dúvida. Nenhum peregrino deve pisar aqui.\"", lowThreshold: 3, lowText: "Com as mãos tremendo, você marca o caminho para que outros não cometam o mesmo erro." }
