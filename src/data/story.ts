@@ -687,7 +687,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena5b",
     title: "O Peso da Partida",
     location: "Estrada para a Porta Estreita",
-    characters: ["cristao", "evangelista"],
+    characters: ["cristao", "evangelista", "presuncao_preguica_simples"],
     narrative: [
       "Você olha para trás uma última vez. {{heart}}A cidade ainda parece casa.{{/heart}}",
       "Mas cada passo à frente confirma: ficar não é mais opção.",
