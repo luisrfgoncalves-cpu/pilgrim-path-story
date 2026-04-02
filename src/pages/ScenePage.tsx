@@ -359,6 +359,9 @@ const ScenePage = () => {
     return () => { clearTimeout(t); };
   }, [progress.currentChapterId]);
 
+  // All non-protagonist characters for persistent display
+  const [allPersistentChars, setAllPersistentChars] = useState<{ name: string; img: string; role?: string }[]>([]);
+
   // Dramatic character entrance — show big portrait for non-protagonist characters
   useEffect(() => {
     if (!chapter || transitioning) return;
@@ -366,18 +369,20 @@ const ScenePage = () => {
     const isPart2 = progress.campaign === 'part2';
     const protagonistId = isPart2 ? 'crista' : 'cristao';
     const sceneCharIds = chapter.characters || [];
-    // Find the most important non-protagonist character to reveal
-    const revealChar = sceneCharIds
+    // Find ALL non-protagonist characters with images
+    const sceneNPCs = sceneCharIds
       .filter(id => id !== protagonistId)
       .map(id => {
         const char = allChars.find(c => c.id === id);
         const img = characterImages[id];
         if (!char || !img) return null;
-        const isVillain = ['apolion', 'gigante_desespero', 'juiz_odio_ao_bem', 'amor_dinheiro', 'hipocrisia', 'formalista', 'ateismo', 'lisonjeiro'].includes(id);
+        const isVillain = ['apolion', 'gigante_desespero', 'juiz_odio_ao_bem', 'amor_dinheiro', 'hipocrisia', 'formalista', 'ateismo', 'lisonjeiro', 'vergonha', 'desconfianca', 'madame_bolha'].includes(id);
         return { name: char.name, img, role: char.role, isVillain };
       })
-      .find(Boolean);
+      .filter(Boolean) as { name: string; img: string; role?: string; isVillain?: boolean }[];
 
+    // Reveal the FIRST important character dramatically
+    const revealChar = sceneNPCs[0];
     if (revealChar) {
       const delay = setTimeout(() => {
         playGameSfx('suspense');
@@ -385,14 +390,17 @@ const ScenePage = () => {
           playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
         }, 200);
         setCharReveal(revealChar);
-        // Faster reveal to avoid slow feeling on mobile scenes
         setTimeout(() => {
           setCharReveal(null);
           setCharRevealDone(true);
           setPersistentChar(revealChar);
+          // Set ALL NPCs as persistent (including the first one)
+          setAllPersistentChars(sceneNPCs);
         }, 2500);
       }, 250);
       return () => clearTimeout(delay);
+    } else {
+      setAllPersistentChars([]);
     }
   }, [chapter?.id, transitioning]);
 
