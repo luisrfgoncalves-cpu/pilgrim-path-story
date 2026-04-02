@@ -134,7 +134,7 @@ export default function RPGEventPopup({
   }, [timerActive]);
 
   const handleTimeUp = useCallback(() => {
-    playGameSfx('trap');
+    playGameSfx(rpgSfx('trap'));
     setShowResult(true);
     setResultData({
       success: false,
@@ -148,7 +148,7 @@ export default function RPGEventPopup({
     setTimeLeft(seconds);
     setTimerActive(true);
     setPhase('challenge');
-    playGameSfx('challenge');
+    playGameSfx(rpgSfx('challenge'));
   }, []);
 
   const handleAnswer = useCallback((answerIdx: number) => {
@@ -210,7 +210,7 @@ export default function RPGEventPopup({
         });
       } else {
         // Next phase
-        playGameSfx('blessing');
+        playGameSfx(rpgSfx('blessing'));
         setTimeout(() => {
           setBossPhaseIdx(prev => prev + 1);
           setSelectedAnswer(null);
@@ -220,7 +220,7 @@ export default function RPGEventPopup({
       }
     } else {
       // Failed this phase
-      playGameSfx('giant');
+      playGameSfx(rpgSfx('giant'));
       setShowResult(true);
       setResultData({
         success: false,
@@ -429,14 +429,14 @@ export default function RPGEventPopup({
               {/* Answer buttons */}
               <div className="grid grid-cols-2 gap-2">
                 <button onClick={() => {
-                  playGameSfx('blessing');
+                  playGameSfx(rpgSfx('blessing'));
                   setShowResult(true);
                   setResultData({ success: true, message: `✅ Correto! A resposta é: "${riddle.answer}"\n\n${riddle.explanation}`, emoji: '✅' });
                 }} className="py-3 rounded-xl bg-green-500/20 border border-green-500/30 text-sm font-display font-bold text-green-400">
                   ✅ Acertou!
                 </button>
                 <button onClick={() => {
-                  playGameSfx('trap');
+                  playGameSfx(rpgSfx('trap'));
                   setShowResult(true);
                   setResultData({ success: false, message: `❌ Não acertaram. A resposta era: "${riddle.answer}"\n\n${riddle.explanation}`, emoji: '❌' });
                 }} className="py-3 rounded-xl bg-red-500/20 border border-red-500/30 text-sm font-display font-bold text-red-400">
@@ -482,14 +482,14 @@ export default function RPGEventPopup({
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <button onClick={() => {
-                  playGameSfx('blessing');
+                  playGameSfx(rpgSfx('blessing'));
                   setShowResult(true);
                   setResultData({ success: true, message: '🏆 Desafio cumprido com sucesso! O grupo celebra!', emoji: '🏆' });
                 }} className="py-3 rounded-xl bg-green-500/20 border border-green-500/30 text-sm font-display font-bold text-green-400">
                   ✅ Completou!
                 </button>
                 <button onClick={() => {
-                  playGameSfx('trap');
+                  playGameSfx(rpgSfx('trap'));
                   setShowResult(true);
                   setResultData({ success: false, message: '😔 O desafio não foi completado. A jornada continua...', emoji: '😔' });
                 }} className="py-3 rounded-xl bg-red-500/20 border border-red-500/30 text-sm font-display font-bold text-red-400">
