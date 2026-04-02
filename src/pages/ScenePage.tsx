@@ -391,10 +391,23 @@ const ScenePage = () => {
       })
       .filter(Boolean) as { name: string; img: string; role?: string; isVillain?: boolean }[];
 
+    // Find first NPC with an allegory card not yet seen
+    const firstCharId = sceneCharIds.find(id => id !== protagonistId && !seenAllegoryCards.has(id) && allegoryMeanings[id] && characterImages[id]);
+
     // Reveal the FIRST important character dramatically
     const revealChar = sceneNPCs[0];
     if (revealChar) {
       const delay = setTimeout(() => {
+        // If this character has an unseen allegory card, show that instead of cinematic reveal
+        if (firstCharId) {
+          seenAllegoryCards.add(firstCharId);
+          try { sessionStorage.setItem('seen-allegory-cards', JSON.stringify([...seenAllegoryCards])); } catch {}
+          setAllegoryCardChar(firstCharId);
+          playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
+          // After allegory card is dismissed, set persistent chars
+          return;
+        }
+        // Normal cinematic reveal for already-seen characters
         playGameSfx('suspense');
         setTimeout(() => {
           playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
@@ -404,7 +417,6 @@ const ScenePage = () => {
           setCharReveal(null);
           setCharRevealDone(true);
           setPersistentChar(revealChar);
-          // Set ALL NPCs as persistent (including the first one)
           setAllPersistentChars(sceneNPCs);
         }, 2500);
       }, 250);
