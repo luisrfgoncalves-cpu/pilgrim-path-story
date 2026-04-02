@@ -696,22 +696,24 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "grande_coracao", "valente_pela_verdade"],
     sceneEvent: { type: 'suspense', delay: 1000, duration: 4000, message: 'O Castelo da Dúvida...' },
     narrative: [
-      "Grande-Coração para diante do Castelo da Dúvida. Não para fugir — para atacar.",
-      "\"Este castelo aprisiona peregrinos há anos demais\", declara. \"O Gigante Desespero ainda vive ali dentro. Hoje, nós o destruímos.\"",
-      "Valente-pela-Verdade bate a espada no escudo: \"Estou pronto.\""
+      "Grande-Coração para diante do Castelo da Dúvida. Não para fugir — {{shout}}para atacar.{{/shout}}",
+      "\"Este castelo aprisiona peregrinos há anos demais\", declara. {{shout}}\"O Gigante Desespero ainda vive ali dentro. Hoje, nós o destruímos.\"{{/shout}}",
+      "Valente-pela-Verdade bate a espada no escudo: {{shout}}\"Estou pronto.\"{{/shout}}"
     ],
     choices: [
       {
         text: "Encorajar o ataque — é hora de destruir a Dúvida de vez",
         nextChapterId: "p2-fase5-cena2",
         effects: { coragem: 2, fe: 1 },
-        flag: "encorajou_ataque_castelo"
+        flag: "encorajou_ataque_castelo",
+        consequence: "A decisão de atacar a Dúvida em vez de contorná-la é a diferença entre a jornada de Cristão e a de Cristã. O que a primeira geração sobreviveu, a segunda destrói. — Romanos 16:20: \"O Deus de paz em breve esmagará Satanás debaixo dos vossos pés.\""
       },
       {
         text: "Orar antes da batalha — pedir proteção divina",
         nextChapterId: "p2-fase5-cena2",
         effects: { fe: 2, perseveranca: 1 },
-        flag: "orou_antes_castelo_p2"
+        flag: "orou_antes_castelo_p2",
+        consequence: "Orar antes da batalha é reconhecer que a vitória não vem da espada, mas de Deus. Josafá orou antes de enfrentar três exércitos e venceu sem lutar. — 2 Crônicas 20:15: \"Não temais; a peleja não é vossa, senão de Deus.\""
       }
     ]
   },
@@ -723,9 +725,9 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "grande_coracao", "valente_pela_verdade", "gigante_desespero"],
     sceneEvent: { type: 'tension', duration: 6000, message: 'O Gigante Desespero ataca!', intensity: 1.0 },
     narrative: [
-      "Grande-Coração arromba os portões. O Gigante Desespero emerge, rugindo. Desconfiança, sua esposa, grita do alto da torre.",
-      "A luta é épica. Grande-Coração e Valente-pela-Verdade atacam em conjunto. O gigante é poderoso, mas os dois guerreiros são implacáveis.",
-      "Depois de um combate que faz tremer as fundações do castelo, Grande-Coração decepa a cabeça do Gigante Desespero. Desconfiança foge para as sombras."
+      "{{tremor}}Grande-Coração arromba os portões.{{/tremor}} O {{villain}}Gigante Desespero{{/villain}} emerge, rugindo. Desconfiança, sua esposa, grita do alto da torre.",
+      "A luta é épica. Grande-Coração e Valente-pela-Verdade atacam em conjunto. {{tremor}}O gigante é poderoso, mas os dois guerreiros são implacáveis.{{/tremor}}",
+      "{{shout}}Depois de um combate que faz tremer as fundações do castelo, Grande-Coração decepa a cabeça do Gigante Desespero.{{/shout}} Desconfiança foge para as sombras."
     ],
     interactionType: "hold",
     choices: [
@@ -734,7 +736,8 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase5-cena3",
         effects: { coragem: 2, fe: 1 },
         flag: "entrou_castelo_destruido",
-        item: "chave_promessa"
+        item: "chave_promessa",
+        consequence: "O Gigante Desespero está morto. O que aterrorizou Cristão por dias foi destruído em horas. Cada geração recebe mais poder para enfrentar os mesmos inimigos. — Isaías 10:27: \"E o jugo será despedaçado por causa da unção.\""
       }
     ]
   },
@@ -744,23 +747,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "Os Prisioneiros Libertados",
     location: "Masmorras do Castelo",
     characters: ["crista", "grande_coracao", "sr_desanimo", "muito_medo"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 4000, message: 'Vozes nas masmorras...' },
     narrative: [
       "Nas masmorras escuras, encontram dois prisioneiros: Sr. Desânimo e sua filha, Muito-Medo. Estão pálidos, fracos, cobertos de feridas.",
-      "\"Há quanto tempo estão aqui?\", pergunta Cristã. \"Não sabemos mais\", responde Sr. Desânimo. \"O gigante nos dizia todos os dias para desistir da vida. Quase obedecemos.\"",
-      "Muito-Medo agarra a mão de Misericórdia e não solta. \"Vocês são reais? Não é mais uma ilusão do gigante?\""
+      "{{whisper}}\"Há quanto tempo estão aqui?\"{{/whisper}}, pergunta Cristã. \"Não sabemos mais\", responde Sr. Desânimo. {{villain}}\"O gigante nos dizia todos os dias para desistir da vida. Quase obedecemos.\"{{/villain}}",
+      "Muito-Medo agarra a mão de Misericórdia e não solta. {{whisper}}\"Vocês são reais? Não é mais uma ilusão do gigante?\"{{/whisper}}"
     ],
     choices: [
       {
         text: "\"É real. O gigante está morto. Vocês são livres. Venham conosco.\"",
         nextChapterId: "p2-fase5-cena4",
         effects: { fe: 2, perseveranca: 1 },
-        flag: "libertou_desanimo"
+        flag: "libertou_desanimo",
+        consequence: "Libertar prisioneiros do desespero é a missão de todo cristão. O gigante mentia — e a verdade é que há liberdade para os cativos. — Lucas 4:18: \"O Espírito do Senhor é sobre mim, porque me ungiu para pregar liberdade aos cativos.\""
       },
       {
         text: "Alimentá-los e cuidar de seus ferimentos antes de sair",
         nextChapterId: "p2-fase5-cena4",
         effects: { discernimento: 1, perseveranca: 1 },
-        flag: "cuidou_desanimo"
+        flag: "cuidou_desanimo",
+        consequence: "Antes de caminhar, é preciso curar. O desânimo e o medo deixam feridas profundas que só o cuidado paciente pode restaurar. — Salmo 147:3: \"Sara os quebrantados de coração, e lhes ata as suas feridas.\""
       }
     ]
   },
@@ -772,11 +778,12 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "grande_coracao"],
     reflection: "p2r4",
     interactionType: 'hold',
+    sceneEvent: { type: 'tension', duration: 5000, message: 'O castelo desmorona!', intensity: 0.9 },
     narrative: [
-      "Grande-Coração não se contenta em matar o gigante. Ele ordena a destruição completa do Castelo da Dúvida.",
-      "Pedra por pedra, o grupo destrói as muralhas. O castelo que aterrorizou peregrinos por gerações é reduzido a ruínas.",
-      "\"O que Cristão sobreviveu, nós destruímos\", diz Grande-Coração. \"Nenhum outro peregrino será preso aqui.\"",
-      "Onde antes havia trevas, agora há céu aberto."
+      "Grande-Coração não se contenta em matar o gigante. {{shout}}Ele ordena a destruição completa do Castelo da Dúvida.{{/shout}}",
+      "{{tremor}}Pedra por pedra, o grupo destrói as muralhas.{{/tremor}} O castelo que aterrorizou peregrinos por gerações é reduzido a ruínas.",
+      "{{divine}}\"O que Cristão sobreviveu, nós destruímos\"{{/divine}}, diz Grande-Coração. \"Nenhum outro peregrino será preso aqui.\"",
+      "{{divine}}Onde antes havia trevas, agora há céu aberto.{{/divine}}"
     ],
     choices: [
       {
@@ -784,12 +791,14 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase5-cena5",
         effects: { fe: 1, discernimento: 1 },
         flag: "levantou_memorial_castelo",
-        item: "pedra_memorial"
+        item: "pedra_memorial",
+        consequence: "Os memoriais bíblicos existem para que as gerações futuras perguntem: 'O que significam estas pedras?' A destruição da dúvida merece ser lembrada. — Josué 4:6-7: \"Quando vossos filhos perguntarem: Que significam estas pedras? Direis que as águas do Jordão se cortaram.\""
       },
       {
         text: "Seguir para as Montanhas Deleitosas com o grupo renovado",
         nextChapterId: "p2-fase5-cena5",
-        effects: { perseveranca: 1, coragem: 1 }
+        effects: { perseveranca: 1, coragem: 1 },
+        consequence: "A jornada não para para celebrar — avança. O castelo caiu, mas a Cidade Celestial ainda está adiante. A vitória sobre o passado deve impulsionar, não paralisar. — Filipenses 3:14: \"Prossigo para o alvo, pelo prêmio da soberana vocação de Deus em Cristo Jesus.\""
       }
     ]
   },
@@ -799,23 +808,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "As Montanhas Deleitosas",
     location: "Montanhas Deleitosas",
     characters: ["crista", "grande_coracao", "pastores"],
+    sceneEvent: { type: 'suspense', delay: 2000, duration: 4000, message: 'A vista da Cidade...' },
     narrative: [
       "Os quatro pastores — Conhecimento, Experiência, Vigilante e Sincero — recebem o grupo com banquete.",
-      "\"A esposa de Cristão!\", exclama Conhecimento. \"Que jornada! O castelo que prendeu seu marido agora é pó. A coragem cresce a cada geração.\"",
-      "Das montanhas, mostram a vista da Cidade Celestial — mais perto do que nunca. Os filhos de Cristã olham maravilhados.",
-      "\"Vejam\", diz Sincero. \"E lembrem-se: também há um abismo para os que se desviam. Olhem ambos.\""
+      "{{divine}}\"A esposa de Cristão!\"{{/divine}}, exclama Conhecimento. \"Que jornada! O castelo que prendeu seu marido agora é pó. {{divine}}A coragem cresce a cada geração.{{/divine}}\"",
+      "Das montanhas, mostram a vista da Cidade Celestial — {{divine}}mais perto do que nunca{{/divine}}. Os filhos de Cristã olham maravilhados.",
+      "\"Vejam\", diz Sincero. {{shout}}\"E lembrem-se: também há um abismo para os que se desviam. Olhem ambos.\"{{/shout}}"
     ],
     choices: [
       {
         text: "Contemplar a Cidade Celestial e renovar a esperança",
         nextChapterId: "p2-fase6-cena1",
-        effects: { fe: 2, perseveranca: 1 }
+        effects: { fe: 2, perseveranca: 1 },
+        consequence: "A visão da Cidade Celestial das Montanhas Deleitosas renova a esperança para a última etapa. Ver o destino fortalece para o caminho que resta. — Hebreus 12:1-2: \"Corramos com paciência a carreira que nos está proposta, olhando para Jesus.\""
       },
       {
         text: "Pedir aos pastores conselhos para a última etapa da jornada",
         nextChapterId: "p2-fase6-cena1",
         effects: { discernimento: 2, fe: 1 },
-        flag: "pediu_conselho_pastores_p2"
+        flag: "pediu_conselho_pastores_p2",
+        consequence: "Os pastores das montanhas são guardiões de sabedoria. Seus conselhos preparam para a Terra Encantada e o Rio — as últimas provas antes da glória. — Provérbios 11:14: \"Onde não há conselho, o povo cai, mas na multidão de conselheiros há segurança.\""
       },
       {
         text: "Deitar na grama macia das montanhas... os olhos pesam...",
@@ -823,14 +835,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
         effects: { fe: -3 },
         requires: { perseveranca: -99 },
         flag: "dormiu_montanhas_p2",
-        consequence: "O sono das Montanhas é doce. Doce demais."
+        consequence: "O sono das Montanhas é doce. Doce demais. — Provérbios 6:10-11: \"Um pouco de sono, um pouco de tosquejar, um pouco de encruzar das mãos para dormir; assim sobrevirá a tua pobreza.\""
       }
     ]
   },
-
-  // ═══════════════════════════════════════════════
-  // FASE 6: A TERRA ENCANTADA E O RIO (cenas 1-6)
-  // ═══════════════════════════════════════════════
 
   "p2-fase6-cena1": {
     id: "p2-fase6-cena1",
