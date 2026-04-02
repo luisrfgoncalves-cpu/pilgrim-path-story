@@ -159,13 +159,14 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-cena5",
         effects: { fe: 1, coragem: 1 },
         flag: "intercedeu_por_misericordia",
-        consequence: "Cristã intercede por Misericórdia no portão. O guardião sorri."
+        consequence: "A intercessão de Cristã por Misericórdia é um eco da graça divina: ninguém é salvo por mérito próprio, mas pela misericórdia do Rei. — Efésios 2:8-9: \"Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus.\""
       },
       {
         text: "Entrar e esperar que Misericórdia se recupere sozinha",
         nextChapterId: "p2-cena5",
         effects: { discernimento: -1 },
-        flag: "nao_intercedeu"
+        flag: "nao_intercedeu",
+        consequence: "Quem entra pela porta e esquece o companheiro ainda do lado de fora não compreendeu a essência do evangelho. A salvação é pessoal, mas a compaixão é obrigatória. — Tiago 2:15-16: \"Se um irmão estiver nu e tiver falta de mantimento, e algum de vós lhe disser: Ide em paz, aquentai-vos, e fartai-vos; e não lhes derdes as coisas necessárias para o corpo, que proveito virá daí?\""
       }
     ]
   },
