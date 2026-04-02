@@ -1556,9 +1556,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Estrada para a Feira da Vaidade",
     characters: ["cristao", "fiel"],
     narrative: [
-      "Com Fiel ao seu lado, a estrada parece menos solitária. Vocês conversam sobre o vale, sobre Apolião, sobre as lições do Intérprete.",
-      "\"A Feira da Vaidade fica adiante\", diz Fiel com seriedade. \"Lá, tudo tem um preço. Tudo está à venda. Menos uma coisa: a Verdade.\"",
-      "Ele te olha: \"Quando chegarmos lá, vão nos odiar. Porque não queremos comprar o que eles vendem.\""
+      "{{heart}}Com Fiel ao seu lado, a estrada parece menos solitária.{{/heart}} Vocês conversam sobre o vale, sobre Apolião, sobre as lições do Intérprete.",
+      "{{emphasis}}\"A Feira da Vaidade fica adiante\"{{/emphasis}}, diz Fiel com seriedade. {{dialog}}\"Lá, tudo tem um preço. Tudo está à venda. Menos uma coisa: a Verdade.\"{{/dialog}}",
+      "Ele te olha: {{whisper}}\"Quando chegarmos lá, vão nos odiar. Porque não queremos comprar o que eles vendem.\"{{/whisper}}"
     ],
     flagNarrative: [
       { flag: "enfrentou_presenca", text: "Fiel te olha com respeito: \"Ouvi que você enfrentou Apolião face a face. Poucos sobrevivem a isso. Será preciso a mesma coragem na Feira.\"" }
