@@ -761,7 +761,7 @@ export default function RPGEventPopup({
                     key={i}
                     onClick={() => handleAnswer(i)}
                     disabled={selectedAnswer !== null}
-                    className={`p-3 rounded-xl border text-left text-sm transition-all ${
+                     className={`p-4 rounded-xl border text-left text-base transition-all ${
                       selectedAnswer === i
                         ? i === question.correctIndex ? 'bg-green-500/20 border-green-500' : 'bg-red-500/20 border-red-500'
                         : selectedAnswer !== null && i === question.correctIndex ? 'bg-green-500/10 border-green-500/50'
