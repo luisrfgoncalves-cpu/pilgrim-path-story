@@ -327,7 +327,6 @@ export default function RPGEventPopup({
     if (rawContext) playNarrativeSfx(rawContext);
 
     const timer = window.setTimeout(() => {
-      narrate(text, { style: 'dramatic', force: true });
     }, 400);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -345,10 +344,6 @@ export default function RPGEventPopup({
     narratedKeyRef.current = key;
 
     const timer = window.setTimeout(() => {
-      narrate(text, {
-        style: boss ? 'urgent' : 'dramatic',
-        force: true,
-      });
     }, 300);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
