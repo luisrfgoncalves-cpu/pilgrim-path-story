@@ -365,13 +365,14 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     duelEnemy: { name: 'Acusador', emoji: '⚖️', power: 5 },
   },
 
-  // Fuga da Feira — Stealth
+  // Fuga da Feira — Recordar lições da jornada
   'fase4-cena11': {
-    type: 'stealth',
+    type: 'memory',
     difficulty: 'normal',
-    intro: 'Vocês precisam escapar da Feira sem serem capturados novamente. Avance em silêncio!',
-    successBonus: { perseveranca: 1, coragem: 1 },
-    failurePenalty: { coragem: -1 },
+    intro: 'Para escapar da Feira, lembre-se das lições que aprendeu na jornada. Cada memória é um passo para a liberdade!',
+    successBonus: { perseveranca: 1, fe: 1 },
+    failurePenalty: { fe: -1 },
+    memorySymbols: ['🚪', '✝️', '🛡️', '📖', '🗡️', '🕊️', '🔥', '🗝️'],
   },
 
   // ╔══════════════════════════════════════╗
