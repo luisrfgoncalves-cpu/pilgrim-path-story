@@ -159,7 +159,16 @@ export default function RPGEventPopup({
     return () => stopNarration();
   }, [visible, tileEventType, difficulty, playerNames, rotationState]);
 
-  // Timer countdown
+  // Narrate results when they appear
+  useEffect(() => {
+    if (showResult && resultData) {
+      stopNarration();
+      setTimeout(() => narrate(resultData.message.replace(/[✅❌🏆😔⏰✨]/g, '').trim(), {
+        style: resultData.success ? 'triumphant' : 'whisper',
+      }), 300);
+    }
+  }, [showResult, resultData]);
+
   useEffect(() => {
     if (!timerActive || timeLeft <= 0) return;
     timerRef.current = window.setInterval(() => {
