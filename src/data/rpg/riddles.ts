@@ -351,4 +351,55 @@ export const riddles: Riddle[] = [
     explanation: '"Nos últimos dias virão escarnecedores." O Ateu nunca percorreu o caminho correto, mas usa seu fracasso pessoal para negar a verdade objetiva.',
     timerSeconds: 90
   },
+  // ═══════ VETERANO — LOTE EXTRA ═══════
+  {
+    id: 'r-v-012', difficulty: 'veterano',
+    context: 'No Palácio Belo, Cristão recebeu algo antes de enfrentar Apolião...',
+    riddle: 'Seis peças tenho, mas só uma fere. Cinco defendem, nenhuma recua. Quem me veste não teme o vale. Quem me ignora não sobrevive à descida. Paulo me descreveu, Bunyan me deu ao Peregrino. Qual é minha única peça que ataca?',
+    hints: ['Paulo escreveu sobre mim em Efésios 6', 'Cinco peças são defensivas', 'A peça ofensiva é chamada "do Espírito"'],
+    answer: 'A espada do Espírito — a Palavra de Deus. É a única peça ofensiva da armadura de Deus (Efésios 6:17)',
+    bibleReference: 'Efésios 6:17',
+    explanation: 'Cinturão da verdade, couraça da justiça, sandálias do evangelho, escudo da fé, capacete da salvação — todas defensivas. Só a espada do Espírito (Palavra de Deus) ataca.',
+    timerSeconds: 90
+  },
+  {
+    id: 'r-v-013', difficulty: 'veterano',
+    context: 'Cristão encontrou três homens dormindo acorrentados ao pé da Colina da Dificuldade...',
+    riddle: 'Somos três irmãos acorrentados. O primeiro diz: "Cada um cuide de si." O segundo: "Só mais um cochilo." O terceiro: "Não vejo perigo algum." Cristão nos acordou, mas voltamos a dormir. Qual pecado capital nos une — e que peça da armadura nos salvaria?',
+    hints: ['Nossos nomes são Presunção, Preguiça e Simples', 'Temos grilhões nos pés mas não os sentimos', 'A peça que nos salvaria está ligada à verdade'],
+    answer: 'A acídia (preguiça espiritual) nos une. O cinturão da verdade nos salvaria, pois nos recusamos a enxergar a realidade',
+    bibleReference: 'Provérbios 6:9-11',
+    explanation: '"Até quando ficarás deitado, ó preguiçoso?" A acídia não é mera preguiça — é indiferença espiritual deliberada, recusa de agir diante da verdade conhecida.',
+    timerSeconds: 90
+  },
+  {
+    id: 'r-v-014', difficulty: 'veterano',
+    context: 'No rio final, Cristão quase se afogou enquanto Esperança caminhava firmemente...',
+    riddle: 'Dois homens entram na mesma água. Um afunda, um caminha. Não é milagre — é memória. O que afunda esqueceu algo; o que caminha lembrou. O que foi esquecido e o que foi lembrado?',
+    hints: ['Cristão afundou e Esperança o ajudou', 'Tem a ver com pecados passados versus promessas', 'A água não é mais profunda para um do que para o outro'],
+    answer: 'Cristão esqueceu as promessas de Deus e lembrou dos pecados passados; Esperança lembrou das promessas e manteve os olhos no destino. A profundidade do rio é proporcional à fé, não ao pecado.',
+    bibleReference: 'Isaías 43:2',
+    explanation: '"Quando passares pelas águas, estarei contigo." O rio é o mesmo para todos — o que muda é se olhamos para os pecados (afundamos) ou para as promessas (atravessamos).',
+    timerSeconds: 90
+  },
+  {
+    id: 'r-v-015', difficulty: 'veterano',
+    context: 'Demas ficava ao lado de uma mina de prata, chamando peregrinos para se desviarem...',
+    riddle: 'Sou descendente de um servo ganancioso e parente de um apóstolo traidor. Fico parado ao lado de um buraco brilhante chamando quem passa. Os que entram nunca saem. Mas eu nunca entro — apenas convido. Por que nunca entro, e quem são meus ancestrais?',
+    hints: ['Meu nome é Demas', 'Um ancestral serviu Eliseu, o outro andou com Jesus', 'Eu nunca entro porque preciso de mais vítimas'],
+    answer: 'Demas é descendente de Geazi (servo de Eliseu, 2 Reis 5) e parente de Judas Iscariotes. Nunca entra porque seu lucro está em recrutar outros — como tentadores que nunca praticam o que pregam.',
+    bibleReference: '2 Timóteo 4:10',
+    explanation: '"Demas me desamparou, amando o presente século." O Demas de Paulo abandonou a fé; o de Bunyan é ainda pior — leva outros ao mesmo abismo.',
+    timerSeconds: 90
+  },
+  {
+    id: 'r-v-016', difficulty: 'veterano',
+    context: 'Falador sabia falar de tudo: regeneração, justificação, santificação. Fiel o desmascarou...',
+    riddle: 'Falo de Deus como um teólogo. Cito versículos como um professor. Defendo a fé como um soldado. Mas pergunta à minha família, aos meus vizinhos, ao meu bolso — e encontrarás um estranho. Uma pergunta simples de Fiel me expôs. Que pergunta foi essa?',
+    hints: ['Fiel fez uma pergunta sobre prática, não teoria', 'A pergunta expôs a distância entre palavras e vida', 'Tem a ver com a obra da graça no coração versus na boca'],
+    answer: '"Como a graça se manifesta na vida prática — no lar, nos negócios, nas relações?" Falador não soube responder porque sua fé era apenas discurso, nunca vida transformada.',
+    bibleReference: 'Tiago 2:17',
+    explanation: '"A fé, se não tiver obras, é morta em si mesma." Bunyan ataca a ortodoxia morta — conhecimento correto sem vida transformada é a mais perigosa das ilusões.',
+    timerSeconds: 90
+  },
 ];

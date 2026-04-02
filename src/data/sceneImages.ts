@@ -119,7 +119,7 @@ export const sceneImages: Record<string, string> = {
   'fase5-cena10': montanhasDeleitosas,
   'fase5-cena11': redeLisonjeiro,
   'fase5-cena12': redeLisonjeiro,
-  'fase5-cena13': terraEncantada,
+  'fase5-cena13': terraEncantadaFlores,
   'fase5-cena14': paisBeula,
 
   // FASE 6: Rio e Cidade Celestial
