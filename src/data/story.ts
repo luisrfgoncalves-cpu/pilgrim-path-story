@@ -1315,10 +1315,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Voz nas Sombras",
     location: "Vale da Humilhação",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'O chão vibra sob seus pés...' },
     narrative: [
-      "Uma voz troveja entre as rochas, fazendo o chão vibrar:",
-      "\"Eu te conheço, Cristão. Você veio da minha cidade — a Cidade da Destruição. Toda aquela terra é minha. Você é meu servo.\"",
-      "A voz é de Apolião. Ele ainda não se mostra, mas seu hálito quente faz o ar feder a enxofre. O som de escamas raspando pedra ecoa nas paredes do vale."
+      "{{tremor}}Uma voz troveja entre as rochas, fazendo o chão vibrar:{{/tremor}}",
+      "{{villain}}\"Eu te conheço, Cristão. Você veio da minha cidade — a Cidade da Destruição. Toda aquela terra é minha. Você é meu servo.\"{{/villain}}",
+      "{{fade}}A voz é de Apolião. Ele ainda não se mostra, mas seu hálito quente faz o ar feder a enxofre.{{/fade}} {{whisper}}O som de escamas raspando pedra ecoa nas paredes do vale.{{/whisper}}"
     ],
     toneNarrative: [
       { attr: "coragem", highThreshold: 7, highText: "Seu coração dispara, mas suas mãos não tremem. Você já sabia que esse encontro viria.", lowThreshold: 3, lowText: "Cada palavra de Apolião te encolhe. A tentação de correr é quase física." },
