@@ -302,7 +302,8 @@ const PhaseSection = memo(function PhaseSection({
 
           const tileCharKey = config.characterKey;
           const tileCharImg = tileCharKey ? characterImages[tileCharKey] : null;
-          const tileEnvImg = config.tileImage || null;
+          // Only show images on special tiles to reduce repetition
+          const tileEnvImg = isSpecial ? (config.tileImage || null) : null;
           const tileImg = tileCharImg || tileEnvImg;
           const isSpecial = tileType !== 'normal';
           const isBoss = tileType === 'giant' || tileType === 'challenge';
