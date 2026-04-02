@@ -849,7 +849,7 @@ export default function RPGEventPopup({
           {phase === 'challenge' && !showResult && dilemma && (
             <div className="space-y-4">
               <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30">
-                <p className="text-sm text-foreground leading-relaxed">{dilemma.situation}</p>
+                <p className="text-base text-foreground leading-relaxed">{dilemma.situation}</p>
               </div>
               <div className="grid gap-2">
                 {dilemma.choices.map((choice, i) => (
