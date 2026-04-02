@@ -176,4 +176,71 @@ export const moralDilemmasExpansion: MoralDilemma[] = [
     bibleReference: 'Josué 1:8',
     lesson: '"Medita neste livro da Lei DE DIA E DE NOITE." Meditação bíblica é enchimento ativo com a Palavra, não esvaziamento místico. A diferença é entre Escritura e paganismo.',
   },
+  // ═══════ LOTE 3 — META 300+ ═══════
+  {
+    id: 'd-a-009', difficulty: 'aprendiz',
+    context: 'Vocês encontram um peregrino jovem chorando à beira do caminho. Ele diz que errou muito e que Deus não o quer mais.',
+    situation: 'O jovem suplica: "Eu pequei tantas vezes que não há mais perdão para mim. Vocês deveriam me abandonar aqui."',
+    choices: [
+      { text: 'Sentar ao lado dele e ler 1 João 1:9 juntos', consequence: 'Ele levanta os olhos, brilhando. A Palavra trouxe esperança. Vocês ganham um aliado para a jornada.', effect: { type: 'boost', attribute: 'fe', amount: 2, affectsGroup: true } },
+      { text: 'Concordar que ele pecou demais e seguir em frente', consequence: 'Vocês abandonaram alguém que precisava da graça. A tristeza pesa no grupo.', effect: { type: 'penalty', attribute: 'fe', amount: -2, affectsGroup: true } },
+      { text: 'Dar um sermão longo sobre os perigos do pecado', consequence: 'Ele se encolhe ainda mais. A Lei sem Evangelho esmaga. Vocês precisam aprender a equilibrar verdade e graça.', effect: { type: 'penalty', attribute: 'discernimento', amount: -1, affectsGroup: true } },
+    ],
+    bibleReference: '1 João 1:9', lesson: '"Se confessarmos os nossos pecados, Ele é fiel e justo para nos perdoar." A graça nunca se esgota para quem confessa.',
+  },
+  {
+    id: 'd-a-010', difficulty: 'aprendiz',
+    context: 'Uma tempestade terrível cai sobre o caminho. Vocês veem uma caverna confortável à margem, mas ela está fora do caminho estreito.',
+    situation: 'A chuva é forte, o vento uiva. A caverna parece segura e quente. Mas para chegar nela, vocês precisam desviar do caminho por alguns metros.',
+    choices: [
+      { text: 'Entrar na caverna e esperar a tempestade passar', consequence: 'A caverna era o covil de dois gigantes: Papista e Pagão! Vocês escapam por pouco, mas perderam tempo precioso.', effect: { type: 'retreat', positions: 2, affectsGroup: true } },
+      { text: 'Continuar no caminho sob a tempestade, orando', consequence: 'A tempestade passa mais rápido do que esperavam. Deus protegeu vocês no caminho. A fé cresceu.', effect: { type: 'boost', attribute: 'perseveranca', amount: 2, affectsGroup: true } },
+      { text: 'Parar no caminho e montar um abrigo improvisado', consequence: 'Vocês ficaram no caminho e se protegeram criativamente. Sabedoria prática honra a Deus.', effect: { type: 'boost', attribute: 'discernimento', amount: 1, affectsGroup: true } },
+    ],
+    bibleReference: 'Isaías 43:2', lesson: '"Quando passares pelas águas, estarei contigo." Deus não promete tirar a tempestade — promete estar conosco NELA.',
+  },
+  {
+    id: 'd-p-008', difficulty: 'peregrino',
+    context: 'Vocês descobrem que um membro do grupo tem enganado os outros — escondendo provisões para si mesmo enquanto todos passam necessidade.',
+    situation: 'As evidências são claras. O companheiro fica pálido quando confrontado. Ele diz: "Eu tinha medo de ficar sem nada..."',
+    choices: [
+      { text: 'Expulsá-lo do grupo imediatamente', consequence: 'Ele se vai sozinho, vulnerável. Justiça foi feita, mas misericórdia foi esquecida. O peso da decisão acompanha o grupo.', effect: { type: 'penalty', attribute: 'fe', amount: -1, affectsGroup: true } },
+      { text: 'Perdoar e redistribuir as provisões igualmente', consequence: 'Ele chora de gratidão e se torna o membro mais generoso do grupo. A graça transformou um coração.', effect: { type: 'boost', attribute: 'fe', amount: 2, affectsGroup: true } },
+      { text: 'Perdoar mas exigir que ele carregue peso extra como consequência', consequence: 'Ele aceita humildemente. O grupo aprende sobre consequências e restauração. Equilíbrio justo.', effect: { type: 'boost', attribute: 'discernimento', amount: 1, affectsGroup: true } },
+    ],
+    bibleReference: 'Gálatas 6:1', lesson: '"Se alguém for surpreendido em pecado, vós que sois espirituais, corrigi-o com espírito de mansidão." Justiça sem graça é crueldade; graça sem justiça é permissividade.',
+  },
+  {
+    id: 'd-p-009', difficulty: 'peregrino',
+    context: 'Vocês chegam a uma encruzilhada com duas placas. Uma diz "Caminho do Rei — Difícil" e a outra "Caminho Alternativo — Seguro e Rápido".',
+    situation: 'O Caminho Alternativo parece legítimo — bem pavimentado, com flores e sombra. Outros peregrinos estão nele, sorrindo. Mas algo inquieta o espírito de vocês.',
+    choices: [
+      { text: 'Seguir o Caminho do Rei, mesmo sendo difícil', consequence: 'O caminho é íngreme, mas no topo há um panorama glorioso. A obediência custou, mas valeu. Coragem +2.', effect: { type: 'boost', attribute: 'coragem', amount: 2, affectsGroup: true } },
+      { text: 'Seguir o Caminho Alternativo', consequence: 'Era o Prado do Atalho! Vocês acabam perdidos e próximos ao Castelo da Dúvida. Desvio perigoso.', effect: { type: 'retreat', positions: 4, affectsGroup: true } },
+      { text: 'Orar antes de decidir e buscar confirmação na Escritura', consequence: 'O Espírito guia vocês ao Caminho do Rei. A decisão ponderada é a mais sábia. Discernimento +2.', effect: { type: 'boost', attribute: 'discernimento', amount: 2, affectsGroup: true } },
+    ],
+    bibleReference: 'Provérbios 3:5-6', lesson: '"Confia no Senhor de todo o teu coração e não te estribes no teu próprio entendimento." Quando o caminho fácil parece bom demais, desconfie.',
+  },
+  {
+    id: 'd-v-011', difficulty: 'veterano',
+    context: 'Um líder religioso respeitado ensina que "todos os caminhos levam a Deus" e que a Porta Estreita é apenas UMA das muitas portas válidas.',
+    situation: 'Ele fala com eloquência e cita até versículos (fora de contexto). Muitos peregrinos concordam. Ele olha para vocês: "Ou vocês também são daqueles intolerantes que acham que só existe um caminho?"',
+    choices: [
+      { text: 'Citar João 14:6 com respeito: "Eu sou o caminho, a verdade e a vida"', consequence: 'Ele fica em silêncio. Alguns peregrinos voltam ao caminho estreito. A verdade dita com graça tem poder.', effect: { type: 'boost', attribute: 'coragem', amount: 3, affectsGroup: true } },
+      { text: 'Concordar para não criar conflito', consequence: 'Vocês comprometeram a verdade por paz social. O grupo sente o peso da covardia espiritual.', effect: { type: 'penalty', attribute: 'coragem', amount: -2, affectsGroup: true } },
+      { text: 'Atacar o líder publicamente com raiva', consequence: 'Vocês tinham razão no conteúdo, mas erraram no tom. A verdade sem amor afasta em vez de atrair.', effect: { type: 'penalty', attribute: 'fe', amount: -1, affectsGroup: true } },
+    ],
+    bibleReference: 'João 14:6', lesson: 'Jesus não disse "sou UM caminho" — disse "sou O caminho." A exclusividade de Cristo não é arrogância humana — é declaração divina. Mas devemos proclamá-la com amor.',
+  },
+  {
+    id: 'd-v-012', difficulty: 'veterano',
+    context: 'Vocês encontram um peregrino que pratica disciplinas espirituais extremas — jejum prolongado, vigílias de 48h, autoflagelação. Ele diz que é necessário "merecer" a graça.',
+    situation: '"A graça é preciosa demais para ser gratuita," ele insiste, mostrando marcas no corpo. "Vocês estão no caminho fácil demais. Sofram mais!"',
+    choices: [
+      { text: 'Explicar Efésios 2:8-9 — salvação pela graça, não por obras', consequence: 'Ele resiste inicialmente, mas depois chora. Anos de esforço religioso caem como o fardo de Cristão na Cruz. Libertação!', effect: { type: 'boost', attribute: 'fe', amount: 2, affectsGroup: true } },
+      { text: 'Segui-lo e adotar suas práticas extremas', consequence: 'Vocês confundiram sofrimento autoimposto com santidade bíblica. O legalismo é um fardo que Cristo não pede.', effect: { type: 'penalty', attribute: 'perseveranca', amount: -2, affectsGroup: true } },
+      { text: 'Ignorá-lo completamente', consequence: 'Vocês perderam a oportunidade de compartilhar a graça com alguém que sofre por religiosidade. Misericórdia perdida.', effect: { type: 'penalty', attribute: 'fe', amount: -1, affectsGroup: true } },
+    ],
+    bibleReference: 'Efésios 2:8-9', lesson: '"Pela graça sois salvos, mediante a fé; e isto não vem de vós, é dom de Deus; não de obras, para que ninguém se glorie." A graça é gratuita — e é isso que a torna preciosa.',
+  },
 ];
