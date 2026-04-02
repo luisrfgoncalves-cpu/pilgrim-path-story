@@ -303,14 +303,18 @@ const ScenePage = () => {
           'cena15b': [['victory', 500], ['itemFound', 1200], ['pray', 2000]], // Três Resplandecentes
           // FASE 2
           'fase2-cena1': [['pray', 800]],                    // Casa do Intérprete
+          'fase2-cena2': [['positive', 500], ['pray', 1200]], // visões do Intérprete
+          'fase2-cena3': [['pray', 600]],                    // ensinamento profundo
           'fase2-cena4': [['negative', 600]],                // visão perturbadora
           'fase2-cena5': [['positive', 700]],                // aprendizado
+          'fase2-cena6': [['positive', 500], ['pray', 1200]],// lição espiritual
           'fase2-cena7': [['positive', 500]],                // Palácio Belo
           'fase2-cena8': [['defeat', 500], ['defeat', 1200]],// Homem na Gaiola
           'fase2-cena9': [['itemFound', 600], ['defend', 1200]], // Armadura de Deus
           'fase2-cena10': [['defend', 500], ['critical', 1200]], // equipando armadura
           'fase2-cena11': [['attack', 500]],                 // Colina da Dificuldade
           'fase2-cena12': [['defeat', 400]],                 // subida árdua
+          'fase2-cena13': [['defeat', 500], ['negative', 1200]], // dormindo no posto
           'fase2-cena14': [['attack', 400], ['attack', 900], ['defend', 1500]], // Leões
           // FASE 3
           'fase3-cena1': [['defeat', 500]],                  // Vale da Humilhação
