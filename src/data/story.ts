@@ -2590,9 +2590,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Os Portões da Cidade Celestial",
     location: "Cidade Celestial",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 5000, message: 'Trombetas soam... os portões se abrem...' },
     narrative: [
-      "{{divine}}A subida até os portões é a parte mais bela de toda a jornada.{{/divine}} O caminho é pavimentado de ouro. Anjos os acompanham. O ar cheira a flores que não existem na terra.",
-      "Nos portões, gravada em letras de fogo, a inscrição: {{divine}}\"Bem-aventurados os que entram pelos portões da Cidade.\"{{/divine}}",
+      "{{divine}}A subida até os portões é a parte mais bela de toda a jornada.{{/divine}} O caminho é pavimentado de ouro. {{divine}}Anjos os acompanham. O ar cheira a flores que não existem na terra.{{/divine}}",
+      "{{emphasis}}Nos portões, gravada em letras de fogo, a inscrição:{{/emphasis}} {{divine}}\"Bem-aventurados os que entram pelos portões da Cidade.\"{{/divine}}",
       "{{heart}}Você apresenta o pergaminho — o selo que recebeu na cruz.{{/heart}} {{divine}}Os portões se abrem. De dentro, uma multidão incontável canta em boas-vindas.{{/divine}}"
     ],
     toneNarrative: [
