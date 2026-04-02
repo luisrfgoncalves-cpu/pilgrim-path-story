@@ -1226,31 +1226,37 @@ const PresentialMultiplayer = () => {
         </div>
       </header>
 
-      {/* Scrollable player bar */}
-      <div className="sticky top-[52px] z-20 bg-card/90 backdrop-blur-sm border-b border-border px-3 py-2 overflow-x-auto">
-        <div className="flex gap-2 max-w-lg mx-auto">
-          {players.map((p, i) => {
-            const isTurn = i === currentTurn;
-            return (
-              <div
-                key={p.id}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border shrink-0 transition-all ${
-                  isTurn ? 'bg-primary/10 border-primary/30' : p.finished ? 'opacity-50 border-border/50' : 'border-border'
-                }`}
-              >
-                <div className="w-5 h-5 rounded-full shrink-0" style={{ backgroundColor: p.color, border: `2px solid ${p.color}80` }} />
-                <div className="text-[9px] leading-tight">
-                  <p className="font-medium text-foreground">{p.name}</p>
-                  <p className="text-muted-foreground">
-                    {p.finished ? `🏆${p.finishOrder}º` : p.isStunned ? '😵' : `${p.position + 1}`}
-                    {p.hasShield && ' 🛡️'}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+      {/* Attribute Panel + Player Bar */}
+      <div className="sticky top-[52px] z-20 bg-card/90 backdrop-blur-sm border-b border-border px-3 py-2 space-y-1.5">
+        <div className="max-w-lg mx-auto">
+          <AttributePanel
+            players={players.map(p => ({
+              name: p.name,
+              color: p.color,
+              attributes: p.attributes,
+              hasShield: p.hasShield,
+              isStunned: p.isStunned,
+              finished: p.finished,
+            }))}
+            currentPlayerIdx={currentTurn}
+            expanded={showAttrPanel}
+            onToggle={() => setShowAttrPanel(prev => !prev)}
+          />
         </div>
       </div>
+
+      {/* Result Feedback Overlay */}
+      {resultFeedback && (
+        <ResultFeedback
+          visible={resultFeedback.visible}
+          success={resultFeedback.success}
+          message={resultFeedback.message}
+          emoji={resultFeedback.emoji}
+          posAdjust={resultFeedback.posAdjust}
+          attrChanges={resultFeedback.attrChanges}
+          onComplete={() => setResultFeedback(null)}
+        />
+      )}
 
       {/* Immersive Board */}
       <main className="flex-1 w-full">
