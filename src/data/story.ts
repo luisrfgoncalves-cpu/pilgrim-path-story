@@ -210,12 +210,14 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Guardar o livro e fingir que nada aconteceu",
         nextChapterId: "cena2",
         effects: { fe: -1, discernimento: -1 },
-        flag: "ignorou_inquietacao"
+        flag: "ignorou_inquietacao",
+        consequence: "Você fecha o livro, mas ele continua queimando no peito. Bunyan nos ensina: ignorar a verdade não a apaga — apenas adia o confronto com ela. Quantos vivem carregando fardos que se recusam a nomear?"
       },
       {
         text: "Sair de casa clamando: \"O que devo fazer para ser salvo?\"",
         nextChapterId: "cena1b",
-        effects: { discernimento: 1, fe: 1 }
+        effects: { discernimento: 1, fe: 1 },
+        consequence: "O grito de Cristão é o mesmo do carcereiro de Filipos (Atos 16:30). É a pergunta mais honesta que um ser humano pode fazer. Reconhecer a necessidade de salvação é o primeiro passo da jornada."
       }
     ]
   },
