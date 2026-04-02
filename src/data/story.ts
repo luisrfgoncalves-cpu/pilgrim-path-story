@@ -622,7 +622,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Cruz e o Sepulcro",
     location: "Colina da Cruz",
     characters: ["cristao"],
-    reflection: "r6",
+    sceneEvent: { type: 'suspense', delay: 800, duration: 3000, message: 'Uma presença sagrada enche o lugar...' },
     narrative: [
       "O caminho sobe uma colina. No topo, uma visão te paralisa: uma cruz de madeira, erguida contra o céu. Ao seu pé, um sepulcro aberto.",
       "Ao olhar para a cruz, algo acontece. As cordas que prendiam o fardo às suas costas se soltam. O fardo desliza, cai, e rola colina abaixo até desaparecer dentro do sepulcro. A boca do túmulo se fecha.",
