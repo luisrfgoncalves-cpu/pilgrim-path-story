@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, X } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import { characterImages } from '@/data/characterImages';
 import { characters } from '@/data/story';
 import { part2Characters } from '@/data/storyPart2';
 
 /**
  * Allegory card descriptions — what each character *represents* spiritually.
- * Shown on FIRST encounter only, with enough time to read.
+ * Shown on FIRST encounter only. User must manually dismiss.
  */
 const allegoryMeanings: Record<string, { meaning: string; verse?: string; type: 'ally' | 'villain' | 'warning' | 'divine' | 'family' }> = {
   obstinado: {
@@ -120,6 +120,7 @@ const allegoryMeanings: Record<string, { meaning: string; verse?: string; type: 
     type: 'divine',
   },
 };
+
 interface AllegoryCardProps {
   characterId: string;
   onDismiss: () => void;
@@ -134,7 +135,6 @@ export function AllegoryCard({ characterId, onDismiss }: AllegoryCardProps) {
 
   useEffect(() => {
     const enterTimer = setTimeout(() => setPhase('visible'), 300);
-    // NO auto-dismiss — user must tap/click to close
     return () => { clearTimeout(enterTimer); };
   }, []);
 
@@ -150,75 +150,82 @@ export function AllegoryCard({ characterId, onDismiss }: AllegoryCardProps) {
 
   const colors = allegory ? typeColors[allegory.type] : typeColors.ally;
 
+  const handleDismiss = () => {
+    setPhase('exit');
+    setTimeout(onDismiss, 500);
+  };
+
   return (
     <div
-      className={`fixed inset-0 z-[56] flex items-center justify-center px-4 transition-all duration-500 ${
+      className={`fixed inset-0 z-[56] flex items-center justify-center px-3 py-4 transition-all duration-500 ${
         phase === 'enter' ? 'opacity-0' : phase === 'exit' ? 'opacity-0 scale-95' : 'opacity-100'
       }`}
-      onClick={() => {
-        setPhase('exit');
-        setTimeout(onDismiss, 500);
-      }}
+      style={{ overflow: 'auto' }}
     >
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-background/90 backdrop-blur-sm" />
+      {/* Backdrop - NOT clickable to close, user must use button */}
+      <div className="absolute inset-0 bg-background/95 backdrop-blur-sm" />
 
-      {/* Card */}
+      {/* Card - scrollable if needed on small screens */}
       <div
-        className={`relative z-10 max-w-sm w-full rounded-2xl overflow-hidden transition-all duration-700 ${
+        className={`relative z-10 max-w-md w-full rounded-2xl overflow-hidden transition-all duration-700 ${
           phase === 'visible' ? 'translate-y-0 scale-100' : 'translate-y-8 scale-95'
         }`}
         style={{
           border: `2px solid ${colors.border}`,
           boxShadow: `0 0 40px ${colors.glow}, 0 20px 40px hsl(0 0% 0% / 0.6)`,
           background: 'hsl(var(--card))',
+          maxHeight: '92vh',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
-        {/* Character image — top section */}
-        <div className="relative h-48 overflow-hidden">
+        {/* Character image — large, NOT cropped at head */}
+        <div className="relative flex-shrink-0" style={{ minHeight: '220px', maxHeight: '280px' }}>
           <img
             src={img}
             alt={char.name}
-            className="w-full h-full object-cover object-top"
+            className="w-full h-full object-cover"
             style={{
-              filter: 'contrast(1.1) brightness(1.05)',
-              maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
-              WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+              height: '280px',
+              objectPosition: 'center 15%', // Show head/face, not crop from top
+              filter: 'contrast(1.1) brightness(1.08)',
+              maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
             }}
           />
           {/* Type badge */}
           <div
-            className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-display font-bold uppercase tracking-wider"
+            className="absolute top-3 right-3 px-3 py-1.5 rounded-full text-xs font-display font-bold uppercase tracking-wider"
             style={{ background: colors.badge, color: colors.badgeText }}
           >
             {colors.label}
           </div>
         </div>
 
-        {/* Content */}
-        <div className="px-5 pb-5 -mt-4 relative">
+        {/* Content - scrollable */}
+        <div className="px-5 pb-5 -mt-4 relative overflow-y-auto flex-1">
           {/* Name */}
           <h3
-            className="font-display text-2xl font-bold mb-1"
+            className="font-display text-2xl sm:text-3xl font-bold mb-1"
             style={{ color: colors.badgeText, textShadow: '0 2px 8px hsl(0 0% 0% / 0.6)' }}
           >
             {char.name}
           </h3>
-          <p className="text-xs text-muted-foreground font-display uppercase tracking-wider mb-3">
+          <p className="text-xs sm:text-sm text-muted-foreground font-display uppercase tracking-wider mb-3">
             {char.role}
           </p>
 
           {/* Allegory meaning */}
           {allegory && (
             <>
-              <div className="flex items-start gap-2 mb-3">
-                <BookOpen className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-foreground/90 leading-relaxed italic">
+              <div className="flex items-start gap-2.5 mb-3">
+                <BookOpen className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <p className="text-sm sm:text-base text-foreground/90 leading-relaxed italic">
                   {allegory.meaning}
                 </p>
               </div>
               {allegory.verse && (
-                <p className="text-xs text-primary/70 leading-relaxed pl-6 border-l-2 ml-1"
+                <p className="text-xs sm:text-sm text-primary/70 leading-relaxed pl-6 border-l-2 ml-1"
                   style={{ borderColor: colors.border }}>
                   {allegory.verse}
                 </p>
@@ -226,9 +233,9 @@ export function AllegoryCard({ characterId, onDismiss }: AllegoryCardProps) {
             </>
           )}
 
-          {/* Dismiss button — clear and prominent */}
+          {/* Dismiss button — ONLY way to close */}
           <button
-            className="mt-4 w-full py-3 rounded-xl text-sm font-display font-bold uppercase tracking-wider transition-all"
+            className="mt-5 w-full py-3.5 rounded-xl text-sm sm:text-base font-display font-bold uppercase tracking-wider transition-all active:scale-95"
             style={{
               background: colors.badge,
               color: colors.badgeText,
@@ -236,8 +243,7 @@ export function AllegoryCard({ characterId, onDismiss }: AllegoryCardProps) {
             }}
             onClick={(e) => {
               e.stopPropagation();
-              setPhase('exit');
-              setTimeout(onDismiss, 500);
+              handleDismiss();
             }}
           >
             Entendi — Continuar
