@@ -233,21 +233,31 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     failurePenalty: { fe: -1 },
   },
 
-  // Vale da Sombra da Morte — Stealth
+  // Vale da Sombra — Discernir vozes nas trevas
   'fase3-cena5': {
-    type: 'stealth',
+    type: 'swipe',
     difficulty: 'hard',
-    intro: 'O Vale da Sombra da Morte se estende em trevas. Avance em silêncio — os demônios espreitam.',
-    successBonus: { coragem: 1, perseveranca: 1 },
+    intro: 'No Vale da Sombra da Morte, vozes sussurram nas trevas. Algumas são demônios tentando destruir sua fé. Outras são promessas de Deus. Discerna quem fala!',
+    successBonus: { coragem: 1, fe: 1 },
     failurePenalty: { coragem: -1 },
+    swipeItems: [
+      { text: '"Deus te abandonou aqui"', emoji: '🌑', good: false },
+      { text: '"Ainda que eu ande pelo vale..."', emoji: '🕯️', good: true },
+      { text: '"Você nunca sairá daqui"', emoji: '💀', good: false },
+      { text: '"Tu estás comigo"', emoji: '🙏', good: true },
+      { text: '"Blasfeme e morra em paz"', emoji: '😈', good: false },
+      { text: '"Tua vara e teu cajado me consolam"', emoji: '🛡️', good: true },
+      { text: '"A fé é ilusão"', emoji: '🎭', good: false },
+      { text: '"Não temerei mal algum"', emoji: '✨', good: true },
+    ],
   },
 
-  // QTE no Vale — evitar armadilhas
+  // Versículos como arma no Vale — Puzzle de Escritura
   'fase3-cena6': {
-    type: 'qte',
+    type: 'wordpuzzle',
     difficulty: 'normal',
-    intro: 'Armadilhas surgem no caminho escuro! Desvie rapidamente!',
-    successBonus: { coragem: 1 },
+    intro: 'As trevas só recuam diante da Palavra. Monte o Salmo 23 para iluminar seu caminho no vale da sombra!',
+    successBonus: { coragem: 1, fe: 1 },
     failurePenalty: { coragem: -1 },
   },
 
