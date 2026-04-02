@@ -54,6 +54,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
     adaptiveNarrative: [
       { minAttr: "fe", minValue: 0, text: "Cristã reconhece o caminho que seu marido percorreu. Cada marco que ele enfrentou — o pântano, a cruz, o vale, a feira — agora aguarda por ela." }
     ],
+    replayNarrative: [
+      "O sonho é mais nítido desta vez. Cristão fala diretamente: \"Não demores como eu demorei em partir. Cada dia aqui é um dia perdido.\"",
+      "A carta parece ter mais palavras do que da última vez. Como se o Rei soubesse que você voltaria."
+    ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "A carta queima em suas mãos como uma promessa viva. Não há dúvida — é hora de partir.", lowThreshold: 4, lowText: "As palavras da carta tremem diante dos seus olhos. Partir? Com quatro filhos? Pelo mesmo caminho perigoso?" }
     ],
@@ -63,6 +67,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-cena2",
         effects: { fe: 2, coragem: 1 },
         flag: "aceitou_convite_imediato",
+        item: "carta_do_rei",
         consequence: "A obediência pronta é a marca da fé genuína. Cristã não esperou sinais adicionais — a carta do Rei foi suficiente. — Hebreus 11:8: \"Pela fé Abraão, sendo chamado, obedeceu, indo para um lugar que havia de receber por herança; e saiu, sem saber para onde ia.\""
       },
       {
