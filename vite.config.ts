@@ -101,6 +101,9 @@ export default defineConfig(({ mode }) => ({
         navigateFallbackDenylist: [/^\/~oauth/, /^\/landing/, /^\/vendas/, /^\/obrigado/],
         // Only precache critical files — NOT heavy images
         globPatterns: ["**/*.{js,css,html,ico,svg,woff2}"],
+        // Force new SW to activate immediately (no waiting)
+        skipWaiting: true,
+        clientsClaim: true,
         // Runtime cache for images — loaded on demand, not upfront
         runtimeCaching: [
           {
