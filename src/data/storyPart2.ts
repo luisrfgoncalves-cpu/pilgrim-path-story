@@ -178,21 +178,23 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "misericordia"],
     sceneEvent: { type: 'tension', duration: 4000, message: 'Servos de Belzebu atacam!', intensity: 0.8 },
     narrative: [
-      "Mal passam pelo portão, dois homens de aparência terrível atacam o grupo. São os Mal-Encarados — servos de Belzebu que tentam impedir peregrinos de prosseguir.",
+      "Mal passam pelo portão, dois homens de aparência terrível atacam o grupo. São os {{villain}}Mal-Encarados{{/villain}} — servos de Belzebu que tentam impedir peregrinos de prosseguir.",
       "O guardião do portão intervém e os afugenta, mas não antes de Cristã e Misericórdia sentirem o terror de um ataque real.",
-      "\"Isto é normal\", diz o guardião. \"Todo peregrino que passa por esta porta é atacado logo depois. Seu marido também foi. Mas o Senhor vos guardará.\""
+      "{{divine}}\"Isto é normal\"{{/divine}}, diz o guardião. \"Todo peregrino que passa por esta porta é atacado logo depois. Seu marido também foi. {{divine}}Mas o Senhor vos guardará.{{/divine}}\""
     ],
     choices: [
       {
         text: "\"Se meu marido suportou isto, eu também suportarei.\"",
         nextChapterId: "p2-cena6",
         effects: { coragem: 2, fe: 1 },
-        flag: "coragem_apos_ataque"
+        flag: "coragem_apos_ataque",
+        consequence: "A coragem de Cristã não nasce da ausência de medo, mas da presença de uma promessa maior que o perigo. — Josué 1:9: \"Não te mandei eu? Sê forte e corajoso; não temas, nem te espantes; porque o Senhor teu Deus é contigo, por onde quer que andares.\""
       },
       {
         text: "Tremer mas continuar — em silêncio, segurando os filhos",
         nextChapterId: "p2-cena6",
-        effects: { perseveranca: 1 }
+        effects: { perseveranca: 1 },
+        consequence: "O silêncio de Cristã não é fraqueza — é a perseverança de quem avança mesmo quando o corpo treme. — Isaías 41:10: \"Não temas, porque eu sou contigo; não te assombres, porque eu sou teu Deus.\""
       }
     ]
   },
