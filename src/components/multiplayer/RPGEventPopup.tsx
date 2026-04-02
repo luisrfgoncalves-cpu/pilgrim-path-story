@@ -9,6 +9,7 @@ import {
 } from '@/data/rpg/rotationEngine';
 import { TileEventType } from '@/data/rpg/types';
 import { playGameSfx, GameSfx } from '@/lib/gameSfx';
+import { narrate, stopNarration, getNarrationStyle } from '@/lib/narrator';
 import { Clock, PlayCircle } from 'lucide-react';
 
 // Map RPG sound intents to available GameSfx types
