@@ -303,13 +303,23 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     ],
   },
 
-  // Confronto na Feira — QTE
+  // Confronto na Feira — Discernir entre a voz da multidão e a voz de Deus
   'fase4-cena2': {
-    type: 'qte',
+    type: 'swipe',
     difficulty: 'normal',
-    intro: 'A multidão se volta contra vocês! Desvie dos objetos atirados!',
-    successBonus: { coragem: 1 },
+    intro: 'A multidão grita acusações e ofertas. Em meio ao caos, ouça a voz de Deus e rejeite a voz do mundo.',
+    successBonus: { coragem: 1, fe: 1 },
     failurePenalty: { coragem: -1 },
+    swipeItems: [
+      { text: '"Adore nossos ídolos!"', emoji: '🗿', good: false },
+      { text: '"Compre prazeres!"', emoji: '💰', good: false },
+      { text: '"Não temais, eu venci o mundo"', emoji: '✝️', good: true },
+      { text: '"Neguem sua fé!"', emoji: '😡', good: false },
+      { text: '"Bem-aventurados os perseguidos"', emoji: '🕊️', good: true },
+      { text: '"Sejam como nós!"', emoji: '🎭', good: false },
+      { text: '"Sê fiel até a morte"', emoji: '👑', good: true },
+      { text: '"A verdade vos libertará"', emoji: '📖', good: true },
+    ],
   },
 
   // Caça ao tesouro na Feira
