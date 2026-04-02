@@ -575,7 +575,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena13",
     title: "Afundando no Desânimo",
     location: "Pântano do Desânimo",
-    characters: ["cristao"],
+    characters: ["cristao", "auxilio"],
     interactionType: 'timed',
     timeLimit: 10,
     timeoutChoiceIndex: 1,
