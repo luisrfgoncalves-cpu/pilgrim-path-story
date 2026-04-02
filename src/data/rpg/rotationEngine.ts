@@ -83,7 +83,7 @@ export function getRandomTrap(state: RotationState) {
 }
 
 export function getRandomRefuge(state: RotationState) {
-  return pickRandom(refugeEvents, state.usedTraps); // shares pool to avoid overuse
+  return pickRandom(refugeEvents, state.usedRefuges);
 }
 
 /** Pick a random response mode for this tile */

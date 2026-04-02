@@ -473,14 +473,17 @@ export default function RPGEventPopup({
                   onClick={() => {
                     const isPositive = !!specialEvent || !!refugeEvent;
                     playGameSfx(rpgSfx(isPositive ? 'blessing' : 'trap'));
+
+                    const resolvedMessage = specialEvent
+                      ? `${specialEvent.narrative}\n\nEfeito: ${specialEvent.title}`
+                      : trapEvent
+                        ? `${trapEvent.narrative}${trapEvent.escapeChallenge ? `\n\nDesafio de fuga: ${trapEvent.escapeChallenge.question}` : ''}`
+                        : `${refugeEvent!.narrative}\n\n📖 ${refugeEvent!.bibleVerse}`;
+
                     setShowResult(true);
                     setResultData({
                       success: isPositive,
-                      message: specialEvent
-                        ? `${specialEvent.emoji} ${specialEvent.title}`
-                        : trapEvent
-                          ? `${trapEvent.emoji} ${trapEvent.title}${trapEvent.escapeChallenge ? '\n\n(Sem chance de escapar desta vez...)' : ''}`
-                          : `${refugeEvent!.emoji} ${refugeEvent!.title}`,
+                      message: resolvedMessage,
                       emoji: specialEvent?.emoji || trapEvent?.emoji || refugeEvent?.emoji || '✨',
                     });
                   }}

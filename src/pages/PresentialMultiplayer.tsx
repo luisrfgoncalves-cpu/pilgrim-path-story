@@ -1168,6 +1168,7 @@ const PresentialMultiplayer = () => {
         playerNames={players.map(p => p.name)}
         currentPlayerIdx={rpgEvent?.playerIdx || currentTurn}
         tileEventType={rpgEvent?.tileType || 'scripture'}
+        sourceTileType={rpgEvent?.sourceTileType}
         onResult={handleRpgEventResult}
         onDismiss={() => {
           setRpgEvent(null);
