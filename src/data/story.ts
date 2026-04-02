@@ -551,12 +551,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Continuar passo a passo, confiando nos degraus",
         nextChapterId: "cena14",
-        effects: { perseveranca: 1, fe: 1 }
+        effects: { perseveranca: 1, fe: 1 },
+        consequence: "Cada degrau é uma promessa de Deus. O progresso lento não é fracasso — é fidelidade. 'Os que esperam no Senhor renovarão as suas forças; subirão com asas como águias; correrão e não se cansarão; caminharão e não se fatigarão.' (Isaías 40:31)"
       },
       {
         text: "Desanimar — o progresso é lento demais",
         nextChapterId: "cena13",
-        effects: { fe: -1 }
+        effects: { fe: -1 },
+        consequence: "O desânimo no meio do avanço é uma das armas mais eficazes do inimigo. Quando você já está progredindo, ele sussurra: 'Não é o suficiente.' Mas Deus valoriza cada passo dado em fé, mesmo o mais lento."
       }
     ]
   },
