@@ -27,6 +27,7 @@ import {
 } from '@/components/multiplayer/BoardSounds';
 import { startAmbientMusic, stopAmbientMusic, updateAmbientPhase } from '@/components/multiplayer/AmbientMusic';
 import { playGameSfx } from '@/lib/gameSfx';
+import { preloadRealSfx, playRealSfx } from '@/lib/realSfx';
 import { useAudioPrewarm } from '@/hooks/useAudioPrewarm';
 import { prewarmNarrator, setNarratorEnabled, stopNarration } from '@/lib/narrator';
 import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown, Volume2, VolumeX } from 'lucide-react';
@@ -386,6 +387,7 @@ const PresentialMultiplayer = () => {
   const navigate = useNavigate();
   useAudioPrewarm();
   prewarmNarrator();
+  preloadRealSfx();
   const [phase, setPhase] = useState<'setup' | 'playing' | 'finished'>('setup');
   const [players, setPlayers] = useState<LocalPlayer[]>([createPlayer(0), createPlayer(1)]);
   const [editingNames, setEditingNames] = useState<Record<string, string>>({});
@@ -508,6 +510,7 @@ const PresentialMultiplayer = () => {
     setCurrentTurn(0);
     playTurnStart();
     playGameSfx('gameStart');
+    playRealSfx('bell', 0.4);
     playPhaseAmbient(0);
     startAmbientMusic(0);
     lastPhaseAmbientRef.current = 0;

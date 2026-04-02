@@ -15,6 +15,7 @@ import {
   playEvilLaugh, playCrowdCheer, playTensionDrum,
   playHolyChime, playDramaticReveal, playNarrativeChime,
 } from './BoardSounds';
+import { playRealSfx, getSfxForTileEvent, playNarrativeSfx } from '@/lib/realSfx';
 import { Clock, PlayCircle } from 'lucide-react';
 
 // Map RPG sound intents to available GameSfx types
@@ -218,8 +219,12 @@ export default function RPGEventPopup({
     if (narratedKeyRef.current === key) return;
     narratedKeyRef.current = key;
 
-    // Play contextual SFX first
+    // Play contextual SFX (synth + real audio)
     playContextSfx(tileEventType);
+    // Play real narrative SFX based on context text
+    const rawContext = question?.context || riddle?.context || dilemma?.context || challenge?.context
+      || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative || '';
+    if (rawContext) playNarrativeSfx(rawContext);
 
     const timer = window.setTimeout(() => {
       narrate(text, { style: getNarrationStyle(tileEventType), force: true });
@@ -257,11 +262,15 @@ export default function RPGEventPopup({
     if (narratedKeyRef.current === key) return;
     narratedKeyRef.current = key;
 
-    // Play result SFX
+    // Play result SFX (synth + real)
     if (resultData.success) {
       playCrowdCheer();
-    } else if (boss) {
-      playEvilLaugh();
+      const realSfx = getSfxForTileEvent(tileEventType, true);
+      if (realSfx) playRealSfx(realSfx, 0.5);
+    } else {
+      if (boss) playEvilLaugh();
+      const realSfx = getSfxForTileEvent(tileEventType, false);
+      if (realSfx) playRealSfx(realSfx, 0.4);
     }
 
     const timer = window.setTimeout(() => {
