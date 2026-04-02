@@ -11,6 +11,10 @@ import { TileEventType } from '@/data/rpg/types';
 import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { playGameSfx, GameSfx } from '@/lib/gameSfx';
 import { narrate, stopNarration, getNarrationStyle, isCurrentlySpeaking } from '@/lib/narrator';
+import {
+  playEvilLaugh, playCrowdCheer, playTensionDrum,
+  playHolyChime, playDramaticReveal, playNarrativeChime,
+} from './BoardSounds';
 import { Clock, PlayCircle } from 'lucide-react';
 
 // Map RPG sound intents to available GameSfx types

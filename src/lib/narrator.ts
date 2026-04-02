@@ -53,11 +53,11 @@ interface NarrationOptions {
 }
 
 const STYLE_PRESETS: Record<NarrationStyle, { rate: number; pitch: number; volume: number }> = {
-  dramatic:   { rate: 0.92, pitch: 0.85, volume: 1.0 },
-  calm:       { rate: 0.95, pitch: 1.0,  volume: 1.0 },
-  urgent:     { rate: 1.08, pitch: 0.80, volume: 1.0 },
-  whisper:    { rate: 0.88, pitch: 0.70, volume: 0.90 },
-  triumphant: { rate: 0.90, pitch: 0.95, volume: 1.0 },
+  dramatic:   { rate: 0.88, pitch: 0.80, volume: 1.0 },
+  calm:       { rate: 0.85, pitch: 1.05, volume: 0.95 },
+  urgent:     { rate: 1.02, pitch: 0.75, volume: 1.0 },
+  whisper:    { rate: 0.82, pitch: 0.65, volume: 0.85 },
+  triumphant: { rate: 0.85, pitch: 0.90, volume: 1.0 },
 };
 
 // Chrome has a bug where utterances >~15s get paused/killed.
