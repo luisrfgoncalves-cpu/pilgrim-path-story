@@ -874,15 +874,10 @@ const ScenePage = () => {
                     onClick={() => {
                       if (narrativeIndex > 0) {
                         setNarrativeIndex(prev => Math.max(0, prev - 1));
-                      } else {
-                        // Go to previous scene
-                        const visited = progress.visitedChapters;
-                        const currentIdx = visited.indexOf(progress.currentChapterId);
-                        const prevId = currentIdx > 0 ? visited[currentIdx - 1] : visited[visited.length - 2];
-                        if (prevId && prevId !== progress.currentChapterId) goToChapter(prevId);
                       }
                     }}
-                    className="btn-medieval-secondary px-3 py-2 text-xs flex items-center gap-1.5 flex-shrink-0"
+                    disabled={narrativeIndex === 0}
+                    className="btn-medieval-secondary px-3 py-2 text-xs flex items-center gap-1.5 flex-shrink-0 disabled:opacity-40 disabled:pointer-events-none"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" /> Voltar
                   </button>
