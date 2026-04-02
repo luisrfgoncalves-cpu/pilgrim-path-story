@@ -230,14 +230,12 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
         </div>
       )}
 
-      {/* REVEAL PHASE — full popup */}
+      {/* REVEAL PHASE — fullscreen popup */}
       {phase === 'reveal' && (
         <div
-          className="relative w-full max-w-sm rounded-2xl overflow-hidden"
+          className="relative w-full h-full max-h-[100dvh] flex flex-col overflow-y-auto"
           style={{
             background: bgGradient,
-            border: `2px solid ${borderColor}`,
-            boxShadow: `0 0 60px ${glowColor}, 0 20px 60px rgba(0,0,0,0.5)`,
             animation: 'scaleReveal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
           }}
           onClick={e => e.stopPropagation()}
@@ -245,15 +243,15 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
           {/* Close button */}
           <button
             onClick={onDismiss}
-            className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
             style={{ background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.15)' }}
           >
-            <X className="w-4 h-4 text-white/70" />
+            <X className="w-5 h-5 text-white/70" />
           </button>
 
           {/* Character image */}
           {charImg && (
-            <div className="relative w-full h-56 overflow-hidden">
+            <div className="relative w-full h-64 flex-shrink-0 overflow-hidden">
               <img
                 src={charImg}
                 alt={config.label}
@@ -268,17 +266,12 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
               <div className="absolute inset-0" style={{
                 background: `linear-gradient(to top, ${isNegative ? 'hsl(0 30% 12%)' : isPositive ? 'hsl(40 30% 14%)' : 'hsl(220 20% 14%)'} 0%, transparent 40%)`,
               }} />
-              {isNegative && (
-                <div className="absolute inset-0 animate-pulse" style={{
-                  background: 'radial-gradient(circle, transparent 40%, rgba(150,0,0,0.3) 100%)',
-                }} />
-              )}
             </div>
           )}
 
           {/* Tile context image (for non-character tiles) */}
           {!charImg && config.tileImage && (
-            <div className="relative w-full h-40 overflow-hidden">
+            <div className="relative w-full h-52 flex-shrink-0 overflow-hidden">
               <img
                 src={config.tileImage}
                 alt={config.label}
@@ -293,36 +286,47 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
             </div>
           )}
 
-          {/* Content */}
-          <div className="p-5 text-center space-y-3">
-            <div className="text-5xl" style={{
+          {/* Content — generous padding and large fonts */}
+          <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 text-center space-y-5">
+            <div className="text-6xl" style={{
               filter: `drop-shadow(0 0 12px ${glowColor})`,
-              animation: isNegative ? 'shake 0.3s infinite alternate' : isPositive ? 'floatEmoji 2s ease-in-out infinite' : undefined,
             }}>
               {emoji}
             </div>
 
             <div
-              className="inline-block px-4 py-1.5 rounded-full text-xs font-display uppercase tracking-widest"
+              className="inline-block px-5 py-2 rounded-full text-sm font-display uppercase tracking-widest"
               style={{ background: `${borderColor}20`, border: `1px solid ${borderColor}60`, color: borderColor }}
             >
               {config.label}
             </div>
 
             {playerName && (
-              <p className="text-sm text-white/50 font-medium">{playerName}</p>
+              <p className="text-base text-white/50 font-medium">{playerName}</p>
             )}
 
-            <p className="text-base font-display leading-relaxed" style={{
-              color: isNegative ? 'hsl(0 60% 75%)' : isPositive ? 'hsl(45 80% 80%)' : 'hsl(0 0% 88%)',
-              textShadow: `0 0 15px ${glowColor}`,
-              wordSpacing: '0.1em',
+            <p className="text-xl font-display leading-relaxed max-w-md" style={{
+              color: isNegative ? 'hsl(0 60% 80%)' : isPositive ? 'hsl(45 80% 85%)' : 'hsl(0 0% 92%)',
+              textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+              lineHeight: '1.7',
             }}>
               {message}
             </p>
 
-            <p className="text-xs text-white/40 italic">{config.description}</p>
-            <p className="text-[10px] text-white/25 mt-2">Toque para fechar</p>
+            <p className="text-sm text-white/50 italic leading-relaxed max-w-sm">{config.description}</p>
+
+            {/* Dismiss button */}
+            <button
+              onClick={onDismiss}
+              className="mt-4 px-8 py-3 rounded-xl font-display font-bold text-base transition-all active:scale-95"
+              style={{
+                background: `${borderColor}25`,
+                border: `2px solid ${borderColor}60`,
+                color: borderColor,
+              }}
+            >
+              Continuar ▸
+            </button>
           </div>
         </div>
       )}

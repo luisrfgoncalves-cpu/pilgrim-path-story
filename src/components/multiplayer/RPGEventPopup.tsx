@@ -640,12 +640,9 @@ export default function RPGEventPopup({
 
       {/* ═══ MAIN POPUP (context, challenge, result, revelation) ═══ */}
       {phase !== 'suspense_intro' && (
-      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border-2 bg-card"
+      <div className="relative w-full h-full max-h-[100dvh] overflow-y-auto bg-card"
         style={{
-          borderColor: isBoss ? 'hsl(0 70% 45%)' : tileInfo.color,
-          boxShadow: isBoss
-            ? '0 0 60px hsl(0 70% 30% / 0.5), 0 0 120px hsl(0 50% 20% / 0.3)'
-            : `0 0 40px ${tileInfo.color}40`,
+          borderTop: `3px solid ${isBoss ? 'hsl(0 70% 45%)' : tileInfo.color}`,
           animation: 'scaleReveal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
         }}
       >
@@ -670,7 +667,7 @@ export default function RPGEventPopup({
           )}
         </div>
 
-        <div className="p-4 space-y-4">
+        <div className="p-6 space-y-5">
           {/* CONTEXT PHASE */}
           {phase === 'context' && !showResult && (
             <>
@@ -698,8 +695,8 @@ export default function RPGEventPopup({
               )}
 
               {/* Context text */}
-              <div className="p-4 rounded-xl bg-background/50 border border-border">
-                <p className="text-sm text-muted-foreground leading-relaxed italic">
+              <div className="p-5 rounded-xl bg-background/50 border border-border">
+                <p className="text-lg text-foreground/80 leading-relaxed italic font-display" style={{ lineHeight: '1.7' }}>
                   {(() => {
                     const raw = question?.context || riddle?.context || dilemma?.context || challenge?.context
                       || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
