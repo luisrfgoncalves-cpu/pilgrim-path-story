@@ -1941,9 +1941,10 @@ export const storyChapters: Record<string, StoryChapter> = {
       },
       {
         text: "Mais um dia não fará diferença...",
-        nextChapterId: "fase4-cena9",
+        nextChapterId: "fase4-cena10",
         effects: { fe: -1 },
-        consequence: "A procrastinação espiritual é uma corrente invisível. Hebreus 3:15: 'Hoje, se ouvirdes a sua voz, não endureçais os vossos corações.'"
+        flag: "ficou_preso_feira",
+        consequence: "A procrastinação espiritual é uma corrente invisível. Mas a graça quebra até essa corrente. Hebreus 3:15: 'Hoje, se ouvirdes a sua voz, não endureçais os vossos corações.'"
       }
     ]
   },
