@@ -21,14 +21,29 @@ if (isPreviewHost || isInIframe) {
     registrations.forEach((r) => r.unregister());
   });
 } else if ("serviceWorker" in navigator) {
+  // On first load after update: purge ALL old caches to prevent brown screen
+  const CACHE_VERSION = 'v2026-04-02';
+  caches.keys().then((keys) => {
+    const versionKey = `peregrino-cache-version`;
+    const storedVersion = localStorage.getItem(versionKey);
+    if (storedVersion !== CACHE_VERSION) {
+      // New version detected — nuke all caches
+      Promise.all(keys.map((k) => caches.delete(k))).then(() => {
+        localStorage.setItem(versionKey, CACHE_VERSION);
+        // Also force SW update
+        navigator.serviceWorker.getRegistration().then((reg) => {
+          reg?.update();
+        });
+      });
+    }
+  });
+
   // Force instant activation of new service worker versions
-  // This makes updates appear immediately when the user reopens the app
   navigator.serviceWorker.addEventListener("controllerchange", () => {
-    // New SW took control — reload to show latest version
     window.location.reload();
   });
 
-  // Check for updates every time the app regains focus (user switches back)
+  // Check for updates every time the app regains focus
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
       navigator.serviceWorker.getRegistration().then((reg) => {
