@@ -833,17 +833,17 @@ export const scriptureQuestions: ScriptureQuestion[] = [
   },
   {
     id: 'q-v-015', difficulty: 'veterano',
-    context: 'Na Parte 2, Cristiana é acompanhada por Grande-Coração, um guia armado enviado pelo Senhor do caminho.',
-    question: 'Grande-Coração é uma figura tipológica de qual ofício/papel na vida da igreja?',
+    context: 'Vigilante, o porteiro do Palácio Belo, acolheu Cristão e chamou as donzelas Prudência, Piedade e Caridade para ensiná-lo.',
+    question: 'As donzelas fizeram perguntas profundas a Cristão antes de recebê-lo. Qual princípio eclesiológico isso reflete?',
     options: [
-      'O diácono que serve nas necessidades materiais',
-      'O pastor/ministro que protege, ensina e guia o rebanho em seu peregrinar',
-      'O evangelista que converte incrédulos',
-      'O apóstolo que funda igrejas'
+      'Que a igreja deve rejeitar novos membros',
+      'Que a igreja deve examinar a fé dos que buscam comunhão, discernindo a sinceridade do arrependimento antes de acolher',
+      'Que a igreja é apenas para pessoas perfeitas',
+      'Que a igreja deve aceitar todos sem questionamento'
     ],
     correctIndex: 1,
-    bibleReference: 'Atos 20:28',
-    explanation: '"Cuidai de vós mesmos e de todo o rebanho." Grande-Coração é o pastor fiel que acompanha, ensina e defende os peregrinos.',
+    bibleReference: 'Atos 2:41-42',
+    explanation: 'As donzelas representam o discipulado pastoral: examinar, ensinar e fortalecer. A igreja primitiva devotava-se ao ensino antes de acolher plenamente.',
     timerSeconds: 60
   },
   {
