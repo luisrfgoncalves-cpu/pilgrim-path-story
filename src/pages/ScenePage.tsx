@@ -1328,7 +1328,7 @@ const ScenePage = () => {
               <img
                 src={charReveal.img}
                 alt={charReveal.name}
-                className="w-72 h-[22rem] md:w-[22rem] md:h-[28rem] object-cover object-top mx-auto"
+                className="w-64 h-[20rem] sm:w-72 sm:h-[22rem] md:w-[22rem] md:h-[28rem] object-cover object-top mx-auto max-w-[90vw]"
                 style={{
                   borderRadius: '0',
                   border: 'none',
