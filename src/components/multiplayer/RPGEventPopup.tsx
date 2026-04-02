@@ -47,7 +47,7 @@ type PopupPhase = 'context' | 'mode_reveal' | 'player_select' | 'challenge' | 'r
 
 export default function RPGEventPopup({
   visible, difficulty, playerNames, currentPlayerIdx,
-  tileEventType, onResult, onDismiss, rotationState,
+  tileEventType, sourceTileType, onResult, onDismiss, rotationState,
 }: RPGEventPopupProps) {
   const [phase, setPhase] = useState<PopupPhase>('context');
   const [responseMode, setResponseMode] = useState<ResponseMode>('group_consensus');
