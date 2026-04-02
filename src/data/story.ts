@@ -748,10 +748,15 @@ export const storyChapters: Record<string, StoryChapter> = {
     sceneEvent: { type: 'sinking', duration: 10000, message: 'O desânimo te puxa para baixo...' },
     interactionType: 'hold',
     narrative: [
-      "No fundo do pântano, vozes sussurram da lama. Não são vozes humanas — são seus próprios pensamentos, transformados em eco pelo desânimo:",
-      "\"Você abandonou sua família por nada...\" \"A Cidade Celestial não existe...\" \"Volte enquanto pode...\" \"Ninguém vai sentir sua falta no caminho...\"",
-      "Cada sussurro pesa como mais uma pedra no fardo. A lama borbulha ao redor dos seus quadris. Seus braços mal conseguem se mover.",
-      "Mas entre os sussurros, outra voz — quase inaudível — repete uma promessa: \"Os que semeiam com lágrimas, com júbilo ceifarão.\" É fraca, mas é diferente das outras. Ela não vem da lama. Vem de cima."
+      "No fundo do pântano, {{whisper}}vozes sussurram da lama{{/whisper}}.",
+      "Não são vozes de fora. São seus próprios pensamentos, deformados pelo desânimo.",
+      "{{villain}}\"Você abandonou sua família por nada...\"{{/villain}}",
+      "{{villain}}\"A Cidade Celestial não existe...\"{{/villain}}",
+      "{{villain}}\"Ninguém vai sentir sua falta no caminho...\"{{/villain}}",
+      "Cada sussurro pesa como mais uma pedra. A lama borbulha ao redor dos seus quadris.",
+      "Mas entre os sussurros — outra voz. Quase inaudível.",
+      "{{divine}}\"Os que semeiam com lágrimas, com júbilo ceifarão.\"{{/divine}}",
+      "Ela não vem da lama. {{divine}}Vem de cima.{{/divine}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 5, highText: "Você se agarra à voz que vem de cima como um náufrago se agarra a uma tábua. Ela é real. As outras vozes são a lama falando.", lowThreshold: 3, lowText: "Todas as vozes se misturam — as da lama e a de cima. Você não sabe mais qual é verdadeira. O desespero é quase total." }
