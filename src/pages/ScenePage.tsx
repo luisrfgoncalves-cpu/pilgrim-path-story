@@ -281,13 +281,17 @@ const ScenePage = () => {
           // FASE 1
           'cena1':  [['defeat', 800]],                       // peso, opressão
           'cena1b': [['defeat', 600]],                       // angústia
+          'cena2':  [['negative', 500]],                     // família se opõe
           'cena3':  [['gameStart', 500]],                    // fuga dramática
           'cena4':  [['defeat', 400], ['defeat', 1200]],     // fardo insuportável
           'cena5':  [['pray', 800]],                         // Evangelista - momento divino
+          'cena5b': [['pray', 600], ['positive', 1200]],     // conselho do Evangelista
           'cena6':  [['defeat', 500]],                       // sozinho, escuridão
           'cena7':  [['pray', 600], ['itemFound', 1500]],    // Porta Estreita - revelação
           'cena7b': [['attack', 300], ['attack', 800], ['defend', 1400]], // flechas + proteção
           'cena8':  [['negative', 600]],                     // Prudência Mundana - tentação
+          'cena9':  [['negative', 400], ['defeat', 1000]],   // Legalista - peso da lei
+          'cena9b': [['defeat', 500]],                       // consequências do desvio
           'cena10': [['attack', 500], ['attack', 1200]],     // Sinai - terremoto + fogo
           'cena11': [['defeat', 400]],                       // Pântano
           'cena11b': [['defeat', 500]],                      // afundando
