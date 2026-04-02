@@ -932,6 +932,8 @@ const PresentialMultiplayer = () => {
     setCurrentTurn(0);
     setFinishCount(0);
     setTileTypes(generateImmersiveTiles(Date.now()));
+    rotationStateRef.current = createRotationState(); // Reset RPG rotation
+    setRpgEvent(null);
     setPhase('playing');
     playGameSfx('gameStart');
     playPhaseAmbient(0);
