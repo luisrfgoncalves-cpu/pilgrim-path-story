@@ -845,11 +845,8 @@ const ScenePage = () => {
             {charRevealDone && allPersistentChars.length > 0 && (
               <div className="flex items-center gap-3 flex-shrink-0 animate-fade-in ml-auto overflow-hidden">
                 {allPersistentChars.slice(0, 3).map((npc, idx) => {
-                  // Find the character ID for this NPC
-                  const allCharsLookup = [...characters, ...part2Characters];
-                  const npcChar = allCharsLookup.find(c => c.name === npc.name);
-                  const npcId = npcChar?.id;
-                  const hasAllegory = npcId && allegoryMeanings[npcId];
+                  const npcId = npc.id;
+                  const hasAllegory = !!allegoryMeanings[npcId];
                   return (
                     <button
                       key={idx}
