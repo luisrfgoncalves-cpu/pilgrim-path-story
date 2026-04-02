@@ -2250,10 +2250,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Lição do Castelo",
     location: "Além das Montanhas",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'A jornada ganha novo sentido...' },
     narrative: [
-      "O castelo ensinou uma verdade que o Intérprete não pôde mostrar — porque só se aprende na dor: a promessa de Deus é uma chave que abre qualquer prisão, mas você precisa se lembrar de usá-la.",
-      "Fiel morreu, mas seu legado vive em Esperança. O prado era bonito, mas levava à masmorra. O gigante era grande, mas a chave era maior.",
-      "A Cidade Celestial espera. Há apenas um obstáculo final: o Rio."
+      "{{emphasis}}O castelo ensinou uma verdade que o Intérprete não pôde mostrar — porque só se aprende na dor:{{/emphasis}} {{divine}}a promessa de Deus é uma chave que abre qualquer prisão, mas você precisa se lembrar de usá-la.{{/divine}}",
+      "{{heart}}Fiel morreu, mas seu legado vive em Esperança.{{/heart}} O prado era bonito, mas levava à masmorra. O gigante era grande, mas a chave era maior.",
+      "{{fade}}A Cidade Celestial espera. Há apenas um obstáculo final: o Rio.{{/fade}}"
     ],
     flagNarrative: [
       { flag: "escapou_castelo_fe", text: "A chave da Promessa salvou você. Não por méritos, não por força — pela fé que se lembrou das promessas quando tudo parecia perdido." },
