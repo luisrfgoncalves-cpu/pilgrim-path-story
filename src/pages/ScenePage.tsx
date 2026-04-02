@@ -673,7 +673,7 @@ const ScenePage = () => {
 
           <div className="space-y-3 mb-6" style={atmosphere.textStyle}>
             {fullNarrative.slice(0, narrativeIndex + 1).map((paragraph, i) => (
-              <p key={i} className="narrative-text text-foreground/90 fade-in" style={{ animationDelay: `${i * 0.08}s` }}>
+              <p key={i} className="narrative-text text-white/95 fade-in text-base leading-relaxed" style={{ animationDelay: `${i * 0.08}s`, textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
                 {paragraph}
               </p>
             ))}
