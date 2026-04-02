@@ -30,7 +30,7 @@ import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown } from 'lucide-reac
 import ScreenHero from '@/components/ScreenHero';
 
 const COLORS = ['#E8724A', '#4CAF50', '#42A5F5', '#FFD54F', '#AB47BC', '#EF5350', '#26C6DA', '#FF7043'];
-const DEFAULT_NAMES = ['Cristão', 'Fiel', 'Esperança', 'Misericórdia', 'Valente', 'Honesto', 'Prudência', 'Caridade'];
+const DEFAULT_NAMES = ['Cristão', 'Fiel', 'Esperança', 'Prudência', 'Caridade', 'Piedade', 'Evangelista', 'Socorro'];
 
 // ─── Stats tracking ───
 interface PlayerStats {
@@ -1085,13 +1085,42 @@ const PresentialMultiplayer = () => {
 
     setRpgEvent(null);
 
-    // Show result message as tile popup
-    setTileMessage({
-      message: result.message,
-      emoji: result.emoji,
-      tileType: rpgEvent.tileType === 'boss' ? 'giant' : (rpgEvent.tileType as unknown as TileType) || 'challenge',
-      playerName: player.name,
-    });
+    // RPG popup already showed the result — skip redundant TileEventPopup
+    // Just process pending moves or go to next turn
+    const pendingMove = pendingMoveAfterPopup.current;
+    if (pendingMove) {
+      // There's a pending move — trigger it
+      const { playerIdx: pIdx, targetPos, attrs, stats, shield, isReturnMove } = pendingMove;
+      pendingMoveAfterPopup.current = null;
+      if (isReturnMove) {
+        const currentPos = players[pIdx]?.position ?? 0;
+        const casasDiff = Math.abs(currentPos - targetPos);
+        setReturnMoveInfo(`↩️ Voltando ${casasDiff} casa${casasDiff > 1 ? 's' : ''}...`);
+      }
+      setIsTokenMoving(true);
+      setPlayers(prev => prev.map((p, i) => {
+        const shouldMove = rpgGameMode === 'cooperative' || i === pIdx;
+        if (!shouldMove) return p;
+        const newAttrs = { ...p.attributes };
+        for (const [key, val] of Object.entries(attrs)) {
+          (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
+        }
+        return { ...p, position: targetPos, attributes: newAttrs, hasShield: shield !== undefined ? shield : p.hasShield };
+      }));
+      pendingActionRef.current = () => {
+        if (isReturnMove) { nextTurn(); return; }
+        const p2 = players[pIdx];
+        if (p2?.extraTurn) { setTurnAnnounce(`🎲 ${p2.name} joga de novo!`); } else { nextTurn(); }
+      };
+    } else {
+      // No pending move — just next turn
+      const p = players[rpgEvent.playerIdx];
+      if (p?.extraTurn) {
+        setTurnAnnounce(`🎲 ${p.name} joga de novo!`);
+      } else {
+        nextTurn();
+      }
+    }
   }, [rpgEvent, players, rpgGameMode]);
 
   // ─── SETUP ───

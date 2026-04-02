@@ -53,11 +53,11 @@ interface NarrationOptions {
 }
 
 const STYLE_PRESETS: Record<NarrationStyle, { rate: number; pitch: number; volume: number }> = {
-  dramatic:   { rate: 0.85, pitch: 0.8,  volume: 1.0 },
-  calm:       { rate: 0.9,  pitch: 1.0,  volume: 0.8 },
-  urgent:     { rate: 1.1,  pitch: 1.1,  volume: 1.0 },
-  whisper:    { rate: 0.75, pitch: 0.7,  volume: 0.6 },
-  triumphant: { rate: 0.8,  pitch: 1.2,  volume: 1.0 },
+  dramatic:   { rate: 0.78, pitch: 0.6,  volume: 1.0 },
+  calm:       { rate: 0.82, pitch: 0.9,  volume: 1.0 },
+  urgent:     { rate: 1.05, pitch: 0.7,  volume: 1.0 },
+  whisper:    { rate: 0.7,  pitch: 0.5,  volume: 0.85 },
+  triumphant: { rate: 0.75, pitch: 0.8,  volume: 1.0 },
 };
 
 export function narrate(text: string, options: NarrationOptions = {}) {
