@@ -63,15 +63,15 @@ function pickRandom<T extends { id: string; difficulty?: Difficulty }>(
 // ═══════ PUBLIC API ═══════
 
 export function getRandomQuestion(state: RotationState, difficulty: Difficulty) {
-  return pickRandom(scriptureQuestions, state.usedQuestions, difficulty);
+  return pickRandom(allQuestions, state.usedQuestions, difficulty);
 }
 
 export function getRandomRiddle(state: RotationState, difficulty: Difficulty) {
-  return pickRandom(riddles, state.usedRiddles, difficulty);
+  return pickRandom(allRiddles, state.usedRiddles, difficulty);
 }
 
 export function getRandomDilemma(state: RotationState, difficulty: Difficulty) {
-  return pickRandom(moralDilemmas, state.usedDilemmas, difficulty);
+  return pickRandom(allDilemmas, state.usedDilemmas, difficulty);
 }
 
 export function getRandomChallenge(state: RotationState, difficulty: Difficulty) {
