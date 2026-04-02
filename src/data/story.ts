@@ -2103,10 +2103,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Abismo do Desespero",
     location: "Castelo da Dúvida",
     characters: ["cristao"],
+    sceneEvent: { type: 'sinking', duration: 10000, message: 'O desespero te puxa para o abismo...' },
     narrative: [
-      "A escuridão da masmorra penetra sua alma. O gigante tem razão? Todo o sofrimento, toda a luta — para quê?",
-      "Esperança te sacode: \"Cristão! Lembre-se da cruz! Lembre-se do fardo que caiu! Lembre-se de Fiel, que morreu sem recuar! Vamos desistir quando estamos tão perto?\"",
-      "As palavras perfuram a névoa do desespero como agulhas de luz."
+      "{{fade}}A escuridão da masmorra penetra sua alma.{{/fade}} O gigante tem razão? Todo o sofrimento, toda a luta — para quê?",
+      "{{heart}}Esperança te sacode: \"Cristão! Lembre-se da cruz! Lembre-se do fardo que caiu! Lembre-se de Fiel, que morreu sem recuar! Vamos desistir quando estamos tão perto?\"{{/heart}}",
+      "{{divine}}As palavras perfuram a névoa do desespero como agulhas de luz.{{/divine}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 6, highText: "No fundo, uma chama resiste. O fogo que o Intérprete mostrou — o fogo que não apaga. Ele ainda está ali.", lowThreshold: 3, lowText: "A escuridão é quase completa. A chama bruxuleia, prestes a se apagar." },
