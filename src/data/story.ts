@@ -113,7 +113,7 @@ export const characters: Character[] = [
 
   // ── Parte I — Novos personagens ──
   { id: "boa_vontade", name: "Boa-Vontade", description: "O guardião do Portão Estreito que abre a porta para Cristão e o puxa para dentro quando flechas são disparadas contra ele. Representa a graça que recebe quem busca a entrada.", role: "Guia", unlockedAtChapter: "cena7" },
-  { id: "tres_resplandecentes", name: "Três Seres Resplandecentes", description: "Três anjos que encontram Cristão ao pé da Cruz. O primeiro declara seus pecados perdoados, o segundo lhe dá vestes novas, e o terceiro lhe entrega um pergaminho selado como passaporte para a Cidade Celestial.", role: "Mensageiros divinos", unlockedAtChapter: "cena15" },
+  { id: "tres_resplandecentes", name: "Três Seres Resplandecentes", description: "Três mensageiros celestiais enviados por Deus para encontrar Cristão ao pé da Cruz. O primeiro anuncia que Deus perdoou seus pecados, o segundo lhe dá vestes novas, e o terceiro lhe entrega um pergaminho selado como passaporte para a Cidade Celestial.", role: "Mensageiros divinos", unlockedAtChapter: "cena15" },
   { id: "juiz_odio_ao_bem", name: "Juiz Ódio-ao-Bem", description: "O juiz cruel que preside o julgamento de Fiel na Feira da Vaidade. Condena Fiel à morte por se recusar a adorar os ídolos da feira, representando a perseguição aos fiéis.", role: "Antagonista", unlockedAtChapter: "fase4-cena6" },
   { id: "interesses", name: "Interesses", description: "Um homem da cidade de Bom-Discurso que só segue a religião quando ela caminha com 'chinelos de prata', sob o sol e com aplausos do povo. Abandona a fé sempre que ela custa algo.", role: "Opositor", unlockedAtChapter: "fase5-cena1" },
   { id: "lisonjeiro", name: "Lisonjeiro", description: "Um homem de pele escura coberto com uma veste branca brilhante que engana Cristão e Esperançoso, levando-os para uma armadilha em forma de rede. Um Ser Resplandecente os resgata com um chicote.", role: "Tentador", unlockedAtChapter: "fase5-cena8" },
@@ -642,7 +642,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "O caminho sobe uma colina. No topo, uma visão te paralisa: uma cruz de madeira, erguida contra o céu. Ao seu pé, um sepulcro aberto.",
       "Ao olhar para a cruz, algo acontece. As cordas que prendiam o fardo às suas costas se soltam. O fardo desliza, cai, e rola colina abaixo até desaparecer dentro do sepulcro. A boca do túmulo se fecha.",
-      "Pela primeira vez desde que abriu o livro, você está de pé sem peso. Lágrimas escorrem, mas não são de dor — são de alívio. Três Seres Resplandecentes aparecem. O primeiro diz: \"Seus pecados são perdoados.\" O segundo remove seus trapos e lhe veste roupas novas. O terceiro coloca um selo na sua testa e lhe entrega um pergaminho com um selo: sua garantia de entrada na Cidade Celestial.",
+      "Pela primeira vez desde que abriu o livro, você está de pé sem peso. Lágrimas escorrem, mas não são de dor — são de alívio. Três Seres Resplandecentes aparecem — mensageiros enviados pelo Senhor. O primeiro anuncia: \"Deus perdoou os teus pecados.\" O segundo remove seus trapos e lhe veste roupas novas. O terceiro coloca um selo na sua testa e lhe entrega um pergaminho selado: sua garantia de entrada na Cidade Celestial.",
       "A jornada continua. Mas agora, sem o fardo."
     ],
     choices: [
@@ -881,7 +881,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         sceneEvent: { type: 'suspense', delay: 1000, duration: 3000, message: 'Luz sobrenatural envolve tudo...' },
     narrative: [
       "Você ainda está de joelhos quando três figuras luminosas aparecem diante de você. A luz que emana deles é tão intensa que você cobre os olhos com as mãos.",
-      "O primeiro se adianta. Sua voz é como trovão gentil: \"Paz a você. Seus pecados são perdoados.\" As palavras atravessam o seu peito como fogo que não queima — purifica.",
+      "O primeiro se adianta. Sua voz é como trovão gentil: \"Paz a você. O Senhor perdoou os teus pecados.\" As palavras atravessam o seu peito como fogo que não queima — purifica.",
       "O segundo se ajoelha ao seu lado e, com mãos que parecem feitas de luz, remove seus trapos sujos e imundos — as velhas roupas da Cidade da Destruição. No lugar, veste você com roupas novas, brancas e limpas. Pela primeira vez, você não sente vergonha do que veste.",
       "O terceiro coloca um selo na sua testa — uma marca invisível mas real — e estende um pergaminho selado com um selo dourado. \"Este é seu passaporte\", ele diz. \"Guarde-o com sua vida. Você precisará dele nos portões da Cidade Celestial. Não o perca.\"",
       "Os três desaparecem como vieram — em luz. Você fica ali, de pé, com roupas novas, sem fardo, com um pergaminho selado no peito. O caminho à frente parece possível agora."
