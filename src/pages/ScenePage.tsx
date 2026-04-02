@@ -36,6 +36,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { trackPageView, trackSceneComplete } from '@/lib/analytics';
 import { shareResult } from '@/lib/socialShare';
 import { toast } from 'sonner';
+import { renderNarrative, getSceneAtmosphere } from '@/lib/narrativeRenderer';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
   fe: { label: 'Fé', emoji: '🔥', icon: Flame },
@@ -680,15 +681,24 @@ const ScenePage = () => {
 
           <div className="space-y-3 mb-6" style={atmosphere.textStyle}>
             {currentNarrative && (
-              <div
+              (() => {
+                const sceneAtmo = getSceneAtmosphere(chapter.id);
+                return <div
                 key={`${chapter.id}-${narrativeIndex}`}
-                className="fade-in rounded-xl border border-border/60 bg-card/55 px-4 py-4"
-                style={{ boxShadow: '0 8px 20px hsl(0 0% 0% / 0.14)' }}
+                className="fade-in rounded-xl border px-4 py-4"
+                style={{
+                  boxShadow: sceneAtmo.textGlow
+                    ? `0 8px 20px hsl(0 0% 0% / 0.14), 0 0 20px ${sceneAtmo.textGlow}`
+                    : '0 8px 20px hsl(0 0% 0% / 0.14)',
+                  background: sceneAtmo.cardBg || 'hsl(var(--card) / 0.55)',
+                  borderColor: sceneAtmo.borderAccent || 'hsl(var(--border) / 0.6)',
+                }}
               >
-                <p className="narrative-text text-foreground/90">
-                  {currentNarrative}
+                <p className="narrative-text text-foreground/90" style={sceneAtmo.textColor ? { color: sceneAtmo.textColor } : undefined}>
+                  {renderNarrative(currentNarrative)}
                 </p>
-              </div>
+              </div>;
+              })()
             )}
 
             {fullNarrative.length > 0 && !showChoices && (
