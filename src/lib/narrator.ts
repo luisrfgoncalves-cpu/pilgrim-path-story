@@ -1,41 +1,40 @@
 // ═══════════════════════════════════════════════════════
 // NARRADOR — Web Speech API
-// Voz masculina dramática para o Mestre do Jogo
+// Voz dramática e envolvente para o Mestre do Jogo
 // ═══════════════════════════════════════════════════════
 
 let narratorEnabled = true;
 let selectedVoice: SpeechSynthesisVoice | null = null;
 let voicesLoaded = false;
+let isSpeaking = false;
+let utteranceQueue: { text: string; style: NarrationStyle; onEnd?: () => void }[] = [];
+let currentUtterance: SpeechSynthesisUtterance | null = null;
 
-// Find the best Portuguese male voice
+// Find the best Portuguese voice
 function loadVoice() {
   if (voicesLoaded) return;
   const voices = window.speechSynthesis?.getVoices() || [];
   if (voices.length === 0) return;
   voicesLoaded = true;
 
-  // Priority: pt-BR male > pt-BR any > pt any > any male > default
+  // Priority: pt-BR Google > pt-BR any > pt any > default
+  const ptBrGoogle = voices.find(v => v.lang.startsWith('pt-BR') && v.name.includes('Google'));
   const ptBrMale = voices.find(v => v.lang.startsWith('pt') && v.name.toLowerCase().includes('male'));
   const ptBr = voices.find(v => v.lang.startsWith('pt-BR'));
   const pt = voices.find(v => v.lang.startsWith('pt'));
-  const anyMale = voices.find(v => v.name.toLowerCase().includes('male'));
 
-  selectedVoice = ptBrMale || ptBr || pt || anyMale || voices[0] || null;
+  selectedVoice = ptBrGoogle || ptBrMale || ptBr || pt || voices[0] || null;
 }
 
-// Pre-warm voices (call on user interaction)
 export function prewarmNarrator() {
   if (typeof window === 'undefined' || !window.speechSynthesis) return;
   loadVoice();
-  // Some browsers need voiceschanged event
   window.speechSynthesis.onvoiceschanged = () => loadVoice();
 }
 
 export function setNarratorEnabled(enabled: boolean) {
   narratorEnabled = enabled;
-  if (!enabled) {
-    window.speechSynthesis?.cancel();
-  }
+  if (!enabled) stopNarration();
 }
 
 export function isNarratorEnabled() {
@@ -50,43 +49,140 @@ interface NarrationOptions {
   pitch?: number;
   volume?: number;
   onEnd?: () => void;
+  force?: boolean; // if true, cancels current speech
 }
 
 const STYLE_PRESETS: Record<NarrationStyle, { rate: number; pitch: number; volume: number }> = {
-  dramatic:   { rate: 0.78, pitch: 0.6,  volume: 1.0 },
-  calm:       { rate: 0.82, pitch: 0.9,  volume: 1.0 },
-  urgent:     { rate: 1.05, pitch: 0.7,  volume: 1.0 },
-  whisper:    { rate: 0.7,  pitch: 0.5,  volume: 0.85 },
-  triumphant: { rate: 0.75, pitch: 0.8,  volume: 1.0 },
+  dramatic:   { rate: 0.92, pitch: 0.85, volume: 1.0 },
+  calm:       { rate: 0.95, pitch: 1.0,  volume: 1.0 },
+  urgent:     { rate: 1.08, pitch: 0.80, volume: 1.0 },
+  whisper:    { rate: 0.88, pitch: 0.70, volume: 0.90 },
+  triumphant: { rate: 0.90, pitch: 0.95, volume: 1.0 },
 };
 
-export function narrate(text: string, options: NarrationOptions = {}) {
-  if (!narratorEnabled || typeof window === 'undefined' || !window.speechSynthesis) return;
+// Chrome has a bug where utterances >~15s get paused/killed.
+// Split long text into sentence chunks and chain them.
+function splitIntoChunks(text: string): string[] {
+  // Split on sentence-ending punctuation, keeping chunks ≤ 180 chars
+  const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [text];
+  const chunks: string[] = [];
+  let current = '';
 
-  // Cancel any ongoing narration
-  window.speechSynthesis.cancel();
+  for (const sentence of sentences) {
+    const trimmed = sentence.trim();
+    if (!trimmed) continue;
+    if (current.length + trimmed.length > 180 && current.length > 0) {
+      chunks.push(current.trim());
+      current = trimmed;
+    } else {
+      current += (current ? ' ' : '') + trimmed;
+    }
+  }
+  if (current.trim()) chunks.push(current.trim());
+  return chunks.length > 0 ? chunks : [text];
+}
 
+function speakChunk(text: string, style: NarrationStyle, onEnd?: () => void) {
+  if (!window.speechSynthesis) return;
   loadVoice();
 
-  const style = STYLE_PRESETS[options.style || 'dramatic'];
+  const preset = STYLE_PRESETS[style];
   const utterance = new SpeechSynthesisUtterance(text);
 
   if (selectedVoice) utterance.voice = selectedVoice;
   utterance.lang = 'pt-BR';
-  utterance.rate = options.rate ?? style.rate;
-  utterance.pitch = options.pitch ?? style.pitch;
-  utterance.volume = options.volume ?? style.volume;
+  utterance.rate = preset.rate;
+  utterance.pitch = preset.pitch;
+  utterance.volume = preset.volume;
 
-  if (options.onEnd) {
-    utterance.onend = options.onEnd;
+  currentUtterance = utterance;
+  isSpeaking = true;
+
+  utterance.onend = () => {
+    currentUtterance = null;
+    isSpeaking = false;
+    if (onEnd) onEnd();
+  };
+
+  utterance.onerror = (e) => {
+    // 'interrupted' and 'canceled' are expected when we stop narration
+    if (e.error !== 'interrupted' && e.error !== 'canceled') {
+      console.warn('Speech error:', e.error);
+    }
+    currentUtterance = null;
+    isSpeaking = false;
+  };
+
+  // Chrome workaround: resume if paused
+  if (window.speechSynthesis.paused) {
+    window.speechSynthesis.resume();
   }
 
   window.speechSynthesis.speak(utterance);
+
+  // Chrome anti-pause workaround: periodically resume
+  const keepAlive = setInterval(() => {
+    if (!window.speechSynthesis.speaking) {
+      clearInterval(keepAlive);
+      return;
+    }
+    window.speechSynthesis.pause();
+    window.speechSynthesis.resume();
+  }, 10000);
+
+  utterance.onend = () => {
+    clearInterval(keepAlive);
+    currentUtterance = null;
+    isSpeaking = false;
+    if (onEnd) onEnd();
+  };
+}
+
+function speakChunksSequentially(chunks: string[], style: NarrationStyle, onAllDone?: () => void) {
+  if (chunks.length === 0) {
+    onAllDone?.();
+    return;
+  }
+
+  const [first, ...rest] = chunks;
+  speakChunk(first, style, () => {
+    speakChunksSequentially(rest, style, onAllDone);
+  });
+}
+
+export function narrate(text: string, options: NarrationOptions = {}) {
+  if (!narratorEnabled || typeof window === 'undefined' || !window.speechSynthesis) return;
+
+  const cleanText = text
+    .replace(/[✅❌🏆😔⏰✨🎭📖⚔️🎵⚡🦁✏️⚖️🔑🔍🛡️💡🙏😨☠️⚠️🏠🔮]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!cleanText || cleanText.length < 3) return;
+
+  // If force mode or nothing is currently speaking, cancel and start fresh
+  if (options.force || !isSpeaking) {
+    window.speechSynthesis.cancel();
+    isSpeaking = false;
+    currentUtterance = null;
+
+    const style = options.style || 'dramatic';
+    const chunks = splitIntoChunks(cleanText);
+    speakChunksSequentially(chunks, style, options.onEnd);
+  }
+  // If already speaking, just ignore (don't cut off current narration)
 }
 
 export function stopNarration() {
   if (typeof window === 'undefined') return;
   window.speechSynthesis?.cancel();
+  isSpeaking = false;
+  currentUtterance = null;
+  utteranceQueue = [];
+}
+
+export function isCurrentlySpeaking(): boolean {
+  return isSpeaking || (typeof window !== 'undefined' && window.speechSynthesis?.speaking === true);
 }
 
 // Map tile/event types to narration styles

@@ -652,17 +652,17 @@ export const scriptureQuestions: ScriptureQuestion[] = [
   },
   {
     id: 'q-v-003', difficulty: 'veterano',
-    context: 'A esposa de Cristão (Cristiana) fez a mesma jornada na Parte 2 do livro, mas com seus filhos e companheiras.',
-    question: 'Qual é a principal diferença teológica entre a jornada de Cristão (Parte 1) e a de Cristiana (Parte 2)?',
+    context: 'Bunyan estruturou a jornada de Cristão como uma peregrinação individual, onde cada desafio testa um aspecto diferente da fé.',
+    question: 'O conceito de "peregrinação" como metáfora da vida cristã aparece em qual epístola e de que forma?',
     options: [
-      'Cristiana tinha menos fé',
-      'Cristão enfrentou mais perigos',
-      'Cristão caminhou pela fé individual; Cristiana caminhou em comunidade, mostrando que a fé é vivida em comunhão',
-      'Não há diferença significativa'
+      'Romanos — os cristãos são atletas',
+      'Hebreus 11:13-16 — os patriarcas se declararam "peregrinos e estrangeiros na terra", buscando uma pátria celestial',
+      'Gálatas — os cristãos são soldados',
+      '1 Pedro — os cristãos são sacerdotes'
     ],
-    correctIndex: 2,
-    bibleReference: 'Hebreus 10:24-25',
-    explanation: 'Bunyan mostra dois aspectos da fé: a luta individual (Parte 1) e a jornada em comunidade (Parte 2). Ambos são bíblicos.',
+    correctIndex: 1,
+    bibleReference: 'Hebreus 11:13-16',
+    explanation: 'Bunyan fundamentou toda sua alegoria nesta metáfora bíblica: somos peregrinos rumo à pátria celestial, "estrangeiros e peregrinos sobre a terra."',
     timerSeconds: 60
   },
   {
@@ -833,17 +833,17 @@ export const scriptureQuestions: ScriptureQuestion[] = [
   },
   {
     id: 'q-v-015', difficulty: 'veterano',
-    context: 'Na Parte 2, Cristiana é acompanhada por Grande-Coração, um guia armado enviado pelo Senhor do caminho.',
-    question: 'Grande-Coração é uma figura tipológica de qual ofício/papel na vida da igreja?',
+    context: 'Vigilante, o porteiro do Palácio Belo, acolheu Cristão e chamou as donzelas Prudência, Piedade e Caridade para ensiná-lo.',
+    question: 'As donzelas fizeram perguntas profundas a Cristão antes de recebê-lo. Qual princípio eclesiológico isso reflete?',
     options: [
-      'O diácono que serve nas necessidades materiais',
-      'O pastor/ministro que protege, ensina e guia o rebanho em seu peregrinar',
-      'O evangelista que converte incrédulos',
-      'O apóstolo que funda igrejas'
+      'Que a igreja deve rejeitar novos membros',
+      'Que a igreja deve examinar a fé dos que buscam comunhão, discernindo a sinceridade do arrependimento antes de acolher',
+      'Que a igreja é apenas para pessoas perfeitas',
+      'Que a igreja deve aceitar todos sem questionamento'
     ],
     correctIndex: 1,
-    bibleReference: 'Atos 20:28',
-    explanation: '"Cuidai de vós mesmos e de todo o rebanho." Grande-Coração é o pastor fiel que acompanha, ensina e defende os peregrinos.',
+    bibleReference: 'Atos 2:41-42',
+    explanation: 'As donzelas representam o discipulado pastoral: examinar, ensinar e fortalecer. A igreja primitiva devotava-se ao ensino antes de acolher plenamente.',
     timerSeconds: 60
   },
   {

@@ -10,7 +10,7 @@ import {
 import { TileEventType } from '@/data/rpg/types';
 import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { playGameSfx, GameSfx } from '@/lib/gameSfx';
-import { narrate, stopNarration, getNarrationStyle } from '@/lib/narrator';
+import { narrate, stopNarration, getNarrationStyle, isCurrentlySpeaking } from '@/lib/narrator';
 import { Clock, PlayCircle } from 'lucide-react';
 
 // Map RPG sound intents to available GameSfx types
@@ -172,38 +172,62 @@ export default function RPGEventPopup({
     return '';
   };
 
+  // Narrate context on mount (only once)
   useEffect(() => {
-    if (!visible) return;
+    if (!visible || phase !== 'context' || showResult) return;
 
-    const rawText = showResult
-      ? resultData?.message
-      : phase === 'challenge'
-        ? getChallengeNarrationText()
-        : getContextNarrationText();
+    const text = getContextNarrationText();
+    if (!text) return;
 
-    const cleanedText = rawText
-      ?.replace(/[✅❌🏆😔⏰✨]/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
+    const key = `context:${tileEventType}:${text.slice(0, 50)}`;
+    if (narratedKeyRef.current === key) return;
+    narratedKeyRef.current = key;
 
-    if (!cleanedText) return;
+    const timer = window.setTimeout(() => {
+      narrate(text, { style: getNarrationStyle(tileEventType), force: true });
+    }, 400);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, phase, question, riddle, dilemma, challenge, boss, specialEvent, trapEvent, refugeEvent]);
 
-    const narrationKey = `${showResult ? 'result' : phase}:${bossPhaseIdx}:${cleanedText}`;
-    if (narratedKeyRef.current === narrationKey) return;
-    narratedKeyRef.current = narrationKey;
+  // Narrate challenge text when entering challenge phase
+  useEffect(() => {
+    if (!visible || phase !== 'challenge' || showResult) return;
 
-    const narrationTimer = window.setTimeout(() => {
-      narrate(cleanedText, {
-        style: showResult
-          ? (resultData?.success ? 'triumphant' : 'whisper')
-          : phase === 'challenge' && boss
-            ? 'urgent'
-            : getNarrationStyle(tileEventType),
+    const text = getChallengeNarrationText();
+    if (!text) return;
+
+    const key = `challenge:${bossPhaseIdx}:${text.slice(0, 50)}`;
+    if (narratedKeyRef.current === key) return;
+    narratedKeyRef.current = key;
+
+    const timer = window.setTimeout(() => {
+      narrate(text, {
+        style: boss ? 'urgent' : getNarrationStyle(tileEventType),
+        force: true,
       });
-    }, showResult ? 150 : 350);
+    }, 300);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, phase, bossPhaseIdx, showResult]);
 
-    return () => clearTimeout(narrationTimer);
-  }, [visible, showResult, resultData, phase, question, riddle, dilemma, challenge, boss, bossPhaseIdx, specialEvent, trapEvent, refugeEvent, tileEventType]);
+  // Narrate result when shown
+  useEffect(() => {
+    if (!visible || !showResult || !resultData?.message) return;
+
+    const key = `result:${resultData.message.slice(0, 50)}`;
+    if (narratedKeyRef.current === key) return;
+    narratedKeyRef.current = key;
+
+    const timer = window.setTimeout(() => {
+      narrate(resultData.message, {
+        style: resultData.success ? 'triumphant' : 'whisper',
+        force: true,
+      });
+    }, 200);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, showResult, resultData]);
 
   useEffect(() => {
     if (!timerActive || timeLeft <= 0) return;
