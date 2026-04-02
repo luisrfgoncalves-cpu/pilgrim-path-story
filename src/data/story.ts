@@ -949,10 +949,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Caminho Sem Instrução",
     location: "Caminho Estreito",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'Uma sensação de vazio te acompanha...' },
     narrative: [
-      "Você segue adiante sem entrar na casa. O caminho parece igual, mas algo falta. Sem as lições do Intérprete, cada decisão futura será mais difícil.",
-      "Na estrada, um sentimento de perda te acompanha. Os perigos à frente exigirão sabedoria que você não tem.",
-      "Ao longe, a porta da Casa do Intérprete ainda está aberta."
+      "{{fade}}Você segue adiante sem entrar na casa. O caminho parece igual, mas algo falta.{{/fade}} Sem as lições do Intérprete, cada decisão futura será mais difícil.",
+      "{{whisper}}Na estrada, um sentimento de perda te acompanha. Os perigos à frente exigirão sabedoria que você não tem.{{/whisper}}",
+      "Ao longe, {{divine}}a porta da Casa do Intérprete ainda está aberta.{{/divine}}"
     ],
     choices: [
       {
