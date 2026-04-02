@@ -773,7 +773,7 @@ export default function RPGEventPopup({
                   </button>
                 ))}
               </div>
-              <p className="text-[10px] text-muted-foreground text-center">📖 {question.bibleReference}</p>
+              <p className="text-sm text-muted-foreground text-center">📖 {question.bibleReference}</p>
             </div>
           )}
 
