@@ -1,18 +1,21 @@
 import { Difficulty, ResponseMode, TileEventType, RotationState, ScriptureQuestion } from './types';
 import { scriptureQuestions } from './questions';
 import { scriptureQuestionsExpansion } from './questionsExpansion';
+import { scriptureQuestionsExpansion2 } from './questionsExpansion2';
 import { riddles } from './riddles';
 import { riddlesExpansion } from './riddlesExpansion';
+import { riddlesExpansion2 } from './riddlesExpansion2';
 import { moralDilemmas } from './dilemmas';
 import { moralDilemmasExpansion } from './dilemmasExpansion';
+import { moralDilemmasExpansion2 } from './dilemmasExpansion2';
 import { activeChallenges } from './challenges';
 import { bossEncounters } from './bosses';
 import { specialEvents, trapEvents, refugeEvents } from './specialEvents';
 
 // Merge all content pools
-const allQuestions = [...scriptureQuestions, ...scriptureQuestionsExpansion];
-const allRiddles = [...riddles, ...riddlesExpansion];
-const allDilemmas = [...moralDilemmas, ...moralDilemmasExpansion];
+const allQuestions = [...scriptureQuestions, ...scriptureQuestionsExpansion, ...scriptureQuestionsExpansion2];
+const allRiddles = [...riddles, ...riddlesExpansion, ...riddlesExpansion2];
+const allDilemmas = [...moralDilemmas, ...moralDilemmasExpansion, ...moralDilemmasExpansion2];
 
 export type { RotationState };
 
