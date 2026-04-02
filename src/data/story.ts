@@ -1855,9 +1855,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Estrada além da Feira",
     characters: ["cristao"],
     narrative: [
-      "A feira fica para trás. A estrada é silenciosa novamente. Mas o silêncio não é vazio — está cheio de tudo que aconteceu.",
-      "Fiel morreu. Mas Esperança nasceu do seu sacrifício. E você carrega a memória de ambos como uma tocha.",
-      "\"Para onde vamos agora?\", pergunta Esperança. Você aponta para frente: \"Para a Cidade Celestial. Não importa o que estiver no caminho.\""
+      "{{fade}}A feira fica para trás. A estrada é silenciosa novamente.{{/fade}} Mas o silêncio não é vazio — está cheio de tudo que aconteceu.",
+      "{{heart}}Fiel morreu. Mas Esperança nasceu do seu sacrifício.{{/heart}} E você carrega a memória de ambos como uma tocha.",
+      "{{dialog}}\"Para onde vamos agora?\"{{/dialog}}, pergunta Esperança. Você aponta para frente: {{emphasis}}\"Para a Cidade Celestial. Não importa o que estiver no caminho.\"{{/emphasis}}"
     ],
     flagNarrative: [
       { flag: "aceitou_custo_feira", text: "O custo da feira foi alto — o mais alto até agora. Mas você pagou e seguiu. Isso é fé." }
