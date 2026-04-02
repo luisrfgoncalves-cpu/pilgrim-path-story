@@ -412,45 +412,50 @@ const ScenePage = () => {
     return () => { clearTimeout(t); };
   }, [progress.currentChapterId]);
 
-  // All non-protagonist characters for persistent display
-  const [allPersistentChars, setAllPersistentChars] = useState<{ name: string; img: string; role?: string }[]>([]);
+  // All characters shown in the top strip (excluding protagonist, which is rendered separately)
+  const [allPersistentChars, setAllPersistentChars] = useState<{ id: string; name: string; img: string; role?: string }[]>([]);
 
-  // Dramatic character entrance — show big portrait for non-protagonist characters
+  // Dramatic character entrance — now includes protagonist allegory on first scene/contact
   useEffect(() => {
     if (!chapter || transitioning) return;
     const allChars = [...characters, ...part2Characters];
     const isPart2 = progress.campaign === 'part2';
     const protagonistId = isPart2 ? 'crista' : 'cristao';
     const sceneCharIds = chapter.characters || [];
-    // Find ALL non-protagonist characters with images
-    const sceneNPCs = sceneCharIds
-      .filter(id => id !== protagonistId)
+
+    const sceneChars = sceneCharIds
       .map(id => {
         const char = allChars.find(c => c.id === id);
         const img = characterImages[id];
         if (!char || !img) return null;
         const isVillain = ['apolion', 'gigante_desespero', 'juiz_odio_ao_bem', 'amor_dinheiro', 'hipocrisia', 'formalista', 'ateismo', 'lisonjeiro', 'vergonha', 'desconfianca', 'madame_bolha'].includes(id);
-        return { name: char.name, img, role: char.role, isVillain };
+        return { id, name: char.name, img, role: char.role, isVillain, isProtagonist: id === protagonistId };
       })
-      .filter(Boolean) as { name: string; img: string; role?: string; isVillain?: boolean }[];
+      .filter(Boolean) as { id: string; name: string; img: string; role?: string; isVillain?: boolean; isProtagonist?: boolean }[];
 
-    // Find first NPC with an allegory card not yet seen
-    const firstCharId = sceneCharIds.find(id => id !== protagonistId && !seenAllegoryCards.has(id) && allegoryMeanings[id] && characterImages[id]);
+    const sceneSupportingChars = sceneChars.filter(char => !char.isProtagonist);
 
-    // Reveal the FIRST important character dramatically
-    const revealChar = sceneNPCs[0];
+    // Show first unseen allegory from the full scene cast, including protagonist
+    const firstCharId = sceneCharIds.find(id => !seenAllegoryCards.has(id) && allegoryMeanings[id] && characterImages[id]);
+
+    // Prefer cinematic reveal for first supporting character, otherwise protagonist when alone
+    const revealChar = sceneSupportingChars[0] || sceneChars[0];
+
+    if (firstCharId) {
+      const revealTarget = sceneChars.find(char => char.id === firstCharId) || revealChar;
+      const delay = setTimeout(() => {
+        seenAllegoryCards.add(firstCharId);
+        try { sessionStorage.setItem('seen-allegory-cards', JSON.stringify([...seenAllegoryCards])); } catch {}
+        setAllegoryCardChar(firstCharId);
+        if (revealTarget) {
+          playGameSfx(revealTarget.isVillain ? 'charRevealVillain' : 'charRevealAlly');
+        }
+      }, 250);
+      return () => clearTimeout(delay);
+    }
+
     if (revealChar) {
       const delay = setTimeout(() => {
-        // If this character has an unseen allegory card, show that instead of cinematic reveal
-        if (firstCharId) {
-          seenAllegoryCards.add(firstCharId);
-          try { sessionStorage.setItem('seen-allegory-cards', JSON.stringify([...seenAllegoryCards])); } catch {}
-          setAllegoryCardChar(firstCharId);
-          playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
-          // After allegory card is dismissed, set persistent chars
-          return;
-        }
-        // Normal cinematic reveal for already-seen characters
         playGameSfx('suspense');
         setTimeout(() => {
           playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
@@ -460,14 +465,14 @@ const ScenePage = () => {
           setCharReveal(null);
           setCharRevealDone(true);
           setPersistentChar(revealChar);
-          setAllPersistentChars(sceneNPCs);
+          setAllPersistentChars(sceneSupportingChars.map(({ id, name, img, role }) => ({ id, name, img, role })));
         }, 2500);
       }, 250);
       return () => clearTimeout(delay);
-    } else {
-      setAllPersistentChars([]);
     }
-  }, [chapter?.id, transitioning]);
+
+    setAllPersistentChars([]);
+  }, [chapter?.id, transitioning, progress.campaign]);
 
   const hasCharReveal = !!charReveal || !!allegoryCardChar;
   const canShowChoices = !hasCharReveal;
