@@ -79,9 +79,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
     location: "Cidade da Destruição",
     characters: ["crista", "misericordia"],
     reflection: "p2r2",
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 3000, message: 'Uma voz chama na porta...' },
     narrative: [
-      "Cristã anuncia sua partida. Vizinhos zombam — exatamente como zombaram de Cristão anos atrás. \"Vai seguir o louco do seu marido?\", dizem.",
-      "Mas uma jovem vizinha, Misericórdia, se aproxima com olhos cheios de lágrimas: \"Cristã, posso ir contigo? Não recebi carta do Rei como tu... mas não suporto ficar aqui. Se me aceitares, te acompanho.\"",
+      "Cristã anuncia sua partida. Vizinhos zombam — exatamente como zombaram de Cristão anos atrás. {{villain}}\"Vai seguir o louco do seu marido?\"{{/villain}}, dizem.",
+      "Mas uma jovem vizinha, Misericórdia, se aproxima com olhos cheios de lágrimas: {{whisper}}\"Cristã, posso ir contigo? Não recebi carta do Rei como tu... mas não suporto ficar aqui. Se me aceitares, te acompanho.\"{{/whisper}}",
       "Misericórdia não tem chamado direto. Não tem carta. Tem apenas um coração que se recusa a abandonar quem ama."
     ],
     flagNarrative: [
@@ -93,13 +94,15 @@ export const part2Chapters: Record<string, StoryChapter> = {
         text: "\"Venha comigo, Misericórdia! A porta está aberta para todos.\"",
         nextChapterId: "p2-cena3",
         effects: { fe: 1, perseveranca: 1 },
-        flag: "aceitou_misericordia"
+        flag: "aceitou_misericordia",
+        consequence: "Cristã estende a mão a Misericórdia. A companhia na jornada de fé é um dom de Deus. — Eclesiastes 4:9-10: \"Melhor é serem dois do que um, pois se um cair, o outro o levanta.\""
       },
       {
         text: "\"Não tenho certeza se posso levar mais alguém...\"",
         nextChapterId: "p2-cena3",
         effects: { discernimento: 1 },
-        flag: "hesitou_misericordia"
+        flag: "hesitou_misericordia",
+        consequence: "A hesitação é humana, mas Deus chama através de relacionamentos. Misericórdia não tinha carta, mas tinha amor — e o amor é a marca do verdadeiro discípulo. — João 13:35: \"Nisto conhecerão que sois meus discípulos: se tiverdes amor uns aos outros.\""
       }
     ]
   },
