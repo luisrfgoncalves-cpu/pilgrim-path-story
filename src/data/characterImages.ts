@@ -40,6 +40,7 @@ import vizinhos from '@/assets/characters/vizinhos.jpg';
 import vigilantePorteiro from '@/assets/characters/vigilante-porteiro.jpg';
 import demas from '@/assets/characters/demas.jpg';
 import timidezDesconfiancaDupla from '@/assets/characters/timidez-desconfianca.jpg';
+import livroAntigo from '@/assets/characters/livro-antigo.jpg';
 
 // ── Novos personagens — Parte II ──
 import crista from '@/assets/characters/crista.jpg';
