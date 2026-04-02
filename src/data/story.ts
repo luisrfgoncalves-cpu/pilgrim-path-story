@@ -2312,10 +2312,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Resgate e o Ateísmo",
     location: "Caminho Estreito",
     characters: ["cristao", "esperanca", "ateismo"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'Um riso zombeteiro ecoa na estrada...' },
     narrative: [
-      "Um Ser Resplandecente aparece com um chicote de cordas. Ele corta a rede e os liberta — mas não sem repreensão: \"Os pastores não os avisaram? O Lisonjeiro engana com palavras doces e aparência de luz.\"",
-      "Envergonhados mas livres, vocês retomam o caminho certo. Mas logo encontram outro obstáculo: um homem que ri alto, caminhando na direção oposta.",
-      "\"Vocês ainda buscam a Cidade Celestial?\", ele gargalha. \"Eu a busquei por vinte anos e nunca a encontrei! Ela não existe! Voltem para casa antes que desperdicem mais da vida de vocês.\""
+      "{{divine}}Um Ser Resplandecente aparece com um chicote de cordas. Ele corta a rede e os liberta{{/divine}} — mas não sem repreensão: {{emphasis}}\"Os pastores não os avisaram? O Lisonjeiro engana com palavras doces e aparência de luz.\"{{/emphasis}}",
+      "{{fade}}Envergonhados mas livres, vocês retomam o caminho certo.{{/fade}} Mas logo encontram outro obstáculo: um homem que ri alto, caminhando na direção oposta.",
+      "{{villain}}\"Vocês ainda buscam a Cidade Celestial?\"{{/villain}}, ele gargalha. {{villain}}\"Eu a busquei por vinte anos e nunca a encontrei! Ela não existe! Voltem para casa antes que desperdicem mais da vida de vocês.\"{{/villain}}"
     ],
     flagNarrative: [
       { flag: "caiu_na_rede", text: "A vergonha da rede ainda arde. E agora este homem diz que a cidade nem existe? A dúvida é uma ferida aberta." },
