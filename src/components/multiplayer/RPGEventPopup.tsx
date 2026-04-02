@@ -398,7 +398,7 @@ export default function RPGEventPopup({
 
   if (!visible) return null;
 
-  const tileInfo = getTileEventLabel(tileEventType);
+  const tileInfo = sourceTileType ? TILE_TYPES[sourceTileType] : getTileEventLabel(tileEventType);
 
   // ─── RENDER ───
   return (
