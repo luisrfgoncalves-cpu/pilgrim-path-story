@@ -1346,6 +1346,7 @@ const PresentialMultiplayer = () => {
       {/* RPG Event Popup */}
       <RPGEventPopup
         visible={!!rpgEvent}
+        eventKey={rpgEvent ? getRpgEventKey(rpgEvent) : 'idle'}
         difficulty={rpgDifficulty}
         playerNames={players.map(p => p.name)}
         currentPlayerIdx={rpgEvent?.playerIdx || currentTurn}
