@@ -447,8 +447,8 @@ const PhaseSection = memo(function PhaseSection({
                       className="w-6 h-6 rounded-full border-2 border-white/60 shadow-lg"
                       style={{
                         backgroundColor: p.color,
-                        boxShadow: `0 0 ${p.id === animatingPlayerId ? '20' : '12'}px ${p.color}90`,
-                        animation: p.id === animatingPlayerId
+                        boxShadow: `0 0 ${animatingPlayerId.includes(p.id) ? '20' : '12'}px ${p.color}90`,
+                        animation: animatingPlayerId.includes(p.id)
                           ? 'tokenGlow 0.35s ease-in-out infinite alternate'
                           : p.id === currentTurnId && capability.enableCssAnimations ? 'bounce 1s infinite' : undefined,
                       }}
