@@ -2176,10 +2176,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Os Portões do Castelo",
     location: "Castelo da Dúvida",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Passos pesados se aproximam!' },
     narrative: [
-      "A masmorra se fecha ao redor de vocês. As paredes parecem encolher. O Gigante Desespero ruge nos corredores superiores.",
-      "Esperança repete baixinho: \"A chave. Use a chave. Toda promessa de Deus é sim e amém.\"",
-      "O som de passos pesados se aproxima. O gigante está descendo."
+      "{{tremor}}A masmorra se fecha ao redor de vocês. As paredes parecem encolher.{{/tremor}} {{villain}}O Gigante Desespero ruge nos corredores superiores.{{/villain}}",
+      "{{whisper}}Esperança repete baixinho: \"A chave. Use a chave. Toda promessa de Deus é sim e amém.\"{{/whisper}}",
+      "{{tremor}}O som de passos pesados se aproxima. O gigante está descendo.{{/tremor}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 5, highText: "Impossível não é sem esperança. A chave ainda está no seu peito. Use-a.", lowThreshold: 2, lowText: "Você não acredita mais em nada. A masmorra venceu?" }
