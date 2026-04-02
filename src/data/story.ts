@@ -387,7 +387,7 @@ export const storyChapters: Record<string, StoryChapter> = {
       },
       {
         text: "Subir a colina até a Porta Estreita",
-        nextChapterId: "cena9",
+        nextChapterId: "cena7b",
         effects: { fe: 2, coragem: 1 },
         flag: "escolheu_caminho_estreito",
         item: "pergaminho_verdade"
