@@ -502,8 +502,19 @@ const PresentialMultiplayer = () => {
       }
 
       // Check if this tile should use the RPG popup
-      const rpgEventType = TILE_TO_RPG_EVENT[tileType];
+      let rpgEventType = TILE_TO_RPG_EVENT[tileType] as RPGTileEventType | undefined;
       if (rpgEventType) {
+        // Add variety: scripture tiles sometimes become riddles or dilemmas
+        if (rpgEventType === 'scripture') {
+          const variety = Math.random();
+          if (variety < 0.25) rpgEventType = 'riddle';
+          else if (variety < 0.4) rpgEventType = 'dilemma';
+        }
+        // Challenge tiles sometimes become active challenges
+        if (rpgEventType === 'challenge') {
+          const variety = Math.random();
+          if (variety < 0.3) rpgEventType = 'riddle';
+        }
         setRpgEvent({ tileType: rpgEventType, playerIdx: turnIdx, prevPosition: prevPos, newPosition: newPos });
         return;
       }
