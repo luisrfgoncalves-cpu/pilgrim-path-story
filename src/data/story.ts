@@ -234,6 +234,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Cidade da Destruição",
     characters: ["cristao", "obstinado", "flexivel"],
     reflection: "r2",
+        sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'As vozes se dividem ao seu redor...' },
     narrative: [
       "Você tenta agir como se nada tivesse acontecido, mas o fardo continua ali.",
       "{{villain}}Obstinado percebe primeiro. \"Você enlouqueceu. Volte ao normal.\"{{/villain}}",
@@ -330,6 +331,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Evangelista",
     location: "Campos abertos",
     characters: ["cristao", "evangelista"],
+        sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'Uma luz brilha ao longe...' },
     narrative: [
       "No meio do campo, um homem alto cruza seu caminho.",
       "O nome dele é {{emphasis}}Evangelista{{/emphasis}}. {{divine}}Seu rosto irradia uma paz que você nunca viu.{{/divine}}",
@@ -396,6 +398,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     reflection: "r4",
     interactionType: 'drag',
+        sceneEvent: { type: 'suspense', delay: 800, duration: 2500, message: 'Dois caminhos se abrem diante de você...' },
     narrative: [
       "Dois caminhos se abrem diante de você.",
       "À esquerda: uma estrada larga, iluminada, fácil. {{whisper}}Vozes alegres ecoam dela.{{/whisper}}",
@@ -436,6 +439,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Conselho de Prudência Mundana",
     location: "Caminho Largo",
     characters: ["cristao", "prudencia_mundana"],
+        sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'Uma voz persuasiva ecoa...' },
     narrative: [
       "No caminho largo, você encontra um homem chamado Prudência Mundana. Ele é bem-vestido e fala com autoridade.",
       "\"Esse fardo nas suas costas? Conheço um vilarejo chamado Moralidade. Lá, um homem chamado Legalidade pode removê-lo. Não precisa dessa jornada perigosa.\"",
@@ -556,6 +560,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Os Degraus Ocultos",
     location: "Pântano do Desânimo",
     characters: ["cristao", "auxilio"],
+        sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'Degraus firmes surgem sob a lama...' },
     narrative: [
       "Com paciência, seus pés encontram pedras firmes sob a lama. São os degraus que o Rei colocou ali — promessas de misericórdia e perdão para quem persevera.",
       "O progresso é lento. O fardo ainda pesa. Mas a cada degrau encontrado, o pântano parece menos profundo.",
@@ -613,6 +618,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Mão de Auxílio",
     location: "Margem do Pântano",
     characters: ["cristao", "auxilio"],
+        sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'Solo firme sob seus pés...' },
     narrative: [
       "Auxílio te puxa com força para fora da lama. No solo firme, você cai de joelhos, ofegante, coberto de lodo.",
       "\"Por que não usou os degraus?\", pergunta Auxílio gentilmente. \"O Rei os colocou ali por uma razão.\"",
@@ -644,7 +650,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Seguir o caminho, renovado e livre do fardo",
         nextChapterId: "cena15b",
-        effects: { fe: 2, perseveranca: 1, coragem: 1 }
+        effects: { fe: 2, perseveranca: 1, coragem: 1 },
+        consequence: "Ao pé da cruz, o fardo cai. Nenhum esforço humano o removeu — foi a graça. 2 Coríntios 5:21: 'Aquele que não conheceu pecado, o fez pecado por nós.'"
       }
     ]
   },
@@ -697,6 +704,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Peso da Partida",
     location: "Estrada para a Porta Estreita",
     characters: ["cristao", "evangelista", "presuncao_preguica_simples"],
+        sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'Três figuras dormem acorrentadas...' },
     narrative: [
       "Você olha para trás uma última vez. {{heart}}A cidade ainda parece casa.{{/heart}}",
       "Mas cada passo à frente confirma: ficar não é mais opção.",
@@ -712,6 +720,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Seguir em frente — você não pode salvar quem não quer ser salvo",
         nextChapterId: "cena7",
         effects: { discernimento: 1, perseveranca: 1 },
+        consequence: "Há limites para o que podemos fazer pelos outros. Jesus chorou sobre Jerusalém, mas não forçou ninguém. O amor alerta, mas não obriga.",
         flag: "alertou_dorminhocoes"
       },
       {
@@ -746,6 +755,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "\"Obrigado! Mas por que o inimigo atira flechas tão perto da porta?\"",
         nextChapterId: "cena9",
         effects: { discernimento: 1, fe: 1 },
+        consequence: "Bunyan explica: o diabo atira flechas na porta porque é ali que os peregrinos estão mais vulneráveis — no momento da decisão.",
         flag: "entrou_pela_porta_estreita"
       },
       {
@@ -763,6 +773,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Instrução de Boa-Vontade",
     location: "Além da Porta Estreita",
     characters: ["cristao", "boa_vontade"],
+        sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'A porta se fecha atrás de você...' },
     narrative: [
       "Do lado de dentro da porta, o mundo parece diferente. A luz é mais clara. O ar é mais limpo. Mas o fardo nas suas costas ainda está lá.",
       "Boa-Vontade caminha ao seu lado e aponta para um caminho estreito e reto: \"Vê aquela estrada? Ela foi aberta pelos patriarcas, pelos profetas, por Cristo e seus apóstolos. É reta como uma régua. Esse é o caminho que você deve seguir.\"",
@@ -777,6 +788,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Seguir pela estrada reta com esperança renovada",
         nextChapterId: "cena11",
         effects: { fe: 1, perseveranca: 1 },
+        consequence: "A estrada reta é difícil mas segura. Provérbios 3:6: 'Em todos os teus caminhos reconhece-o, e ele endireitará as tuas veredas.'",
         flag: "recebeu_instrucao_boa_vontade"
       },
       {
@@ -840,6 +852,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Razão do Pântano",
     location: "Margem do Pântano",
     characters: ["cristao", "auxilio"],
+        sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'O sol aquece suas roupas encharcadas...' },
     narrative: [
       "No solo firme, coberto de lama da cabeça aos pés, você se senta ao lado de Auxílio. Ele não parece com pressa de ir embora.",
       "\"Você quer saber por que o pântano existe?\", ele pergunta, como se lesse seus pensamentos. \"É assim: quando um pecador desperta para sua condição, medos, dúvidas e terrores surgem na sua alma. Eles se acumulam e escorrem para este lugar.\"",
@@ -852,6 +865,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "\"Obrigado, Auxílio. Nunca esquecerei sua mão estendida.\"",
         nextChapterId: "cena15",
         effects: { fe: 1, discernimento: 1, perseveranca: 1 },
+        consequence: "A gratidão transforma o sofrimento em memorial. Romanos 8:28: 'Todas as coisas cooperam para o bem daqueles que amam a Deus.'",
         flag: "grato_a_auxilio"
       },
       {
@@ -868,6 +882,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Os Três Seres Resplandecentes",
     location: "Colina da Cruz",
     characters: ["cristao", "tres_resplandecentes"],
+        sceneEvent: { type: 'suspense', delay: 1000, duration: 3000, message: 'Luz sobrenatural envolve tudo...' },
     narrative: [
       "Você ainda está de joelhos quando três figuras luminosas aparecem diante de você. A luz que emana deles é tão intensa que você cobre os olhos com as mãos.",
       "O primeiro se adianta. Sua voz é como trovão gentil: \"Paz a você. Seus pecados são perdoados.\" As palavras atravessam o seu peito como fogo que não queima — purifica.",
@@ -883,6 +898,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Seguir a jornada com alegria — em direção à Casa do Intérprete",
         nextChapterId: "fase2-cena1",
         effects: { fe: 2, perseveranca: 1, coragem: 1, discernimento: 1 },
+        consequence: "O alívio da salvação é o momento mais sagrado da jornada. O fardo caiu, as vestes são novas, o pergaminho está selado. Tudo pela graça.",
         flag: "recebeu_vestes_novas",
         item: "pergaminho_selado"
       },
@@ -939,6 +955,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Retrato na Parede",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+        sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'Os olhos do retrato parecem vivos...' },
     narrative: [
       "A primeira sala contém apenas um retrato. O homem pintado tem {{divine}}olhos erguidos ao céu{{/divine}}, o melhor dos livros nas mãos, a lei da verdade escrita nos lábios e o mundo atrás de si. Ele está de pé, como se suplicasse aos homens.",
       "{{dialog}}\"Grave este rosto\"{{/dialog}}, diz o Intérprete. {{emphasis}}\"Este homem é o único guia autorizado para o caminho que você percorre.\"{{/emphasis}} \"Muitos vão se oferecer para guiá-lo — Prudência Mundana, Legalidade, outros. Mas só este homem conhece a verdade.\"",
@@ -997,6 +1014,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
     interactionType: 'hold',
+        sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'A poeira sufoca o ar...' },
     narrative: [
       "A segunda sala está coberta de poeira espessa — nunca foi varrida. O Intérprete chama um homem com uma vassoura. {{tremor}}Ele varre furiosamente, mas a poeira sobe em nuvens sufocantes, enchendo o ar até que ninguém consegue respirar.{{/tremor}}",
       "{{fade}}Então uma jovem entra com um jarro de água e borrifa o chão. A poeira se assenta. O ar se limpa. O chão aparece limpo.{{/fade}}",
@@ -1027,6 +1045,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Resposta do Intérprete",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+        sceneEvent: { type: 'suspense', delay: 300, duration: 1500, message: 'As palavras penetram seu coração...' },
     narrative: [
       "{{dialog}}\"A Lei não é inútil\"{{/dialog}}, responde o Intérprete. {{emphasis}}\"Ela revela a doença. Mas não é o remédio.{{/emphasis}} Quem tenta se curar pela Lei apenas sufoca na própria poeira.\"",
       "Ele te olha fixamente: {{divine}}\"Lembre-se disso no caminho. Muitos tentarão te dizer que basta ser bom o suficiente, seguir regras o suficiente. Mas o fardo que caiu na cruz não caiu por suas obras — caiu pela Graça.\"{{/divine}}"
@@ -1062,7 +1081,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Perguntar: \"Como posso manter esse fogo vivo em mim?\"",
         nextChapterId: "fase2-cena7",
-        effects: { discernimento: 1, fe: 1 }
+        effects: { discernimento: 1, fe: 1 },
+        consequence: "O fogo da Graça se mantém vivo pela oração e pela Palavra. João 10:28: 'Ninguém pode arrebatá-las da minha mão.' Cristo alimenta secretamente o que o inimigo tenta destruir."
       },
       {
         text: "Seguir para a próxima sala",
@@ -1092,7 +1112,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "\"Eu quero ser como aquele homem. Custará tudo, mas eu vou.\"",
         nextChapterId: "fase2-cena8",
-        effects: { coragem: 2, fe: 1 }
+        effects: { coragem: 2, fe: 1 },
+        consequence: "Mateus 11:12: 'O reino dos céus é tomado por esforço.' O homem corajoso não esperou permissão — avançou. A fé verdadeira é violenta contra o conformismo."
       },
       {
         text: "Sentir medo dos guardas e da violência necessária",
@@ -1108,6 +1129,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Homem na Gaiola de Ferro",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+        sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'O desespero emana da gaiola...' },
     narrative: [
       "A última sala contém uma gaiola de ferro. Dentro, um homem em trapos, de cabeça baixa. {{fade}}Seus olhos estão vazios.{{/fade}}",
       "{{villain}}\"Eu já fui um peregrino como você\"{{/villain}}, diz o homem da gaiola. \"Eu era cheio de fé. Mas me deixei levar pelos prazeres e pecados do mundo. Abandonei o caminho. E agora...\" {{heart}}Sua voz falha.{{/heart}} \"Agora estou trancado no desespero. A Graça me foi oferecida, e eu a rejeitei tantas vezes que ela se retirou.\"",
@@ -1123,7 +1145,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Pensar: \"Isso nunca aconteceria comigo\"",
         nextChapterId: "fase2-cena9",
-        effects: { discernimento: -1 }
+        effects: { discernimento: -1 },
+        consequence: "Presunção é o pecado mais silencioso. 1 Coríntios 10:12: 'Aquele que julga estar de pé, olhe que não caia.' O homem na gaiola também achava que nunca lhe aconteceria."
       }
     ]
   },
@@ -1159,6 +1182,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Despedida do Intérprete",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+        sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'Uma bênção paira no ar...' },
     narrative: [
       "{{heart}}Na porta, o Intérprete coloca as mãos nos seus ombros.{{/heart}}",
       "{{divine}}\"O Consolador esteja sempre contigo, bom Cristão, para te guiar no caminho que leva à Cidade Celestial.\"{{/divine}}",
@@ -1201,7 +1225,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Subir a colina íngreme",
         nextChapterId: "fase2-cena12",
-        effects: { perseveranca: 1 }
+        effects: { perseveranca: 1 },
+        consequence: "A Colina da Dificuldade não tem atalhos. Hebreus 12:1: 'Corramos com paciência a carreira que nos está proposta.'"
       }
     ]
   },
@@ -1246,6 +1271,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     interactionType: 'timed',
     timeLimit: 15,
     timeoutChoiceIndex: 1,
+        sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'O sono pesado se aproxima...' },
     narrative: [
       "Na metade da subida, um caramanchão de pedra oferece sombra e descanso. {{whisper}}Bunyan nos diz que o Senhor o construiu para alívio dos peregrinos cansados.{{/whisper}}",
       "{{fade}}Você se senta. O cansaço é imenso. As pálpebras pesam. O vento é morno. O caramanchão é tão confortável...{{/fade}}",
@@ -1386,6 +1412,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Apolião Revelado",
     location: "Vale da Humilhação",
     characters: ["cristao", "apolion"],
+        sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Escamas reluzem nas sombras...' },
     narrative: [
       "{{tremor}}Apolião emerge das sombras.{{/tremor}} Bunyan o descreve assim: coberto de escamas como um peixe, asas como de dragão, pés de urso, boca de leão, e de seu ventre saem fogo e fumaça.",
       "{{villain}}\"Servo ingrato!\"{{/villain}}, ruge a criatura, bloqueando o caminho inteiro. \"Quantas vezes você quase desistiu? No pântano, na encruzilhada, nas noites de dúvida? {{villain}}Você é fraco. Volte para mim e eu te pouparei.{{/villain}}\"",
@@ -1610,6 +1637,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Rumo à Feira",
     location: "Estrada para a Feira da Vaidade",
     characters: ["cristao", "fiel"],
+        sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'A estrada se alarga rumo à feira...' },
     narrative: [
       "{{heart}}Com Fiel ao seu lado, a estrada parece menos solitária.{{/heart}} Vocês conversam sobre o vale, sobre Apolião, sobre as lições do Intérprete.",
       "{{emphasis}}\"A Feira da Vaidade fica adiante\"{{/emphasis}}, diz Fiel com seriedade. {{dialog}}\"Lá, tudo tem um preço. Tudo está à venda. Menos uma coisa: a Verdade.\"{{/dialog}}",
@@ -1972,6 +2000,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "\"Sua mina é uma cova. O preço da prata é a alma.\"",
         nextChapterId: "fase4-cena11",
         effects: { fe: 2, discernimento: 1 },
+        consequence: "1 Timóteo 6:9: 'Os que querem ser ricos caem em tentação e cilada.' Demas é descendente de Geazi e parente de Judas — homens que venderam o eterno por prata.",
         flag: "rejeitou_demas"
       },
       {
@@ -2003,6 +2032,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "\"A fé que não custa nada não vale nada. Adeus, Interesses.\"",
         nextChapterId: "fase4-cena12",
         effects: { fe: 2, discernimento: 1 },
+        consequence: "Interesses segue a religião com chinelos de prata. Lucas 14:27: 'Quem não carrega sua cruz não pode ser meu discípulo.' A fé de conveniência não é fé.",
         flag: "rejeitou_interesses"
       },
       {
@@ -2256,7 +2286,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Hesitar — e se a chave não funcionar na próxima porta?",
         nextChapterId: "fase5-cena7",
-        effects: { coragem: -1 }
+        effects: { coragem: -1 },
+        consequence: "A dúvida diante da chave que já abriu uma porta é o eco do Gigante Desespero. Use-a antes que a voz do medo a esconda novamente."
       }
     ]
   },
@@ -2423,7 +2454,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "\"Nós vimos a cidade da luneta dos pastores. Ela é real.\"",
         nextChapterId: "fase5-cena13",
-        effects: { fe: 2, coragem: 1 }
+        effects: { fe: 2, coragem: 1 },
+        consequence: "A experiência pessoal com Deus é a resposta ao ateísmo. 1 João 5:10: 'Aquele que crê no Filho de Deus tem em si mesmo o testemunho.'"
       },
       {
         text: "Sentir a dúvida crescer — e se ele tiver razão?",
@@ -2460,7 +2492,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Sentar \"só um momento\" para descansar",
         nextChapterId: "fase5-cena14",
-        effects: { perseveranca: -2, fe: -1 }
+        effects: { perseveranca: -2, fe: -1 },
+        consequence: "O 'só um momento' da Terra Encantada é eterno. Quem senta não levanta. O sono aqui não é descanso — é morte."
       }
     ]
   },
@@ -2667,7 +2700,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Subir a colina em direção aos portões da Cidade Celestial",
         nextChapterId: "fase6-cena7",
-        effects: { fe: 1 }
+        effects: { fe: 1 },
+        consequence: "A subida final é pavimentada de ouro. Apocalipse 21:21: 'A praça da cidade era de ouro puro.' O sofrimento acabou — a glória começa."
       }
     ]
   },
@@ -2740,7 +2774,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Olhar para trás uma última vez",
         nextChapterId: "fase6-cena9",
-        effects: {}
+        effects: {},
+        consequence: "Ignorância chegou até os portões sem o pergaminho. Bunyan nos adverte: a proximidade não garante entrada. Só o selo da graça abre os portões. Mateus 7:23: 'Nunca vos conheci.'"
       }
     ]
   },
