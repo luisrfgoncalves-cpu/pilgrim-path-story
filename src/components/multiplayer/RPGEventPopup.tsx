@@ -309,6 +309,21 @@ export default function RPGEventPopup({
         stunTurns = 1;
       }
       affectsGroup = true;
+    } else if (specialEvent) {
+      const e = specialEvent.effect;
+      posAdjust = e.positions || 0;
+      if (e.attribute && e.amount) attrChanges[e.attribute] = e.amount;
+      affectsGroup = e.affectsGroup || false;
+    } else if (trapEvent) {
+      const e = trapEvent.effect;
+      posAdjust = e.positions || 0;
+      if (e.type === 'retreat' && posAdjust > 0) posAdjust = -posAdjust;
+      if (e.type === 'stun') { stun = true; stunTurns = e.stunTurns || 1; }
+      if (e.attribute && e.amount) attrChanges[e.attribute] = e.amount;
+    } else if (refugeEvent) {
+      const e = refugeEvent.effect;
+      if (e.attribute && e.amount) attrChanges[e.attribute] = e.amount;
+      posAdjust = e.positions || 0;
     }
 
     onResult({
@@ -321,7 +336,7 @@ export default function RPGEventPopup({
       message: resultData.message,
       emoji: resultData.emoji,
     });
-  }, [resultData, question, riddle, dilemma, challenge, boss, selectedAnswer, onResult]);
+  }, [resultData, question, riddle, dilemma, challenge, boss, specialEvent, trapEvent, refugeEvent, selectedAnswer, onResult]);
 
   if (!visible) return null;
 
