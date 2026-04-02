@@ -13,6 +13,8 @@ import mapFase4 from '@/assets/map-fase4.jpg';
 import mapFase5 from '@/assets/map-fase5.jpg';
 import mapFase6 from '@/assets/map-fase6.jpg';
 
+const PART1_OPENING_CHAPTER_PATTERN = /^cena\d+[a-z]?$/i;
+
 const PHASES_PART1 = [
   {
     id: 'fase1', label: 'A Partida', subtitle: 'Cidade da Destruição → Porta Estreita',
@@ -126,7 +128,7 @@ const JourneysPage = () => {
       return part2ChapterOrder.filter(id => id.startsWith(phaseId.replace('p2-fase', 'p2-fase') + '-'));
     }
     if (phaseId === 'fase1') {
-      return chapterOrder.filter(id => /^cena\d+$/.test(id));
+      return chapterOrder.filter(id => PART1_OPENING_CHAPTER_PATTERN.test(id));
     }
     return chapterOrder.filter(id => id.startsWith(phaseId + '-'));
   };
@@ -166,7 +168,7 @@ const JourneysPage = () => {
 
   const isCurrentPhase = (phaseId: string) => {
     const currentId = progress.currentChapterId;
-    if (phaseId === 'fase1') return /^cena\d+$/.test(currentId);
+    if (phaseId === 'fase1') return PART1_OPENING_CHAPTER_PATTERN.test(currentId);
     return currentId?.startsWith(phaseId + '-');
   };
 

@@ -663,7 +663,7 @@ const ScenePage = () => {
         </div>
 
         <div className="px-5 py-5">
-          <h1 className="font-display text-2xl md:text-3xl text-white mb-4 fade-in leading-tight scene-title font-bold" style={{ wordSpacing: '0.15em', textShadow: '0 2px 8px rgba(0,0,0,0.7), 0 0 2px rgba(0,0,0,0.5)' }}>{chapter.title}</h1>
+          <h1 className="font-display text-xl md:text-2xl text-white mb-4 fade-in leading-tight scene-title font-bold" style={{ wordSpacing: '0.15em', textShadow: '0 2px 8px rgba(0,0,0,0.7), 0 0 2px rgba(0,0,0,0.5)' }}>{chapter.title}</h1>
 
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px flex-1 bg-primary/20" />
@@ -671,11 +671,17 @@ const ScenePage = () => {
             <div className="h-px flex-1 bg-primary/20" />
           </div>
 
-          <div className="space-y-3 mb-6" style={atmosphere.textStyle}>
+          <div className="space-y-2.5 mb-6" style={atmosphere.textStyle}>
             {fullNarrative.slice(0, narrativeIndex + 1).map((paragraph, i) => (
-              <p key={i} className="narrative-text text-white/95 fade-in text-base leading-relaxed" style={{ animationDelay: `${i * 0.08}s`, textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
-                {paragraph}
-              </p>
+              <div
+                key={i}
+                className="fade-in rounded-xl border border-border/60 bg-card/55 px-4 py-3"
+                style={{ animationDelay: `${i * 0.08}s`, boxShadow: '0 8px 20px hsl(0 0% 0% / 0.14)' }}
+              >
+                <p className="narrative-text text-foreground/90">
+                  {paragraph}
+                </p>
+              </div>
             ))}
           </div>
 
