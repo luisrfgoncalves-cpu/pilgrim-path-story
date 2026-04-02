@@ -155,7 +155,7 @@ export default function ImmersiveBoard({ tileTypes, players, currentTurnId, onTi
             <div
               key={phaseIdx}
               data-phase={phaseIdx}
-              style={{ minHeight: '500svh' }}
+              style={{ minHeight: '750svh' }}
               className="relative w-full"
             />
           );
