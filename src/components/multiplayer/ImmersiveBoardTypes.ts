@@ -117,32 +117,58 @@ export function generateImmersiveTiles(seed: number): TileType[] {
   let s = seed;
 
   const tiles: TileType[] = [];
+
+  // Fixed narrative tile positions (story-accurate order across 120 tiles)
+  const NARRATIVE_TILES: Record<number, TileType> = {
+    0: 'start',
+    4: 'wicket_gate',           // Phase 0: Porta Estreita (Boa Vontade)
+    8: 'interpreter_house',     // Phase 0: Casa do Intérprete
+    14: 'hill_difficulty',       // Phase 0: Monte Dificuldade
+    19: 'palace_beautiful',      // Phase 0→1: Palácio Formoso (checkpoint)
+    24: 'valley_humiliation',    // Phase 1: Vale da Humilhação (Apolião)
+    33: 'valley_shadow',         // Phase 1: Vale da Sombra da Morte
+    40: 'checkpoint',            // Phase 2 boundary
+    48: 'vanity_fair',           // Phase 2: Feira da Vaidade
+    60: 'checkpoint',            // Phase 3 boundary
+    68: 'doubting_castle',       // Phase 3: Castelo da Dúvida (Gigante Desespero)
+    80: 'checkpoint',            // Phase 4 boundary
+    85: 'delectable_mountains',  // Phase 4: Montanhas Deleitosas
+    95: 'enchanted_ground',      // Phase 4: Terra Encantada
+    100: 'checkpoint',           // Phase 5 boundary
+    108: 'beulah_land',          // Phase 5: Terra de Beulá
+    119: 'finish',               // Cidade Celestial
+  };
+
   for (let i = 0; i < IMMERSIVE_BOARD_SIZE; i++) {
+    // Fixed narrative positions take priority
+    if (NARRATIVE_TILES[i] !== undefined) {
+      tiles.push(NARRATIVE_TILES[i]);
+      continue;
+    }
+
     const localIdx = i % TILES_PER_PHASE;
     const phaseIdx = Math.floor(i / TILES_PER_PHASE);
-    if (i === 0) { tiles.push('start'); continue; }
-    if (i === IMMERSIVE_BOARD_SIZE - 1) { tiles.push('finish'); continue; }
 
-    // Checkpoints at phase boundaries (every 20 tiles)
+    // Checkpoints at phase boundaries
     if (localIdx === 0) { tiles.push('checkpoint'); continue; }
 
-    // Strategic trap at position 6 of each phase (catches players who roll 6 twice)
+    // Strategic trap at position 6 of each phase
     if (localIdx === 5) { tiles.push('trap'); continue; }
 
-    // Challenge/scripture at position 10 (midpoint of each phase)
+    // Challenge at midpoint (position 10)
     if (localIdx === 9) { tiles.push('challenge'); continue; }
-    // Refuge right after challenge (win reward)
+    // Refuge right after challenge
     if (localIdx === 10) { tiles.push('refuge'); continue; }
 
-    // Giant at position 14 of each phase
+    // Giant at position 14
     if (localIdx === 13) { tiles.push('giant'); continue; }
-    // Refuge right after giant (win reward)
+    // Refuge right after giant
     if (localIdx === 14) { tiles.push('refuge'); continue; }
 
-    // Strategic trap at penultimate position (18) of each phase
+    // Strategic trap at penultimate position (18)
     if (localIdx === 17) { tiles.push('trap'); continue; }
 
-    // Back to start — rare but devastating, once per phase at position 19
+    // Back to start — rare, from phase 2 onward
     if (localIdx === 18 && phaseIdx >= 2) { tiles.push('back_to_start'); continue; }
 
     // Scripture near end of phase
@@ -151,11 +177,11 @@ export function generateImmersiveTiles(seed: number): TileType[] {
     // Shield early in phase
     if (localIdx === 3) { tiles.push('shield'); continue; }
 
-    // ~65% chance of special tile, 35% normal
+    // ~60% chance of special tile, 40% normal (more normal = better spacing)
     s = rng(s);
-    if ((s % 100) < 65) {
+    if ((s % 100) < 55) {
       s = rng(s);
-      const pool: TileType[] = ['surprise', 'blessing', 'swap', 'double_dice', 'current', 'scripture', 'challenge'];
+      const pool: TileType[] = ['surprise', 'blessing', 'swap', 'double_dice', 'current', 'scripture', 'challenge', 'normal'];
       tiles.push(pool[s % pool.length]);
     } else {
       tiles.push('normal');
