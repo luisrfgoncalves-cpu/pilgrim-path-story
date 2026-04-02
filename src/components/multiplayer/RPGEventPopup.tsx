@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Difficulty, ResponseMode, ScriptureQuestion, Riddle, MoralDilemma, ActiveChallenge, BossEncounter, SpecialEvent, TrapEvent, RefugeEvent } from '@/data/rpg/types';
+import { Difficulty, ResponseMode, ScriptureQuestion, Riddle, MoralDilemma, ActiveChallenge, BossEncounter, SpecialEvent, TrapEvent, RefugeEvent, HiddenRevelation, ChainState } from '@/data/rpg/types';
 import {
   getRandomQuestion, getRandomRiddle,
   getRandomDilemma, getRandomChallenge, getRandomBoss,
@@ -16,7 +16,9 @@ import {
   playHolyChime, playDramaticReveal, playNarrativeChime,
 } from './BoardSounds';
 import { playRealSfx, getSfxForTileEvent, playNarrativeSfx } from '@/lib/realSfx';
-import { Clock, PlayCircle } from 'lucide-react';
+import { getRevelation } from '@/data/rpg/revelations';
+import { setChainFlag, hasChainFlag, applyChainCondition, getChainNarrativeModifier } from '@/data/rpg/chainSystem';
+import { Clock, PlayCircle, BookOpen, Sparkles } from 'lucide-react';
 
 // Map RPG sound intents to available GameSfx types
 const rpgSfx = (intent: string): GameSfx => {
