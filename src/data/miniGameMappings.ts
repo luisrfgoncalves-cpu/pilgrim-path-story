@@ -1045,13 +1045,23 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     memorySymbols: ['⚔️', '🙏', '💪', '🕊️', '👑', '🎵', '❤️', '✨'],
   },
 
-  // Cena 5 — A Travessia de Cristã: QTE final (atravessar o rio)
+  // Cena 5 — A Travessia de Cristã: Agarrar-se às promessas no rio
   'p2-fase6-cena5': {
-    type: 'qte',
+    type: 'swipe',
     difficulty: 'normal',
-    intro: 'O Rio da Morte se abre diante de Cristã. Cada passo firme a leva mais perto de Cristão!',
+    intro: 'O Rio da Morte se abre, mas Cristã não tem medo — ela sabe que Cristão a espera do outro lado. Agarre-se às promessas e rejeite o medo!',
     successBonus: { fe: 2, perseveranca: 1 },
     failurePenalty: { fe: -1 },
+    swipeItems: [
+      { text: '"A morte é o fim"', emoji: '💀', good: false },
+      { text: '"Cristão me espera"', emoji: '💑', good: true },
+      { text: '"As águas vão me vencer"', emoji: '🌊', good: false },
+      { text: '"Eu sei em quem tenho crido"', emoji: '✝️', good: true },
+      { text: '"Meus filhos ficarão sozinhos"', emoji: '😢', good: false },
+      { text: '"A Cidade Celestial é real"', emoji: '🏛️', good: true },
+      { text: '"Fui enganada todo este tempo"', emoji: '😰', good: false },
+      { text: '"Bem-aventurados os que morrem no Senhor"', emoji: '👑', good: true },
+    ],
   },
 
   // Cena 6 — Cidade Celestial: Caça ao Tesouro (recompensas eternas)
