@@ -892,9 +892,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Casa do Intérprete",
     location: "Casa do Intérprete",
     characters: ["cristao", "interprete"],
+    sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'Uma presença sábia aguarda dentro...' },
     narrative: [
-      "O caminho leva a uma casa grande e sóbria. Uma placa sobre a porta diz: \"Casa do Intérprete.\" Antes de bater, você hesita. A casa emana silêncio — o tipo de silêncio que precede revelações.",
-      "A porta se abre antes de você bater. Um homem de olhar profundo e voz calma diz: \"Eu estava te esperando. Entre. Vou te mostrar coisas que serão úteis para o restante da sua jornada.\""
+      "O caminho leva a uma casa grande e sóbria. Uma placa sobre a porta diz: {{emphasis}}\"Casa do Intérprete.\"{{/emphasis}} Antes de bater, você hesita. {{fade}}A casa emana silêncio — o tipo de silêncio que precede revelações.{{/fade}}",
+      "A porta se abre antes de você bater. Um homem de olhar profundo e voz calma diz: {{divine}}\"Eu estava te esperando. Entre. Vou te mostrar coisas que serão úteis para o restante da sua jornada.\"{{/divine}}"
     ],
     replayNarrative: [
       "A casa é a mesma. Mas seus olhos mudaram. Desta vez, o que você verá nas salas do Intérprete?"

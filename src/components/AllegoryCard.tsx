@@ -119,6 +119,46 @@ const allegoryMeanings: Record<string, { meaning: string; verse?: string; type: 
     verse: 'Hebreus 4:12 — "A palavra de Deus é viva e eficaz, e mais penetrante do que qualquer espada de dois gumes."',
     type: 'divine',
   },
+  interesses: {
+    meaning: 'O homem de Bom-Discurso que segue a religião apenas quando ela caminha "com chinelos de prata" — sob o sol e com aplausos. Sua fé é ornamento, não sacrifício.',
+    verse: '2 Timóteo 4:10 — "Demas me desamparou, amando o presente século."',
+    type: 'villain',
+  },
+  pequena_fe: {
+    meaning: 'Um peregrino que foi assaltado e perdeu quase tudo, menos o pergaminho. Representa aqueles que têm fé genuína mas vivem como mendigos quando poderiam caminhar como príncipes.',
+    verse: 'Mateus 14:31 — "Homem de pequena fé, por que duvidaste?"',
+    type: 'warning',
+  },
+  discricao: {
+    meaning: 'Uma das donzelas do Palácio Belo que examina e instrui o peregrino. Representa o discernimento cristão que testa e fortalece a fé antes das provas.',
+    verse: 'Filipenses 1:9-10 — "Que o vosso amor aumente mais e mais em ciência e em todo o conhecimento, para que aproveis as coisas excelentes."',
+    type: 'ally',
+  },
+  pastores: {
+    meaning: 'Conhecimento, Experiência, Vigilante e Sincero — os pastores das Montanhas Deleitosas que mostram a Cidade Celestial pela luneta e alertam sobre os perigos finais.',
+    verse: 'Jeremias 3:15 — "Dar-vos-ei pastores segundo o meu coração, que vos apascentem com ciência e inteligência."',
+    type: 'ally',
+  },
+  lisonjeiro: {
+    meaning: 'O Adulador que se veste de anjo de luz para desviar peregrinos com palavras doces. Sua rede prende quem segue conselhos sem verificar na Palavra.',
+    verse: '2 Coríntios 11:14 — "O próprio Satanás se transfigura em anjo de luz."',
+    type: 'villain',
+  },
+  ateismo: {
+    meaning: 'Um homem que buscou a Cidade Celestial por vinte anos, desistiu e agora zomba de quem ainda busca. Representa a descrença que nasce do cansaço espiritual.',
+    verse: 'Salmo 14:1 — "Disse o néscio no seu coração: Não há Deus."',
+    type: 'villain',
+  },
+  ignorancia: {
+    meaning: 'O homem que fez toda a jornada sem nunca passar pela Porta Estreita. Confia em boas obras mas não tem o pergaminho selado. É rejeitado nos portões da Cidade Celestial.',
+    verse: 'Mateus 7:22-23 — "Muitos me dirão naquele dia: Senhor, Senhor! E então lhes direi abertamente: Nunca vos conheci."',
+    type: 'warning',
+  },
+  falador: {
+    meaning: 'Fala com eloquência sobre a fé mas nunca a pratica. Sua religião está nos lábios, não no coração. Fiel o desmascarou com perguntas simples.',
+    verse: 'Tiago 1:22 — "Sede cumpridores da palavra e não somente ouvintes, enganando-vos a vós mesmos."',
+    type: 'warning',
+  },
 };
 
 interface AllegoryCardProps {
