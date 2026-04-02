@@ -13,8 +13,9 @@ import RPGBriefing, { GameMode } from '@/components/multiplayer/RPGBriefing';
 import RPGEventPopup from '@/components/multiplayer/RPGEventPopup';
 import AttributePanel from '@/components/multiplayer/AttributePanel';
 import ResultFeedback from '@/components/multiplayer/ResultFeedback';
-import { Difficulty, TileEventType as RPGTileEventType } from '@/data/rpg/types';
+import { Difficulty, TileEventType as RPGTileEventType, ChainState } from '@/data/rpg/types';
 import { createRotationState, RotationState } from '@/data/rpg/rotationEngine';
+import { createChainState } from '@/data/rpg/chainSystem';
 import { boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
 import {
   IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, TileType, TILE_TYPES,
