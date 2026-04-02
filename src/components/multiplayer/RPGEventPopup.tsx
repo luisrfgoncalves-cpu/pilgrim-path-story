@@ -159,7 +159,7 @@ export default function RPGEventPopup({
 
     if (question) {
       const correct = answerIdx === question.correctIndex;
-      playGameSfx(correct ? 'blessing' : 'trap');
+      playGameSfx(rpgSfx(correct ? 'blessing' : 'trap'));
       setShowResult(true);
       setResultData({
         success: correct,
