@@ -781,7 +781,7 @@ export default function RPGEventPopup({
           {phase === 'challenge' && !showResult && riddle && (
             <div className="space-y-4">
               <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/30">
-                <p className="text-sm font-display font-bold text-foreground text-center">{riddle.riddle}</p>
+                <p className="text-lg font-display font-bold text-foreground text-center leading-relaxed">{riddle.riddle}</p>
               </div>
               {/* Hints */}
               <div className="space-y-2">
