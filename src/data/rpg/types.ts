@@ -78,15 +78,18 @@ export interface Riddle {
 export interface MoralDilemma {
   id: string;
   difficulty: Difficulty;
-  context: string;           // Contextualização narrativa
-  situation: string;         // A situação
+  context: string;
+  situation: string;
   choices: {
     text: string;
-    consequence: string;     // Revelado após escolha
+    consequence: string;
     effect: DilemmaEffect;
   }[];
   bibleReference: string;
-  lesson: string;            // Lição espiritual
+  lesson: string;
+  revelation?: HiddenRevelation;
+  chainTrigger?: ChainTrigger;
+  chainCondition?: ChainCondition;
 }
 
 export interface DilemmaEffect {
