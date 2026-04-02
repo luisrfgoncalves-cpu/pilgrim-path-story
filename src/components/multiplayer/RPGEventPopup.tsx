@@ -538,10 +538,13 @@ export default function RPGEventPopup({
               {/* Context text */}
               <div className="p-4 rounded-xl bg-background/50 border border-border">
                 <p className="text-sm text-muted-foreground leading-relaxed italic">
-                  {question?.context || riddle?.context || dilemma?.context || challenge?.context
-                    || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
-                    || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative
-                    || ''}
+                  {(() => {
+                    const raw = question?.context || riddle?.context || dilemma?.context || challenge?.context
+                      || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
+                      || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative
+                      || '';
+                    return raw;
+                  })()}
                 </p>
                 {refugeEvent?.bibleVerse && (
                   <p className="mt-2 text-xs text-primary italic">📖 {refugeEvent.bibleVerse}</p>
