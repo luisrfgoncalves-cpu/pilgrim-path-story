@@ -492,6 +492,11 @@ export const storyChapters: Record<string, StoryChapter> = {
         effects: { discernimento: 1, perseveranca: 1 }
       },
       {
+        text: "Parar e ouvir — vozes estranhas sussurram na lama",
+        nextChapterId: "cena11b",
+        effects: { discernimento: 1 }
+      },
+      {
         text: "Correr desesperadamente para atravessar",
         nextChapterId: "cena13",
         effects: { coragem: 1 }
