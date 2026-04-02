@@ -1610,7 +1610,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Levantar a cabeça e seguir — você ainda está vivo",
-        nextChapterId: "fase3-cena8",
+        nextChapterId: "fase3-cena10",
         effects: { fe: 1, coragem: 1 },
         consequence: "O pergaminho ainda está ali. O selo ainda brilha. A queda dos outros não determina o seu destino. Filipenses 3:14: 'Prossigo para o alvo.'",
         conditionalEffects: [
