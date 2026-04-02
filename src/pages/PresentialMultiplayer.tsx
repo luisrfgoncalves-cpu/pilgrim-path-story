@@ -9,6 +9,10 @@ import EpicVictoryScreen from '@/components/multiplayer/EpicVictoryScreen';
 import PhaseTransition from '@/components/multiplayer/PhaseTransition';
 import RiverOfDeath from '@/components/multiplayer/RiverOfDeath';
 import GameNotification from '@/components/GameNotification';
+import RPGBriefing, { GameMode } from '@/components/multiplayer/RPGBriefing';
+import RPGEventPopup from '@/components/multiplayer/RPGEventPopup';
+import { Difficulty, TileEventType as RPGTileEventType } from '@/data/rpg/types';
+import { createRotationState, RotationState } from '@/data/rpg/rotationEngine';
 import { boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
 import {
   IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, TileType, TILE_TYPES,
@@ -98,6 +102,19 @@ function createPlayer(index: number, name?: string): LocalPlayer {
 
 // Now ALL special tiles trigger mini-games (more interactive!)
 const EXPANDED_MINI_GAME_TILES: TileType[] = ['giant', 'challenge', 'scripture', 'surprise', 'blessing', 'trap', 'shield', 'current', 'swap'];
+
+// Map board tile types to RPG event types for the RPG popup
+const TILE_TO_RPG_EVENT: Partial<Record<TileType, RPGTileEventType>> = {
+  scripture: 'scripture',
+  challenge: 'challenge',
+  giant: 'boss',
+  surprise: 'special',
+  blessing: 'refuge',
+  trap: 'trap',
+};
+
+// Tiles that should use the RPG popup instead of the old mini-game
+const RPG_TILE_TYPES: TileType[] = ['scripture', 'challenge', 'giant', 'surprise', 'blessing', 'trap'];
 
 // ─── River of Death tiles: last 5 tiles before finish ───
 const RIVER_ZONE_START = IMMERSIVE_BOARD_SIZE - 6; // tiles 114-118 are the river zone
@@ -348,6 +365,18 @@ const PresentialMultiplayer = () => {
   const [phaseTransitionPendingAction, setPhaseTransitionPendingAction] = useState<(() => void) | null>(null);
   const lastPhaseAmbientRef = useRef(-1);
 
+  // ─── RPG System State ───
+  const [rpgDifficulty, setRpgDifficulty] = useState<Difficulty>('peregrino');
+  const [rpgGameMode, setRpgGameMode] = useState<GameMode>('cooperative');
+  const [rpgHostIndex, setRpgHostIndex] = useState(0);
+  const rotationStateRef = useRef<RotationState>(createRotationState());
+  const [rpgEvent, setRpgEvent] = useState<{
+    tileType: RPGTileEventType;
+    playerIdx: number;
+    prevPosition: number;
+    newPosition: number;
+  } | null>(null);
+
   const addPlayer = () => {
     if (players.length >= 8) return;
     setPlayers(prev => [...prev, createPlayer(prev.length)]);
@@ -370,11 +399,21 @@ const PresentialMultiplayer = () => {
     setEditingNames(prev => { const n = { ...prev }; delete n[id]; return n; });
   };
 
-  const startGame = () => {
-    const finalPlayers = players.map(p => {
-      const editName = editingNames[p.id];
-      return editName?.trim() ? { ...p, name: editName.trim() } : p;
-    });
+  const startGame = (config?: { difficulty: Difficulty; gameMode: GameMode; playerNames: string[]; hostPlayerIndex: number }) => {
+    let finalPlayers: LocalPlayer[];
+    if (config) {
+      // From RPGBriefing
+      setRpgDifficulty(config.difficulty);
+      setRpgGameMode(config.gameMode);
+      setRpgHostIndex(config.hostPlayerIndex);
+      rotationStateRef.current = createRotationState();
+      finalPlayers = config.playerNames.map((name, i) => createPlayer(i, name));
+    } else {
+      finalPlayers = players.map(p => {
+        const editName = editingNames[p.id];
+        return editName?.trim() ? { ...p, name: editName.trim() } : p;
+      });
+    }
     setPlayers(finalPlayers);
     setTileTypes(generateImmersiveTiles(Date.now()));
     setPhase('playing');
@@ -384,7 +423,6 @@ const PresentialMultiplayer = () => {
     playPhaseAmbient(0);
     lastPhaseAmbientRef.current = 0;
     setTurnAnnounce(`Vez de ${finalPlayers[0].name}!`);
-    // Show phase 0 transition
     setShowPhaseTransition(0);
   };
 
@@ -428,7 +466,7 @@ const PresentialMultiplayer = () => {
 
   const handleDiceRoll = useCallback((value?: number) => {
     const player = players[currentTurn];
-    if (!player || player.finished || isTokenMoving || !!tileMessage || !!miniGame || showRiverOfDeath || showPhaseTransition !== null) return;
+    if (!player || player.finished || isTokenMoving || !!tileMessage || !!miniGame || !!rpgEvent || showRiverOfDeath || showPhaseTransition !== null) return;
 
     if (player.isStunned) {
       setPlayers(prev => prev.map((p, i) => i === currentTurn ? {
@@ -460,6 +498,13 @@ const PresentialMultiplayer = () => {
       // Check for River of Death zone (last few tiles before finish)
       if (newPos >= RIVER_ZONE_START && newPos < IMMERSIVE_BOARD_SIZE - 1 && !player.stats.riverCrossed) {
         setShowRiverOfDeath({ playerIdx: turnIdx, prevPos, newPos });
+        return;
+      }
+
+      // Check if this tile should use the RPG popup
+      const rpgEventType = TILE_TO_RPG_EVENT[tileType];
+      if (rpgEventType) {
+        setRpgEvent({ tileType: rpgEventType, playerIdx: turnIdx, prevPosition: prevPos, newPosition: newPos });
         return;
       }
 
@@ -887,6 +932,8 @@ const PresentialMultiplayer = () => {
     setCurrentTurn(0);
     setFinishCount(0);
     setTileTypes(generateImmersiveTiles(Date.now()));
+    rotationStateRef.current = createRotationState(); // Reset RPG rotation
+    setRpgEvent(null);
     setPhase('playing');
     playGameSfx('gameStart');
     playPhaseAmbient(0);
@@ -894,87 +941,107 @@ const PresentialMultiplayer = () => {
     setShowPhaseTransition(0);
   };
 
+  // ─── RPG Event Popup result handler ───
+  const handleRpgEventResult = useCallback((result: {
+    success: boolean;
+    posAdjust?: number;
+    attrChanges?: Record<string, number>;
+    stun?: boolean;
+    stunTurns?: number;
+    affectsGroup?: boolean;
+    message: string;
+    emoji: string;
+  }) => {
+    if (!rpgEvent) return;
+    const { playerIdx, prevPosition, newPosition } = rpgEvent;
+    const player = players[playerIdx];
+
+    // Update stats
+    if (result.success) {
+      updatePlayerStats(playerIdx, { challengesWon: 1 });
+    } else {
+      updatePlayerStats(playerIdx, { challengesLost: 1 });
+    }
+
+    // Apply attribute changes
+    if (result.attrChanges) {
+      setPlayers(prev => prev.map((p, i) => {
+        if (i !== playerIdx && !result.affectsGroup) return p;
+        if (i !== playerIdx && result.affectsGroup) {
+          // Apply reduced effect to group in cooperative mode
+          if (rpgGameMode !== 'cooperative') return p;
+        }
+        const newAttrs = { ...p.attributes };
+        for (const [key, val] of Object.entries(result.attrChanges!)) {
+          if (key in newAttrs) {
+            (newAttrs as any)[key] = Math.max(0, Math.min(12, ((newAttrs as any)[key] || 0) + val));
+          }
+        }
+        return { ...p, attributes: newAttrs };
+      }));
+    }
+
+    // Handle position adjustment
+    const posAdj = result.posAdjust || 0;
+    if (result.success && posAdj >= 0) {
+      // Won — stay or advance, apply stun if any
+      setPlayers(prev => prev.map((p, i) => {
+        if (i !== playerIdx) return p;
+        return {
+          ...p,
+          isStunned: result.stun || false,
+          stunTurns: result.stunTurns || 0,
+          stats: { ...p.stats, currentStreak: (p.stats.currentStreak || 0) + 1, maxStreak: Math.max(p.stats.maxStreak, (p.stats.currentStreak || 0) + 1) },
+        };
+      }));
+      pendingMoveAfterPopup.current = posAdj > 0 ? {
+        playerIdx,
+        targetPos: Math.min(newPosition + posAdj, IMMERSIVE_BOARD_SIZE - 1),
+        attrs: {},
+        stats: {},
+        isReturnMove: false,
+      } : null;
+    } else {
+      // Lost — retreat
+      const retreatPos = Math.max(0, newPosition + posAdj);
+      setPlayers(prev => prev.map((p, i) => {
+        if (i !== playerIdx) return p;
+        return {
+          ...p,
+          isStunned: result.stun || false,
+          stunTurns: result.stunTurns || 0,
+          stats: { ...p.stats, currentStreak: 0 },
+        };
+      }));
+      if (posAdj < 0) {
+        pendingMoveAfterPopup.current = {
+          playerIdx,
+          targetPos: retreatPos,
+          attrs: {},
+          stats: {},
+          isReturnMove: true,
+        };
+      }
+    }
+
+    setRpgEvent(null);
+
+    // Show result message as tile popup
+    setTileMessage({
+      message: result.message,
+      emoji: result.emoji,
+      tileType: rpgEvent.tileType === 'boss' ? 'giant' : (rpgEvent.tileType as unknown as TileType) || 'challenge',
+      playerName: player.name,
+    });
+  }, [rpgEvent, players, rpgGameMode]);
+
   // ─── SETUP ───
   if (phase === 'setup') {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-3">
-          <div className="max-w-lg mx-auto flex items-center gap-3">
-            <button onClick={() => navigate('/multiplayer')} className="text-muted-foreground hover:text-foreground">
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <h1 className="font-display text-lg text-foreground">Modo Presencial</h1>
-          </div>
-        </header>
-
-        <main className="flex-1 max-w-lg mx-auto w-full px-5 py-6 space-y-6">
-          <ScreenHero
-            icon={<Dices className="w-full h-full" />}
-            name="Jogo Presencial"
-            subtitle="Um celular, todos os jogadores reunidos"
-            sfx="gameStart"
-            size="md"
-          />
-
-          <div className="bg-card/50 border border-border rounded-xl p-4 space-y-2">
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              📜 <strong className="text-foreground">Como funciona:</strong> Um celular serve como tabuleiro digital imersivo.
-              Cada fase ocupa uma tela inteira com cenários e personagens. Role o dado e explore a jornada do Peregrino!
-            </p>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              🎮 <strong className="text-foreground">120 casas</strong> em 6 fases: Refúgios, Desafios, Surpresas, Armadilhas, Gigantes, Mini-games e muito mais!
-            </p>
-          </div>
-
-          {/* Players */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-display text-foreground flex items-center gap-2">
-                <Users className="w-4 h-4 text-primary" />
-                Jogadores ({players.length}/8)
-              </span>
-              {players.length < 8 && (
-                <button onClick={addPlayer} className="flex items-center gap-1 text-xs text-primary hover:underline">
-                  <Plus className="w-3 h-3" /> Adicionar
-                </button>
-              )}
-            </div>
-
-            {players.map((p) => (
-              <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl bg-card/60 border border-border">
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold flex-shrink-0"
-                  style={{ backgroundColor: p.color + '20', border: `2px solid ${p.color}60`, color: p.color }}
-                >
-                  {(editingNames[p.id] || p.name).charAt(0).toUpperCase()}
-                </div>
-                <input
-                  type="text"
-                  value={editingNames[p.id] ?? p.name}
-                  onChange={e => updatePlayerName(p.id, e.target.value)}
-                  onBlur={() => commitName(p.id)}
-                  className="flex-1 bg-transparent border-none text-sm text-foreground font-medium outline-none focus:text-primary"
-                  maxLength={20}
-                />
-                {players.length > 2 && (
-                  <button onClick={() => removePlayer(p.id)} className="text-muted-foreground hover:text-destructive p-1">
-                    <Minus className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <button
-            onClick={startGame}
-            disabled={players.length < 2}
-            className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 glow-gold disabled:opacity-50 transition-all"
-          >
-            <Dices className="w-5 h-5" />
-            Começar Partida ({players.length} peregrinos)
-          </button>
-        </main>
-      </div>
+      <RPGBriefing
+        onStart={startGame}
+        onBack={() => navigate('/multiplayer')}
+      />
     );
   }
 
@@ -1078,7 +1145,21 @@ const PresentialMultiplayer = () => {
         phaseIdx={miniGame ? Math.floor(miniGame.newPosition / TILES_PER_PHASE) : 0}
       />
 
-      {/* Sticky header */}
+      {/* RPG Event Popup */}
+      <RPGEventPopup
+        visible={!!rpgEvent}
+        difficulty={rpgDifficulty}
+        playerNames={players.map(p => p.name)}
+        currentPlayerIdx={rpgEvent?.playerIdx || currentTurn}
+        tileEventType={rpgEvent?.tileType || 'scripture'}
+        onResult={handleRpgEventResult}
+        onDismiss={() => {
+          setRpgEvent(null);
+          nextTurn();
+        }}
+        rotationState={rotationStateRef}
+      />
+
       <header className="sticky top-0 z-20 bg-card/95 backdrop-blur-md border-b border-border px-4 py-2">
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -1145,7 +1226,7 @@ const PresentialMultiplayer = () => {
         />
 
         {/* Dice section */}
-        {phase === 'playing' && !currentPlayer?.finished && !tileMessage && !miniGame && !showRiverOfDeath && showPhaseTransition === null && (
+        {phase === 'playing' && !currentPlayer?.finished && !tileMessage && !miniGame && !rpgEvent && !showRiverOfDeath && showPhaseTransition === null && (
           <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background via-background/95 to-transparent pt-10 pb-5 px-4">
             <div className="max-w-lg mx-auto">
               {currentPlayer?.isStunned ? (
@@ -1171,7 +1252,7 @@ const PresentialMultiplayer = () => {
                         }, 1200);
                       }}
                       className="focus:outline-none active:scale-95 transition-transform"
-                      disabled={diceRolling || isTokenMoving || !!tileMessage || !!miniGame || showRiverOfDeath !== null || showPhaseTransition !== null}
+                      disabled={diceRolling || isTokenMoving || !!tileMessage || !!miniGame || !!rpgEvent || showRiverOfDeath !== null || showPhaseTransition !== null}
                     >
                       <Dice3D value={diceValue} rolling={diceRolling} size={90} color="gold" />
                     </button>
@@ -1191,7 +1272,7 @@ const PresentialMultiplayer = () => {
                       <button
                         key={n}
                         onClick={() => handleDiceRoll(n)}
-                        disabled={diceRolling || isTokenMoving || !!tileMessage || !!miniGame || showRiverOfDeath !== null || showPhaseTransition !== null}
+                        disabled={diceRolling || isTokenMoving || !!tileMessage || !!miniGame || !!rpgEvent || showRiverOfDeath !== null || showPhaseTransition !== null}
                         className="w-12 h-12 rounded-xl bg-card border-2 border-border text-foreground font-bold text-lg hover:border-primary/40 hover:bg-primary/5 active:scale-95 transition-all font-display disabled:opacity-40"
                         style={{ boxShadow: '0 3px 8px rgba(0,0,0,0.3)' }}
                       >
