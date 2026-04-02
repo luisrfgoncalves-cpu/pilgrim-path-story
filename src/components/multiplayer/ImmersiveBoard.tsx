@@ -328,19 +328,16 @@ const PhaseSection = memo(function PhaseSection({
               {/* Tile body */}
               <div
                 className={`relative flex items-center justify-center overflow-hidden
-                  ${playersHere.length > 0 ? 'scale-125 ring-2 ring-white/50' : ''}
-                  ${isAnimatingHere ? 'ring-4 ring-yellow-400/70' : ''}
-                  ${isCurrentPlayerHere && !isAnimatingHere && capability.enableCssAnimations ? 'animate-pulse' : ''}
-                  transition-all duration-300 hover:scale-110
+                  ${playersHere.length > 0 ? 'scale-110 ring-2 ring-white/40' : ''}
+                  ${isAnimatingHere ? 'ring-2 ring-yellow-400/50' : ''}
+                  transition-all duration-300
                 `}
                 style={{
                   width: tileSize,
                   height: tileSize,
                   borderRadius: isBoss ? 18 : isSpecial ? 16 : 12,
                   background: tileImg ? 'none' : `radial-gradient(circle at 30% 25%, ${config.color}, hsl(0 0% 12%))`,
-                  boxShadow: capability.enableComplexShadows
-                    ? `0 0 ${playersHere.length > 0 ? '35' : '18'}px ${config.glowColor}, inset 0 2px 3px rgba(255,255,255,0.2), inset 0 -2px 4px rgba(0,0,0,0.4), 0 6px 20px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.5)`
-                    : `0 0 ${playersHere.length > 0 ? '15' : '8'}px ${config.glowColor}, 0 4px 12px rgba(0,0,0,0.5)`,
+                  boxShadow: `0 3px 10px rgba(0,0,0,0.5)`,
                   border: `2.5px solid ${config.color}`,
                 }}
               >
@@ -366,24 +363,17 @@ const PhaseSection = memo(function PhaseSection({
                   borderRadius: '50%',
                   padding: isBoss ? 5 : 4,
                   border: `2px solid ${config.color}`,
-                  boxShadow: capability.enableComplexShadows ? `0 0 10px ${config.glowColor}` : undefined,
                 }}
               >
                 <MedievalTileIcon
                   tileType={tileType}
                   size={isBoss ? 18 : isSpecial ? 16 : 14}
                   color={config.color}
-                  glowColor={capability.enableComplexShadows ? config.glowColor : undefined}
                 />
               </div>
 
               {/* Boss indicator */}
-              {isBoss && capability.enableCssAnimations && (
-                <div className="absolute -top-2 -right-2 text-xs z-10 animate-bounce">
-                  {tileType === 'giant' ? '💀' : '⚔️'}
-                </div>
-              )}
-              {isBoss && !capability.enableCssAnimations && (
+              {isBoss && (
                 <div className="absolute -top-2 -right-2 text-xs z-10">
                   {tileType === 'giant' ? '💀' : '⚔️'}
                 </div>
