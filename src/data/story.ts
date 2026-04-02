@@ -1569,9 +1569,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Feira da Vaidade",
     characters: ["cristao", "fiel"],
     narrative: [
-      "O barulho atinge você antes de ver a feira. Gritos de vendedores, música, gargalhadas. A Feira da Vaidade existe há séculos — fundada por Belzebu, Apolião e Legião quando descobriram que o caminho dos peregrinos passava por esta cidade.",
-      "Aqui, tudo está à venda: casas, terras, honras, títulos, reinos, prazeres, esposas, maridos, corpos, almas. As barracas se estendem até onde a vista alcança.",
-      "Ao entrarem, vocês causam comoção. Suas roupas são diferentes. Seu idioma — a língua de Canaã — soa estranho. E quando os vendedores gritam: \"O que desejam comprar?\", vocês respondem: \"Compramos apenas a Verdade.\""
+      "{{tremor}}O barulho atinge você antes de ver a feira.{{/tremor}} Gritos de vendedores, música, gargalhadas. A Feira da Vaidade existe há séculos — fundada por Belzebu, Apolião e Legião quando descobriram que o caminho dos peregrinos passava por esta cidade.",
+      "Aqui, tudo está à venda: casas, terras, honras, títulos, reinos, prazeres, esposas, maridos, corpos, almas. {{fade}}As barracas se estendem até onde a vista alcança.{{/fade}}",
+      "Ao entrarem, vocês causam comoção. Suas roupas são diferentes. Seu idioma — a língua de Canaã — soa estranho. E quando os vendedores gritam: {{dialog}}\"O que desejam comprar?\"{{/dialog}}, vocês respondem: {{divine}}\"Compramos apenas a Verdade.\"{{/divine}}"
     ],
     replayNarrative: [
       "A feira continua a mesma — barulhenta, sedutora, hostil. Mas você já sabe o preço que ela cobra. Da última vez, Fiel pagou com a vida. O que mudará agora?"
