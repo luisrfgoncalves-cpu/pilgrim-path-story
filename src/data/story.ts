@@ -2645,7 +2645,7 @@ export const storyChapters: Record<string, StoryChapter> = {
       },
       {
         text: "Entrar no rio sem mais delongas",
-        nextChapterId: "fase6-cena2",
+        nextChapterId: "fase6-cena4",
         effects: { coragem: 1 },
         consequence: "A decisão rápida também é fé — a fé que não procrastina. Tiago 1:6: 'Peça com fé, em nada duvidando.'"
       }
