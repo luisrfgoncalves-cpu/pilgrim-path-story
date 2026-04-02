@@ -612,29 +612,16 @@ export default function RPGEventPopup({
       {/* ═══ SUSPENSE INTRO PHASE ═══ */}
       {phase === 'suspense_intro' && (
         <div className="relative z-10 flex flex-col items-center gap-6 text-center px-8">
-          <div className="relative">
-            <div className="text-7xl" style={{
-              animation: 'shake 0.15s infinite alternate',
-              filter: `drop-shadow(0 0 30px ${tileInfo.color}60)`,
-            }}>
-              {getSuspenseText().emoji}
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-32 h-32 rounded-full border-2 animate-ping opacity-30"
-                style={{ borderColor: tileInfo.color }} />
-            </div>
+          <div className="text-8xl" style={{
+            filter: `drop-shadow(0 0 30px ${tileInfo.color}60)`,
+          }}>
+            {getSuspenseText().emoji}
           </div>
-          <p className="text-lg font-display font-bold tracking-wider uppercase animate-pulse"
+          <p className="text-2xl font-display font-bold tracking-wider uppercase"
             style={{ color: tileInfo.color, textShadow: `0 0 20px ${tileInfo.color}60` }}
           >
             {getSuspenseText().text}
           </p>
-          <div className="flex gap-1">
-            {[0, 1, 2].map(i => (
-              <div key={i} className="w-2 h-2 rounded-full animate-bounce"
-                style={{ background: tileInfo.color, animationDelay: `${i * 0.2}s` }} />
-            ))}
-          </div>
         </div>
       )}
 
@@ -667,12 +654,12 @@ export default function RPGEventPopup({
           )}
         </div>
 
-        <div className="p-6 space-y-5">
+        <div className="p-6 space-y-6">
           {/* CONTEXT PHASE */}
           {phase === 'context' && !showResult && (
             <>
               {/* Response mode badge */}
-              <div className="p-3 rounded-xl text-center text-sm font-display font-bold"
+              <div className="p-4 rounded-xl text-center text-base font-display font-bold"
                 style={{
                   background: 'hsl(40 30% 12%)',
                   border: '1px solid hsl(40 50% 30%)',
@@ -696,7 +683,7 @@ export default function RPGEventPopup({
 
               {/* Context text */}
               <div className="p-5 rounded-xl bg-background/50 border border-border">
-                <p className="text-lg text-foreground/80 leading-relaxed italic font-display" style={{ lineHeight: '1.7' }}>
+                <p className="text-lg font-display leading-relaxed text-foreground/80 italic" style={{ lineHeight: '1.8' }}>
                   {(() => {
                     const raw = question?.context || riddle?.context || dilemma?.context || challenge?.context
                       || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
@@ -767,14 +754,14 @@ export default function RPGEventPopup({
           {/* CHALLENGE PHASE — Question */}
           {phase === 'challenge' && !showResult && question && (
             <div className="space-y-4">
-              <p className="text-sm font-display font-bold text-foreground">{question.question}</p>
-              <div className="grid gap-2">
+              <p className="text-lg font-display font-bold text-foreground leading-relaxed">{question.question}</p>
+               <div className="grid gap-3">
                 {question.options.map((opt, i) => (
                   <button
                     key={i}
                     onClick={() => handleAnswer(i)}
                     disabled={selectedAnswer !== null}
-                    className={`p-3 rounded-xl border text-left text-sm transition-all ${
+                     className={`p-4 rounded-xl border text-left text-base transition-all ${
                       selectedAnswer === i
                         ? i === question.correctIndex ? 'bg-green-500/20 border-green-500' : 'bg-red-500/20 border-red-500'
                         : selectedAnswer !== null && i === question.correctIndex ? 'bg-green-500/10 border-green-500/50'
@@ -786,7 +773,7 @@ export default function RPGEventPopup({
                   </button>
                 ))}
               </div>
-              <p className="text-[10px] text-muted-foreground text-center">📖 {question.bibleReference}</p>
+              <p className="text-sm text-muted-foreground text-center">📖 {question.bibleReference}</p>
             </div>
           )}
 
@@ -794,12 +781,12 @@ export default function RPGEventPopup({
           {phase === 'challenge' && !showResult && riddle && (
             <div className="space-y-4">
               <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/30">
-                <p className="text-sm font-display font-bold text-foreground text-center">{riddle.riddle}</p>
+                <p className="text-lg font-display font-bold text-foreground text-center leading-relaxed">{riddle.riddle}</p>
               </div>
               {/* Hints */}
               <div className="space-y-2">
                 {riddle.hints.slice(0, hintIndex + 1).map((hint, i) => (
-                  <div key={i} className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300">
+                  <div key={i} className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-sm text-amber-300">
                     💡 Dica {i + 1}: {hint}
                   </div>
                 ))}
@@ -862,7 +849,7 @@ export default function RPGEventPopup({
           {phase === 'challenge' && !showResult && dilemma && (
             <div className="space-y-4">
               <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30">
-                <p className="text-sm text-foreground leading-relaxed">{dilemma.situation}</p>
+                <p className="text-base text-foreground leading-relaxed">{dilemma.situation}</p>
               </div>
               <div className="grid gap-2">
                 {dilemma.choices.map((choice, i) => (
@@ -870,7 +857,7 @@ export default function RPGEventPopup({
                     key={i}
                     onClick={() => handleDilemmaChoice(i)}
                     disabled={selectedAnswer !== null}
-                    className="p-3 rounded-xl border border-border bg-card/50 text-left text-sm text-foreground hover:border-primary/30 transition-all"
+                    className="p-4 rounded-xl border border-border bg-card/50 text-left text-base text-foreground hover:border-primary/30 transition-all"
                   >
                     {choice.text}
                   </button>
@@ -883,11 +870,11 @@ export default function RPGEventPopup({
           {phase === 'challenge' && !showResult && challenge && (
             <div className="space-y-4">
               <h3 className="font-display font-bold text-foreground text-center">{challenge.title}</h3>
-              <div className="p-4 rounded-xl bg-orange-500/10 border border-orange-500/30">
-                <p className="text-sm text-foreground leading-relaxed">{challenge.description}</p>
-              </div>
-              <div className="p-3 rounded-xl bg-background/50 border border-border">
-                <p className="text-xs text-muted-foreground"><strong>Critério:</strong> {challenge.successCriteria}</p>
+               <div className="p-5 rounded-xl bg-orange-500/10 border border-orange-500/30">
+                 <p className="text-base text-foreground leading-relaxed">{challenge.description}</p>
+               </div>
+               <div className="p-4 rounded-xl bg-background/50 border border-border">
+                 <p className="text-sm text-muted-foreground"><strong>Critério:</strong> {challenge.successCriteria}</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <button onClick={() => {
@@ -943,9 +930,9 @@ export default function RPGEventPopup({
           {/* RESULT PHASE */}
           {showResult && resultData && !currentRevelation && (
             <div className="space-y-4">
-              <div className="text-center text-4xl">{resultData.emoji}</div>
+              <div className="text-center text-6xl mb-2">{resultData.emoji}</div>
               <div className={`p-4 rounded-xl border ${resultData.success ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-                <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">{resultData.message}</p>
+                <p className="text-base text-foreground leading-relaxed whitespace-pre-line" style={{ lineHeight: '1.7' }}>{resultData.message}</p>
               </div>
               {/* Revelation button — only on success */}
               {resultData.success && getRevelation(getContentId()) && (
@@ -1000,7 +987,7 @@ export default function RPGEventPopup({
                 background: 'linear-gradient(135deg, hsl(45 30% 10%), hsl(30 20% 8%))',
                 borderColor: 'hsl(45 40% 30%)',
               }}>
-                <p className="text-sm leading-relaxed" style={{ color: 'hsl(45 30% 80%)' }}>
+                <p className="text-base leading-relaxed" style={{ color: 'hsl(45 30% 80%)', lineHeight: '1.7' }}>
                   {currentRevelation.deepTeaching}
                 </p>
               </div>
