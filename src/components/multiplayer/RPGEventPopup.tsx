@@ -28,6 +28,7 @@ interface RPGEventPopupProps {
   playerNames: string[];
   currentPlayerIdx: number;
   tileEventType: TileEventType;
+  sourceTileType?: TileType;
   onResult: (result: {
     success: boolean;
     posAdjust?: number;
