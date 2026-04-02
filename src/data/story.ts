@@ -125,6 +125,11 @@ export const characters: Character[] = [
   { id: "demas", name: "Demas", description: "Descendente de Geazi (servo de Eliseu) e parente de Judas Iscariotes. Fica ao lado de uma mina de prata na Colina de Lucro, chamando peregrinos para se desviarem por ganância. Muitos que entraram na mina nunca mais saíram.", role: "Tentador", unlockedAtChapter: "fase4-cena10" },
   { id: "timidez_desconfianca", name: "Timidez e Desconfiança", description: "Dois homens que fogem dos leões acorrentados no caminho do Palácio Belo. Representam os que abandonam a jornada por medo de perigos que, na verdade, estão sob controle.", role: "Advertência", unlockedAtChapter: "fase2-cena14" },
   { id: "vigilante", name: "Vigilante", description: "O porteiro do Palácio Belo que encoraja Cristão a passar entre os leões acorrentados, revelando que eles não podem alcançar quem se mantém no centro do caminho.", role: "Guia", unlockedAtChapter: "fase2-cena14" },
+  { id: "demas", name: "Demas", description: "Descendente de Geazi e parente de Judas Iscariotes. Fica ao lado de uma mina de prata chamando peregrinos para se desviarem por ganância.", role: "Tentador", unlockedAtChapter: "fase4-cena10" },
+
+  // ── Personagens sem nome (ilustrativos) ──
+  { id: "esposa_cristao", name: "Esposa de Cristão", description: "A mulher de Cristão que, na Parte I, não compreende o desespero do marido e pede que ele volte a dormir. Na Parte II (como Cristã), ela se arrepende e faz a mesma jornada.", role: "Família", unlockedAtChapter: "cena1" },
+  { id: "vizinhos", name: "Vizinhos da Cidade", description: "Os moradores da Cidade da Destruição que zombam de Cristão, fecham as janelas e riem do homem que chora em público. Representam a indiferença do mundo diante do chamado divino.", role: "Ambiente", unlockedAtChapter: "cena1b" },
 
   // ── Parte II — Novos personagens ──
   { id: "crista", name: "Cristã", description: "Esposa de Cristão e protagonista da Parte II. Arrependida por não ter acompanhado o marido, decide seguir o mesmo caminho até a Cidade Celestial, levando seus quatro filhos: Mateus, Tiago, Samuel e José.", role: "Protagonista (Parte II)", unlockedAtChapter: "cena1" },
@@ -189,7 +194,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena1",
     title: "O Livro e o Fardo",
     location: "Cidade da Destruição",
-    characters: ["cristao"],
+    characters: ["cristao", "esposa_cristao"],
     sceneEvent: { type: 'tension', intensity: 1, duration: 3000, message: 'Um peso esmagador cai sobre seus ombros...' },
     narrative: [
       "Você está em casa, na Cidade da Destruição, quando abre um livro antigo.",
@@ -256,7 +261,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Clamor",
     location: "Cidade da Destruição",
     sceneEvent: { type: 'tension', intensity: 1, duration: 2000 },
-    characters: ["cristao"],
+    characters: ["cristao", "flexivel"],
     reflection: "r3",
     narrative: [
       "Você corre para fora da cidade com o livro apertado no peito.",
@@ -355,7 +360,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Sozinho com o Fardo",
     location: "Arredores da Cidade",
     sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'A solidão pesa...' },
-    characters: ["cristao"],
+    characters: ["cristao", "flexivel"],
     narrative: [
       "Sem direção, você vagueia pelos campos.",
       "O fardo range a cada passo.",
@@ -455,7 +460,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Porta Estreita",
     location: "Porta Estreita",
     sceneEvent: { type: 'suspense', delay: 1000, duration: 2000, message: 'A porta se ergue diante de você...' },
-    characters: ["cristao"],
+    characters: ["cristao", "boa_vontade"],
     narrative: [
       "A subida é árdua. Os espinhos rasgam suas roupas e a inclinação faz o fardo pesar ainda mais. Várias vezes você escorrega e cai de joelhos.",
       "Mas no topo, a porta está ali. Pequena, quase insignificante, mas real. Uma inscrição brilha acima dela: \"Batei, e abrir-se-vos-á.\"",
@@ -482,7 +487,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena10",
     title: "A Montanha Sinai",
     location: "Monte Sinai",
-    characters: ["cristao"],
+    characters: ["cristao", "evangelista"],
     narrative: [
       "O vilarejo da Moralidade fica ao pé de uma montanha chamada Sinai. Ao se aproximar, o monte começa a tremer. Pedras despencam. Fogo parece arder no topo.",
       "O homem Legalidade não está em lugar nenhum. A montanha ruge como se fosse esmagar tudo ao redor. Você percebe, com horror, que este caminho não pode remover seu fardo — ele só acrescenta medo ao peso.",
@@ -570,7 +575,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena13",
     title: "Afundando no Desânimo",
     location: "Pântano do Desânimo",
-    characters: ["cristao"],
+    characters: ["cristao", "auxilio"],
     interactionType: 'timed',
     timeLimit: 10,
     timeoutChoiceIndex: 1,
@@ -621,7 +626,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena15",
     title: "A Cruz e o Sepulcro",
     location: "Colina da Cruz",
-    characters: ["cristao"],
+    characters: ["cristao", "tres_resplandecentes"],
     sceneEvent: { type: 'suspense', delay: 800, duration: 3000, message: 'Uma presença sagrada enche o lugar...' },
     narrative: [
       "O caminho sobe uma colina. No topo, uma visão te paralisa: uma cruz de madeira, erguida contra o céu. Ao seu pé, um sepulcro aberto.",
@@ -646,7 +651,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena1b",
     title: "A Angústia Secreta",
     location: "Cidade da Destruição",
-    characters: ["cristao"],
+    characters: ["cristao", "esposa_cristao", "vizinhos"],
     sceneEvent: { type: 'tension', intensity: 1, duration: 3000 },
     narrative: [
       "{{shout}}Você corre pelas ruas gritando, mas ninguém entende.{{/shout}}",
@@ -682,7 +687,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena5b",
     title: "O Peso da Partida",
     location: "Estrada para a Porta Estreita",
-    characters: ["cristao", "evangelista"],
+    characters: ["cristao", "evangelista", "presuncao_preguica_simples"],
     narrative: [
       "Você olha para trás uma última vez. {{heart}}A cidade ainda parece casa.{{/heart}}",
       "Mas cada passo à frente confirma: ficar não é mais opção.",

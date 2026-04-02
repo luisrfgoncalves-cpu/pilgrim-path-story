@@ -34,6 +34,13 @@ import presuncaoPreguicaSimples from '@/assets/characters/presuncao-preguica-sim
 import vergonha from '@/assets/characters/vergonha.jpg';
 import voltaAtras from '@/assets/characters/volta-atras.jpg';
 
+// ── Personagens sem nome (ilustrativos) ──
+import esposaCristao from '@/assets/characters/esposa-cristao.jpg';
+import vizinhos from '@/assets/characters/vizinhos.jpg';
+import vigilantePorteiro from '@/assets/characters/vigilante-porteiro.jpg';
+import demas from '@/assets/characters/demas.jpg';
+import timidezDesconfiancaDupla from '@/assets/characters/timidez-desconfianca.jpg';
+
 // ── Novos personagens — Parte II ──
 import crista from '@/assets/characters/crista.jpg';
 import misericordia from '@/assets/characters/misericordia.jpg';
@@ -84,6 +91,13 @@ export const characterImages: Record<string, string> = {
   presuncao_preguica_simples: presuncaoPreguicaSimples,
   vergonha,
   volta_atras: voltaAtras,
+
+  // Personagens sem nome (ilustrativos)
+  esposa_cristao: esposaCristao,
+  vizinhos,
+  vigilante: vigilantePorteiro,
+  demas,
+  timidez_desconfianca: timidezDesconfiancaDupla,
 
   // Parte II — novos
   crista,

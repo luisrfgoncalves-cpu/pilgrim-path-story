@@ -38,6 +38,7 @@ import { shareResult } from '@/lib/socialShare';
 import { toast } from 'sonner';
 import { renderNarrative, getSceneAtmosphere } from '@/lib/narrativeRenderer';
 import { getSceneImageVariation } from '@/lib/sceneImageVariation';
+import { AllegoryCard, allegoryMeanings } from '@/components/AllegoryCard';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
   fe: { label: 'Fé', emoji: '🔥', icon: Flame },
@@ -88,8 +89,16 @@ const ScenePage = () => {
   const [timedRetryCount, setTimedRetryCount] = useState(0);
   // Character entrance reveal
   const [charReveal, setCharReveal] = useState<{ name: string; img: string; role?: string } | null>(null);
-  const [charRevealDone, setCharRevealDone] = useState(false); // After reveal, show persistent portrait
+  const [charRevealDone, setCharRevealDone] = useState(false);
   const [persistentChar, setPersistentChar] = useState<{ name: string; img: string; role?: string } | null>(null);
+  // Allegory card state — shown once per character per session
+  const [allegoryCardChar, setAllegoryCardChar] = useState<string | null>(null);
+  const [seenAllegoryCards] = useState<Set<string>>(() => {
+    try {
+      const saved = sessionStorage.getItem('seen-allegory-cards');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch { return new Set(); }
+  });
   const { triggerChoiceEffect, triggerSceneEntryVFX } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
@@ -382,10 +391,23 @@ const ScenePage = () => {
       })
       .filter(Boolean) as { name: string; img: string; role?: string; isVillain?: boolean }[];
 
+    // Find first NPC with an allegory card not yet seen
+    const firstCharId = sceneCharIds.find(id => id !== protagonistId && !seenAllegoryCards.has(id) && allegoryMeanings[id] && characterImages[id]);
+
     // Reveal the FIRST important character dramatically
     const revealChar = sceneNPCs[0];
     if (revealChar) {
       const delay = setTimeout(() => {
+        // If this character has an unseen allegory card, show that instead of cinematic reveal
+        if (firstCharId) {
+          seenAllegoryCards.add(firstCharId);
+          try { sessionStorage.setItem('seen-allegory-cards', JSON.stringify([...seenAllegoryCards])); } catch {}
+          setAllegoryCardChar(firstCharId);
+          playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
+          // After allegory card is dismissed, set persistent chars
+          return;
+        }
+        // Normal cinematic reveal for already-seen characters
         playGameSfx('suspense');
         setTimeout(() => {
           playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
@@ -395,7 +417,6 @@ const ScenePage = () => {
           setCharReveal(null);
           setCharRevealDone(true);
           setPersistentChar(revealChar);
-          // Set ALL NPCs as persistent (including the first one)
           setAllPersistentChars(sceneNPCs);
         }, 2500);
       }, 250);
@@ -405,7 +426,7 @@ const ScenePage = () => {
     }
   }, [chapter?.id, transitioning]);
 
-  const hasCharReveal = !!charReveal;
+  const hasCharReveal = !!charReveal || !!allegoryCardChar;
   const canShowChoices = !hasCharReveal;
 
   useEffect(() => {
@@ -1375,6 +1396,33 @@ const ScenePage = () => {
             </p>
           </div>
         </div>
+      )}
+
+      {/* ═══ ALLEGORY CARD — first encounter explanation ═══ */}
+      {allegoryCardChar && (
+        <AllegoryCard
+          characterId={allegoryCardChar}
+          onDismiss={() => {
+            setAllegoryCardChar(null);
+            setCharRevealDone(true);
+            // Build persistent chars from current scene
+            const allChars = [...characters, ...part2Characters];
+            const isPart2 = progress.campaign === 'part2';
+            const protagonistId = isPart2 ? 'crista' : 'cristao';
+            const sceneCharIds = chapter?.characters || [];
+            const npcs = sceneCharIds
+              .filter(id => id !== protagonistId)
+              .map(id => {
+                const char = allChars.find(c => c.id === id);
+                const img = characterImages[id];
+                if (!char || !img) return null;
+                return { name: char.name, img, role: char.role };
+              })
+              .filter(Boolean) as { name: string; img: string; role?: string }[];
+            setAllPersistentChars(npcs);
+            if (npcs[0]) setPersistentChar(npcs[0]);
+          }}
+        />
       )}
     </div>
   );
