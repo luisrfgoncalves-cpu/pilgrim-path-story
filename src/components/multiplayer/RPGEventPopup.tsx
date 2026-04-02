@@ -609,19 +609,22 @@ export default function RPGEventPopup({
         </>
       )}
 
-      {/* ═══ SUSPENSE INTRO PHASE ═══ */}
+      {/* ═══ INTRO PHASE ═══ */}
       {phase === 'suspense_intro' && (
         <div className="relative z-10 flex flex-col items-center gap-6 text-center px-8">
-          <div className="text-8xl" style={{
-            filter: `drop-shadow(0 0 30px ${tileInfo.color}60)`,
-          }}>
-            {getSuspenseText().emoji}
-          </div>
-          <p className="text-2xl font-display font-bold tracking-wider uppercase"
-            style={{ color: tileInfo.color, textShadow: `0 0 20px ${tileInfo.color}60` }}
+          <div className="max-w-md rounded-2xl px-6 py-5"
+            style={{
+              background: 'hsl(0 0% 7% / 0.9)',
+              border: `1px solid ${tileInfo.color}55`,
+              boxShadow: `0 0 30px ${tileInfo.color}20`,
+            }}
           >
-            {getSuspenseText().text}
-          </p>
+            <p className="text-2xl font-display font-bold leading-relaxed"
+              style={{ color: tileInfo.color, textShadow: `0 0 20px ${tileInfo.color}30` }}
+            >
+              {getSuspenseText().text}
+            </p>
+          </div>
         </div>
       )}
 
