@@ -869,10 +869,11 @@ const PresentialMultiplayer = () => {
         setReturnMoveInfo(`↩️ Voltando ${casasDiff} casa${casasDiff > 1 ? 's' : ''}...`);
       }
 
-      // Move the token visually
+      // Move the token visually — cooperative = ALL move
       setIsTokenMoving(true);
       setPlayers(prev => prev.map((p, i) => {
-        if (i !== playerIdx) return p;
+        const shouldMove = rpgGameMode === 'cooperative' || i === playerIdx;
+        if (!shouldMove) return p;
         const newAttrs = { ...p.attributes };
         for (const [key, val] of Object.entries(attrs)) {
           (newAttrs as any)[key] = Math.max(0, ((newAttrs as any)[key] || 0) + val);
