@@ -174,53 +174,23 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
     : 'rgba(100,160,255,0.2)';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={phase === 'reveal' ? onDismiss : undefined}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onDismiss}>
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
 
       {/* Screen flash for negative events */}
-      {phase === 'reveal' && isNegative && (
+      {isNegative && (
         <div className="absolute inset-0 pointer-events-none" style={{
           animation: 'screenFlash 0.6s ease-out forwards',
           background: 'radial-gradient(circle, rgba(200,0,0,0.3), transparent 70%)',
         }} />
       )}
       {/* Golden glow for positive events */}
-      {phase === 'reveal' && isPositive && (
+      {isPositive && (
         <div className="absolute inset-0 pointer-events-none" style={{
           animation: 'goldenGlow 1.5s ease-out forwards',
           background: 'radial-gradient(circle, rgba(255,215,0,0.15), transparent 60%)',
         }} />
-      )}
-
-      {/* SUSPENSE PHASE — dramatic buildup */}
-      {phase === 'suspense' && (
-        <div className="relative z-10 flex flex-col items-center gap-4">
-          {/* Shaking emoji with pulse ring */}
-          <div className="relative">
-            <div className="text-7xl" style={{
-              animation: 'shake 0.15s infinite alternate',
-              filter: `drop-shadow(0 0 30px ${glowColor})`,
-            }}>
-              {emoji}
-            </div>
-            {/* Multiple pulsing rings */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-32 h-32 rounded-full border-2 animate-ping opacity-30"
-                style={{ borderColor }} />
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-40 h-40 rounded-full border animate-ping opacity-20"
-                style={{ borderColor, animationDelay: '0.3s' }} />
-            </div>
-          </div>
-          {/* Suspense text */}
-          <p className="text-lg font-display font-bold tracking-wider uppercase animate-pulse"
-            style={{ color: borderColor, textShadow: `0 0 20px ${glowColor}` }}
-          >
-            {isNegative ? '⚠️ Perigo...' : isChallenge ? '⚔️ Desafio...' : isPositive ? '✨ Algo acontece...' : '🔮 O destino decide...'}
-          </p>
-        </div>
       )}
 
       {/* REVEAL PHASE — fullscreen popup */}
