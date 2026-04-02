@@ -25,6 +25,7 @@ import {
 } from '@/components/multiplayer/BoardSounds';
 import { playGameSfx } from '@/lib/gameSfx';
 import { useAudioPrewarm } from '@/hooks/useAudioPrewarm';
+import { prewarmNarrator } from '@/lib/narrator';
 import { ArrowLeft, Users, Trophy, Plus, Minus, Dices, Crown } from 'lucide-react';
 import ScreenHero from '@/components/ScreenHero';
 
