@@ -478,7 +478,6 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Seguir o caminho que se abre além da porta",
         nextChapterId: "cena9b",
         effects: { perseveranca: 1, fe: 1 },
-        consequence: "Ao pé da cruz, o fardo cai. Nenhum esforço humano o removeu — foi a graça pura. 2 Coríntios 5:21: 'Aquele que não conheceu pecado, Ele o fez pecado por nós, para que nEle fôssemos feitos justiça de Deus.'",
         consequence: "A Porta Estreita é Cristo — 'Eu sou a porta; se alguém entrar por mim, salvar-se-á' (João 10:9). Cristão entrou com humildade, confessando ser pecador. Essa é a única credencial aceita: não méritos, mas honestidade diante de Deus."
       },
       {
