@@ -223,10 +223,11 @@ export function getTrailPositions(tilesCount: number = TILES_PER_PHASE): { x: nu
   const positions: { x: number; y: number }[] = [];
   for (let i = 0; i < tilesCount; i++) {
     const t = i / (tilesCount - 1);
-    const y = 3 + t * 94; // 3% to 97% — safe margin
-    const wave = Math.sin(t * Math.PI * 5) * 26;
+    const y = 2 + t * 96; // 2% to 98%
+    // Wider, slower wave for more organic path with less repetition
+    const wave = Math.sin(t * Math.PI * 3.5) * 28 + Math.sin(t * Math.PI * 7) * 8;
     const x = 50 + wave;
-    positions.push({ x: Math.max(16, Math.min(84, x)), y });
+    positions.push({ x: Math.max(14, Math.min(86, x)), y });
   }
   return positions;
 }

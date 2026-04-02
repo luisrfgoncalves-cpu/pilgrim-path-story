@@ -252,7 +252,7 @@ const PhaseSection = memo(function PhaseSection({
       ref={sectionRef}
       data-phase={phaseIdx}
       className="relative w-full overflow-hidden"
-      style={{ minHeight: '500svh' }}
+      style={{ minHeight: '750svh' }}
     >
       {/* Background */}
       <div className="absolute inset-0">

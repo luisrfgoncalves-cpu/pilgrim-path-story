@@ -193,8 +193,8 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
         }} />
       )}
 
-      {/* REVEAL PHASE — fullscreen popup */}
-      {phase === 'reveal' && (
+      {/* Fullscreen popup */}
+      {(
         <div
           className="relative w-full h-full max-h-[100dvh] flex flex-col overflow-y-auto"
           style={{
