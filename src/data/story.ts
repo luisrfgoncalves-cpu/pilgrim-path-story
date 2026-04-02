@@ -352,6 +352,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Hesitar — a luz é fraca demais, o caminho incerto",
         nextChapterId: "cena6",
         effects: { fe: -1 },
+        consequence: "A dúvida diante da chave que já abriu uma porta é o eco do Gigante Desespero — tentando roubar a fé no último instante. Use-a antes que a voz do medo a esconda novamente.",
         consequence: "A hesitação de Cristão representa a dúvida que todo crente enfrenta: 'E se eu estiver errado?' Mas Hebreus 11:1 ensina que 'a fé é a certeza de coisas que se esperam, a convicção de coisas que não se veem.' A luz fraca é o começo — não o fim."
       }
     ]
@@ -421,6 +422,8 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Subir a colina até a Porta Estreita",
         nextChapterId: "cena7b",
         effects: { fe: 2, coragem: 1 },
+        consequence: "A subida final é pavimentada de ouro. Não há mais lama, pedras ou espinhos. Apocalipse 21:21: 'A praça da cidade era de ouro puro.' O sofrimento acabou.",
+        consequence: "A Colina da Dificuldade não tem atalhos. Bunyan ensina que o caminho cristão não contorna obstáculos — atravessa-os. Hebreus 12:1: 'Corramos com paciência a carreira que nos está proposta.'",
         flag: "escolheu_caminho_estreito",
         item: "pergaminho_verdade",
         consequence: "Escolher o caminho difícil quando o fácil está disponível — isso é discernimento verdadeiro. Os espinhos representam as tribulações que acompanham quem segue a Cristo (João 16:33). Mas no topo, a porta está aberta para quem persevera."
@@ -474,6 +477,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Seguir o caminho que se abre além da porta",
         nextChapterId: "cena9b",
         effects: { perseveranca: 1, fe: 1 },
+        consequence: "Ao pé da cruz, o fardo cai. Nenhum esforço humano o removeu — foi a graça pura. 2 Coríntios 5:21: 'Aquele que não conheceu pecado, Ele o fez pecado por nós, para que nEle fôssemos feitos justiça de Deus.'",
         consequence: "A Porta Estreita é Cristo — 'Eu sou a porta; se alguém entrar por mim, salvar-se-á' (João 10:9). Cristão entrou com humildade, confessando ser pecador. Essa é a única credencial aceita: não méritos, mas honestidade diante de Deus."
       },
       {
@@ -670,17 +674,20 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Levantar antes do amanhecer e partir em segredo",
         nextChapterId: "cena3",
         effects: { coragem: 2, fe: 1 },
+        consequence: "Partir antes do amanhecer, como Abraão, é o ato de fé mais radical: confiar que o destino desconhecido é melhor que o conforto conhecido. Gênesis 12:1: 'Sai da tua terra, da tua parentela.'",
         flag: "partiu_em_segredo"
       },
       {
         text: "Tentar mais uma vez convencer sua família",
         nextChapterId: "cena2",
-        effects: { perseveranca: 1 }
+        effects: { perseveranca: 1 },
+        consequence: "A persistência em alertar sua família é nobre, mas há um limite — Noé pregou por 120 anos e apenas sua família mais próxima entrou na arca. A obediência nem sempre traz compreensão dos outros."
       },
       {
         text: "Obedecer e tentar dormir — talvez realmente passe",
         nextChapterId: "cena4",
-        effects: { fe: -1, coragem: -1 }
+        effects: { fe: -1, coragem: -1 },
+        consequence: "Adiar o chamado de Deus é dormir à beira do precipício. O homem na gaiola de ferro, que você ainda vai conhecer, fez exatamente isso — e descobriu que a porta não fica aberta para sempre."
       }
     ]
   },
@@ -711,6 +718,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Insistir e tentar acordar os três à força",
         nextChapterId: "cena7",
         effects: { coragem: 1, fe: 1 },
+        consequence: "Há limites para o que podemos fazer pelos outros. Jesus chorou sobre Jerusalém (Lucas 19:41), mas não forçou ninguém a segui-lo. O amor alerta, mas não obriga.",
         consequence: "Você os sacode, mas eles resmungam e voltam a dormir. Alguns caminhos só podem ser escolhidos por quem os percorre."
       }
     ]
@@ -744,6 +752,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Cair de joelhos, trêmulo, agradecendo por estar vivo",
         nextChapterId: "cena9",
         effects: { fe: 2 },
+        consequence: "A gratidão diante da graça é a resposta mais pura. Você quase morreu na porta, mas foi puxado para dentro. A salvação nunca é mérito nosso — é sempre mão estendida.",
         flag: "entrou_pela_porta_estreita"
       }
     ]
@@ -774,6 +783,8 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Perguntar se não existe um atalho mais rápido",
         nextChapterId: "cena11",
         effects: { discernimento: -1 },
+        consequence: "O fogo da Graça se mantém vivo pela oração, pela Palavra e pela comunhão. O diabo não consegue apagá-lo porque Cristo alimenta secretamente o que o inimigo tenta destruir. João 10:28: 'Ninguém pode arrebatá-las da minha mão.'",
+        consequence: "Boa-Vontade responde com tristeza: 'Não há atalhos no caminho da vida.' Provérbios 14:12: 'Há caminho que ao homem parece direito, mas o seu fim são os caminhos da morte.'",
         consequence: "Boa-Vontade sorri triste: \"Não há atalhos no caminho da vida. Todos os que tentaram atalhos caíram em armadilhas.\""
       }
     ]
@@ -805,17 +816,20 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Focar na voz de cima e ignorar os sussurros da lama",
         nextChapterId: "cena12",
         effects: { fe: 2, perseveranca: 1 },
+        consequence: "No fundo do desânimo, há uma voz que não vem da lama — vem de cima. Discernir entre a voz de Deus e os sussurros do desespero é a prova mais difícil da fé. Salmo 126:5: 'Os que semeiam com lágrimas, com júbilo ceifarão.'",
         flag: "resistiu_vozes_pantano"
       },
       {
         text: "Gritar por socorro com todas as forças que restam",
         nextChapterId: "cena13",
-        effects: { coragem: 1, fe: 1 }
+        effects: { coragem: 1, fe: 1 },
+        consequence: "Pedir ajuda no fundo do poço é fé bruta — sem elegância, sem teologia, apenas desespero honesto. O carcereiro de Filipos fez exatamente isso (Atos 16:30) e foi salvo."
       },
       {
         text: "Parar de lutar — talvez se afundar seja menos doloroso",
         nextChapterId: "cena13",
         effects: { fe: -2, perseveranca: -1 },
+        consequence: "Render-se ao desânimo é o perigo que Bunyan mais temia para seus leitores. O Pântano não mata quem luta — mata quem para. Mas mesmo quem para, pode ser alcançado pela mão de Auxílio.",
         flag: "cedeu_desanimo"
       }
     ]
@@ -843,7 +857,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Seguir em frente rapidamente — o pântano ainda assusta",
         nextChapterId: "cena15",
-        effects: { perseveranca: 1 }
+        effects: { perseveranca: 1 },
+        consequence: "A pressa pós-sofrimento é compreensível, mas perigosa. Quem não para para agradecer não aprende a lição. O pântano ficou para trás, mas suas lições devem caminhar com você."
       }
     ]
   },
@@ -875,6 +890,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Dar três saltos de alegria e correr pelo caminho cantando",
         nextChapterId: "fase2-cena1",
         effects: { fe: 2, coragem: 2 },
+        consequence: "Cristão deu três saltos e cantou: 'Bendito seja aquele lugar!' A alegria da salvação não é contida — ela transborda. Salmo 30:11: 'Converteste o meu pranto em dança.'",
         flag: "recebeu_vestes_novas",
         item: "pergaminho_selado",
         consequence: "Cristão deu três saltos e seguiu cantando: \"Bendito seja aquele lugar! Bendita a Cruz e o Sepulcro! Bendita a graça que me libertou!\""
@@ -905,13 +921,15 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Entrar e aceitar a instrução",
         nextChapterId: "fase2-cena2",
         effects: { fe: 1, discernimento: 1 },
+        consequence: "A Casa do Intérprete é a escola da alma. Bunyan a criou para que o peregrino aprendesse verdades que só se entendem por meio de parábolas vivas. 1 Coríntios 2:14: 'O homem natural não compreende as coisas do Espírito de Deus.'",
         flag: "entrou_casa_interprete",
         item: "lampada_discernimento"
       },
       {
         text: "Agradecer mas seguir viagem — o caminho é longo",
         nextChapterId: "fase2-cena3",
-        effects: { discernimento: -1 }
+        effects: { discernimento: -1 },
+        consequence: "Recusar instrução espiritual por pressa é trocar sabedoria por velocidade. Provérbios 19:2: 'Não é bom agir sem refletir; quem é apressado tropeça.'"
       }
     ]
   },
@@ -934,12 +952,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Meditar no retrato e pedir para ver mais",
         nextChapterId: "fase2-cena4",
-        effects: { discernimento: 2 }
+        effects: { discernimento: 2 },
+        consequence: "O retrato é a imagem do ministro fiel: olhos no céu, livro nas mãos, lei da verdade nos lábios e o mundo atrás de si. Gravar esse perfil na mente protege contra falsos guias."
       },
       {
         text: "Passar rapidamente para a próxima sala",
         nextChapterId: "fase2-cena4",
-        effects: { discernimento: -1 }
+        effects: { discernimento: -1 },
+        consequence: "Apressar-se diante da instrução é perder o que Deus preparou. As visões do Intérprete não são entretenimento — são armadura para os vales que virão."
       }
     ]
   },
@@ -959,12 +979,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Voltar e entrar na casa",
         nextChapterId: "fase2-cena2",
-        effects: { discernimento: 1, fe: 1 }
+        effects: { discernimento: 1, fe: 1 },
+        consequence: "Reconhecer o erro e voltar atrás é humildade — a virtude que abre portas que o orgulho tranca. A Casa ainda está de portas abertas."
       },
       {
         text: "Seguir em frente sem instrução",
         nextChapterId: "fase2-cena6",
-        effects: { fe: -1, discernimento: -1 }
+        effects: { fe: -1, discernimento: -1 },
+        consequence: "Seguir sem preparo é enfrentar Apolião desarmado. A ignorância voluntária não é coragem — é presunção. Oséias 4:6: 'O meu povo foi destruído por falta de conhecimento.'"
       }
     ]
   },
@@ -988,12 +1010,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Perguntar ao Intérprete: \"Então a Lei é inútil?\"",
         nextChapterId: "fase2-cena5",
-        effects: { discernimento: 2 }
+        effects: { discernimento: 2 },
+        consequence: "A pergunta é legítima e o Intérprete a espera. A Lei revela a doença mas não é o remédio. Romanos 3:20: 'Pela lei vem o pleno conhecimento do pecado.' A cura vem pela Graça."
       },
       {
         text: "Apenas observar em silêncio",
         nextChapterId: "fase2-cena5",
-        effects: { perseveranca: 1 }
+        effects: { perseveranca: 1 },
+        consequence: "O silêncio contemplativo também é aprendizado. Nem toda verdade precisa de palavras — às vezes, basta ver a poeira subir e a água acalmar para entender."
       }
     ]
   },
@@ -1011,12 +1035,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Absorver a lição profundamente",
         nextChapterId: "fase2-cena6",
-        effects: { discernimento: 2, fe: 1 }
+        effects: { discernimento: 2, fe: 1 },
+        consequence: "A distinção entre Lei e Graça é o coração do evangelho. Gálatas 3:24: 'A lei nos serviu de aio, para nos conduzir a Cristo.' A vassoura prepara — a água limpa."
       },
       {
         text: "Achar complicado demais e seguir adiante",
         nextChapterId: "fase2-cena6",
-        effects: { discernimento: -1 }
+        effects: { discernimento: -1 },
+        consequence: "Rejeitar verdades difíceis por serem complexas é o mesmo que recusar remédio por ser amargo. A simplicidade que Deus oferece não é simplismo — é profundidade acessível."
       }
     ]
   },
@@ -1041,7 +1067,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Seguir para a próxima sala",
         nextChapterId: "fase2-cena7",
-        effects: {}
+        effects: {},
+        consequence: "O fogo continuará ardendo mesmo que você não entenda completamente. A Graça não depende da nossa compreensão — depende do Cristo que a sustenta."
       }
     ]
   },
@@ -1070,7 +1097,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Sentir medo dos guardas e da violência necessária",
         nextChapterId: "fase2-cena8",
-        effects: { coragem: -1 }
+        effects: { coragem: -1 },
+        consequence: "O medo diante da violência necessária é humano. Mas Bunyan ensina que a entrada no Reino exige determinação — não passividade. Os que ficaram olhando nunca entraram."
       }
     ]
   },
@@ -1089,7 +1117,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Tremer e jurar nunca abandonar o caminho",
         nextChapterId: "fase2-cena9",
-        effects: { fe: 1, perseveranca: 1 }
+        effects: { fe: 1, perseveranca: 1 },
+        consequence: "O temor diante do homem na gaiola é saudável. Provérbios 14:16: 'O sábio teme e desvia-se do mal.' Gravar o aviso no coração é sabedoria — não paranoia."
       },
       {
         text: "Pensar: \"Isso nunca aconteceria comigo\"",
@@ -1119,7 +1148,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Sentir-se perturbado e querer ir embora",
         nextChapterId: "fase2-cena10",
-        effects: { fe: -1 }
+        effects: { fe: -1 },
+        consequence: "A perturbação diante da verdade é sinal de vida espiritual — os mortos não se incomodam. Mas fugir da verdade por medo é pior do que nunca tê-la ouvido."
       }
     ]
   },
@@ -1145,12 +1175,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Abraçar o Intérprete e partir fortalecido",
         nextChapterId: "fase2-cena11",
-        effects: { fe: 1, perseveranca: 1 }
+        effects: { fe: 1, perseveranca: 1 },
+        consequence: "A comunhão entre mestre e discípulo fortalece ambos. O Intérprete cumpriu seu papel — agora as lições devem caminhar com você. 2 Timóteo 2:2: 'O que ouviste de mim, transmite a homens fiéis.'"
       },
       {
         text: "Acenar e partir em silêncio",
         nextChapterId: "fase2-cena11",
-        effects: {}
+        effects: {},
+        consequence: "Partir em silêncio também é honra. Nem toda gratidão precisa de palavras."
       }
     ]
   },
@@ -1193,12 +1225,14 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Subir direto pela trilha íngreme",
         nextChapterId: "fase2-cena13",
         effects: { perseveranca: 2, coragem: 1 },
+        consequence: "A trilha íngreme é a mais difícil, mas a única que leva ao topo. Formalista e Hipocrisia pegaram atalhos — e nunca mais foram vistos. A dificuldade é o preço da autenticidade.",
         flag: "subiu_colina_direto"
       },
       {
         text: "Tentar o caminho Perigo — parece mais fácil",
         nextChapterId: "fase2-cena13",
         effects: { perseveranca: -1, discernimento: -1 },
+        consequence: "Bunyan mostra que os caminhos laterais da colina levam à ruína: Perigo ao bosque escuro, Destruição às pedras mortais. Provérbios 14:12: 'Há caminho que parece direito, mas seu fim são caminhos de morte.'",
         flag: "tentou_atalho_colina"
       }
     ]
@@ -1228,12 +1262,14 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Descansar brevemente e verificar o pergaminho antes de seguir",
         nextChapterId: "fase2-cena14",
         effects: { discernimento: 2, perseveranca: 1 },
+        consequence: "O descanso disciplinado é sabedoria. Verificar o pergaminho mostra vigilância. Bunyan elogia quem descansa sem perder de vista o que importa.",
         flag: "guardou_pergaminho"
       },
       {
         text: "Adormecer profundamente no caramanchão",
         nextChapterId: "fase2-cena14",
         effects: { discernimento: -2, perseveranca: -1 },
+        consequence: "O sono no caramanchão custou a Cristão horas de viagem e lágrimas de desespero ao perceber que o pergaminho caiu. Marcos 14:38: 'Vigiai e orai, para que não entreis em tentação.'",
         flag: "dormiu_caramanchao"
       }
     ]
@@ -1262,12 +1298,14 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Passar entre os leões, mantendo-se no centro do caminho",
         nextChapterId: "fase3-cena1",
         effects: { coragem: 2, fe: 1 },
+        consequence: "Os leões acorrentados representam medos que parecem reais mas estão sob controle divino. Quem se mantém no centro do caminho não é tocado. 2 Timóteo 1:7: 'Deus não nos deu espírito de temor.'",
         flag: "passou_pelos_leoes"
       },
       {
         text: "Hesitar e quase voltar, mas a voz de Vigilante te encoraja",
         nextChapterId: "fase3-cena1",
-        effects: { coragem: 1, fe: 1 }
+        effects: { coragem: 1, fe: 1 },
+        consequence: "A hesitação diante dos leões é natural. Mas Vigilante revela a verdade: as correntes são fortes. Confiar na palavra do porteiro é confiar na proteção divina."
       }
     ]
   },
@@ -1299,13 +1337,15 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Avançar com determinação, mão na espada",
         nextChapterId: "fase3-cena2",
         effects: { coragem: 1 },
+        consequence: "Descer ao vale é descer à humilhação. Mas Filipenses 2:8 lembra que Cristo 'humilhou-se a si mesmo'. A armadura da fé foi feita para vales, não para montanhas.",
         flag: "enfrentou_vale",
         item: "armadura_fe"
       },
       {
         text: "Avançar com cautela, olhando para todos os lados",
         nextChapterId: "fase3-cena2",
-        effects: { discernimento: 1 }
+        effects: { discernimento: 1 },
+        consequence: "A cautela no vale é prudência, não covardia. Provérbios 22:3: 'O prudente vê o mal e esconde-se; mas os simples passam e sofrem a pena.'"
       }
     ]
   },
@@ -1329,12 +1369,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Gritar de volta: \"Eu renunciei à sua lealdade! Sirvo a outro Rei!\"",
         nextChapterId: "fase3-cena3",
-        effects: { fe: 1, coragem: 1 }
+        effects: { fe: 1, coragem: 1 },
+        consequence: "Declarar a mudança de lealdade é o momento mais perigoso — e mais libertador. Romanos 6:18: 'Libertados do pecado, fostes feitos servos da justiça.'"
       },
       {
         text: "Recuar em silêncio, procurando um lugar para se esconder",
         nextChapterId: "fase3-cena5",
-        effects: { coragem: -1 }
+        effects: { coragem: -1 },
+        consequence: "A fuga diante de Apolião é perigosa: a armadura de Deus não protege as costas. Efésios 6:13: 'Tomai toda a armadura de Deus, para que possais resistir.' Resistir, não fugir."
       }
     ]
   },
@@ -1357,6 +1399,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Levantar o escudo da fé e desembainhar a Espada do Espírito",
         nextChapterId: "fase3-cena4",
         effects: { coragem: 2, fe: 1 },
+        consequence: "Tiago 4:7: 'Sujeitai-vos a Deus, resisti ao diabo, e ele fugirá de vós.' A Espada do Espírito — a Palavra de Deus — é a única arma que fere o inimigo.",
         flag: "enfrentou_presenca",
         item: "manto_coragem",
         conditionalEffects: [
@@ -1367,6 +1410,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Dar as costas e correr",
         nextChapterId: "fase3-cena5",
         effects: { discernimento: -1, coragem: -2 },
+        consequence: "Fugir de Apolião é expor as costas — a única parte sem armadura. Efésios 6:14-17 descreve proteção frontal: cinturão, couraça, escudo. A retaguarda é vulnerável.",
         conditionalEffects: [
           { attr: "coragem", threshold: 6, bonus: { fe: 1 }, penalty: { fe: -1 } }
         ]
@@ -1397,6 +1441,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Recolher folhas da Árvore da Vida para curar suas feridas",
         nextChapterId: "fase3-cena6",
         effects: { perseveranca: 2, fe: 1 },
+        consequence: "A Árvore da Vida cura as feridas da batalha. Apocalipse 22:2: 'As folhas da árvore serviam para a cura das nações.' A vitória sobre Apolião deixa cicatrizes — mas Deus provê cura.",
         conditionalEffects: [
           { attr: "perseveranca", threshold: 8, bonus: { perseveranca: 2, fe: 1 }, penalty: { perseveranca: -1 } }
         ]
@@ -1404,7 +1449,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Desabar de exaustão, sem forças para continuar",
         nextChapterId: "fase3-cena5",
-        effects: { coragem: -2 }
+        effects: { coragem: -2 },
+        consequence: "A exaustão após a batalha espiritual é real. Elias derrotou 450 profetas de Baal e depois desabou pedindo a morte (1 Reis 19:4). A vitória não imuniza contra o cansaço."
       }
     ]
   },
@@ -1424,12 +1470,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Orar em voz alta: \"Ainda que eu ande pelo vale da sombra da morte...\"",
         nextChapterId: "fase3-cena6",
-        effects: { fe: 2, coragem: 1 }
+        effects: { fe: 2, coragem: 1 },
+        consequence: "O Salmo 23:4 é a oração do peregrino no vale mais escuro. Cristão orou sem ver o caminho — e a oração se tornou o caminho. 'Ainda que eu ande pelo vale da sombra da morte, não temeria mal algum.'"
       },
       {
         text: "Caminhar em silêncio, suportando os sussurros",
         nextChapterId: "fase3-cena7",
-        effects: { perseveranca: 1, coragem: -1 }
+        effects: { perseveranca: 1, coragem: -1 },
+        consequence: "Suportar os sussurros demoníacos sem falar é resistência — mas uma resistência solitária. Tiago 5:13: 'Está alguém entre vós aflito? Ore.' O silêncio pode ser dignidade ou orgulho."
       }
     ]
   },
@@ -1453,6 +1501,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Agradecer pela aurora e seguir adiante",
         nextChapterId: "fase3-cena8",
         effects: { fe: 2, perseveranca: 1 },
+        consequence: "Amós 5:8: 'O que faz as sete estrelas e o Orião, e torna a sombra da morte em manhã.' A aurora no vale não é acidente — é providência. Agradecer por ela é reconhecer a mão de Deus.",
         conditionalEffects: [
           { attr: "fe", threshold: 10, bonus: { fe: 2, perseveranca: 1 }, penalty: { fe: -1 } }
         ]
@@ -1461,6 +1510,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Duvidar — talvez tenha sido apenas sorte",
         nextChapterId: "fase3-cena7",
         effects: { fe: -1 },
+        consequence: "Atribuir à sorte o que é providência é o erro de Ignorância — que será rejeitado nos portões. Reconhecer a mão de Deus nos livramentos é o coração da fé.",
         conditionalEffects: [
           { attr: "fe", threshold: 5, bonus: {}, penalty: { coragem: -1 } }
         ]
@@ -1486,12 +1536,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Passar pelos gigantes com resolução",
         nextChapterId: "fase3-cena8",
-        effects: { coragem: 1, discernimento: 1 }
+        effects: { coragem: 1, discernimento: 1 },
+        consequence: "Os gigantes antigos — perseguição religiosa e institucional — já não têm o poder de antes, mas seus esqueletos servem de aviso: o caminho é real e cobra preço real."
       },
       {
         text: "Hesitar diante dos esqueletos",
         nextChapterId: "fase3-cena9",
-        effects: { fe: -1 }
+        effects: { fe: -1 },
+        consequence: "O medo diante da morte de outros peregrinos é legítimo. Mas Hebreus 11 lista heróis da fé que morreram sem receber a promessa — e mesmo assim foram aprovados."
       }
     ]
   },
@@ -1511,7 +1563,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Caminhar lado a lado com Fiel, compartilhando histórias",
         nextChapterId: "fase3-cena10",
-        effects: { perseveranca: 1, fe: 1 }
+        effects: { perseveranca: 1, fe: 1 },
+        consequence: "Eclesiastes 4:9-10: 'Melhor é serem dois do que um, pois se caírem, um levanta o companheiro.' Fiel é a provisão divina de companhia — a jornada nunca deveria ser solitária."
       }
     ]
   },
@@ -1535,6 +1588,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Levantar a cabeça e seguir — você ainda está vivo",
         nextChapterId: "fase3-cena8",
         effects: { fe: 1, coragem: 1 },
+        consequence: "O pergaminho ainda está ali. O selo ainda brilha. A queda dos outros não determina o seu destino. Filipenses 3:14: 'Prossigo para o alvo.'",
         conditionalEffects: [
           { attr: "perseveranca", threshold: 7, bonus: { coragem: 2 }, penalty: {} }
         ]
@@ -1543,6 +1597,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Sentar entre os esqueletos e chorar",
         nextChapterId: "fase3-cena9",
         effects: { coragem: -1 },
+        consequence: "O desânimo entre os mortos é compreensível, mas perigoso. Os esqueletos representam o passado — não o futuro. Isaías 43:18: 'Não vos lembreis das coisas passadas.'",
         conditionalEffects: [
           { attr: "fe", threshold: 4, bonus: {}, penalty: { fe: -1 } }
         ]
@@ -1567,7 +1622,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Seguir para a Feira, preparado para o que vier",
         nextChapterId: "fase4-cena1",
-        effects: { perseveranca: 1, coragem: 1 }
+        effects: { perseveranca: 1, coragem: 1 },
+        consequence: "A companhia de Fiel transforma a estrada. Juntos, vocês são mais fortes. Mas a Feira da Vaidade será a prova mais cruel — porque o inimigo ali não usa garras, usa sorrisos."
       }
     ]
   },
@@ -1603,6 +1659,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Manter os olhos fixos no caminho, sem parar nas barracas",
         nextChapterId: "fase4-cena2",
         effects: { discernimento: 1, fe: 1 },
+        consequence: "Hebreus 12:2: 'Olhando para Jesus, autor e consumador da fé.' Manter os olhos no caminho na Feira é recusar a sedução do mundo sem precisar argumentar com ele.",
         flag: "observou_feira",
         conditionalEffects: [
           { attr: "discernimento", threshold: 6, bonus: { discernimento: 1 }, penalty: {} }
@@ -1612,6 +1669,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Parar para olhar — talvez haja algo útil para a jornada",
         nextChapterId: "fase4-cena3",
         effects: { fe: -1 },
+        consequence: "1 João 2:16: 'Tudo que há no mundo — a concupiscência da carne, a concupiscência dos olhos e a soberba da vida — não é do Pai.' Olhar as barracas é o primeiro passo da queda.",
         flag: "envolveu_feira"
       }
     ]
@@ -1635,12 +1693,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Suportar o escárnio em silêncio, como Fiel",
         nextChapterId: "fase4-cena4",
-        effects: { perseveranca: 1, fe: 1 }
+        effects: { perseveranca: 1, fe: 1 },
+        consequence: "1 Pedro 4:14: 'Se sois injuriados pelo nome de Cristo, bem-aventurados sois.' O escárnio na feira é a marca dos que se recusam a comprar o que o mundo vende."
       },
       {
         text: "Tentar argumentar com a multidão",
         nextChapterId: "fase4-cena5",
-        effects: { coragem: 1, discernimento: -1 }
+        effects: { coragem: 1, discernimento: -1 },
+        consequence: "Argumentar com a multidão enfurecida é gastar energia com quem não quer ouvir. Mateus 7:6: 'Não deis aos cães as coisas santas.' Às vezes, o silêncio é mais eloquente."
       }
     ]
   },
@@ -1662,12 +1722,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Ouvir Fiel e se afastar das barracas",
         nextChapterId: "fase4-cena4",
-        effects: { coragem: 1, fe: 1 }
+        effects: { coragem: 1, fe: 1 },
+        consequence: "A voz do companheiro é âncora. Fiel lembra do homem na gaiola — alguém que 'apenas olhou' e acabou preso. Provérbios 4:25: 'Os teus olhos olhem para a frente.'"
       },
       {
         text: "Ficar mais um pouco — apenas olhando",
         nextChapterId: "fase4-cena5",
-        effects: { fe: -1, discernimento: -1 }
+        effects: { fe: -1, discernimento: -1 },
+        consequence: "O 'só olhando' é a estratégia mais antiga da tentação. Eva 'viu que a árvore era boa para se comer' (Gênesis 3:6) antes de tocar. A sedução começa nos olhos."
       }
     ]
   },
@@ -1691,6 +1753,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Defender Fiel publicamente, arriscando sua própria vida",
         nextChapterId: "fase4-cena6",
         effects: { coragem: 2, fe: 1 },
+        consequence: "Marcos 8:38: 'Qualquer que se envergonhar de mim e das minhas palavras, o Filho do homem também se envergonhará dele.' Defender Fiel é defender a verdade diante do tribunal do mundo.",
         flag: "permaneceu_diferente",
         item: "pedra_memorial",
         conditionalEffects: [
@@ -1700,7 +1763,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Permanecer em silêncio para não chamar atenção",
         nextChapterId: "fase4-cena5",
-        effects: { coragem: -1, fe: -1 }
+        effects: { coragem: -1, fe: -1 },
+        consequence: "Pedro negou Cristo três vezes por medo da multidão (Lucas 22:61). O silêncio diante da injustiça é cumplicidade. Mas Pedro se arrependeu — e você também pode."
       }
     ]
   },
@@ -1723,12 +1787,14 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Encontrar a coragem e falar em defesa da verdade",
         nextChapterId: "fase4-cena6",
         effects: { coragem: 2, fe: 1 },
+        consequence: "A coragem tardia ainda é coragem. Pedro, que negou, depois pregou com ousadia (Atos 2:14). O importante não é ter medo — é agir apesar dele.",
         flag: "permaneceu_diferente"
       },
       {
         text: "Tentar se misturar com a multidão",
         nextChapterId: "fase4-cena7",
-        effects: { fe: -2, discernimento: -1 }
+        effects: { fe: -2, discernimento: -1 },
+        consequence: "Misturar-se com a multidão é negar o pergaminho no bolso. Apocalipse 3:16: 'Porque és morno, e não és frio nem quente, vomitar-te-ei da minha boca.' A neutralidade é impossível."
       }
     ]
   },
@@ -1751,12 +1817,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Continuar a jornada em honra de Fiel",
         nextChapterId: "fase4-cena8",
-        effects: { fe: 2, perseveranca: 1 }
+        effects: { fe: 2, perseveranca: 1 },
+        consequence: "O martírio de Fiel é semente: Apocalipse 12:11: 'Eles venceram pelo sangue do Cordeiro e pela palavra do seu testemunho; e não amaram a sua vida até à morte.'"
       },
       {
         text: "Questionar se a jornada vale tanto sofrimento",
         nextChapterId: "fase4-cena7",
-        effects: { fe: -1, coragem: -1 }
+        effects: { fe: -1, coragem: -1 },
+        consequence: "A dúvida após a perda é humana. Mas Fiel não morreu em vão — Esperança nasceu do seu sacrifício. 2 Coríntios 4:17: 'A nossa leve e momentânea tribulação produz para nós um peso eterno de glória.'"
       }
     ]
   },
@@ -1779,12 +1847,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Recusar tudo e sair da feira",
         nextChapterId: "fase4-cena8",
-        effects: { fe: 1, coragem: 1 }
+        effects: { fe: 1, coragem: 1 },
+        consequence: "Sair da feira é o ato mais difícil — deixar para trás o conforto falso por uma estrada dura mas verdadeira. Lucas 9:62: 'Ninguém que põe a mão no arado e olha para trás é apto para o Reino.'"
       },
       {
         text: "Ficar mais um dia — só para descansar",
         nextChapterId: "fase4-cena9",
-        effects: { fe: -2, perseveranca: -1 }
+        effects: { fe: -2, perseveranca: -1 },
+        consequence: "O 'mais um dia' da feira é a mesma mentira do prado agradável — parece inofensivo, mas cada dia rouba fé e adiciona correntes. O homem na gaiola ficou 'só mais um dia'."
       }
     ]
   },
@@ -1809,6 +1879,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Aceitar Esperança como companheiro e seguir adiante",
         nextChapterId: "fase4-cena10",
         effects: { fe: 1, perseveranca: 1 },
+        consequence: "A companhia de Esperança é provisão divina. Quando Fiel partiu, Deus enviou outro. Deuteronômio 31:6: 'O Senhor é quem vai adiante de ti; Ele será contigo.'",
         flag: "aceitou_custo_feira",
         conditionalEffects: [
           { attr: "fe", threshold: 6, bonus: { coragem: 1 }, penalty: { coragem: -1 } }
@@ -1817,7 +1888,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Preferir seguir sozinho — companheiros morrem",
         nextChapterId: "fase4-cena10",
-        effects: { coragem: -1, fe: -1 }
+        effects: { coragem: -1, fe: -1 },
+        consequence: "Rejeitar companhia por medo de perda é proteger-se do amor — e da graça. O peregrino solitário é mais vulnerável. Eclesiastes 4:10: 'Se caírem, um levanta o companheiro.'"
       }
     ]
   },
@@ -1840,12 +1912,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Abandonar a feira agora, antes que seja tarde",
         nextChapterId: "fase4-cena8",
-        effects: { discernimento: 1, fe: 1 }
+        effects: { discernimento: 1, fe: 1 },
+        consequence: "Reconhecer que está preso e decidir sair é arrependimento prático. 2 Crônicas 7:14: 'Se o meu povo se humilhar e orar, sararei a sua terra.'"
       },
       {
         text: "Mais um dia não fará diferença...",
         nextChapterId: "fase4-cena9",
-        effects: { fe: -1 }
+        effects: { fe: -1 },
+        consequence: "A procrastinação espiritual é uma corrente invisível. Hebreus 3:15: 'Hoje, se ouvirdes a sua voz, não endureçais os vossos corações.'"
       }
     ]
   },
@@ -1868,7 +1942,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Seguir para o próximo trecho da jornada",
         nextChapterId: "fase4-cena11b",
-        effects: { fe: 1, perseveranca: 1 }
+        effects: { fe: 1, perseveranca: 1 },
+        consequence: "O legado de Fiel não é tristeza — é propósito. Sua morte converteu Esperança e fortaleceu sua fé. 2 Timóteo 4:7: 'Combati o bom combate, acabei a carreira, guardei a fé.'"
       }
     ]
   },
@@ -1903,6 +1978,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Ir olhar a mina — só uma espiada",
         nextChapterId: "fase4-cena11",
         effects: { fe: -2, discernimento: -1 },
+        consequence: "A curiosidade por riqueza fácil é a armadilha de Demas. Muitos entraram na mina e nunca saíram. O brilho da prata cega para o perigo do solo que cede.",
         flag: "cedeu_demas"
       }
     ]
@@ -1932,7 +2008,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Deixar Interesses caminhar junto — companhia é companhia",
         nextChapterId: "fase4-cena12",
-        effects: { discernimento: -1, fe: -1 }
+        effects: { discernimento: -1, fe: -1 },
+        consequence: "Companhia errada corrompe bons costumes (1 Coríntios 15:33). Interesses abandonará a jornada no primeiro sofrimento — e pode arrastar você junto."
       }
     ]
   },
@@ -1957,12 +2034,14 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Encorajar Pequena-Fé: \"O pergaminho é o que importa. Levante-se.\"",
         nextChapterId: "fase5-cena1",
         effects: { fe: 1, perseveranca: 1 },
+        consequence: "A misericórdia com os fracos é marca do peregrino maduro. Romanos 14:1: 'Acolhei o que é fraco na fé.' Pequena-Fé ainda tem o pergaminho — isso basta.",
         flag: "mostrou_misericordia"
       },
       {
         text: "Julgar Pequena-Fé: \"Deveria ter lutado mais\"",
         nextChapterId: "fase5-cena1",
-        effects: { coragem: 1, fe: -1 }
+        effects: { coragem: 1, fe: -1 },
+        consequence: "Julgar quem foi assaltado por ladrões espirituais é falta de compaixão. Gálatas 6:1: 'Se algum homem chegar a ser surpreendido nalguma ofensa, vós que sois espirituais, encaminhai o tal.' Julgar é fácil; restaurar é amor."
       }
     ]
   },
@@ -1997,12 +2076,14 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Resistir à tentação e continuar na estrada pedregosa",
         nextChapterId: "fase5-cena10",
         effects: { discernimento: 2, perseveranca: 1 },
+        consequence: "O Prado Agradável é a armadilha mais sutil da jornada — não é mal em si, apenas está fora do caminho. Provérbios 4:27: 'Não te desvies nem para a direita nem para a esquerda.'",
         flag: "resistiu_prado"
       },
       {
         text: "Pular a cerca e caminhar no prado",
         nextChapterId: "fase5-cena2",
         effects: { discernimento: -1 },
+        consequence: "O primeiro passo fora do caminho estreito parece inofensivo. Mas cada passo no prado afasta mais do caminho — até que o Castelo da Dúvida aparece no horizonte.",
         flag: "reconheceu_erro_castelo"
       }
     ]
@@ -2026,12 +2107,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Suplicar por misericórdia",
         nextChapterId: "fase5-cena4",
-        effects: { fe: 1, coragem: -1 }
+        effects: { fe: 1, coragem: -1 },
+        consequence: "O Gigante Desespero não conhece misericórdia — mas suplicar revela humildade que será útil mais tarde, quando a Chave da Promessa for lembrada."
       },
       {
         text: "Resistir em silêncio",
         nextChapterId: "fase5-cena3",
-        effects: { perseveranca: 1 }
+        effects: { perseveranca: 1 },
+        consequence: "A resistência silenciosa é força. Isaías 53:7: 'Como um cordeiro foi levado ao matadouro, e como ovelha muda perante os seus tosquiadores, assim ele não abriu a boca.'"
       }
     ]
   },
@@ -2057,12 +2140,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Encorajar Esperança: \"Já sobrevivemos coisas piores\"",
         nextChapterId: "fase5-cena4",
-        effects: { coragem: 1, fe: 1 }
+        effects: { coragem: 1, fe: 1 },
+        consequence: "Encorajar outro na masmorra é fé prática. 1 Tessalonicenses 5:11: 'Consolai-vos uns aos outros e edificai-vos uns aos outros.' A fé que encoraja é fé que sobrevive."
       },
       {
         text: "Desabar no chão em silêncio",
         nextChapterId: "fase5-cena5",
-        effects: { perseveranca: -1 }
+        effects: { perseveranca: -1 },
+        consequence: "O desabamento na masmorra é compreensível — mas perigoso. O Gigante Desespero alimenta-se da passividade. Enquanto houver resistência, a porta não se fecha completamente."
       }
     ]
   },
@@ -2086,6 +2171,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Recusar com firmeza: \"Matar-se é pecado. Não faremos isso.\"",
         nextChapterId: "fase5-cena6",
         effects: { discernimento: 1, fe: 1 },
+        consequence: "Recusar a proposta do gigante é discernimento supremo. Se a situação fosse sem saída, ele não precisaria convencer. Sua insistência revela que a saída existe — ele teme que a encontrem.",
         conditionalEffects: [
           { attr: "discernimento", threshold: 6, bonus: { fe: 1 }, penalty: {} }
         ]
@@ -2093,7 +2179,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Considerar a proposta — a dor é demais",
         nextChapterId: "fase5-cena5",
-        effects: { fe: -2 }
+        effects: { fe: -2 },
+        consequence: "A tentação de desistir na dor é humana. Mas Jeremias 29:11: 'Eu é que sei os planos que tenho para vós — planos de paz, e não de mal, para vos dar futuro e esperança.'"
       }
     ]
   },
@@ -2121,6 +2208,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Agarrar-se às palavras de Esperança e resistir",
         nextChapterId: "fase5-cena6",
         effects: { fe: 1, coragem: 1 },
+        consequence: "Esperança cumpre seu nome. Suas palavras são cordas lançadas no poço do desespero. Hebreus 6:19: 'A qual esperança temos como âncora da alma, segura e firme.'",
         conditionalEffects: [
           { attr: "fe", threshold: 5, bonus: { coragem: 1 }, penalty: { coragem: -1 } }
         ]
@@ -2128,7 +2216,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Afundar no desespero",
         nextChapterId: "fase5-cena7",
-        effects: { fe: -2 }
+        effects: { fe: -2 },
+        consequence: "Afundar é o pior desfecho da masmorra — mas não é o fim. Mesmo na profundidade, a Chave da Promessa existe. 2 Pedro 1:4: 'Pelas quais nos têm sido doadas as suas preciosas e grandíssimas promessas.'"
       }
     ]
   },
@@ -2157,6 +2246,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Usar a Chave da Promessa e fugir do castelo",
         nextChapterId: "fase5-cena8",
         effects: { fe: 2, discernimento: 2 },
+        consequence: "A Chave da Promessa é a fé que se lembra das promessas de Deus quando tudo parece impossível. 2 Pedro 1:4: 'Pelas quais nos têm sido doadas as suas preciosas e grandíssimas promessas.' Ela abre todas as portas.",
         flag: "escapou_castelo_fe",
         item: "chave_promessa",
         conditionalEffects: [
@@ -2189,12 +2279,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Usar a Chave da Promessa antes que o gigante chegue",
         nextChapterId: "fase5-cena6",
-        effects: { fe: 1 }
+        effects: { fe: 1 },
+        consequence: "A urgência salva. Cada segundo de hesitação fortalece o gigante. Hebreus 3:15: 'Hoje, se ouvirdes a sua voz, não endureçais os vossos corações.'"
       },
       {
         text: "Fechar os olhos e esperar o golpe",
         nextChapterId: "fase5-cena7",
-        effects: {}
+        effects: {},
+        consequence: "A passividade total na masmorra é rendição ao desespero. Mas mesmo aqui, a chave permanece no peito. Enquanto ela existir, a porta pode ser aberta."
       }
     ]
   },
@@ -2217,7 +2309,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Erguer um pilar de aviso para futuros peregrinos",
         nextChapterId: "fase5-cena9",
-        effects: { coragem: 1, discernimento: 1 }
+        effects: { coragem: 1, discernimento: 1 },
+        consequence: "O marco de aviso é amor ao próximo — apontar o perigo para que outros não caiam. Ezequiel 3:17: 'Eu te dei por atalaia sobre a casa de Israel.' O peregrino maduro protege os que vêm depois."
       }
     ]
   },
@@ -2240,7 +2333,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Agradecer aos pastores e seguir para o último trecho",
         nextChapterId: "fase5-cena10",
-        effects: { fe: 1, perseveranca: 1 }
+        effects: { fe: 1, perseveranca: 1 },
+        consequence: "Os pastores das Montanhas Deleitosas representam os líderes fiéis que apontam tanto a glória quanto os perigos. Jeremias 3:15: 'Dar-vos-ei pastores segundo o meu coração.' Ouça-os."
       }
     ]
   },
@@ -2264,7 +2358,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Caminhar em direção ao próximo trecho",
         nextChapterId: "fase5-cena11",
-        effects: { perseveranca: 1, fe: 1 }
+        effects: { perseveranca: 1, fe: 1 },
+        consequence: "A lição do castelo é para a vida inteira: as promessas de Deus são chaves que abrem qualquer prisão — desde que você se lembre de usá-las."
       }
     ]
   },
@@ -2293,6 +2388,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Perceber a armadilha e tentar se libertar",
         nextChapterId: "fase5-cena12",
         effects: { discernimento: 2, fe: 1 },
+        consequence: "2 Coríntios 11:14: 'O próprio Satanás se transfigura em anjo de luz.' O Lisonjeiro tinha aparência santa mas intenção destruidora. A aparência nunca é critério — só a Palavra.",
         flag: "escapou_lisonjeiro",
         conditionalEffects: [
           { attr: "discernimento", threshold: 6, bonus: { coragem: 1 }, penalty: {} }
@@ -2302,6 +2398,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Confiar no homem — ele parece sincero",
         nextChapterId: "fase5-cena12",
         effects: { discernimento: -2, fe: -1 },
+        consequence: "Seguir quem fala bonito sem verificar na Palavra é cair na rede do Adulador. Isaías 8:20: 'À lei e ao testemunho! Se eles não falarem segundo esta palavra, é porque não há luz neles.'",
         flag: "caiu_na_rede"
       }
     ]
@@ -2331,7 +2428,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Sentir a dúvida crescer — e se ele tiver razão?",
         nextChapterId: "fase5-cena13",
-        effects: { fe: -1, discernimento: -1 }
+        effects: { fe: -1, discernimento: -1 },
+        consequence: "O ateísmo de cansaço espiritual é diferente do intelectual — é desistência. Mas Gálatas 6:9: 'Não nos cansemos de fazer o bem, porque a seu tempo ceifaremos, se não houvermos desfalecido.'"
       }
     ]
   },
@@ -2356,6 +2454,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Sacudir Esperança e forçar ambos a caminhar sem parar",
         nextChapterId: "fase5-cena14",
         effects: { perseveranca: 2, coragem: 1 },
+        consequence: "Mateus 26:41: 'Vigiai e orai, para que não entreis em tentação.' Sacudir o companheiro é sacudir a si mesmo. A Terra Encantada mata sem violência — mata com conforto.",
         flag: "venceu_terra_encantada"
       },
       {
@@ -2390,6 +2489,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Descansar em Beulá e seguir renovado para o Rio",
         nextChapterId: "fase6-cena1",
         effects: { fe: 2, perseveranca: 1, coragem: 1 },
+        consequence: "Beulá é o descanso antes da última prova. Isaías 62:4: 'A tua terra será chamada Beulá, porque o Senhor se deleitará em ti.' Aqui, a fé quase vira visão.",
         item: "folhas_arvore_vida"
       }
     ]
@@ -2427,18 +2527,21 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Sentar na margem e relembrar a jornada com Esperança",
         nextChapterId: "fase6-cena3",
         effects: { fe: 1 },
+        consequence: "Relembrar a jornada antes da última prova é construir coragem sobre evidências. Cada livramento do passado é uma pedra no alicerce da fé para o rio.",
         flag: "relembrou_jornada"
       },
       {
         text: "Entrar no rio com os olhos fixos na Cidade",
         nextChapterId: "fase6-cena2",
         effects: { fe: 1, coragem: 1 },
+        consequence: "Hebreus 12:2: 'Olhando para Jesus.' Entrar com os olhos na cidade é fé visual — manter o destino à frente enquanto os pés enfrentam a água escura.",
         flag: "avancou_confiante_rio"
       },
       {
         text: "Hesitar na margem, paralisado pelo medo",
         nextChapterId: "fase6-cena4",
-        effects: { coragem: -1 }
+        effects: { coragem: -1 },
+        consequence: "A hesitação diante do rio é a última tentação: parar quando está tão perto. Mas Hebreus 10:39: 'Não somos daqueles que se retiram para a perdição, mas daqueles que creem para a conservação da alma.'"
       }
     ]
   },
@@ -2467,6 +2570,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Confiar até o fim — mesmo sem sentir o fundo",
         nextChapterId: "fase6-cena5",
         effects: { fe: 2, coragem: 1 },
+        consequence: "Salmo 23:4: 'Ainda que eu ande pelo vale da sombra da morte, não temeria mal algum.' A travessia do rio é a última prova de fé — confiar sem sentir o fundo, sem ver o outro lado.",
         flag: "confiou_rio",
         item: "selo_peregrino",
         conditionalEffects: [
@@ -2476,7 +2580,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "O pânico domina — a água é demais",
         nextChapterId: "fase6-cena4",
-        effects: { fe: -2 }
+        effects: { fe: -2 },
+        consequence: "O pânico no rio é o retorno de todos os medos acumulados. Bunyan mostra que a profundidade varia conforme a fé — quanto mais fé, menos funda a água. O pânico aprofunda o rio."
       }
     ]
   },
@@ -2502,12 +2607,14 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Orar juntos e entrar no rio com fé",
         nextChapterId: "fase6-cena2",
         effects: { fe: 1, perseveranca: 1 },
+        consequence: "A oração antes da travessia é preparo espiritual. Filipenses 4:6: 'Não estejais inquietos por coisa alguma; antes sejam os vossos pedidos conhecidos diante de Deus pela oração.'",
         flag: "orou_antes_rio"
       },
       {
         text: "Entrar no rio sem mais delongas",
         nextChapterId: "fase6-cena2",
-        effects: { coragem: 1 }
+        effects: { coragem: 1 },
+        consequence: "A decisão rápida também é fé — a fé que não procrastina. Tiago 1:6: 'Peça com fé, em nada duvidando.'"
       }
     ]
   },
@@ -2530,12 +2637,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Agarrar-se à promessa e lutar pela superfície",
         nextChapterId: "fase6-cena5",
-        effects: { fe: 2, coragem: 1 }
+        effects: { fe: 2, coragem: 1 },
+        consequence: "Isaías 43:2: 'Quando passares pelas águas, estarei contigo.' A promessa funciona até na morte. A Chave da Promessa abre a última porta — a porta entre a morte e a vida eterna."
       },
       {
         text: "Soltar a mão de Esperança e se render às águas",
         nextChapterId: "fase6-cena6",
-        effects: { coragem: -2, fe: -2 }
+        effects: { coragem: -2, fe: -2 },
+        consequence: "Soltar a mão de Esperança é soltar a última corda. Mas mesmo neste ponto, Bunyan mostra que a história não acabou — a próxima jornada pode mudar o desfecho."
       }
     ]
   },
@@ -2607,7 +2716,8 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Entrar na Cidade Celestial",
         nextChapterId: "fase6-cena8",
-        effects: {}
+        effects: {},
+        consequence: "Apocalipse 21:4: 'Deus limpará de seus olhos toda a lágrima; e não haverá mais morte, nem pranto, nem clamor.' A jornada do Peregrino termina onde toda dor se transforma em adoração eterna."
       }
     ]
   },
