@@ -587,7 +587,7 @@ const PresentialMultiplayer = () => {
 
   const handleDiceRoll = useCallback((value?: number) => {
     const player = players[currentTurn];
-    if (!player || player.finished || isTokenMoving || !!tileMessage || !!miniGame || !!rpgEvent || showRiverOfDeath || showPhaseTransition !== null) return;
+    if (!player || player.finished || isTokenMoving || !!tileMessage || !!miniGame || !!rpgEvent || !!resultFeedback || showRiverOfDeath || showPhaseTransition !== null) return;
 
     if (player.isStunned) {
       setPlayers(prev => prev.map((p, i) => i === currentTurn ? {
