@@ -2545,9 +2545,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Cidade Celestial",
     characters: ["cristao"],
     narrative: [
-      "A subida até os portões é a parte mais bela de toda a jornada. O caminho é pavimentado de ouro. Anjos os acompanham. O ar cheira a flores que não existem na terra.",
-      "Nos portões, gravada em letras de fogo, a inscrição: \"Bem-aventurados os que entram pelos portões da Cidade.\"",
-      "Você apresenta o pergaminho — o selo que recebeu na cruz. Os portões se abrem. De dentro, uma multidão incontável canta em boas-vindas."
+      "{{divine}}A subida até os portões é a parte mais bela de toda a jornada.{{/divine}} O caminho é pavimentado de ouro. Anjos os acompanham. O ar cheira a flores que não existem na terra.",
+      "Nos portões, gravada em letras de fogo, a inscrição: {{divine}}\"Bem-aventurados os que entram pelos portões da Cidade.\"{{/divine}}",
+      "{{heart}}Você apresenta o pergaminho — o selo que recebeu na cruz.{{/heart}} {{divine}}Os portões se abrem. De dentro, uma multidão incontável canta em boas-vindas.{{/divine}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "As portas se abrem como se te esperassem. Cada decisão de fé ao longo da jornada construiu o caminho até este exato momento.", lowThreshold: 4, lowText: "Você quase não acredita que está aqui. Depois de tudo, depois de tantos quase-desistimentos — os portões se abrem." }
