@@ -366,12 +366,6 @@ const PhaseSection = memo(function PhaseSection({
                 />
               </div>
 
-              {/* Boss indicator */}
-              {isBoss && (
-                <div className="absolute -top-2 -right-2 text-xs z-10">
-                  {tileType === 'giant' ? '💀' : '⚔️'}
-                </div>
-              )}
 
               {/* Type label */}
               {isSpecial && (
