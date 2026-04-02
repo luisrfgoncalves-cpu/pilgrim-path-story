@@ -48,9 +48,11 @@ interface RPGEventPopupProps {
   }) => void;
   onDismiss: () => void;
   rotationState: React.MutableRefObject<RotationState>;
+  chainState?: React.MutableRefObject<ChainState>;
+  currentTurn?: number;
 }
 
-type PopupPhase = 'context' | 'mode_reveal' | 'player_select' | 'challenge' | 'result';
+type PopupPhase = 'suspense_intro' | 'context' | 'mode_reveal' | 'player_select' | 'challenge' | 'result' | 'revelation';
 
 export default function RPGEventPopup({
   visible, difficulty, playerNames, currentPlayerIdx,
