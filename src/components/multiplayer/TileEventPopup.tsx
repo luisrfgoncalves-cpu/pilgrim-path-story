@@ -84,41 +84,6 @@ function playSoundForTile(tileType: TileType) {
   }
 }
 
-// Singleton AudioContext — prevents memory leak from creating new contexts every popup
-let _sharedAudioCtx: AudioContext | null = null;
-function getSharedAudioCtx(): AudioContext | null {
-  const AudioCtx = typeof window !== 'undefined' ? (window.AudioContext || (window as any).webkitAudioContext) : null;
-  if (!AudioCtx) return null;
-  if (!_sharedAudioCtx || _sharedAudioCtx.state === 'closed') {
-    _sharedAudioCtx = new AudioCtx();
-  }
-  // Resume if suspended (browser autoplay policy)
-  if (_sharedAudioCtx.state === 'suspended') {
-    _sharedAudioCtx.resume().catch(() => {});
-  }
-  return _sharedAudioCtx;
-}
-
-// Suspense sound — building tension (uses singleton AudioContext)
-function playSuspenseSound() {
-  const ctx = getSharedAudioCtx();
-  if (!ctx) return;
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(180, ctx.currentTime);
-  osc.frequency.linearRampToValueAtTime(350, ctx.currentTime + 1.2);
-  gain.gain.setValueAtTime(0.04, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 1.0);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.3);
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start(ctx.currentTime);
-  osc.stop(ctx.currentTime + 1.3);
-  // Clean up nodes after playback (prevent node accumulation)
-  osc.onended = () => { osc.disconnect(); gain.disconnect(); };
-}
-
 interface TileEventPopupProps {
   visible: boolean;
   tileType: TileType;
