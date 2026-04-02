@@ -754,7 +754,7 @@ export default function RPGEventPopup({
           {/* CHALLENGE PHASE — Question */}
           {phase === 'challenge' && !showResult && question && (
             <div className="space-y-4">
-              <p className="text-sm font-display font-bold text-foreground">{question.question}</p>
+              <p className="text-lg font-display font-bold text-foreground leading-relaxed">{question.question}</p>
               <div className="grid gap-2">
                 {question.options.map((opt, i) => (
                   <button
