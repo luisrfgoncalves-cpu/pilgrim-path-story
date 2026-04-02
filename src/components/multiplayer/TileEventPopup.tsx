@@ -214,14 +214,8 @@ export default function TileEventPopup({ visible, tileType, message, emoji, play
             </div>
           )}
 
-          {/* Content — generous padding and large fonts */}
+          {/* Content — generous padding and text-first layout */}
           <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 text-center space-y-5">
-            <div className="text-6xl" style={{
-              filter: `drop-shadow(0 0 12px ${glowColor})`,
-            }}>
-              {emoji}
-            </div>
-
             <div
               className="inline-block px-5 py-2 rounded-full text-sm font-display uppercase tracking-widest"
               style={{ background: `${borderColor}20`, border: `1px solid ${borderColor}60`, color: borderColor }}

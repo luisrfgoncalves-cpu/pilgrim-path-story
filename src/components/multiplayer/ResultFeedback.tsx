@@ -53,12 +53,25 @@ export default function ResultFeedback({ visible, success, message, emoji, posAd
       <div className={`relative flex flex-col items-center gap-5 transition-all duration-500 ${
         phase === 'fade' ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
       }`}>
-        {/* Big emoji */}
-        <div className="text-8xl" style={{
-          animation: phase === 'impact' ? 'resultBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)' : undefined,
-          filter: `drop-shadow(0 0 30px ${success ? 'hsl(45 80% 50% / 0.6)' : 'hsl(0 70% 40% / 0.6)'})`,
-        }}>
-          {emoji}
+        <div className="px-6 py-3 rounded-full font-display font-bold text-lg"
+          style={{
+            background: success ? 'hsl(45 40% 15% / 0.9)' : 'hsl(0 30% 15% / 0.9)',
+            border: `2px solid ${success ? 'hsl(45 50% 40%)' : 'hsl(0 40% 35%)'}`,
+            color: success ? 'hsl(45 60% 70%)' : 'hsl(0 50% 65%)',
+            backdropFilter: 'blur(8px)',
+          }}
+        >
+          {success ? 'Resultado' : 'Consequência'}
+        </div>
+
+        <div className="max-w-md rounded-2xl px-6 py-5 text-center"
+          style={{
+            background: 'hsl(0 0% 7% / 0.9)',
+            border: '1px solid hsl(0 0% 100% / 0.08)',
+            backdropFilter: 'blur(8px)',
+          }}
+        >
+          <p className="text-base leading-relaxed text-white/90 whitespace-pre-line">{message}</p>
         </div>
 
         {/* Position change */}
@@ -73,7 +86,7 @@ export default function ResultFeedback({ visible, success, message, emoji, posAd
               backdropFilter: 'blur(8px)',
             }}
           >
-            {posAdjust! > 0 ? `+${posAdjust} casas ▲` : `${posAdjust} casas ▼`}
+            {posAdjust! > 0 ? `+${posAdjust} casas` : `${posAdjust} casas`}
           </div>
         )}
 

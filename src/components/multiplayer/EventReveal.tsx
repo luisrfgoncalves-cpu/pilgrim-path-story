@@ -103,27 +103,6 @@ export default function EventReveal({ event, playerName, diceValue, challengeRes
       style={{ backdropFilter: 'blur(12px)', background: 'rgba(0,0,0,0.8)' }}
       onClick={() => { setPhase('exit'); setTimeout(onClose, 500); }}
     >
-      {/* Ambient particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(15)].map((_, i) => (
-          <span
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              width: `${1.5 + Math.random() * 2.5}px`,
-              height: `${1.5 + Math.random() * 2.5}px`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              background: isNegative
-                ? `hsl(0 60% 60% / ${0.3 + Math.random() * 0.3})`
-                : `hsl(40 70% 60% / ${0.3 + Math.random() * 0.3})`,
-              animation: `pilgrimDust ${2.5 + i * 0.4}s ease-in-out infinite`,
-              animationDelay: `${i * 0.15}s`,
-            }}
-          />
-        ))}
-      </div>
-
       <div
         className={`relative w-full h-full max-h-[100dvh] flex flex-col overflow-y-auto transition-all duration-600
           ${phase === 'show' ? 'scale-100 translate-y-0' : 'scale-95 translate-y-12'}
@@ -154,18 +133,8 @@ export default function EventReveal({ event, playerName, diceValue, challengeRes
           </div>
         )}
 
-        {/* Event emoji — if no character */}
-        {!charImg && (
-          <div className="text-center pt-12 pb-4 flex-shrink-0">
-            <span className="text-8xl block drop-shadow-lg">
-              {event.emoji}
-            </span>
-          </div>
-        )}
-
         {/* Card content — fullscreen with large fonts */}
         <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 space-y-5 text-center">
-          {/* Title */}
           <h3 className="font-display text-2xl leading-tight" style={{
             color: accentColor,
             textShadow: `0 2px 12px ${accentColor}40`,
@@ -173,7 +142,6 @@ export default function EventReveal({ event, playerName, diceValue, challengeRes
             {event.title}
           </h3>
 
-          {/* Description */}
           <p className="text-xl leading-relaxed max-w-md" style={{ 
             color: 'hsl(38 30% 85%)',
             lineHeight: '1.7',
@@ -182,10 +150,9 @@ export default function EventReveal({ event, playerName, diceValue, challengeRes
             {event.description}
           </p>
 
-          {/* Dice value */}
           <div className="flex items-center justify-center gap-3">
-            <span className="text-sm" style={{ color: 'hsl(30 15% 55%)' }}>🎲 {playerName} tirou</span>
-            <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl font-bold text-xl" style={{
+            <span className="text-sm" style={{ color: 'hsl(30 15% 55%)' }}>{playerName} tirou</span>
+            <span className="inline-flex items-center justify-center min-w-16 h-11 rounded-xl px-4 font-bold text-xl" style={{
               background: `${accentColor}20`,
               color: accentColor,
               border: `2px solid ${accentColor}30`,
@@ -194,7 +161,6 @@ export default function EventReveal({ event, playerName, diceValue, challengeRes
             </span>
           </div>
 
-          {/* Challenge result */}
           {isChallenge && challengeResult && (
             <div className="text-center py-3 px-6 rounded-xl" style={{
               background: challengeResult === 'win' ? 'hsl(140 50% 20% / 0.3)' : 'hsl(0 50% 20% / 0.3)',
@@ -203,12 +169,11 @@ export default function EventReveal({ event, playerName, diceValue, challengeRes
               <p className="text-lg font-display font-bold" style={{
                 color: challengeResult === 'win' ? 'hsl(140 60% 65%)' : 'hsl(0 60% 65%)',
               }}>
-                {challengeResult === 'win' ? '✨ Desafio Superado!' : '💔 Falhou no Desafio'}
+                {challengeResult === 'win' ? 'Desafio superado' : 'Desafio não concluído'}
               </p>
             </div>
           )}
 
-          {/* Effect summary */}
           <div className="flex items-center justify-center gap-3 flex-wrap text-sm">
             {event.effect.positions && event.effect.positions > 0 && (
               <span className="px-4 py-2 rounded-full font-display font-bold" style={{ background: 'hsl(140 50% 20% / 0.3)', color: 'hsl(140 60% 65%)' }}>
@@ -222,7 +187,7 @@ export default function EventReveal({ event, playerName, diceValue, challengeRes
             )}
             {event.effect.stunTurns && (
               <span className="px-4 py-2 rounded-full font-display font-bold" style={{ background: 'hsl(280 40% 20% / 0.3)', color: 'hsl(280 50% 70%)' }}>
-                😵 Perde {event.effect.stunTurns} rodada(s)
+                Perde {event.effect.stunTurns} rodada(s)
               </span>
             )}
           </div>
