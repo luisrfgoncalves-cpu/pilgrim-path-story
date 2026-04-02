@@ -9,6 +9,10 @@ import EpicVictoryScreen from '@/components/multiplayer/EpicVictoryScreen';
 import PhaseTransition from '@/components/multiplayer/PhaseTransition';
 import RiverOfDeath from '@/components/multiplayer/RiverOfDeath';
 import GameNotification from '@/components/GameNotification';
+import RPGBriefing, { GameMode } from '@/components/multiplayer/RPGBriefing';
+import RPGEventPopup from '@/components/multiplayer/RPGEventPopup';
+import { Difficulty, TileEventType as RPGTileEventType } from '@/data/rpg/types';
+import { createRotationState, RotationState } from '@/data/rpg/rotationEngine';
 import { boardEvents, BoardEvent } from '@/lib/multiplayerTypes';
 import {
   IMMERSIVE_BOARD_SIZE, TILES_PER_PHASE, TileType, TILE_TYPES,
