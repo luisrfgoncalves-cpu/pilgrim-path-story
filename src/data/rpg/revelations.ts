@@ -531,6 +531,12 @@ const baseRevelationMap: Record<string, HiddenRevelation> = {
   },
 };
 
+// Merge base + expansion for full coverage
+export const revelationMap: Record<string, HiddenRevelation> = {
+  ...baseRevelationMap,
+  ...revelationMapExpansion,
+};
+
 /** Get revelation for a content ID, if exists */
 export function getRevelation(contentId: string): HiddenRevelation | null {
   return revelationMap[contentId] || null;
