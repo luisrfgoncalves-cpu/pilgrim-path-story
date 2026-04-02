@@ -1710,9 +1710,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Preço do Silêncio",
     location: "Feira da Vaidade",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 2500, message: 'A pressão aumenta...' },
     narrative: [
-      "Seu silêncio não te protege. A multidão te identifica como companheiro de Fiel. A pressão aumenta. Olhares hostis de todos os lados.",
-      "Fiel olha para você. Seus olhos não acusam — mas perguntam: \"Onde está sua coragem?\""
+      "{{fade}}Seu silêncio não te protege. A multidão te identifica como companheiro de Fiel.{{/fade}} {{tremor}}A pressão aumenta. Olhares hostis de todos os lados.{{/tremor}}",
+      "{{heart}}Fiel olha para você. Seus olhos não acusam — mas perguntam: \"Onde está sua coragem?\"{{/heart}}"
     ],
     toneNarrative: [
       { attr: "coragem", highThreshold: 7, highText: "A vergonha te atinge como um golpe. Você enfrentou Apolião e agora se esconde de comerciantes?", lowThreshold: 3, lowText: "O medo te congela. São tantos contra vocês dois. O que um pode fazer?" }
