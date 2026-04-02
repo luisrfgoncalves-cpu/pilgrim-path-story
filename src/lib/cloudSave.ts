@@ -28,7 +28,7 @@ export async function saveProgressToCloud(
   progress: StoryProgress,
   emotionalState?: string,
 ): Promise<{ error: Error | null }> {
-  const payload = {
+  const payload: Record<string, any> = {
     user_id: userId,
     current_chapter_id: progress.currentChapterId,
     visited_chapters: progress.visitedChapters,
@@ -40,9 +40,15 @@ export async function saveProgressToCloud(
     emotional_state: emotionalState || 'neutro',
     playthrough: progress.playthrough,
     started: progress.started,
-    campaign: progress.campaign,
     updated_at: new Date().toISOString(),
   };
+
+  // Only include campaign if column exists (graceful fallback)
+  // The column may not exist in older Supabase schemas
+  if (progress.campaign && progress.campaign !== 'part1') {
+    // Store campaign info in flags instead to avoid schema errors
+    payload.flags = { ...progress.flags, __campaign: progress.campaign };
+  }
 
   const { error } = await supabase
     .from('pilgrim_progress')
