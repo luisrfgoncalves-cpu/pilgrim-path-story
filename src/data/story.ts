@@ -354,6 +354,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "cena6",
     title: "Sozinho com o Fardo",
     location: "Arredores da Cidade",
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'A solidão pesa...' },
     characters: ["cristao"],
     narrative: [
       "Sem direção, você vagueia pelos campos.",
