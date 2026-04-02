@@ -977,3 +977,27 @@ html, body, #root {
 .cta-neon-pulse {
   animation: ctaNeonPulse 2s ease-in-out infinite;
 }
+
+/* ── Narrative Typography Animations ── */
+@keyframes tremor {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px) rotate(-0.5deg); }
+  75% { transform: translateX(2px) rotate(0.5deg); }
+}
+
+@keyframes fade-mystery {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes divine-glow {
+  0%, 100% { text-shadow: 0 0 12px hsl(43 80% 50% / 0.4), 0 0 4px hsl(43 60% 40% / 0.3); }
+  50% { text-shadow: 0 0 24px hsl(43 80% 55% / 0.7), 0 0 8px hsl(43 60% 45% / 0.5); }
+}
+
+.narrative-divine { animation: divine-glow 3s ease-in-out infinite; }
+.narrative-tremor { animation: tremor 0.15s ease-in-out infinite; }
+.narrative-fade { animation: fade-mystery 3s ease-in-out infinite; }
+.narrative-heart { animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+.narrative-shout { letter-spacing: 0.08em; }
+.narrative-whisper { letter-spacing: 0.04em; }
