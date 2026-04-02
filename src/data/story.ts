@@ -723,8 +723,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Insistir e tentar acordar os três à força",
         nextChapterId: "cena7",
         effects: { coragem: 1, fe: 1 },
-        consequence: "Há limites para o que podemos fazer pelos outros. Jesus chorou sobre Jerusalém (Lucas 19:41), mas não forçou ninguém a segui-lo. O amor alerta, mas não obriga.",
-        consequence: "Você os sacode, mas eles resmungam e voltam a dormir. Alguns caminhos só podem ser escolhidos por quem os percorre."
+        consequence: "Há limites para o que podemos fazer pelos outros. Jesus chorou sobre Jerusalém (Lucas 19:41), mas não forçou ninguém a segui-lo. O amor alerta, mas não obriga."
       }
     ]
   },
