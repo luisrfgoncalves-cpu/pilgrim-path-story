@@ -746,7 +746,7 @@ const ScenePage = () => {
               const pType = getParticleTypeForScene(chapter.id, legacyTone);
               return pType ? <ParticleEffects type={pType} intensity={0.6} /> : null;
             })()}
-            <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+            <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background/60 via-transparent to-transparent" />
             {/* Scene atmosphere overlay */}
             {(() => {
               const atmo = getSceneAtmosphere(chapter.id);
