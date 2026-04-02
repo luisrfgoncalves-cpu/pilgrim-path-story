@@ -211,7 +211,7 @@ export const storyChapters: Record<string, StoryChapter> = {
       },
       {
         text: "Sair de casa clamando: \"O que devo fazer para ser salvo?\"",
-        nextChapterId: "cena3",
+        nextChapterId: "cena1b",
         effects: { discernimento: 1, fe: 1 }
       }
     ]
