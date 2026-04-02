@@ -463,12 +463,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Seguir o caminho que se abre além da porta",
         nextChapterId: "cena9b",
-        effects: { perseveranca: 1, fe: 1 }
+        effects: { perseveranca: 1, fe: 1 },
+        consequence: "A Porta Estreita é Cristo — 'Eu sou a porta; se alguém entrar por mim, salvar-se-á' (João 10:9). Cristão entrou com humildade, confessando ser pecador. Essa é a única credencial aceita: não méritos, mas honestidade diante de Deus."
       },
       {
         text: "Olhar para trás, com saudade do que ficou",
         nextChapterId: "cena8",
-        effects: { coragem: -1 }
+        effects: { coragem: -1 },
+        consequence: "Jesus advertiu em Lucas 9:62: 'Ninguém que, tendo posto a mão no arado, olha para trás, é apto para o Reino de Deus.' A saudade do passado é natural, mas pode se tornar uma corrente que prende o peregrino."
       }
     ]
   },
