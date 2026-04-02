@@ -249,13 +249,20 @@ export default function RPGEventPopup({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, phase, bossPhaseIdx, showResult]);
 
-  // Narrate result when shown
+  // Narrate result when shown + SFX
   useEffect(() => {
     if (!visible || !showResult || !resultData?.message) return;
 
     const key = `result:${resultData.message.slice(0, 50)}`;
     if (narratedKeyRef.current === key) return;
     narratedKeyRef.current = key;
+
+    // Play result SFX
+    if (resultData.success) {
+      playCrowdCheer();
+    } else if (boss) {
+      playEvilLaugh();
+    }
 
     const timer = window.setTimeout(() => {
       narrate(resultData.message, {
