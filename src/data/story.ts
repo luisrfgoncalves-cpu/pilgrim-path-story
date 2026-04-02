@@ -2617,10 +2617,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Fim da Peregrinação",
     location: "Cidade Celestial",
     characters: ["cristao"],
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 5000, message: 'Sinos soam... vozes cantam...' },
     narrative: [
-      "Bunyan encerra assim a jornada de Cristão: ele entrou pela porta, e foi transfigurado. Vestes de glória lhe foram dadas. Sinos soaram. Vozes cantaram: \"Bendito o que vem em nome do Senhor.\"",
-      "Suas decisões te trouxeram aqui. Cada prova — o fardo, o pântano, a encruzilhada, Apolião, a feira, o castelo, o rio — foi um degrau. Nenhum foi desperdiçado.",
-      "A peregrinação terminou. Mas a história continua — porque há sempre mais peregrinos na estrada, e a Cidade da Destruição ainda está de pé."
+      "{{divine}}Bunyan encerra assim a jornada de Cristão: ele entrou pela porta, e foi transfigurado. Vestes de glória lhe foram dadas. Sinos soaram. Vozes cantaram: \"Bendito o que vem em nome do Senhor.\"{{/divine}}",
+      "{{emphasis}}Suas decisões te trouxeram aqui. Cada prova — o fardo, o pântano, a encruzilhada, Apolião, a feira, o castelo, o rio — foi um degrau. Nenhum foi desperdiçado.{{/emphasis}}",
+      "{{heart}}A peregrinação terminou. Mas a história continua — porque há sempre mais peregrinos na estrada, e a Cidade da Destruição ainda está de pé.{{/heart}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "A certeza que começou como uma inquietação na Cidade da Destruição agora é visão. Você vê o que antes apenas cria. A fé se transformou em vista.", lowThreshold: 4, lowText: "O caminho foi tortuoso, cheio de dúvidas e desvios. Mas você chegou. E no final, é isso que importa." }
