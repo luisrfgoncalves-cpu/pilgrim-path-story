@@ -848,23 +848,25 @@ export const part2Chapters: Record<string, StoryChapter> = {
     reflection: "p2r5",
     sceneEvent: { type: 'suspense', delay: 2000, duration: 5000, message: 'O ar da Terra Encantada é pesado...' },
     narrative: [
-      "Na Terra Encantada — onde o ar faz os viajantes dormirem — o grupo encontra um homem ajoelhado em oração, tremendo.",
-      "É Firme. Ao lado dele, uma mulher alta e elegante tenta seduzi-lo: Madame Bolha. Ela oferece sua bolsa de ouro, seu corpo e sua cama.",
-      "\"Vem comigo\", sussurra ela. \"Tudo que queres, eu te dou. O caminho é longo demais. Por que sofrer?\"",
-      "Firme ora com mais força. Grande-Coração avança e Madame Bolha desaparece como fumaça."
+      "Na Terra Encantada — onde o ar faz os viajantes dormirem — o grupo encontra um homem ajoelhado em oração, {{tremor}}tremendo{{/tremor}}.",
+      "É Firme. Ao lado dele, uma mulher alta e elegante tenta seduzi-lo: {{villain}}Madame Bolha{{/villain}}. Ela oferece sua bolsa de ouro, seu corpo e sua cama.",
+      "{{villain}}\"Vem comigo\"{{/villain}}, sussurra ela. {{villain}}\"Tudo que queres, eu te dou. O caminho é longo demais. Por que sofrer?\"{{/villain}}",
+      "{{divine}}Firme ora com mais força.{{/divine}} Grande-Coração avança e Madame Bolha desaparece como fumaça."
     ],
     choices: [
       {
         text: "Admirar a resistência de Firme e convidá-lo ao grupo",
         nextChapterId: "p2-fase6-cena2",
         effects: { fe: 2, coragem: 1 },
-        flag: "admirou_firme"
+        flag: "admirou_firme",
+        consequence: "Firme resistiu não com espada, mas de joelhos. A oração é a arma mais poderosa contra a tentação — silenciosa, invisível, invencível. — Tiago 4:7: \"Resisti ao diabo, e ele fugirá de vós.\""
       },
       {
         text: "Perguntar a Firme como resistiu à tentação",
         nextChapterId: "p2-fase6-cena2",
         effects: { discernimento: 2, fe: 1 },
-        flag: "perguntou_firme"
+        flag: "perguntou_firme",
+        consequence: "Firme responde: 'Não olhei para ela. Olhei para Ele.' A resistência à tentação não vem da força de vontade, mas da fixação dos olhos em Cristo. — Hebreus 12:2: \"Olhando para Jesus, autor e consumador da fé.\""
       }
     ]
   },
@@ -874,23 +876,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O País de Beulá",
     location: "País de Beulá",
     characters: ["crista", "misericordia", "grande_coracao"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 4000, message: 'O ar muda... paz...' },
     narrative: [
-      "O ar muda. O sono da Terra Encantada fica para trás. O País de Beulá se abre diante do grupo — flores, pássaros cantando, sol perpétuo.",
-      "Aqui, anjos caminham entre os peregrinos. As crianças brincam sem medo pela primeira vez na jornada inteira.",
-      "Cristã respira fundo: \"É assim que cheira a paz.\"",
-      "Misericórdia sorri: \"Valeu cada pântano, cada gigante, cada lágrima.\""
+      "O ar muda. O sono da Terra Encantada fica para trás. {{divine}}O País de Beulá se abre diante do grupo — flores, pássaros cantando, sol perpétuo.{{/divine}}",
+      "Aqui, {{divine}}anjos caminham entre os peregrinos{{/divine}}. As crianças brincam sem medo pela primeira vez na jornada inteira.",
+      "Cristã respira fundo: {{divine}}\"É assim que cheira a paz.\"{{/divine}}",
+      "Misericórdia sorri: {{whisper}}\"Valeu cada pântano, cada gigante, cada lágrima.\"{{/whisper}}"
     ],
     choices: [
       {
         text: "Caminhar até o rio em paz, cantando com o grupo",
         nextChapterId: "p2-fase6-cena3",
-        effects: { fe: 1, perseveranca: 1 }
+        effects: { fe: 1, perseveranca: 1 },
+        consequence: "O cântico no País de Beulá é o prelúdio da adoração eterna. Todo sofrimento da jornada culmina neste momento de paz antecipada. — Isaías 62:4: \"Nunca mais te chamarão Desamparada... mas chamar-te-ão Beulá; porque o Senhor se agrada de ti.\""
       },
       {
         text: "Parar para orar e agradecer por toda a jornada",
         nextChapterId: "p2-fase6-cena3",
         effects: { fe: 2 },
-        flag: "orou_beula_p2"
+        flag: "orou_beula_p2",
+        consequence: "A gratidão é o selo da peregrinação completa. Cristã olha para trás e vê cada vale, cada gigante, cada pântano transformado em testemunho de fidelidade. — 1 Tessalonicenses 5:18: \"Em tudo dai graças, porque esta é a vontade de Deus em Cristo Jesus para convosco.\""
       }
     ]
   },
@@ -902,22 +907,24 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "misericordia", "grande_coracao", "valente_pela_verdade"],
     sceneEvent: { type: 'suspense', delay: 2000, duration: 4000, message: 'Um mensageiro do Rei...' },
     narrative: [
-      "O rio aparece. Mas na Parte II, Bunyan faz algo diferente: cada peregrino recebe um chamado individual do Rei.",
-      "Um mensageiro chega a Cristã com uma carta: \"O Mestre te convida a estar em Sua presença dentro de dez dias.\"",
-      "Cristã lê a carta e sorri. Não há medo. Não há pânico. Apenas uma paz profunda e uma saudade de quem já espera do outro lado — seu marido."
+      "O rio aparece. Mas na Parte II, Bunyan faz algo diferente: {{divine}}cada peregrino recebe um chamado individual do Rei.{{/divine}}",
+      "Um mensageiro chega a Cristã com uma carta: {{divine}}\"O Mestre te convida a estar em Sua presença dentro de dez dias.\"{{/divine}}",
+      "Cristã lê a carta e sorri. Não há medo. Não há pânico. Apenas {{divine}}uma paz profunda{{/divine}} e uma saudade de quem já espera do outro lado — seu marido."
     ],
     choices: [
       {
         text: "Preparar-se em paz — despedir-se de cada companheiro",
         nextChapterId: "p2-fase6-cena4",
         effects: { fe: 2, discernimento: 1 },
-        flag: "despediu_com_paz"
+        flag: "despediu_com_paz",
+        consequence: "Cristã se despede sem pressa. Cada abraço, cada palavra é um legado. A morte do justo não é tragédia — é transição. — Filipenses 1:21: \"Para mim o viver é Cristo, e o morrer é ganho.\""
       },
       {
         text: "Encorajar os outros a não temer quando receberem seus chamados",
         nextChapterId: "p2-fase6-cena4",
         effects: { fe: 1, coragem: 1, perseveranca: 1 },
-        flag: "encorajou_outros_rio"
+        flag: "encorajou_outros_rio",
+        consequence: "Cristã pastoreia até o fim. Seu encorajamento prepara cada companheiro para sua própria travessia. — 1 Tessalonicenses 4:18: \"Consolai-vos uns aos outros com estas palavras.\""
       }
     ]
   },
@@ -927,24 +934,27 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "As Despedidas",
     location: "Margem do Rio",
     characters: ["crista", "misericordia", "grande_coracao", "valente_pela_verdade", "sr_desanimo"],
+    sceneEvent: { type: 'suspense', delay: 2000, duration: 5000, message: 'As últimas palavras...' },
     narrative: [
       "Cada peregrino se despede à sua maneira. Valente-pela-Verdade diz as palavras mais famosas da Parte II:",
-      "\"Minha espada, eu a deixo a quem me suceder na peregrinação. Minha coragem e habilidade, ao que puder obtê-las. Minhas marcas e cicatrizes, levo comigo como testemunho de que lutei Suas batalhas.\"",
-      "Sr. Desânimo, surpreendendo a todos, diz com voz firme pela primeira vez: \"Adeus, noite. Bem-vindo, dia. O desânimo não cruzará o rio comigo.\"",
-      "Muito-Medo atravessa cantando — ela que viveu em terror constante morre com uma canção nos lábios."
+      "{{shout}}\"Minha espada, eu a deixo a quem me suceder na peregrinação. Minha coragem e habilidade, ao que puder obtê-las. Minhas marcas e cicatrizes, levo comigo como testemunho de que lutei Suas batalhas.\"{{/shout}}",
+      "Sr. Desânimo, surpreendendo a todos, diz com voz firme pela primeira vez: {{divine}}\"Adeus, noite. Bem-vindo, dia. O desânimo não cruzará o rio comigo.\"{{/divine}}",
+      "{{divine}}Muito-Medo atravessa cantando{{/divine}} — ela que viveu em terror constante morre com uma canção nos lábios."
     ],
     choices: [
       {
         text: "Guardar as palavras de Valente no coração e avançar",
         nextChapterId: "p2-fase6-cena5",
         effects: { coragem: 2, fe: 1 },
-        flag: "guardou_palavras_valente"
+        flag: "guardou_palavras_valente",
+        consequence: "As palavras de Valente-pela-Verdade ecoam através dos séculos. Sua espada é a Palavra, sua herança é a coragem, suas cicatrizes são testemunho. — 2 Timóteo 4:7: \"Combati o bom combate, acabei a carreira, guardei a fé.\""
       },
       {
         text: "Abraçar Misericórdia uma última vez antes do rio",
         nextChapterId: "p2-fase6-cena5",
         effects: { fe: 2, perseveranca: 1 },
-        flag: "abraçou_misericordia"
+        flag: "abraçou_misericordia",
+        consequence: "O abraço entre Cristã e Misericórdia é o selo de uma amizade que começou na Cidade da Destruição e se completa às portas da eternidade. — Provérbios 17:17: \"Em todo o tempo ama o amigo; e para a hora da angústia nasce o irmão.\""
       }
     ]
   },
@@ -957,10 +967,10 @@ export const part2Chapters: Record<string, StoryChapter> = {
     reflection: "p2r6",
     sceneEvent: { type: 'suspense', delay: 3000, duration: 6000, message: 'As águas recebem Cristã...' },
     narrative: [
-      "Cristã entra no rio. As águas que quase afogaram Cristão são, para ela, surpreendentemente calmas.",
-      "Bunyan escreve: \"Suas últimas palavras foram: 'Venho, Senhor, para estar Contigo e Te bendizer.'\"",
-      "Do outro lado do rio, uma multidão espera. Trombetas soam. Anjos cantam. E no meio deles — Cristão, vestido de glória, estende a mão para sua esposa.",
-      "O reencontro é eterno."
+      "Cristã entra no rio. As águas que quase afogaram Cristão são, para ela, {{divine}}surpreendentemente calmas.{{/divine}}",
+      "Bunyan escreve: {{divine}}\"Suas últimas palavras foram: 'Venho, Senhor, para estar Contigo e Te bendizer.'\"{{/divine}}",
+      "Do outro lado do rio, uma multidão espera. {{divine}}Trombetas soam. Anjos cantam.{{/divine}} E no meio deles — {{divine}}Cristão, vestido de glória, estende a mão para sua esposa.{{/divine}}",
+      "{{divine}}O reencontro é eterno.{{/divine}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "O rio é raso para Cristã. Cada passo de fé ao longo de toda a jornada reduziu a profundidade da água. Ela atravessa de pé, com um sorriso, olhando para a Cidade.", lowThreshold: 4, lowText: "A água sobe, mas não há pânico. A mão de Cristão aparece do outro lado. Ela a alcança. O rio terminou." }
@@ -970,7 +980,8 @@ export const part2Chapters: Record<string, StoryChapter> = {
         text: "Entrar na Cidade Celestial ao lado de Cristão",
         nextChapterId: "p2-fase6-cena6",
         effects: { fe: 2, coragem: 1 },
-        flag: "entrou_cidade_p2"
+        flag: "entrou_cidade_p2",
+        consequence: "A travessia de Cristã é diferente da de Cristão. Onde ele afundou em medo, ela caminha em paz. A mesma graça, dois caminhos, um destino. — Apocalipse 21:4: \"E Deus limpará de seus olhos toda a lágrima; e não haverá mais morte, nem pranto, nem clamor.\""
       }
     ]
   },
@@ -980,11 +991,12 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Fim da Segunda Peregrinação",
     location: "Cidade Celestial",
     characters: ["crista", "misericordia"],
+    sceneEvent: { type: 'suspense', delay: 2000, duration: 6000, message: 'Os portões se abrem...' },
     narrative: [
-      "Os portões se abrem. Cristã e todos os seus companheiros entram na Cidade Celestial. Trombetas soam. Vozes cantam.",
-      "A peregrinação de Cristã é diferente da de Cristão: ela não caminhou sozinha. Levou filhos, amigos, fracos, feridos. Onde Cristão lutou com espada, ela lutou com compaixão.",
-      "Bunyan encerra a Parte II com estas palavras: \"Devo tomar cuidado para não revelar mais do que o sonho me mostrou, pois há no Céu coisas que nenhuma língua pode descrever.\"",
-      "A jornada terminou. Ambas as peregrinações — a do marido e a da esposa — estão completas. A Cidade da Destruição ficou para trás. A porta está aberta para quem quiser partir."
+      "{{divine}}Os portões se abrem.{{/divine}} Cristã e todos os seus companheiros entram na Cidade Celestial. {{divine}}Trombetas soam. Vozes cantam.{{/divine}}",
+      "A peregrinação de Cristã é diferente da de Cristão: ela não caminhou sozinha. Levou filhos, amigos, fracos, feridos. {{divine}}Onde Cristão lutou com espada, ela lutou com compaixão.{{/divine}}",
+      "Bunyan encerra a Parte II com estas palavras: {{whisper}}\"Devo tomar cuidado para não revelar mais do que o sonho me mostrou, pois há no Céu coisas que nenhuma língua pode descrever.\"{{/whisper}}",
+      "{{divine}}A jornada terminou. Ambas as peregrinações — a do marido e a da esposa — estão completas.{{/divine}} A Cidade da Destruição ficou para trás. A porta está aberta para quem quiser partir."
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 8, highText: "Duas jornadas. Dois caminhos. Um destino. A fé que começou como desespero em Cristão e como arrependimento em Cristã converge aqui em glória compartilhada.", lowThreshold: 4, lowText: "O caminho foi longo. Houve gigantes, vales, tentações. Mas a porta se abriu. E isso é tudo que importa." }
@@ -1003,11 +1015,12 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "A Desistência de Cristã",
     location: "Caminho Estreito",
     characters: ["crista"],
+    sceneEvent: { type: 'sinking', duration: 5000, message: 'O peso da jornada...', intensity: 0.8 },
     narrative: [
       "O peso da jornada se tornou insuportável. Os filhos choram, os companheiros vacilam, e a estrada parece não ter fim.",
-      "Cristã para. Olha para trás. A Cidade da Destruição parece tão distante quanto a Cidade Celestial. Presa no meio, ela se senta e não se levanta.",
-      "\"Cristão conseguiu\", sussurra. \"Mas Cristão era mais forte que eu. Talvez nem todos sejam feitos para esta jornada.\"",
-      "O caminho continua sem ela. Misericórdia chora. Os filhos esperam. Mas Cristã não se levanta. Não desta vez."
+      "Cristã para. Olha para trás. {{whisper}}A Cidade da Destruição parece tão distante quanto a Cidade Celestial.{{/whisper}} Presa no meio, ela se senta e não se levanta.",
+      "{{whisper}}\"Cristão conseguiu\"{{/whisper}}, sussurra. \"Mas Cristão era mais forte que eu. Talvez nem todos sejam feitos para esta jornada.\"",
+      "O caminho continua sem ela. Misericórdia chora. Os filhos esperam. {{whisper}}Mas Cristã não se levanta. Não desta vez.{{/whisper}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 5, highText: "Mesmo na desistência, algo queima dentro de Cristã. Um fio de fé que não se apaga totalmente. Talvez, num outro dia, ela se levante.", lowThreshold: 2, lowText: "A chama se apagou. O fardo que ela carregava não era como o de Cristão — era o peso de quem nunca teve certeza de que devia partir." }
@@ -1022,12 +1035,13 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Sono Eterno",
     location: "Terra Encantada",
     characters: ["crista", "misericordia"],
+    sceneEvent: { type: 'sinking', duration: 5000, message: 'Os olhos pesam...', intensity: 0.9 },
     narrative: [
-      "O ar da Terra Encantada é doce demais. Os filhos adormecem primeiro. Depois Misericórdia. Depois Cristã.",
-      "Grande-Coração tenta acordá-los, mas o sono é profundo — o sono de quem está cansado demais para continuar.",
-      "\"Acorde!\", grita ele. \"A Cidade está tão perto! Uma hora de caminhada!\"",
-      "Mas os olhos de Cristã não se abrem. A Terra Encantada cobra seu preço. Tão perto do fim, e tão distante.",
-      "Bunyan alertou: 'Há peregrinos que dormem a um passo da glória.' Este é o sono dos que quase chegaram."
+      "O ar da Terra Encantada é doce demais. Os filhos adormecem primeiro. Depois Misericórdia. {{whisper}}Depois Cristã.{{/whisper}}",
+      "Grande-Coração tenta acordá-los, mas o sono é profundo — {{whisper}}o sono de quem está cansado demais para continuar.{{/whisper}}",
+      "{{shout}}\"Acorde!\"{{/shout}}, grita ele. \"A Cidade está tão perto! Uma hora de caminhada!\"",
+      "Mas os olhos de Cristã não se abrem. {{whisper}}A Terra Encantada cobra seu preço. Tão perto do fim, e tão distante.{{/whisper}}",
+      "Bunyan alertou: {{whisper}}'Há peregrinos que dormem a um passo da glória.'{{/whisper}} Este é o sono dos que quase chegaram."
     ],
     choices: [],
     isEnding: true,
