@@ -796,23 +796,39 @@ const ScenePage = () => {
               );
             })()}
 
-            {/* Persistent NPC portraits — ALL characters in scene */}
+            {/* Persistent NPC portraits — clickable to reopen allegory card */}
             {charRevealDone && allPersistentChars.length > 0 && (
-              <div className="flex items-center gap-2 flex-shrink-0 animate-fade-in ml-auto overflow-hidden">
-                {allPersistentChars.slice(0, 3).map((npc, idx) => (
-                  <div key={idx} className="flex flex-col items-center flex-shrink-0">
-                    <img
-                      src={npc.img}
-                      alt={npc.name}
-                      className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl object-cover"
-                      style={{
-                        border: '2px solid hsl(35 40% 40%)',
-                        boxShadow: '0 4px 12px hsl(0 0% 0% / 0.4), 0 0 8px hsl(35 40% 40% / 0.2)',
+              <div className="flex items-center gap-3 flex-shrink-0 animate-fade-in ml-auto overflow-hidden">
+                {allPersistentChars.slice(0, 3).map((npc, idx) => {
+                  // Find the character ID for this NPC
+                  const allCharsLookup = [...characters, ...part2Characters];
+                  const npcChar = allCharsLookup.find(c => c.name === npc.name);
+                  const npcId = npcChar?.id;
+                  const hasAllegory = npcId && allegoryMeanings[npcId];
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        if (hasAllegory && npcId) {
+                          setAllegoryCardChar(npcId);
+                        }
                       }}
-                    />
-                    <p className="text-[8px] sm:text-[10px] font-display font-bold leading-tight mt-0.5 text-center max-w-[56px] truncate" style={{ color: 'hsl(35 50% 65%)' }}>{npc.name}</p>
-                  </div>
-                ))}
+                      className="flex flex-col items-center flex-shrink-0 active:scale-95 transition-transform"
+                    >
+                      <img
+                        src={npc.img}
+                        alt={npc.name}
+                        className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover object-top"
+                        style={{
+                          border: '2px solid hsl(35 40% 40%)',
+                          boxShadow: '0 4px 12px hsl(0 0% 0% / 0.4), 0 0 8px hsl(35 40% 40% / 0.2)',
+                        }}
+                      />
+                      <p className="text-[9px] sm:text-[11px] font-display font-bold leading-tight mt-1 text-center max-w-[64px] truncate" style={{ color: 'hsl(35 50% 65%)' }}>{npc.name}</p>
+                      {hasAllegory && <p className="text-[7px] text-primary/50 font-display uppercase tracking-wider">toque p/ ler</p>}
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
