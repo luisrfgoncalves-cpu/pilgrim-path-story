@@ -127,6 +127,52 @@ export const PHASES: PhaseConfig[] = [
 
 // ─── Generate immersive board tile types ───
 // Strategic placement across 210 tiles (35 per phase) for richer narrative pacing
+// Each phase has a CURATED pool of tiles that fit its thematic identity
+
+// Phase-specific random tile pools — each phase emphasizes different teachings
+const PHASE_TILE_POOLS: Record<number, { tiles: TileType[]; weights: number[] }> = {
+  // Phase 0 — A Partida (Cidade da Destruição): aprendizado, primeiros passos, escrituras básicas
+  0: {
+    tiles:   ['scripture', 'refuge',  'surprise', 'shield',  'normal'],
+    weights: [30,          20,        15,         10,        25],
+  },
+  // Phase 1 — O Caminho (Pântano e Provações): desafios crescentes, correntezas, armadilhas
+  1: {
+    tiles:   ['challenge', 'trap',    'scripture', 'current',  'shield',  'normal'],
+    weights: [20,          20,        15,          15,         10,        20],
+  },
+  // Phase 2 — O Vale (Sombra da Morte): gigantes, armadilhas pesadas, dilemas morais
+  2: {
+    tiles:   ['giant',  'trap',    'challenge', 'scripture', 'surprise', 'normal'],
+    weights: [15,       25,        20,          15,          5,          20],
+  },
+  // Phase 3 — A Feira (Vaidade e Provação): trocas, surpresas traiçoeiras, tentações
+  3: {
+    tiles:   ['swap',   'surprise', 'trap',    'scripture', 'challenge', 'normal'],
+    weights: [20,       20,         15,        15,          10,          20],
+  },
+  // Phase 4 — O Castelo (Dúvida e Resgate): gigantes + bosses, escrituras difíceis, escudos
+  4: {
+    tiles:   ['giant',  'challenge', 'scripture', 'shield',  'trap',    'normal'],
+    weights: [20,       20,          20,          10,        10,        20],
+  },
+  // Phase 5 — O Rio (Cidade Celestial): bênçãos, refúgios, escrituras finais, recompensas
+  5: {
+    tiles:   ['blessing', 'refuge',  'scripture', 'double_dice', 'normal'],
+    weights: [25,         20,        20,          10,            25],
+  },
+};
+
+function pickFromWeightedPool(pool: { tiles: TileType[]; weights: number[] }, rngValue: number): TileType {
+  const total = pool.weights.reduce((a, b) => a + b, 0);
+  let roll = rngValue % total;
+  for (let i = 0; i < pool.tiles.length; i++) {
+    roll -= pool.weights[i];
+    if (roll < 0) return pool.tiles[i];
+  }
+  return pool.tiles[pool.tiles.length - 1];
+}
+
 export function generateImmersiveTiles(seed: number): TileType[] {
   const rng = (s: number) => ((s * 1103515245 + 12345) & 0x7fffffff);
   let s = seed;
@@ -173,43 +219,52 @@ export function generateImmersiveTiles(seed: number): TileType[] {
     }
 
     const localIdx = i % TILES_PER_PHASE;
-    const phaseIdx = Math.floor(i / TILES_PER_PHASE);
+    const phaseIdx = Math.min(Math.floor(i / TILES_PER_PHASE), 5);
 
     // Checkpoints at phase boundaries
     if (localIdx === 0) { tiles.push('checkpoint'); continue; }
 
-    // Strategic trap early in phase
-    if (localIdx === 6) { tiles.push('trap'); continue; }
+    // ─── FIXED STRATEGIC POSITIONS (same every game, phase-aware) ───
 
-    // Shield early
+    // Shield early in phase — prepare for what's ahead
     if (localIdx === 4) { tiles.push('shield'); continue; }
 
-    // Scripture questions spread through phase
-    if (localIdx === 10) { tiles.push('scripture'); continue; }
-    if (localIdx === 24) { tiles.push('scripture'); continue; }
+    // Trap early — first test of the phase
+    if (localIdx === 6) { tiles.push('trap'); continue; }
 
-    // Challenge at midpoint
+    // Scripture — foundational teaching moment
+    if (localIdx === 10) { tiles.push('scripture'); continue; }
+
+    // Challenge at midpoint — the phase's main trial
     if (localIdx === 15) { tiles.push('challenge'); continue; }
-    // Refuge right after challenge
+
+    // Refuge right after challenge — rest and recovery
     if (localIdx === 16) { tiles.push('refuge'); continue; }
 
-    // Giant encounter
-    if (localIdx === 22) { tiles.push('giant'); continue; }
+    // Giant encounter — major obstacle
+    if (localIdx === 22 && phaseIdx >= 1) { tiles.push('giant'); continue; }
     // Refuge right after giant
-    if (localIdx === 23) { tiles.push('refuge'); continue; }
+    if (localIdx === 23 && phaseIdx >= 1) { tiles.push('refuge'); continue; }
+    // Phase 0 doesn't have giants yet — use scripture instead
+    if (localIdx === 22 && phaseIdx === 0) { tiles.push('scripture'); continue; }
+    if (localIdx === 23 && phaseIdx === 0) { tiles.push('refuge'); continue; }
 
-    // Strategic trap near end
+    // Second scripture — deeper teaching
+    if (localIdx === 24) { tiles.push('scripture'); continue; }
+
+    // Trap near end — last test before next phase
     if (localIdx === 30) { tiles.push('trap'); continue; }
 
-    // Back to start — rare, from phase 2 onward
+    // Back to start — rare punishment, only from phase 2+ (after players understand the game)
     if (localIdx === 32 && phaseIdx >= 2) { tiles.push('back_to_start'); continue; }
 
-    // ~50% chance of special tile, 50% normal (more breathing room)
+    // ─── PHASE-THEMATIC RANDOM TILES ───
+    // ~45% chance of phase-specific tile, 55% normal (breathing room)
     s = rng(s);
     if ((s % 100) < 45) {
       s = rng(s);
-      const pool: TileType[] = ['surprise', 'blessing', 'swap', 'double_dice', 'current', 'scripture', 'challenge', 'normal'];
-      tiles.push(pool[s % pool.length]);
+      const pool = PHASE_TILE_POOLS[phaseIdx] || PHASE_TILE_POOLS[0];
+      tiles.push(pickFromWeightedPool(pool, s));
     } else {
       tiles.push('normal');
     }

@@ -400,7 +400,11 @@ export default function RPGEventPopup({
     // For riddles: reveal the answer instead of auto-failing
     if (riddle) {
       setRiddleAnswerRevealed(true);
-      
+      return;
+    }
+    // For questions: reveal the correct answer instead of auto-failing
+    if (question) {
+      setSelectedAnswer(question.correctIndex);
       return;
     }
     playGameSfx(rpgSfx('trap'));
@@ -410,7 +414,7 @@ export default function RPGEventPopup({
       message: '⏰ Tempo esgotado! A resposta não veio a tempo...',
       emoji: '⏰',
     });
-  }, [riddle]);
+  }, [riddle, question]);
 
   const startTimer = useCallback((seconds: number) => {
     setTotalTime(seconds);
@@ -763,25 +767,71 @@ export default function RPGEventPopup({
           {phase === 'challenge' && !showResult && question && (
             <div className="space-y-4">
               <p className="text-lg font-display font-bold text-foreground leading-relaxed">{question.question}</p>
-               <div className="grid gap-3">
+              <p className="text-sm text-muted-foreground text-center">📖 {question.bibleReference}</p>
+
+              {/* Options shown as reference for group discussion — NOT clickable until revealed */}
+              <div className="grid gap-3">
                 {question.options.map((opt, i) => (
-                  <button
+                  <div
                     key={i}
-                    onClick={() => handleAnswer(i)}
-                    disabled={selectedAnswer !== null}
-                     className={`p-4 rounded-xl border text-left text-base transition-all ${
-                      selectedAnswer === i
-                        ? i === question.correctIndex ? 'bg-green-500/20 border-green-500' : 'bg-red-500/20 border-red-500'
-                        : selectedAnswer !== null && i === question.correctIndex ? 'bg-green-500/10 border-green-500/50'
-                        : 'bg-card/50 border-border hover:border-primary/30'
+                    className={`p-4 rounded-xl border text-left text-base transition-all ${
+                      selectedAnswer !== null && i === question.correctIndex
+                        ? 'bg-green-500/20 border-green-500'
+                        : selectedAnswer !== null && selectedAnswer === i && i !== question.correctIndex
+                        ? 'bg-red-500/20 border-red-500'
+                        : 'bg-card/50 border-border'
                     }`}
                   >
                     <span className="font-bold text-muted-foreground mr-2">{String.fromCharCode(65 + i)})</span>
                     <span className="text-foreground">{opt}</span>
-                  </button>
+                  </div>
                 ))}
               </div>
-              <p className="text-sm text-muted-foreground text-center">📖 {question.bibleReference}</p>
+
+              {/* Reveal correct answer button — only the master (phone holder) should click */}
+              {selectedAnswer === null && (
+                <button
+                  onClick={() => {
+                    setTimerActive(false);
+                    if (timerRef.current) clearInterval(timerRef.current);
+                    // Reveal the correct answer visually
+                    setSelectedAnswer(question.correctIndex);
+                  }}
+                  className="w-full py-3 rounded-xl bg-blue-500/20 border border-blue-500/30 text-sm text-blue-300 font-display font-bold hover:bg-blue-500/30 transition-all"
+                >
+                  👁️ Revelar Resposta Correta
+                </button>
+              )}
+
+              {/* After reveal: Master judges if group got it right */}
+              {selectedAnswer !== null && (
+                <>
+                  <div className="p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-center">
+                    <p className="text-xs text-green-300 font-display">✅ Resposta correta:</p>
+                    <p className="text-base font-display font-bold text-foreground">"{question.options[question.correctIndex]}"</p>
+                    <p className="text-xs text-muted-foreground italic mt-1">{question.explanation}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button onClick={() => {
+                      playGameSfx(rpgSfx('blessing'));
+                      setShowResult(true);
+                      setResultData({ success: true, message: `✅ Correto! ${question.explanation}`, emoji: '✅' });
+                    }} className="py-3 rounded-xl bg-green-500/20 border border-green-500/30 text-sm font-display font-bold text-green-400 hover:bg-green-500/30 transition-all">
+                      ✅ Acertaram!
+                    </button>
+                    <button onClick={() => {
+                      playGameSfx(rpgSfx('trap'));
+                      setShowResult(true);
+                      setResultData({ success: false, message: `❌ Não acertaram. A correta era: "${question.options[question.correctIndex]}". ${question.explanation}`, emoji: '❌' });
+                    }} className="py-3 rounded-xl bg-red-500/20 border border-red-500/30 text-sm font-display font-bold text-red-400 hover:bg-red-500/30 transition-all">
+                      ❌ Erraram
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground text-center">
+                    O grupo acertou? O Mestre julga e clica acima.
+                  </p>
+                </>
+              )}
             </div>
           )}
 
