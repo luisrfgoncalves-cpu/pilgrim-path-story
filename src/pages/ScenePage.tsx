@@ -604,7 +604,7 @@ const ScenePage = () => {
             <div className="absolute inset-0 scene-overlay bg-gradient-to-t from-background/80 via-transparent to-transparent" />
             <div className="absolute bottom-2 left-3 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-md border border-primary/20">
               <MapPin className="w-3 h-3 text-primary/80" />
-              <span className="text-[10px] uppercase tracking-widest text-primary/90 font-display font-bold" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>{chapter.location}</span>
+              <span className="text-xs uppercase tracking-widest text-amber-300 font-display font-bold" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}>{chapter.location}</span>
             </div>
           </div>
         )}
@@ -663,7 +663,7 @@ const ScenePage = () => {
         </div>
 
         <div className="px-5 py-5">
-          <h1 className="font-display text-2xl md:text-3xl text-foreground mb-4 fade-in leading-tight scene-title" style={{ wordSpacing: '0.15em' }}>{chapter.title}</h1>
+          <h1 className="font-display text-2xl md:text-3xl text-white mb-4 fade-in leading-tight scene-title font-bold" style={{ wordSpacing: '0.15em', textShadow: '0 2px 8px rgba(0,0,0,0.7), 0 0 2px rgba(0,0,0,0.5)' }}>{chapter.title}</h1>
 
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px flex-1 bg-primary/20" />
@@ -673,7 +673,7 @@ const ScenePage = () => {
 
           <div className="space-y-3 mb-6" style={atmosphere.textStyle}>
             {fullNarrative.slice(0, narrativeIndex + 1).map((paragraph, i) => (
-              <p key={i} className="narrative-text text-foreground/90 fade-in" style={{ animationDelay: `${i * 0.08}s` }}>
+              <p key={i} className="narrative-text text-white/95 fade-in text-base leading-relaxed" style={{ animationDelay: `${i * 0.08}s`, textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
                 {paragraph}
               </p>
             ))}
