@@ -1179,10 +1179,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Colina da Dificuldade",
     location: "Colina da Dificuldade",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'A colina se ergue como um muro...' },
     narrative: [
-      "A Colina da Dificuldade se ergue como um muro de pedra. Bunyan a descreve como tão íngreme que só se pode subir de mãos e joelhos. No pé da colina, uma fonte de água fresca — para fortalecer o peregrino antes da escalada.",
-      "Dois caminhos alternativos contornam a colina: um chamado Perigo, cheio de bosques escuros, e outro chamado Destruição, que leva a um campo de pedras traiçoeiras. Formalista e Hipocrisia, que pularam o muro, tomaram esses atalhos — e nunca mais foram vistos.",
-      "Não há atalho para a colina. É subir — ou desistir."
+      "{{tremor}}A Colina da Dificuldade se ergue como um muro de pedra.{{/tremor}} Bunyan a descreve como tão íngreme que só se pode subir de mãos e joelhos. No pé da colina, uma fonte de água fresca — para fortalecer o peregrino antes da escalada.",
+      "Dois caminhos alternativos contornam a colina: um chamado {{villain}}Perigo{{/villain}}, cheio de bosques escuros, e outro chamado {{villain}}Destruição{{/villain}}, que leva a um campo de pedras traiçoeiras. {{emphasis}}Formalista e Hipocrisia, que pularam o muro, tomaram esses atalhos — e nunca mais foram vistos.{{/emphasis}}",
+      "{{heart}}Não há atalho para a colina. É subir — ou desistir.{{/heart}}"
     ],
     toneNarrative: [
       { attr: "perseveranca", highThreshold: 7, highText: "Sua perseverança faz cada degrau natural parecer um convite. Difícil, sim — mas possível.", lowThreshold: 3, lowText: "A colina parece infinita. Seus joelhos gritam de dor antes mesmo do primeiro terço." }
