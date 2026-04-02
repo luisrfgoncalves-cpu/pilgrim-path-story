@@ -179,3 +179,9 @@ export interface RotationState {
   usedTraps: Set<string>;
   usedRefuges: Set<string>;
 }
+
+// Estado de cadeia de consequências
+export interface ChainState {
+  flags: Set<string>;           // Flags ativas nesta sessão
+  history: { flag: string; turn: number; playerId: string }[];
+}
