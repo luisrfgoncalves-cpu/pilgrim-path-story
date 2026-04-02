@@ -899,10 +899,9 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Dar três saltos de alegria e correr pelo caminho cantando",
         nextChapterId: "fase2-cena1",
         effects: { fe: 2, coragem: 2 },
-        consequence: "Cristão deu três saltos e cantou: 'Bendito seja aquele lugar!' A alegria da salvação não é contida — ela transborda. Salmo 30:11: 'Converteste o meu pranto em dança.'",
         flag: "recebeu_vestes_novas",
         item: "pergaminho_selado",
-        consequence: "Cristão deu três saltos e seguiu cantando: \"Bendito seja aquele lugar! Bendita a Cruz e o Sepulcro! Bendita a graça que me libertou!\""
+        consequence: "Cristão deu três saltos e cantou: 'Bendito seja aquele lugar!' A alegria da salvação não é contida — ela transborda. Salmo 30:11: 'Converteste o meu pranto em dança.'"
       }
     ]
   },
