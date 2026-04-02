@@ -1414,10 +1414,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Vale da Sombra da Morte",
     location: "Vale da Sombra da Morte",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'A escuridão é quase total...' },
     narrative: [
-      "Além da batalha (ou da fuga), o vale se torna ainda mais escuro. Este é o Vale da Sombra da Morte — um lugar que Bunyan descreve como tendo um fosso sem fundo de um lado e um pântano de lama do outro.",
-      "Demônios sussurram blasfêmias ao seu ouvido, tão perto que você pensa que são seus próprios pensamentos. O chão está coberto de armadilhas.",
-      "A escuridão é tão densa que nem a espada é visível na sua mão."
+      "{{fade}}Além da batalha (ou da fuga), o vale se torna ainda mais escuro.{{/fade}} Este é o {{emphasis}}Vale da Sombra da Morte{{/emphasis}} — um lugar que Bunyan descreve como tendo um fosso sem fundo de um lado e um pântano de lama do outro.",
+      "{{villain}}Demônios sussurram blasfêmias ao seu ouvido, tão perto que você pensa que são seus próprios pensamentos.{{/villain}} {{tremor}}O chão está coberto de armadilhas.{{/tremor}}",
+      "{{whisper}}A escuridão é tão densa que nem a espada é visível na sua mão.{{/whisper}}"
     ],
     choices: [
       {
