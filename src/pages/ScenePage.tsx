@@ -513,10 +513,7 @@ const ScenePage = () => {
       const newStreak = lastStreakEffect === 'positive' ? streak + 1 : 1;
       setStreak(newStreak);
       setLastStreakEffect('positive');
-      if (newStreak >= 3) {
-        setShowStreakBurst(true);
-        // GameNotification handles auto-dismiss
-      }
+      // Streak tracked internally for attribute bonuses only
     } else if (total < 0) {
       setStreak(lastStreakEffect === 'negative' ? streak + 1 : 1);
       setLastStreakEffect('negative');
