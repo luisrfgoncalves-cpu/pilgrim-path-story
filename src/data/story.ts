@@ -485,11 +485,13 @@ export const storyChapters: Record<string, StoryChapter> = {
       "O homem Legalidade não está em lugar nenhum. A montanha ruge como se fosse esmagar tudo ao redor. Você percebe, com horror, que este caminho não pode remover seu fardo — ele só acrescenta medo ao peso.",
       "Evangelista aparece novamente, com rosto severo: \"Por que você se desviou? O caminho de Prudência Mundana leva à morte. Volte à Porta Estreita.\""
     ],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'A montanha treme e fogo arde no topo!' },
     choices: [
       {
         text: "Obedecer a Evangelista e voltar ao caminho",
         nextChapterId: "cena7",
-        effects: { fe: 1, discernimento: 1 }
+        effects: { fe: 1, discernimento: 1 },
+        consequence: "O Monte Sinai representa a Lei de Deus — que é santa, mas não pode salvar. A Lei mostra o pecado, mas não pode removê-lo. Por isso tremia e queimava: ela revela a ira de Deus contra o pecado, mas a solução está na Cruz, não na Moralidade. Romanos 3:20: 'Pela lei vem o pleno conhecimento do pecado.'"
       }
     ]
   },
