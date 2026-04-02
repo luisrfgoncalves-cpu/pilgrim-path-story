@@ -586,7 +586,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Seguir o caminho, renovado e livre do fardo",
-        nextChapterId: "fase2-cena1",
+        nextChapterId: "cena15b",
         effects: { fe: 2, perseveranca: 1, coragem: 1 }
       }
     ]
