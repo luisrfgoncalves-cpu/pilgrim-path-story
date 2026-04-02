@@ -2405,10 +2405,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Rio sem Ponte",
     location: "Margem do Rio",
     characters: ["cristao", "esperanca"],
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 4000, message: 'A Cidade Celestial brilha do outro lado...' },
     narrative: [
-      "A Cidade Celestial brilha do outro lado de um rio largo e profundo. Não há ponte. Não há barco. Bunyan nos diz que cada peregrino deve atravessá-lo a pé — e a profundidade varia conforme a fé de cada um.",
-      "Esperança olha para a água escura: \"Temos que passar por isso?\"",
-      "Você olha para a cidade. As torres brilham. Os portões parecem abertos. Anjos se movem nas muralhas. Tudo pelo que você lutou está ali — separado apenas por esta última travessia."
+      "{{divine}}A Cidade Celestial brilha do outro lado de um rio largo e profundo.{{/divine}} {{fade}}Não há ponte. Não há barco.{{/fade}} Bunyan nos diz que cada peregrino deve atravessá-lo a pé — e {{emphasis}}a profundidade varia conforme a fé de cada um.{{/emphasis}}",
+      "{{heart}}Esperança olha para a água escura:{{/heart}} {{dialog}}\"Temos que passar por isso?\"{{/dialog}}",
+      "Você olha para a cidade. {{divine}}As torres brilham. Os portões parecem abertos. Anjos se movem nas muralhas.{{/divine}} {{emphasis}}Tudo pelo que você lutou está ali — separado apenas por esta última travessia.{{/emphasis}}"
     ],
     replayNarrative: [
       "O rio. Da última vez, talvez você tenha hesitado. Talvez tenha afundado. Desta vez, o que mudou? Sua fé está mais funda ou mais rasa?"
