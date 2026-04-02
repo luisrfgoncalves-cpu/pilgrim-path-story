@@ -861,7 +861,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     ],
     interactionType: "hold",
     toneNarrative: [
-      { attr: "fe", highThreshold: 7, highText: "A fé de Cristã sustenta os guerreiros. Cada oração é um golpe invisível no gigante.", lowThreshold: 3, lowText: "O combate é horrível. Os filhos tapam os ouvidos. Cristã reza sem saber se as palavras chegam ao céu." }
+      { attr: "fe", highThreshold: 7, highText: "A fé de Cristã sustenta os guerreiros. Cada oração é um golpe invisível no gigante.", lowThreshold: 3, lowText: "O combate é horrível. Os filhos tapam os ouvidos. Cristã ora sem saber se as palavras chegam ao céu." }
     ],
     flagNarrative: [
       { flag: "encorajou_ataque_castelo", text: "O encorajamento de Cristã ecoa: Grande-Coração luta com o dobro da força." },
