@@ -1765,10 +1765,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Tentação de Desistir",
     location: "Feira da Vaidade",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'A solidão pesa sem Fiel...' },
     narrative: [
-      "Sem Fiel, a solidão é esmagadora. Os vendedores da feira percebem sua fraqueza e se aproximam com ofertas mais tentadoras.",
-      "\"Fique conosco. Aqui ninguém te persegue. Aqui, o fardo não existe. Aqui, não há vales escuros nem rios para atravessar.\"",
-      "O homem na gaiola de ferro surge na sua memória. Ele também achou que podia ficar \"só um pouco\"."
+      "{{fade}}Sem Fiel, a solidão é esmagadora.{{/fade}} Os vendedores da feira percebem sua fraqueza e se aproximam com ofertas mais tentadoras.",
+      "{{villain}}\"Fique conosco. Aqui ninguém te persegue. Aqui, o fardo não existe. Aqui, não há vales escuros nem rios para atravessar.\"{{/villain}}",
+      "{{emphasis}}O homem na gaiola de ferro surge na sua memória. Ele também achou que podia ficar \"só um pouco\".{{/emphasis}}"
     ],
     adaptiveNarrative: [
       { minAttr: "discernimento", minValue: 7, text: "Seu discernimento grita: este é exatamente o momento que o Intérprete te mostrou. O fogo tentam apagar — mas a mão oculta continua alimentando." }
