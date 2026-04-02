@@ -612,29 +612,16 @@ export default function RPGEventPopup({
       {/* ═══ SUSPENSE INTRO PHASE ═══ */}
       {phase === 'suspense_intro' && (
         <div className="relative z-10 flex flex-col items-center gap-6 text-center px-8">
-          <div className="relative">
-            <div className="text-7xl" style={{
-              animation: 'shake 0.15s infinite alternate',
-              filter: `drop-shadow(0 0 30px ${tileInfo.color}60)`,
-            }}>
-              {getSuspenseText().emoji}
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-32 h-32 rounded-full border-2 animate-ping opacity-30"
-                style={{ borderColor: tileInfo.color }} />
-            </div>
+          <div className="text-8xl" style={{
+            filter: `drop-shadow(0 0 30px ${tileInfo.color}60)`,
+          }}>
+            {getSuspenseText().emoji}
           </div>
-          <p className="text-lg font-display font-bold tracking-wider uppercase animate-pulse"
+          <p className="text-2xl font-display font-bold tracking-wider uppercase"
             style={{ color: tileInfo.color, textShadow: `0 0 20px ${tileInfo.color}60` }}
           >
             {getSuspenseText().text}
           </p>
-          <div className="flex gap-1">
-            {[0, 1, 2].map(i => (
-              <div key={i} className="w-2 h-2 rounded-full animate-bounce"
-                style={{ background: tileInfo.color, animationDelay: `${i * 0.2}s` }} />
-            ))}
-          </div>
         </div>
       )}
 
