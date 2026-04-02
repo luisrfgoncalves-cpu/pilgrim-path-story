@@ -390,23 +390,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "O Vale da Humilhação — Sem Apolião",
     location: "Vale da Humilhação",
     characters: ["crista", "grande_coracao", "velho_honesto"],
+    sceneEvent: { type: 'suspense', delay: 1000, duration: 3000, message: 'O vale se abre diante do grupo...' },
     narrative: [
-      "O mesmo vale onde Cristão lutou contra Apolião. Mas desta vez, com Grande-Coração à frente, nenhum demônio ousa atacar.",
-      "\"É estranho\", diz Grande-Coração. \"Este vale, que foi campo de batalha para seu marido, é para vocês um prado agradável. Vejam — há lírios e ovelhas.\"",
-      "Um velho homem emerge do caminho lateral. \"Sou Velho Honesto, da Cidade da Estupidez. Vi a Luz há muito tempo, mas nunca tive coragem de partir. Posso juntar-me a vocês?\""
+      "O mesmo vale onde Cristão lutou contra Apolião. Mas desta vez, com Grande-Coração à frente, {{divine}}nenhum demônio ousa atacar.{{/divine}}",
+      "\"É estranho\", diz Grande-Coração. \"Este vale, que foi campo de batalha para seu marido, é para vocês {{divine}}um prado agradável{{/divine}}. Vejam — há lírios e ovelhas.\"",
+      "Um velho homem emerge do caminho lateral. \"Sou Velho Honesto, da Cidade da Estupidez. Vi a Luz há muito tempo, mas nunca tive coragem de partir. {{whisper}}Posso juntar-me a vocês?{{/whisper}}\""
     ],
     choices: [
       {
         text: "\"Toda alma que busca a Cidade é bem-vinda!\"",
         nextChapterId: "p2-fase3-cena2",
         effects: { fe: 1, discernimento: 1 },
-        flag: "aceitou_velho_honesto"
+        flag: "aceitou_velho_honesto",
+        consequence: "Acolher quem busca tardiamente é imitar a graça de Deus. A porta não se fecha para os que demoram, contanto que cheguem. — Mateus 20:6-7: \"Ide vós também para a vinha, e recebereis o que for justo.\""
       },
       {
         text: "Pedir a Grande-Coração que avalie Velho Honesto primeiro",
         nextChapterId: "p2-fase3-cena2",
         effects: { discernimento: 2 },
-        flag: "avaliou_velho_honesto"
+        flag: "avaliou_velho_honesto",
+        consequence: "A prudência na avaliação de companheiros é bíblica. Nem todo viajante tem intenções puras. — 1 João 4:1: \"Amados, não creiais a todo espírito, mas provai se os espíritos são de Deus.\""
       }
     ]
   },
@@ -418,21 +421,23 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "grande_coracao"],
     sceneEvent: { type: 'tension', duration: 6000, message: 'Os sussurros do abismo ecoam...', intensity: 0.8 },
     narrative: [
-      "O vale é tão escuro quanto foi para Cristão. Mas desta vez, um pilar de fogo aparece adiante, iluminando o caminho.",
-      "Grande-Coração explica: \"Quando Cristão passou, o vale era pura escuridão. Para vocês, o Senhor enviou luz. Talvez porque desta vez haja crianças.\"",
-      "Os filhos de Cristã se agarram à mãe. Os sussurros do abismo ainda ecoam, mas o pilar de fogo mantém os demônios à distância."
+      "O vale é tão escuro quanto foi para Cristão. Mas desta vez, {{divine}}um pilar de fogo aparece adiante, iluminando o caminho.{{/divine}}",
+      "Grande-Coração explica: \"Quando Cristão passou, o vale era pura escuridão. Para vocês, o Senhor enviou luz. {{divine}}Talvez porque desta vez haja crianças.{{/divine}}\"",
+      "Os filhos de Cristã se agarram à mãe. {{whisper}}Os sussurros do abismo ainda ecoam{{/whisper}}, mas o pilar de fogo mantém os demônios à distância."
     ],
     choices: [
       {
         text: "Cantar hinos enquanto atravessa — afugentar o medo com louvor",
         nextChapterId: "p2-fase3-cena3",
         effects: { fe: 2, coragem: 1 },
-        flag: "cantou_no_vale_p2"
+        flag: "cantou_no_vale_p2",
+        consequence: "O louvor no vale escuro é uma arma espiritual. Onde há cântico, o medo recua. Paulo e Silas cantaram na prisão e as correntes caíram. — Salmo 149:6: \"Os altos louvores de Deus estejam em suas bocas, e espada de dois fios em suas mãos.\""
       },
       {
         text: "Caminhar em silêncio, seguindo o pilar de fogo",
         nextChapterId: "p2-fase3-cena3",
-        effects: { perseveranca: 1, discernimento: 1 }
+        effects: { perseveranca: 1, discernimento: 1 },
+        consequence: "Seguir a luz em silêncio é obedecer sem entender — a forma mais pura de fé. O pilar de fogo guiou Israel no deserto da mesma maneira. — Êxodo 13:21: \"E o Senhor ia adiante deles, de dia numa coluna de nuvem, e de noite numa coluna de fogo.\""
       }
     ]
   },
@@ -444,21 +449,23 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "grande_coracao"],
     sceneEvent: { type: 'tension', duration: 5000, message: 'A terra treme!', intensity: 0.9 },
     narrative: [
-      "Na saída do vale, um gigante chamado Maul bloqueia o caminho. Ele é menor que Desespero, mas feroz: \"Mulheres peregrinas? Fácil demais!\"",
-      "Grande-Coração avança. A luta é intensa — espada contra clava. O gigante é forte, mas Grande-Coração é habilidoso.",
-      "Após um combate que faz a terra tremer, Grande-Coração decepa a cabeça do gigante e a coloca num poste ao lado do caminho: aviso a todos os outros."
+      "Na saída do vale, um gigante chamado {{villain}}Maul{{/villain}} bloqueia o caminho. Ele é menor que Desespero, mas feroz: {{villain}}\"Mulheres peregrinas? Fácil demais!\"{{/villain}}",
+      "{{shout}}Grande-Coração avança.{{/shout}} A luta é intensa — espada contra clava. O gigante é forte, mas Grande-Coração é habilidoso.",
+      "{{tremor}}Após um combate que faz a terra tremer{{/tremor}}, Grande-Coração decepa a cabeça do gigante e a coloca num poste ao lado do caminho: aviso a todos os outros."
     ],
     choices: [
       {
         text: "Agradecer a Deus pela proteção de Grande-Coração",
         nextChapterId: "p2-fase3-cena4",
         effects: { fe: 2 },
-        flag: "agradeceu_vitoria_maul"
+        flag: "agradeceu_vitoria_maul",
+        consequence: "A gratidão após a vitória é o sacrifício que agrada a Deus. Grande-Coração lutou, mas foi o Senhor quem deu a força. — Salmo 18:39: \"Pois me cingiste de força para a peleja; os que contra mim se levantaram tu puseste debaixo de mim.\""
       },
       {
         text: "Perguntar a Grande-Coração quantos gigantes ele já matou",
         nextChapterId: "p2-fase3-cena4",
-        effects: { coragem: 1, discernimento: 1 }
+        effects: { coragem: 1, discernimento: 1 },
+        consequence: "Grande-Coração é um matador de gigantes como Davi. Cada vitória passada é testemunho da fidelidade divina para batalhas futuras. — 1 Samuel 17:37: \"O Senhor me livrou das garras do leão e do urso; Ele me livrará das mãos deste filisteu.\""
       }
     ]
   },
@@ -468,23 +475,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "A Hospedaria de Gaio",
     location: "Hospedaria de Gaio",
     characters: ["crista", "misericordia", "gaio"],
+    sceneEvent: { type: 'suspense', delay: 1500, duration: 3000, message: 'Uma hospedaria no caminho...' },
     narrative: [
       "Entre o vale e a feira, o grupo encontra a hospedaria de Gaio — um discípulo honrado que recebe peregrinos com pão, vinho e histórias.",
-      "\"Cristã!\", exclama Gaio. \"Seu marido comeu nesta mesa. E devo lhes contar: a linhagem de Cristão remonta a homens ilustres da fé.\"",
-      "Gaio revela a ancestralidade espiritual de Cristão e organiza o casamento de Mateus (filho de Cristã) com Misericórdia. Lágrimas de alegria enchem a sala."
+      "{{divine}}\"Cristã!\"{{/divine}}, exclama Gaio. \"Seu marido comeu nesta mesa. E devo lhes contar: a linhagem de Cristão remonta a homens ilustres da fé.\"",
+      "Gaio revela a ancestralidade espiritual de Cristão e organiza o casamento de Mateus (filho de Cristã) com Misericórdia. {{divine}}Lágrimas de alegria enchem a sala.{{/divine}}"
     ],
     choices: [
       {
         text: "Celebrar o casamento e descansar na hospedaria",
         nextChapterId: "p2-fase3-cena5",
         effects: { fe: 1, perseveranca: 1 },
-        flag: "celebrou_casamento_mateus"
+        flag: "celebrou_casamento_mateus",
+        consequence: "O casamento de Mateus e Misericórdia é sinal de que a peregrinação não é só sofrimento — há celebrações no caminho. A hospitalidade de Gaio reflete o amor de Cristo. — 3 João 1:5: \"Amado, procedes fielmente em tudo o que fazes para com os irmãos e para com os estrangeiros.\""
       },
       {
         text: "Perguntar a Gaio sobre os perigos adiante",
         nextChapterId: "p2-fase3-cena5",
         effects: { discernimento: 2 },
-        flag: "perguntou_perigos_gaio"
+        flag: "perguntou_perigos_gaio",
+        consequence: "Buscar informação sobre os perigos adiante é prudência. Gaio conhece o caminho e seus monstros. — Provérbios 27:12: \"O prudente vê o perigo e esconde-se; mas os simples passam e sofrem a pena.\""
       }
     ]
   },
@@ -496,24 +506,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     characters: ["crista", "grande_coracao", "mente_fraca"],
     sceneEvent: { type: 'tension', duration: 5000, message: 'Combate brutal!', intensity: 1.0 },
     narrative: [
-      "No caminho, encontram o Gigante Mata-Bons arrastando um homem pálido e fraco: Mente-Fraca.",
-      "Grande-Coração desafia o gigante: \"Solta esse homem, monstro! Tua hora chegou.\"",
-      "O combate é brutal. Mata-Bons é mais forte que Maul, mas Grande-Coração luta com a fúria de quem protege os fracos. A cabeça do gigante rola no chão.",
-      "Mente-Fraca, tremendo, agradece: \"Eu estava prestes a ser devorado. Posso... posso ir com vocês?\""
+      "No caminho, encontram o {{villain}}Gigante Mata-Bons{{/villain}} arrastando um homem pálido e fraco: Mente-Fraca.",
+      "{{shout}}Grande-Coração desafia o gigante: \"Solta esse homem, monstro! Tua hora chegou.\"{{/shout}}",
+      "{{tremor}}O combate é brutal.{{/tremor}} Mata-Bons é mais forte que Maul, mas Grande-Coração luta com a fúria de quem protege os fracos. A cabeça do gigante rola no chão.",
+      "Mente-Fraca, tremendo, agradece: {{whisper}}\"Eu estava prestes a ser devorado. Posso... posso ir com vocês?\"{{/whisper}}"
     ],
     choices: [
       {
         text: "\"Venha conosco. Os fracos são bem-vindos neste grupo.\"",
         nextChapterId: "p2-fase3-cena6",
         effects: { fe: 1, perseveranca: 1 },
-        flag: "acolheu_mente_fraca"
+        flag: "acolheu_mente_fraca",
+        consequence: "Acolher o fraco é a marca de Cristo. Mente-Fraca não tem força, mas tem fé — e fé do tamanho de um grão de mostarda move montanhas. — Mateus 12:20: \"Não esmagará a cana quebrada, e não apagará a torcida que fumega.\""
       },
       {
         text: "Cuidar de seus ferimentos antes de continuar",
         nextChapterId: "p2-fase3-cena6",
         effects: { discernimento: 1 },
         flag: "cuidou_mente_fraca",
-        item: "folhas_arvore_vida"
+        item: "folhas_arvore_vida",
+        consequence: "Curar antes de caminhar é sabedoria. Um corpo ferido retarda o grupo, mas um coração curado fortalece a todos. — Lucas 10:34: \"Chegando-se, atou-lhe as feridas, deitando-lhes azeite e vinho.\""
       }
     ]
   },
@@ -523,23 +535,26 @@ export const part2Chapters: Record<string, StoryChapter> = {
     title: "A Feira da Vaidade — Desta Vez, Diferente",
     location: "Feira da Vaidade",
     characters: ["crista", "grande_coracao", "misericordia"],
+    sceneEvent: { type: 'tension', duration: 4000, message: 'A Feira da Vaidade...', intensity: 0.6 },
     narrative: [
-      "A Feira da Vaidade ainda existe. Mas algo mudou. O martírio de Fiel, anos atrás, plantou sementes.",
+      "A Feira da Vaidade ainda existe. Mas algo mudou. {{divine}}O martírio de Fiel, anos atrás, plantou sementes.{{/divine}}",
       "Alguns moradores da feira recebem os peregrinos com respeito. Outros ainda zombam, mas o ódio não é tão intenso quanto foi com Cristão e Fiel.",
-      "Grande-Coração fica alerta: \"Não confiem na aparente paz. Esta feira já matou um santo. Passem depressa.\""
+      "Grande-Coração fica alerta: {{shout}}\"Não confiem na aparente paz. Esta feira já matou um santo. Passem depressa.\"{{/shout}}"
     ],
     choices: [
       {
         text: "Passar rapidamente, lembrando do sacrifício de Fiel",
         nextChapterId: "p2-fase4-cena1",
         effects: { perseveranca: 1, coragem: 1 },
-        flag: "passou_rapido_feira_p2"
+        flag: "passou_rapido_feira_p2",
+        consequence: "A memória do martírio de Fiel é combustível para a perseverança. O sangue dos santos nunca é derramado em vão. — Apocalipse 6:9-10: \"Até quando, ó verdadeiro e santo Dominador, não julgas e vingas o nosso sangue?\""
       },
       {
         text: "Parar para testemunhar aos moradores da feira",
         nextChapterId: "p2-fase4-cena1",
         effects: { fe: 2, coragem: 1 },
-        flag: "testemunhou_feira_p2"
+        flag: "testemunhou_feira_p2",
+        consequence: "Testemunhar no lugar que matou Fiel é coragem extrema. As sementes que ele plantou com seu sangue agora frutificam através de Cristã. — João 12:24: \"Se o grão de trigo, caindo na terra, não morrer, fica ele só; mas se morrer, dá muito fruto.\""
       }
     ]
   },
