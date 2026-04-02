@@ -1160,9 +1160,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Além da Casa",
     location: "O Caminho Adiante",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'O caminho se inclina para cima...' },
     narrative: [
-      "A casa fica para trás, mas suas lições caminham com você. A poeira e a vassoura. O fogo que não apaga. O homem na gaiola. O palácio que exige luta.",
-      "O caminho sobe agora. Uma colina íngreme se ergue à frente — a Colina da Dificuldade."
+      "{{fade}}A casa fica para trás, mas suas lições caminham com você.{{/fade}} A poeira e a vassoura. O fogo que não apaga. O homem na gaiola. O palácio que exige luta.",
+      "{{tremor}}O caminho sobe agora. Uma colina íngreme se ergue à frente — a Colina da Dificuldade.{{/tremor}}"
     ],
     choices: [
       {
