@@ -1617,8 +1617,9 @@ export const storyChapters: Record<string, StoryChapter> = {
       },
       {
         text: "Sentar entre os esqueletos e chorar",
-        nextChapterId: "fase3-cena9",
+        nextChapterId: "fase3-cena10",
         effects: { coragem: -1 },
+        flag: "chorou_entre_esqueletos",
         consequence: "O desânimo entre os mortos é compreensível, mas perigoso. Os esqueletos representam o passado — não o futuro. Isaías 43:18: 'Não vos lembreis das coisas passadas.'",
         conditionalEffects: [
           { attr: "fe", threshold: 4, bonus: {}, penalty: { fe: -1 } }
