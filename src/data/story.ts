@@ -1379,6 +1379,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "A Batalha",
     location: "Vale da Humilhação",
     characters: ["cristao", "apolion"],
+    sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'Dardos flamejantes cortam o ar!' },
     narrative: [
       "{{tremor}}A batalha dura horas. Apolião lança dardos flamejantes.{{/tremor}} Você os apara com o escudo da fé, mas alguns passam e ferem suas mãos, sua cabeça, seu pé.",
       "Em um momento terrível, {{tremor}}Apolião te derruba. Sua espada voa de suas mãos.{{/tremor}} Ele se ergue sobre você, pronto para o golpe final.",
