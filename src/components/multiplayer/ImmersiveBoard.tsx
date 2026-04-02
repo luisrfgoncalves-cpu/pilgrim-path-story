@@ -395,12 +395,8 @@ const PhaseSection = memo(function PhaseSection({
                         background: 'rgba(0,0,0,0.9)',
                         color: '#FFFFFF',
                         border: `2px solid ${config.color}`,
-                        boxShadow: capability.enableComplexShadows
-                          ? `0 0 16px ${config.glowColor}, 0 4px 12px rgba(0,0,0,0.7)`
-                          : `0 2px 8px rgba(0,0,0,0.5)`,
-                        textShadow: capability.enableComplexShadows
-                          ? `0 0 10px ${config.color}, 0 1px 3px rgba(0,0,0,0.8)`
-                          : `0 1px 3px rgba(0,0,0,0.8)`,
+                        boxShadow: `0 2px 8px rgba(0,0,0,0.5)`,
+                        textShadow: `0 1px 3px rgba(0,0,0,0.8)`,
                         letterSpacing: '0.06em',
                         wordSpacing: '0.2em',
                         fontSize: isBoss ? '15px' : '13px',
