@@ -1937,7 +1937,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     choices: [
       {
         text: "Abandonar a feira agora, antes que seja tarde",
-        nextChapterId: "fase4-cena8",
+        nextChapterId: "fase4-cena10",
         effects: { discernimento: 1, fe: 1 },
         consequence: "Reconhecer que está preso e decidir sair é arrependimento prático. 2 Crônicas 7:14: 'Se o meu povo se humilhar e orar, sararei a sua terra.'"
       },
