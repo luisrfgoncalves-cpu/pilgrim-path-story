@@ -1521,10 +1521,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Peso do Medo",
     location: "Saída do Vale",
     characters: ["cristao"],
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'O medo paralisa seus membros...' },
     narrative: [
-      "Os esqueletos te paralisam. Cada um deles foi um peregrino como você. Eles tinham fé, coragem, pergaminhos — e mesmo assim morreram aqui.",
-      "A pergunta martela: se eles não conseguiram, como você conseguiria?",
-      "Mas então você olha para suas mãos. O pergaminho ainda está ali. O selo na sua testa ainda brilha. Você ainda está de pé."
+      "{{tremor}}Os esqueletos te paralisam. Cada um deles foi um peregrino como você.{{/tremor}} Eles tinham fé, coragem, pergaminhos — e mesmo assim morreram aqui.",
+      "{{whisper}}A pergunta martela: se eles não conseguiram, como você conseguiria?{{/whisper}}",
+      "Mas então você olha para suas mãos. {{divine}}O pergaminho ainda está ali. O selo na sua testa ainda brilha.{{/divine}} {{emphasis}}Você ainda está de pé.{{/emphasis}}"
     ],
     flagNarrative: [
       { flag: "pediu_ajuda_pantano", text: "No pântano, a mão de Auxílio te salvou. Você não precisa vencer sozinho." }
