@@ -367,12 +367,14 @@ export const storyChapters: Record<string, StoryChapter> = {
       {
         text: "Caminhar em direção à luz, mesmo sem certeza",
         nextChapterId: "cena7",
-        effects: { fe: 1, coragem: 1 }
+        effects: { fe: 1, coragem: 1 },
+        consequence: "Andar em direção a uma luz fraca, sem mapa, sem companhia — isso é fé. Não é certeza absoluta. É confiança suficiente para dar o próximo passo. 'Lâmpada para os meus pés é a tua palavra, e luz para o meu caminho.' (Salmo 119:105)"
       },
       {
         text: "Ficar parado, esperando que algo aconteça",
         nextChapterId: "cena8",
-        effects: { perseveranca: -1 }
+        effects: { perseveranca: -1 },
+        consequence: "A inércia espiritual é perigosa. Quem espera a fé perfeita para agir nunca age. Tiago 2:17 diz: 'A fé, se não tiver obras, é morta.' A jornada exige movimento — mesmo imperfeito."
       }
     ]
   },
