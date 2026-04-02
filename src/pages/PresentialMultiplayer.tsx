@@ -1023,6 +1023,16 @@ const PresentialMultiplayer = () => {
 
     setRpgEvent(null);
 
+    // Show dramatic result feedback overlay
+    setResultFeedback({
+      visible: true,
+      success: result.success,
+      message: result.message,
+      emoji: result.emoji,
+      posAdjust: result.posAdjust,
+      attrChanges: result.attrChanges,
+    });
+
     // RPG popup already showed the result — skip redundant TileEventPopup
     // Just process pending moves or go to next turn
     const pendingMove = pendingMoveAfterPopup.current;
