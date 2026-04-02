@@ -2107,10 +2107,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Castelo da Dúvida",
     characters: ["cristao"],
     narrative: [
-      "Na terceira noite, enquanto oram, Cristão dá um salto: \"Que tolo eu sou! Tenho no meu peito uma chave chamada Promessa. Ela pode abrir qualquer fechadura do Castelo da Dúvida!\"",
-      "Esperança se anima: \"Tire-a, irmão! Experimente!\"",
-      "Com mãos trêmulas, você tira a chave — as promessas de Deus, guardadas durante toda a jornada. Cada lição, cada versículo, cada momento de fé solidificou essa chave.",
-      "Ela gira na fechadura. A porta se abre."
+      "Na terceira noite, enquanto oram, Cristão dá um salto: {{shout}}\"Que tolo eu sou! Tenho no meu peito uma chave chamada Promessa. Ela pode abrir qualquer fechadura do Castelo da Dúvida!\"{{/shout}}",
+      "Esperança se anima: {{dialog}}\"Tire-a, irmão! Experimente!\"{{/dialog}}",
+      "{{heart}}Com mãos trêmulas, você tira a chave — as promessas de Deus, guardadas durante toda a jornada.{{/heart}} Cada lição, cada versículo, cada momento de fé solidificou essa chave.",
+      "{{divine}}Ela gira na fechadura. A porta se abre.{{/divine}}"
     ],
     toneNarrative: [
       { attr: "discernimento", highThreshold: 7, highText: "As lições do Intérprete iluminam sua mente. A poeira, o fogo, o palácio — tudo converge neste momento.", lowThreshold: 3, lowText: "Você mal acredita que a chave existe. Mas ela está nas suas mãos." }
