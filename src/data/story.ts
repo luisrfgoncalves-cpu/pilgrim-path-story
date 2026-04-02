@@ -332,10 +332,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "evangelista"],
     narrative: [
       "No meio do campo, um homem alto cruza seu caminho.",
-      "O nome dele é {{emphasis}}Evangelista{{/emphasis}}.",
+      "O nome dele é {{emphasis}}Evangelista{{/emphasis}}. {{divine}}Seu rosto irradia uma paz que você nunca viu.{{/divine}}",
       "Ele aponta para uma luz distante: {{dialog}}\"Siga naquela direção. Lá está a Porta Estreita.\"{{/dialog}}",
       "Depois coloca um pergaminho na sua mão. Uma única palavra brilha nele: {{divine}}FUJA{{/divine}}.",
-      "Antes de partir, ele avisa: {{dialog}}\"Não olhe para trás.\"{{/dialog}}"
+      "{{whisper}}Antes de partir, ele avisa: \"Não olhe para trás.\"{{/whisper}}"
     ],
     flagNarrative: [
       { flag: "convidou_flexivel", text: "Flexível olha para Evangelista com desconfiança: \"Esse caminho parece perigoso. Tem certeza?\" Evangelista o ignora e fala diretamente com você." }
