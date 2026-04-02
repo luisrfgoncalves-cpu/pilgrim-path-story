@@ -300,11 +300,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     timeoutChoiceIndex: 1,
     sceneEvent: { type: 'tension', intensity: 2, duration: 3000 },
     narrative: [
-      "Você volta para casa, mas o peso só aumenta.",
+      "{{tremor}}Você volta para casa, mas o peso só aumenta.{{/tremor}}",
       "{{tremor}}À noite, as paredes parecem se fechar em volta de você.{{/tremor}}",
       "As palavras do livro queimam na mente: {{heart}}\"A ira vindoura...\"{{/heart}}",
-      "Sua família percebe que algo se rompeu dentro de você.",
-      "{{emphasis}}Ficar dói. Partir também.{{/emphasis}}"
+      "{{fade}}Sua família percebe que algo se rompeu dentro de você.{{/fade}}",
+      "{{emphasis}}Ficar dói. Partir também. Mas só um dos caminhos tem esperança.{{/emphasis}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 6, highText: "No fundo da agonia, uma voz mansa sussurra: \"Há uma saída. Busque-a.\"", lowThreshold: 3, lowText: "O desespero é tão espesso que você mal consegue respirar. Será que existe saída, ou o fardo é para sempre?" }
