@@ -282,7 +282,7 @@ const PhaseSection = memo(function PhaseSection({
       />
 
       {/* Tiles — VIRTUALIZED: only render visible ones */}
-      <div className="relative w-full z-[2]" style={{ minHeight: '500svh' }}>
+      <div className="relative w-full z-[2]" style={{ minHeight: '750svh' }}>
         {trailPositions.map((pos, localIdx) => {
           const globalIdx = startIdx + localIdx;
           if (globalIdx >= IMMERSIVE_BOARD_SIZE) return null;
