@@ -123,7 +123,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <ThemeProvider>
-      <BackgroundPregen />
+      <AudioBootstrap />
       <TooltipProvider>
         <Toaster />
         <Sonner />
