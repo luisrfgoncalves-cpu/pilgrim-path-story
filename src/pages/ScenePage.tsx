@@ -67,10 +67,20 @@ const ScenePage = () => {
   const { profile } = useAuth();
   useProgressSync(progress);
   const [narrativeIndex, setNarrativeIndex] = useState(0);
+  const [beatIndex, setBeatIndex] = useState(0);
   const [showChoices, setShowChoices] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(true); // default true to avoid brown flash
+  const [imageLoaded, setImageLoaded] = useState(true);
   const [showStats, setShowStats] = useState(false);
   const [audioOn, setAudioOn] = useState(true);
+  // Epic moment state
+  const [epicMomentActive, setEpicMomentActive] = useState(false);
+  const [epicMomentDone, setEpicMomentDone] = useState(false);
+  // Epic defeat screen state
+  const [showDefeatScreen, setShowDefeatScreen] = useState(false);
+  const [defeatMessage, setDefeatMessage] = useState('');
+  const [defeatVillain, setDefeatVillain] = useState<string | undefined>();
+  // TTS
+  const { speak, stop: stopTTS, isPlaying: ttsPlaying } = useTTS();
   const [sceneEventDone, setSceneEventDone] = useState(false);
   const [suspenseActive, setSuspenseActive] = useState(false);
   const [pendingChoice, setPendingChoice] = useState<(() => void) | null>(null);
