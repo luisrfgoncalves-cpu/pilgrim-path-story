@@ -1135,7 +1135,7 @@ const PresentialMultiplayer = () => {
   }, [tileMessage, players, currentTurn, nextTurn, tileTypes]);
 
   const resetGame = () => {
-    setPlayers(prev => prev.map((p, i) => createPlayer(i, p.name)));
+    setPlayers(prev => prev.map((p, i) => createPlayer(i, p.name, p.characterId)));
     setCurrentTurn(0);
     setFinishCount(0);
     setTileTypes(generateImmersiveTiles(Date.now()));
@@ -1143,6 +1143,7 @@ const PresentialMultiplayer = () => {
     chainStateRef.current = createChainState();
     setRpgEvent(null);
     setPhase('playing');
+    clearSave();
     playGameSfx('gameStart');
     playPhaseAmbient(0);
     lastPhaseAmbientRef.current = 0;
