@@ -3,15 +3,15 @@ import { useState, useCallback, useRef } from 'react';
 /**
  * useTTS — Text-to-Speech com cache inteligente + narração neural.
  * 
- * Toda geração de áudio passa pela Edge Function (servidor),
- * que tenta: ElevenLabs → FreeTTS (Microsoft Neural) → eidosSpeech.
- * Nenhuma voz robótica. Tudo neural.
+ * Cache paths por provedor: elevenlabs/ > freetts/ > eidosspeech/
+ * O client tenta o melhor provedor primeiro (ElevenLabs),
+ * depois fallback para FreeTTS e eidosSpeech.
  * 
  * Cache:
  *   1. Memória (sessão)
  *   2. IndexedDB (persistente no celular)
- *   3. Supabase Storage (global — todos compartilham)
- *   4. Edge Function gera e salva no Storage automaticamente
+ *   3. Supabase Storage (global — separado por provedor)
+ *   4. Edge Function gera e salva automaticamente
  */
 
 type TTSTier = 'elevenlabs' | 'freetts' | 'eidosspeech' | 'cached';
@@ -26,6 +26,9 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 
 const memoryCache = new Map<string, string>();
+
+// Provider priority: best first
+const PROVIDER_PRIORITY = ['elevenlabs', 'freetts', 'eidosspeech'] as const;
 
 // ─── IndexedDB ───
 const DB_NAME = 'peregrino-tts-cache';
@@ -154,31 +157,37 @@ export function useTTS() {
       }
     } catch { /* fall through */ }
 
-    // ═══ LAYER 3: Supabase Storage (direct URL) ═══
+    // ═══ LAYER 3: Supabase Storage — try best provider first ═══
     try {
       const hash = await hashKey(cleanText, emotion);
-      const storageUrl = `${SUPABASE_URL}/storage/v1/object/public/tts-cache/${emotion}/${hash}.mp3`;
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 4000);
-      const resp = await fetch(storageUrl, { signal: controller.signal });
-      clearTimeout(timeout);
-      if (resp.ok && resp.headers.get('content-type')?.includes('audio')) {
-        const blob = await resp.blob();
-        const url = URL.createObjectURL(blob);
-        memoryCache.set(cacheKey, url);
-        saveToIDB(cacheKey, blob);
-        const { audio, promise } = playAudioUrl(url);
-        audioRef.current = audio;
-        setCurrentTier('cached');
-        await audio.play();
-        await promise;
-        setIsPlaying(false);
-        setCurrentTier(null);
-        return;
+      for (const provider of PROVIDER_PRIORITY) {
+        const storageUrl = `${SUPABASE_URL}/storage/v1/object/public/tts-cache/${provider}/${emotion}/${hash}.mp3`;
+        try {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 4000);
+          const resp = await fetch(storageUrl, { signal: controller.signal });
+          clearTimeout(timeout);
+          if (resp.ok && resp.headers.get('content-type')?.includes('audio')) {
+            const blob = await resp.blob();
+            if (blob.size > 100) {
+              const url = URL.createObjectURL(blob);
+              memoryCache.set(cacheKey, url);
+              saveToIDB(cacheKey, blob);
+              const { audio, promise } = playAudioUrl(url);
+              audioRef.current = audio;
+              setCurrentTier(provider as TTSTier);
+              await audio.play();
+              await promise;
+              setIsPlaying(false);
+              setCurrentTier(null);
+              return;
+            }
+          }
+        } catch { /* try next provider */ }
       }
     } catch { /* fall through */ }
 
-    // ═══ LAYER 4: Edge Function (ElevenLabs → FreeTTS → eidosSpeech) ═══
+    // ═══ LAYER 4: Edge Function (generates + caches) ═══
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 30000);

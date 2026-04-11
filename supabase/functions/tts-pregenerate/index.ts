@@ -1,15 +1,13 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1';
 
 /**
- * tts-pregenerate — Edge Function para pré-gerar TODOS os áudios da narrativa.
+ * tts-pregenerate — Edge Function para pré-gerar áudios da narrativa.
  * 
- * Funciona em lotes: gera 1 frase por vez, com delay entre cada uma,
- * para não disparar anti-fraude do ElevenLabs.
+ * Suporta forceProvider para gerar com um provedor específico.
+ * Gera 1 frase por vez com delay entre cada para evitar rate-limit.
  * 
- * Endpoint: POST /tts-pregenerate
- * Body: { batchSize?: number, delayMs?: number, startFrom?: number }
- * 
- * Retorna: { generated, skipped, failed, total, nextStartFrom }
+ * POST /tts-pregenerate
+ * Body: { phrases: [{text, emotion}], batchSize?, delayMs?, startFrom?, forceProvider? }
  */
 
 const corsHeaders = {
@@ -17,13 +15,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// ═══ ALL narrative phrases to pre-generate ═══
-// This is populated at deploy time from the story data
-// Each entry: { text, emotion, sceneId }
 interface NarrativeEntry {
   text: string;
   emotion: string;
-  sceneId: string;
 }
 
 async function hashKey(text: string, emotion: string): Promise<string> {
@@ -44,14 +38,14 @@ Deno.serve(async (req) => {
       delayMs = 6000,
       startFrom = 0,
       phrases = [],
+      forceProvider,
     } = await req.json();
 
-    // Validate
     if (!Array.isArray(phrases) || phrases.length === 0) {
       return new Response(
         JSON.stringify({
           error: 'Provide "phrases" array with { text, emotion } objects',
-          example: { phrases: [{ text: 'Cristão caminhou...', emotion: 'solemn' }], batchSize: 5 },
+          example: { phrases: [{ text: 'Cristão caminhou...', emotion: 'solemn' }], batchSize: 5, forceProvider: 'freetts' },
         }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
@@ -62,6 +56,8 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     const batch = phrases.slice(startFrom, startFrom + batchSize);
+    const providerToCheck = forceProvider || 'freetts';
+    
     const results = {
       generated: 0,
       skipped: 0,
@@ -71,6 +67,7 @@ Deno.serve(async (req) => {
       processed: startFrom + batch.length,
       nextStartFrom: startFrom + batch.length,
       done: startFrom + batch.length >= phrases.length,
+      provider: providerToCheck,
     };
 
     for (let i = 0; i < batch.length; i++) {
@@ -82,9 +79,9 @@ Deno.serve(async (req) => {
       }
 
       const hash = await hashKey(entry.text, entry.emotion);
-      const cachePath = `${entry.emotion}/${hash}.mp3`;
+      const cachePath = `${providerToCheck}/${entry.emotion}/${hash}.mp3`;
 
-      // Check if already cached
+      // Check if already cached for this provider
       const { data: existing } = await supabase.storage
         .from('tts-cache')
         .download(cachePath);
@@ -95,7 +92,7 @@ Deno.serve(async (req) => {
         continue;
       }
 
-      // Generate via the main TTS function (reuses all the logic)
+      // Generate via the main TTS function with forceProvider
       try {
         const ttsUrl = `${supabaseUrl}/functions/v1/elevenlabs-tts`;
         const response = await fetch(ttsUrl, {
@@ -104,13 +101,16 @@ Deno.serve(async (req) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${serviceRoleKey}`,
           },
-          body: JSON.stringify({ text: entry.text, emotion: entry.emotion }),
+          body: JSON.stringify({
+            text: entry.text,
+            emotion: entry.emotion,
+            forceProvider: providerToCheck,
+          }),
         });
 
         if (response.ok) {
-          // Audio was generated and cached by the TTS function
-          await response.arrayBuffer(); // consume body
-          console.log(`[PreGen] GENERATED: ${entry.text.slice(0, 50)}...`);
+          await response.arrayBuffer();
+          console.log(`[PreGen ${providerToCheck}] GENERATED: ${entry.text.slice(0, 50)}...`);
           results.generated++;
         } else {
           const err = await response.text();
@@ -118,7 +118,6 @@ Deno.serve(async (req) => {
           results.failed++;
           results.errors.push(`${entry.text.slice(0, 30)}... → ${response.status}`);
           
-          // If rate-limited, stop the batch to avoid burning all keys
           if (response.status === 503) {
             console.log(`[PreGen] Rate-limited — stopping batch. Resume from ${startFrom + i}`);
             results.nextStartFrom = startFrom + i;
@@ -133,7 +132,6 @@ Deno.serve(async (req) => {
         results.errors.push(msg.slice(0, 100));
       }
 
-      // Delay between generations to avoid anti-fraud detection
       if (i < batch.length - 1) {
         await new Promise(r => setTimeout(r, delayMs));
       }
