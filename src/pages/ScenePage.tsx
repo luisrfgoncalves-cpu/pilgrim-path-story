@@ -174,7 +174,12 @@ const ScenePage = () => {
 
     return portraits;
   }, [chapter, progress.campaign]);
-  const bgImage = chapter ? sceneImages[chapter.id] : undefined;
+  const beatImageKey = chapter && currentBeat
+    ? [`${chapter.id}__beat${beatIndex + 1}`, `${chapter.id}__${currentBeat.startIndex}`]
+    : [];
+  const bgImage = chapter
+    ? beatImageKey.map(key => sceneImages[key]).find(Boolean) || sceneImages[chapter.id]
+    : undefined;
 
   // Preload next scene images + character images for instant loading
   useEffect(() => {
@@ -631,17 +636,17 @@ const ScenePage = () => {
   // Epic moment detection
   const hasEpicMoment = chapter ? !!epicMoments[chapter.id] : false;
 
-  // Auto-narrate first beat on scene entry for epic/key scenes
+  // Auto-narrate first beat only after all reveal/cards are closed
   useEffect(() => {
     if (!chapter || transitioning || !audioOn || beats.length === 0) return;
-    if (!shouldAutoNarrate) return;
+    if (!shouldAutoNarrate || !canShowChoices) return;
     const firstBeatText = beats[0]?.lines.join(' ') || '';
-    if (!firstBeatText) return;
+    if (!firstBeatText || beatIndex !== 0) return;
     const t = setTimeout(() => {
       speak(firstBeatText, { emotion: sceneEmotion, isEpic: hasEpicMoment });
-    }, 1200);
+    }, 500);
     return () => clearTimeout(t);
-  }, [chapter?.id, transitioning, audioOn, shouldAutoNarrate]);
+  }, [chapter?.id, transitioning, audioOn, shouldAutoNarrate, canShowChoices, beatIndex, beats, sceneEmotion, hasEpicMoment, speak]);
 
   if (!chapter) {
     navigate('/');
@@ -853,9 +858,13 @@ const ScenePage = () => {
         {bgImage && (
           <div className="relative w-full overflow-hidden" style={{ maxHeight: '320px', minHeight: '200px', background: 'hsl(var(--card))' }}>
             {(() => {
-              const imgVar = getSceneImageVariation(chapter.id);
+              const variationKey = beatImageKey.find(key => sceneImages[key]) || chapter.id;
+              const imgVar = getSceneImageVariation(variationKey);
+              const beatShiftX = ((beatIndex % 3) - 1) * 4;
+              const beatScale = 1 + ((beatIndex % 4) * 0.02);
               return (
                 <img
+                  key={`${chapter.id}-${beatIndex}-${bgImage}`}
                   src={bgImage}
                   alt={chapter.title}
                   width={1024}
@@ -864,11 +873,11 @@ const ScenePage = () => {
                   decoding="async"
                   fetchPriority="high"
                   onLoad={() => setImageLoaded(true)}
-                  className="w-full h-auto object-cover scene-image scene-image-alive transition-all duration-[2000ms] ease-in-out"
+                  className="w-full h-auto object-cover scene-image scene-image-alive transition-all duration-[1200ms] ease-in-out"
                   style={{
                     ...atmosphere.imageStyle,
                     objectPosition: imgVar.objectPosition,
-                    transform: imgVar.transform,
+                    transform: `${imgVar.transform} translateX(${beatShiftX}px) scale(${beatScale})`,
                     transformOrigin: 'center center',
                     filter: [
                       getSceneAtmosphere(chapter.id).imageFilter || 'brightness(1.05) saturate(1.0)',
