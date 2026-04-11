@@ -513,6 +513,7 @@ export default function RPGEventPopup({
   }, [boss, bossPhaseIdx, bossWins, selectedAnswer]);
 
   const handleFinalDismiss = useCallback(() => {
+    stopBoard(); // Stop any ongoing narration
     if (!resultData) { onDismiss(); return; }
 
     let posAdjust = 0;
