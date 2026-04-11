@@ -626,7 +626,20 @@ const ScenePage = () => {
   const shouldAutoNarrate = chapter ? autoNarrateScenes.has(chapter.id) : false;
 
   // ═══ BEATS SYSTEM — group narrative into 2-3 line beats ═══
-  const beats = useMemo(() => groupIntoBeats(fullNarrative, 5), [fullNarrative]);
+  // Group only PRIMARY narrative into beats (for correct image mapping)
+  // Then append supplementary lines to the last beat
+  const beats = useMemo(() => {
+    const primaryBeats = groupIntoBeats(primaryNarrative, 5);
+    if (supplementaryLines.length > 0 && primaryBeats.length > 0) {
+      // Append supplementary lines as an extra beat at the end
+      const lastBeatEnd = primaryBeats[primaryBeats.length - 1];
+      const startIdx = lastBeatEnd.startIndex + lastBeatEnd.lines.length;
+      primaryBeats.push({ lines: supplementaryLines, startIndex: startIdx });
+    } else if (supplementaryLines.length > 0 && primaryBeats.length === 0) {
+      primaryBeats.push({ lines: supplementaryLines, startIndex: 0 });
+    }
+    return primaryBeats;
+  }, [primaryNarrative, supplementaryLines]);
   const currentBeat = beats[beatIndex] ?? null;
   const hasMoreBeats = beatIndex < beats.length - 1;
 
