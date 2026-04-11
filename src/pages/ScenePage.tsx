@@ -219,10 +219,11 @@ const ScenePage = () => {
     attributes: progress.attributes,
   }), [progress, history]);
 
-  // Build primary narrative separately from contextual lines so the story flow stays coherent
-  const primaryNarrative = chapter?.narrative || [];
+  // ═══ PRIMARY NARRATIVE (core story only — used for beats & image mapping) ═══
+  const primaryNarrative = chapter ? [...chapter.narrative] : [];
 
-  const contextualNarrative = chapter ? [
+  // ═══ SUPPLEMENTARY LINES (dynamic content — appended to last beat, not mixed in) ═══
+  const supplementaryLines: string[] = chapter ? [
     ...(isReplay && chapter.replayNarrative ? chapter.replayNarrative : []),
     ...(sceneVariations[chapter.id] || [])
       .filter(v => v.condition(variationCtx))
@@ -247,7 +248,8 @@ const ScenePage = () => {
     ...(emotional?.atmosphereLine ? [emotional.atmosphereLine] : []),
   ] : [];
 
-  const fullNarrative = primaryNarrative;
+  // Full narrative for TTS and total content (primary + supplementary)
+  const fullNarrative = [...primaryNarrative, ...supplementaryLines];
 
   // Record playthrough completion when reaching a final ending
   const [playthroughRecorded, setPlaythroughRecorded] = useState(false);
@@ -526,10 +528,10 @@ const ScenePage = () => {
   const canShowChoices = !hasCharReveal;
 
   useEffect(() => {
-    if (!chapter || primaryNarrative.length > 0 || !canShowChoices) return;
+    if (!chapter || fullNarrative.length > 0 || !canShowChoices) return;
     const timer = setTimeout(() => setShowChoices(true), 180);
     return () => clearTimeout(timer);
-  }, [chapter, primaryNarrative.length, canShowChoices]);
+  }, [chapter, fullNarrative.length, canShowChoices]);
 
   // Delayed mini-game trigger button — appears 12s after choices show
   // Auto-popup notification after 30s if user hasn't clicked the button
@@ -624,7 +626,20 @@ const ScenePage = () => {
   const shouldAutoNarrate = chapter ? autoNarrateScenes.has(chapter.id) : false;
 
   // ═══ BEATS SYSTEM — group narrative into 2-3 line beats ═══
-  const beats = useMemo(() => groupIntoBeats(fullNarrative, 5), [fullNarrative]);
+  // Group only PRIMARY narrative into beats (for correct image mapping)
+  // Then append supplementary lines to the last beat
+  const beats = useMemo(() => {
+    const primaryBeats = groupIntoBeats(primaryNarrative, 5);
+    if (supplementaryLines.length > 0 && primaryBeats.length > 0) {
+      // Append supplementary lines as an extra beat at the end
+      const lastBeatEnd = primaryBeats[primaryBeats.length - 1];
+      const startIdx = lastBeatEnd.startIndex + lastBeatEnd.lines.length;
+      primaryBeats.push({ lines: supplementaryLines, startIndex: startIdx });
+    } else if (supplementaryLines.length > 0 && primaryBeats.length === 0) {
+      primaryBeats.push({ lines: supplementaryLines, startIndex: 0 });
+    }
+    return primaryBeats;
+  }, [primaryNarrative, supplementaryLines]);
   const currentBeat = beats[beatIndex] ?? null;
   const hasMoreBeats = beatIndex < beats.length - 1;
 
