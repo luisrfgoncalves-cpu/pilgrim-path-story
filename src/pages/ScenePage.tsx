@@ -247,6 +247,8 @@ const ScenePage = () => {
     ...(emotional?.atmosphereLine ? [emotional.atmosphereLine] : []),
   ] : [];
 
+  const fullNarrative = primaryNarrative;
+
   // Record playthrough completion when reaching a final ending
   const [playthroughRecorded, setPlaythroughRecorded] = useState(false);
   useEffect(() => {
