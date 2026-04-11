@@ -74,6 +74,9 @@ function getApiKeys(): string[] {
     Deno.env.get('ELEVENLABS_API_KEY_4'),
     Deno.env.get('ELEVENLABS_API_KEY_5'),
     Deno.env.get('ELEVENLABS_API_KEY_6'),
+    Deno.env.get('ELEVENLABS_API_KEY_7'),
+    Deno.env.get('ELEVENLABS_API_KEY_8'),
+    Deno.env.get('ELEVENLABS_API_KEY_9'),
   ].filter((k): k is string => typeof k === 'string' && k.length > 0);
 }
 
