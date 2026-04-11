@@ -820,6 +820,16 @@ export default function RPGEventPopup({
           {/* CHALLENGE PHASE — Question */}
           {phase === 'challenge' && !showResult && question && (
             <div className="space-y-4">
+              {/* Wisdom insight hint for questions */}
+              {wisdomHint && (
+                <div className="p-3 rounded-xl text-sm font-display" style={{
+                  background: 'hsl(200 30% 12%)',
+                  border: '1px solid hsl(200 50% 35%)',
+                  color: 'hsl(200 60% 75%)',
+                }}>
+                  {wisdomHint}
+                </div>
+              )}
               <p className="text-lg font-display font-bold text-foreground leading-relaxed">{question.question}</p>
               <p className="text-sm text-muted-foreground text-center">📖 {question.bibleReference}</p>
 
