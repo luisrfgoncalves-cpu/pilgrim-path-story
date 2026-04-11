@@ -1063,7 +1063,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     sceneEvent: { type: 'suspense', delay: 1500, duration: 4000, message: 'O ar muda... paz...' },
     narrative: [
       "O ar muda. O sono da Terra Encantada fica para trás. {{divine}}O País de Beulá se abre diante do grupo — flores, pássaros cantando, sol perpétuo.{{/divine}}",
-      "Aqui, {{divine}}anjos caminham entre os peregrinos{{/divine}}. As crianças brincam sem medo pela primeira vez na jornada inteira.",
+      "Aqui, a paz do Rei é sentida em toda parte. As crianças brincam sem medo pela primeira vez na jornada inteira.",
       "Cristã respira fundo: {{divine}}\"É assim que cheira a paz.\"{{/divine}}",
       "Misericórdia sorri: {{whisper}}\"Valeu cada pântano, cada gigante, cada lágrima.\"{{/whisper}}"
     ],
