@@ -8,6 +8,7 @@ import {
   playShieldAcquired, playSwapEvent, playCurrentEvent,
   playSurpriseEvent, playCheckpointEvent, playBackToStartEvent,
 } from './BoardSounds';
+import { useBoardTTS } from '@/hooks/useBoardTTS';
 
 // Map tile types to character images
 const TILE_CHARACTER_MAP: Record<string, string> = {
@@ -95,18 +96,25 @@ interface TileEventPopupProps {
 
 export default function TileEventPopup({ visible, tileType, message, emoji, playerName, onDismiss }: TileEventPopupProps) {
   const hasPlayedSound = useRef(false);
+  const { narrateBoard, stopBoard, getEmotion } = useBoardTTS();
 
   useEffect(() => {
     if (!visible) {
       hasPlayedSound.current = false;
+      stopBoard();
       return;
     }
-    // Play sound immediately on reveal
+    // Play sound immediately on reveal, then narrate
     if (!hasPlayedSound.current) {
       hasPlayedSound.current = true;
       playSoundForTile(tileType);
+      // Small delay so SFX plays first, then voice narration
+      const t = window.setTimeout(() => {
+        narrateBoard(message, getEmotion(tileType));
+      }, 600);
+      return () => clearTimeout(t);
     }
-  }, [visible, tileType]);
+  }, [visible, tileType, message, narrateBoard, stopBoard, getEmotion]);
 
   // No auto-dismiss — user must tap to close (prevents premature closure)
 
