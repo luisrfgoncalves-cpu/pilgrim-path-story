@@ -11,6 +11,7 @@ import PilgrimAvatar from '@/components/PilgrimAvatar';
 import SplashScreen from '@/components/SplashScreen';
 import Onboarding from '@/components/Onboarding';
 import GameNotification from '@/components/GameNotification';
+import CinematicRecap from '@/components/CinematicRecap';
 import { ChevronRight, Sparkles, RotateCcw, Map, Users, Flame, Swords, BookOpen, Home, Sun, Moon } from 'lucide-react';
 import { Smartphone, X } from 'lucide-react';
 import { toast } from 'sonner';
@@ -143,12 +144,38 @@ const Index = () => {
     [progress.attributes, progress.choicesMade, currentPhase.num, progress.playthrough]
   );
 
+  // ═══ CINEMATIC RECAP — show when returning with significant progress ═══
+  const [showRecap, setShowRecap] = useState(() => {
+    if (!hasProgress || progress.visitedChapters.length < 3) return false;
+    const lastVisit = sessionStorage.getItem('last_recap_shown');
+    if (lastVisit) return false; // Only show once per session
+    return true;
+  });
+
   if (showSplash) {
     return <SplashScreen onFinish={handleSplashDone} />;
   }
 
   if (showOnboarding && !hasProgress) {
     return <Onboarding onComplete={() => setShowOnboarding(false)} />;
+  }
+
+  if (showRecap && currentChapter) {
+    return (
+      <CinematicRecap
+        currentChapterId={progress.currentChapterId}
+        chapterTitle={currentChapter.title}
+        onContinue={() => {
+          setShowRecap(false);
+          sessionStorage.setItem('last_recap_shown', '1');
+          handleContinue();
+        }}
+        onDismiss={() => {
+          setShowRecap(false);
+          sessionStorage.setItem('last_recap_shown', '1');
+        }}
+      />
+    );
   }
 
   return (

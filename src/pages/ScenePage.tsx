@@ -40,6 +40,10 @@ import { toast } from 'sonner';
 import { renderNarrative, getSceneAtmosphere } from '@/lib/narrativeRenderer';
 import { getSceneImageVariation } from '@/lib/sceneImageVariation';
 import { AllegoryCard, allegoryMeanings } from '@/components/AllegoryCard';
+import { groupIntoBeats, NarrativeBeat } from '@/hooks/useNarrativeBeats';
+import EpicMoment, { epicMoments } from '@/components/EpicMoment';
+import EpicDefeatScreen from '@/components/EpicDefeatScreen';
+import { useTTS } from '@/hooks/useTTS';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
   fe: { label: 'Fé', emoji: '🔥', icon: Flame },
@@ -63,10 +67,20 @@ const ScenePage = () => {
   const { profile } = useAuth();
   useProgressSync(progress);
   const [narrativeIndex, setNarrativeIndex] = useState(0);
+  const [beatIndex, setBeatIndex] = useState(0);
   const [showChoices, setShowChoices] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(true); // default true to avoid brown flash
+  const [imageLoaded, setImageLoaded] = useState(true);
   const [showStats, setShowStats] = useState(false);
   const [audioOn, setAudioOn] = useState(true);
+  // Epic moment state
+  const [epicMomentActive, setEpicMomentActive] = useState(false);
+  const [epicMomentDone, setEpicMomentDone] = useState(false);
+  // Epic defeat screen state
+  const [showDefeatScreen, setShowDefeatScreen] = useState(false);
+  const [defeatMessage, setDefeatMessage] = useState('');
+  const [defeatVillain, setDefeatVillain] = useState<string | undefined>();
+  // TTS
+  const { speak, stop: stopTTS, isPlaying: ttsPlaying } = useTTS();
   const [sceneEventDone, setSceneEventDone] = useState(false);
   const [suspenseActive, setSuspenseActive] = useState(false);
   const [pendingChoice, setPendingChoice] = useState<(() => void) | null>(null);
@@ -79,6 +93,8 @@ const ScenePage = () => {
   // Streak counter (internal only — no popup)
   const [streak, setStreak] = useState(0);
   const [lastStreakEffect, setLastStreakEffect] = useState<'positive' | 'negative' | null>(null);
+  // Tone selection for dialogue choices
+  const [selectedTone, setSelectedTone] = useState<Record<number, string>>({});
   // Mini-game state
   const [miniGameDone, setMiniGameDone] = useState(false);
   const [miniGameResult, setMiniGameResult] = useState<MiniGameResult | null>(null);
@@ -260,6 +276,11 @@ const ScenePage = () => {
     setSceneEventDone(false);
     setSuspenseActive(false);
     setPendingChoice(null);
+    setBeatIndex(0);
+    setEpicMomentActive(false);
+    setEpicMomentDone(false);
+    setShowDefeatScreen(false);
+    stopTTS();
     setMiniGameDone(false);
     setMiniGameResult(null);
     setShowMiniGameResult(false);
@@ -630,12 +651,30 @@ const ScenePage = () => {
 
   // Merge all choices: base + dynamic
   const allChoices = [...availableChoices, ...dynamicChoicesMapped];
-  const currentNarrative = fullNarrative[narrativeIndex] ?? null;
-  const hasMoreNarrative = narrativeIndex < fullNarrative.length - 1;
+
+  // ═══ BEATS SYSTEM — group narrative into 2-3 line beats ═══
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const beats = groupIntoBeats(fullNarrative, 2);
+  const currentBeat = beats[beatIndex] ?? null;
+  const hasMoreBeats = beatIndex < beats.length - 1;
+
+  // Epic moment detection
+  const hasEpicMoment = chapter ? !!epicMoments[chapter.id] : false;
 
   const handleAdvanceNarrative = () => {
-    if (hasMoreNarrative) {
-      setNarrativeIndex(prev => prev + 1);
+    if (hasMoreBeats) {
+      setBeatIndex(prev => prev + 1);
+      // TTS for next beat
+      if (audioOn && beats[beatIndex + 1]) {
+        const beatText = beats[beatIndex + 1].lines.join(' ');
+        speak(beatText, { isEpic: hasEpicMoment });
+      }
+      return;
+    }
+
+    // Check for epic moment before showing choices
+    if (hasEpicMoment && !epicMomentDone) {
+      setEpicMomentActive(true);
       return;
     }
 
@@ -775,6 +814,16 @@ const ScenePage = () => {
                   triggerChoiceEffect(result.effects as Record<string, number>);
                   sfxForChoice(result.effects as Record<string, number>);
                 }
+                // Trigger epic defeat for severe failures
+                if (!result.success) {
+                  const totalLoss = Object.values(result.effects).reduce((a: number, b) => a + Math.min(0, (b as number) || 0), 0);
+                  if (totalLoss <= -3) {
+                    setTimeout(() => {
+                      setDefeatMessage(chapter ? `O desafio em ${chapter.title} foi demais para você...` : 'Você falhou no desafio...');
+                      setShowDefeatScreen(true);
+                    }, 1500);
+                  }
+                }
               }}
             />
           </div>
@@ -912,11 +961,11 @@ const ScenePage = () => {
           </div>
 
           <div className="space-y-3 mb-6" style={atmosphere.textStyle}>
-            {currentNarrative && (
+            {currentBeat && (
               (() => {
                 const sceneAtmo = getSceneAtmosphere(chapter.id);
                 return <div
-                key={`${chapter.id}-${narrativeIndex}`}
+                key={`${chapter.id}-beat-${beatIndex}`}
                 className="fade-in rounded-xl border px-4 py-4"
                 style={{
                   boxShadow: sceneAtmo.textGlow
@@ -926,41 +975,66 @@ const ScenePage = () => {
                   borderColor: sceneAtmo.borderAccent || 'hsl(var(--border) / 0.6)',
                 }}
               >
-                <p className="narrative-text text-foreground/90" style={sceneAtmo.textColor ? { color: sceneAtmo.textColor } : undefined}>
-                  {renderNarrative(currentNarrative)}
-                </p>
+                {currentBeat.lines.map((line, li) => (
+                  <p
+                    key={li}
+                    className="narrative-text text-foreground/90 mb-2 last:mb-0"
+                    style={{
+                      ...(sceneAtmo.textColor ? { color: sceneAtmo.textColor } : {}),
+                      animation: `fade-in 0.5s ease-out ${li * 200}ms both`,
+                    }}
+                  >
+                    {renderNarrative(line)}
+                  </p>
+                ))}
               </div>;
               })()
             )}
 
-            {fullNarrative.length > 0 && !showChoices && (
+            {beats.length > 0 && !showChoices && (
               <div className="space-y-2 sticky bottom-0 z-10 pb-2 pt-2" style={{ background: 'linear-gradient(to top, hsl(var(--background)) 60%, transparent)' }}>
                 {/* Navigation: back + forward buttons always visible */}
                 <div className="flex items-center gap-2 rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm px-3 py-2.5">
                   {/* Back button */}
                   <button
                     onClick={() => {
-                      if (narrativeIndex > 0) {
-                        setNarrativeIndex(prev => Math.max(0, prev - 1));
+                      if (beatIndex > 0) {
+                        setBeatIndex(prev => Math.max(0, prev - 1));
                       }
                     }}
-                    disabled={narrativeIndex === 0}
+                    disabled={beatIndex === 0}
                     className="btn-medieval-secondary px-3 py-2 text-xs flex items-center gap-1.5 flex-shrink-0 disabled:opacity-40 disabled:pointer-events-none"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" /> Voltar
                   </button>
                   {/* Progress indicator */}
                   <p className="text-[10px] font-display uppercase tracking-[0.15em] text-muted-foreground flex-1 text-center">
-                    {Math.min(narrativeIndex + 1, fullNarrative.length)}/{fullNarrative.length}
+                    {Math.min(beatIndex + 1, beats.length)}/{beats.length} ✦
                   </p>
+                  {/* TTS button */}
+                  {currentBeat && (
+                    <button
+                      onClick={() => {
+                        if (ttsPlaying) {
+                          stopTTS();
+                        } else {
+                          speak(currentBeat.lines.join(' '), { isEpic: hasEpicMoment });
+                        }
+                      }}
+                      className="btn-medieval-icon !p-2 !rounded-lg flex items-center justify-center active:scale-95"
+                      aria-label={ttsPlaying ? 'Parar narração' : 'Ouvir narração'}
+                    >
+                      {ttsPlaying ? <VolumeX className="w-3.5 h-3.5 text-primary" /> : <Volume2 className="w-3.5 h-3.5 text-muted-foreground" />}
+                    </button>
+                  )}
                   {/* Continue button */}
                   <button
                     onClick={handleAdvanceNarrative}
-                    disabled={!hasMoreNarrative && !canShowChoices}
+                    disabled={!hasMoreBeats && !canShowChoices && !hasEpicMoment}
                     className="btn-medieval min-w-[120px] px-4 py-2 text-xs disabled:pointer-events-none disabled:opacity-60 flex items-center justify-center gap-1.5"
                   >
-                    {hasMoreNarrative ? 'Continuar' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'} 
-                    {hasMoreNarrative && <ArrowRight className="w-3.5 h-3.5" />}
+                    {hasMoreBeats ? 'Continuar' : (hasEpicMoment && !epicMomentDone) ? '✦ Momento' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'} 
+                    {hasMoreBeats && <ArrowRight className="w-3.5 h-3.5" />}
                   </button>
                 </div>
               </div>
@@ -1072,6 +1146,15 @@ const ScenePage = () => {
                   if (result.effects) {
                     triggerChoiceEffect(result.effects as Record<string, number>);
                     sfxForChoice(result.effects as Record<string, number>);
+                  }
+                  if (!result.success) {
+                    const totalLoss = Object.values(result.effects).reduce((a: number, b) => a + Math.min(0, (b as number) || 0), 0);
+                    if (totalLoss <= -3) {
+                      setTimeout(() => {
+                        setDefeatMessage(chapter ? `O desafio em ${chapter.title} foi demais para você...` : 'Você falhou no desafio...');
+                        setShowDefeatScreen(true);
+                      }, 1500);
+                    }
                   }
                   // GameNotification handles dismiss
                 }}
@@ -1219,7 +1302,7 @@ const ScenePage = () => {
                     <div className="flex items-center gap-2">
                       {fullNarrative.length > 0 && (
                         <button
-                          onClick={() => { setShowChoices(false); setNarrativeIndex(0); }}
+                          onClick={() => { setShowChoices(false); setBeatIndex(0); }}
                           className="flex items-center gap-1 text-[10px] font-display text-primary/70 hover:text-primary transition-colors uppercase tracking-wider"
                         >
                           <ArrowLeft className="w-3 h-3" /> Reler
@@ -1296,22 +1379,58 @@ const ScenePage = () => {
                         </button>
                       )}
 
-                      {allChoices.map((choice, i) => (
-                        <button
-                          key={i}
-                          onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
-                          className="choice-btn-medieval group"
-                          style={{ animationDelay: `${i * 0.08}s` }}
-                        >
-                          <p className="text-foreground font-body text-base group-hover:text-primary transition-colors">{choice.text}</p>
-                          {choice.requires && (
-                            <p className="text-xs text-primary mt-2 uppercase tracking-wider">★ Desbloqueada por atributos</p>
-                          )}
-                          {choice.item && (
-                            <p className="text-xs text-primary/70 mt-1.5">✦ Concede um item</p>
-                          )}
-                        </button>
-                      ))}
+                      {allChoices.map((choice, i) => {
+                        const choiceTone = choice.toneOptions?.find(t => t.tone === selectedTone[i]);
+                        const toneEffects = choiceTone?.effects || {};
+                        const mergedEffects = { ...choice.effects };
+                        Object.entries(toneEffects).forEach(([k, v]) => {
+                          (mergedEffects as any)[k] = ((mergedEffects as any)[k] || 0) + (v || 0);
+                        });
+                        const toneConsequence = choiceTone
+                          ? `${choice.consequence || ''}\n\n${choiceTone.npcReaction}`
+                          : choice.consequence;
+
+                        return (
+                          <div key={i} className="space-y-2" style={{ animationDelay: `${i * 0.08}s` }}>
+                            <button
+                              onClick={() => handleChoice(choice.nextChapterId, choice.text, mergedEffects, toneConsequence, choice.flag, choice.conditionalEffects, choice.item)}
+                              className="choice-btn-medieval group w-full"
+                            >
+                              <p className="text-foreground font-body text-base group-hover:text-primary transition-colors">{choice.text}</p>
+                              {choice.requires && (
+                                <p className="text-xs text-primary mt-2 uppercase tracking-wider">★ Desbloqueada por atributos</p>
+                              )}
+                              {choice.item && (
+                                <p className="text-xs text-primary/70 mt-1.5">✦ Concede um item</p>
+                              )}
+                              {choiceTone && (
+                                <p className="text-xs mt-1.5 italic text-muted-foreground">
+                                  {choiceTone.emoji} {choiceTone.label}
+                                </p>
+                              )}
+                            </button>
+
+                            {/* Tone chips */}
+                            {choice.toneOptions && choice.toneOptions.length > 0 && (
+                              <div className="flex gap-2 flex-wrap pl-2">
+                                {choice.toneOptions.map((tone) => (
+                                  <button
+                                    key={tone.tone}
+                                    onClick={() => setSelectedTone(prev => ({ ...prev, [i]: prev[i] === tone.tone ? '' : tone.tone }))}
+                                    className={`text-xs px-3 py-1.5 rounded-full border transition-all ${
+                                      selectedTone[i] === tone.tone
+                                        ? 'bg-primary/20 border-primary/40 text-primary'
+                                        : 'bg-card/50 border-border/50 text-muted-foreground hover:border-primary/30'
+                                    }`}
+                                  >
+                                    {tone.emoji} {tone.label}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </>
                   )}
 
@@ -1554,6 +1673,33 @@ const ScenePage = () => {
               setAllPersistentChars(npcs);
               if (npcs[0]) setPersistentChar(npcs[0]);
             }
+          }}
+        />
+      )}
+
+      {/* ═══ EPIC MOMENT — immersive full-screen for key scenes ═══ */}
+      {epicMomentActive && chapter && epicMoments[chapter.id] && (
+        <EpicMoment
+          sceneId={chapter.id}
+          config={epicMoments[chapter.id]}
+          onComplete={() => {
+            setEpicMomentActive(false);
+            setEpicMomentDone(true);
+            if (canShowChoices) setShowChoices(true);
+          }}
+        />
+      )}
+
+      {/* ═══ EPIC DEFEAT SCREEN — dramatic failure with hold-to-rise ═══ */}
+      {showDefeatScreen && (
+        <EpicDefeatScreen
+          message={defeatMessage}
+          villain={defeatVillain}
+          onRise={() => {
+            setShowDefeatScreen(false);
+            // Grant +1 perseverance for rising
+            const riseEffects = { perseveranca: 1 };
+            triggerChoiceEffect(riseEffects);
           }}
         />
       )}
