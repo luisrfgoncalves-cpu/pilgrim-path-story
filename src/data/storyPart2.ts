@@ -215,7 +215,11 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-cena6",
         effects: { coragem: 2, fe: 1 },
         flag: "coragem_apos_ataque",
-        consequence: "A coragem de Cristã não nasce da ausência de medo, mas da presença de uma promessa maior que o perigo. — Josué 1:9: \"Não te mandei eu? Sê forte e corajoso; não temas, nem te espantes; porque o Senhor teu Deus é contigo, por onde quer que andares.\""
+        consequence: "A coragem de Cristã não nasce da ausência de medo, mas da presença de uma promessa maior que o perigo. — Josué 1:9: \"Não te mandei eu? Sê forte e corajoso; não temas, nem te espantes; porque o Senhor teu Deus é contigo, por onde quer que andares.\"",
+        toneOptions: [
+          { tone: 'firm', emoji: '⚔️', label: 'Com bravura', npcReaction: 'Os Mal-Encarados recuam diante da firmeza de Cristã. O guardião sorri: "Você é forte como seu marido."', effects: { coragem: 1 } },
+          { tone: 'humble', emoji: '🙏', label: 'Tremendo mas orando', npcReaction: 'O guardião se aproxima: "A coragem não é ausência de medo — é fé em meio ao medo."', effects: { fe: 1 } }
+        ]
       },
       {
         text: "Tremer mas continuar — em silêncio, segurando os filhos",
