@@ -272,8 +272,14 @@ function resolveTileEffect(
         result.message = '🛡️ O Gigante ataca com fúria descomunal — mas seu escudo resplandece com luz que cega a criatura! O monstro recua urra de dor, incapaz de penetrar a proteção divina!';
         result.emoji = '🛡️';
       } else if (rng >= 70) {
-        result.stun = true;
-        result.stunTurns = 1;
+        let stunAmount = 1;
+        // Esperança: stun_reduction passive
+        if (passive?.type === 'stun_reduction') {
+          stunAmount = Math.max(0, stunAmount - passive.amount);
+          result.passiveTriggered = `⚡ ${char!.passive.name}: A esperança brilha mesmo nas trevas! Paralisia reduzida!`;
+        }
+        result.stun = stunAmount > 0;
+        result.stunTurns = stunAmount;
         result.message = narrative || '💀 O Gigante te captura com mãos do tamanho de troncos! Seus dedos se fecham como gaiolas de ferro. Você perde 1 turno preso em suas garras — ore para que a libertação venha antes que seja tarde.';
         result.emoji = '💀';
         result.statUpdate.giantsLost = 1;
