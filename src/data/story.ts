@@ -1608,7 +1608,11 @@ export const storyChapters: Record<string, StoryChapter> = {
         text: "Caminhar lado a lado com Fiel, compartilhando histórias",
         nextChapterId: "fase3-cena10",
         effects: { perseveranca: 1, fe: 1 },
-        consequence: "Eclesiastes 4:9-10: 'Melhor é serem dois do que um, pois se caírem, um levanta o companheiro.' Fiel é a provisão divina de companhia — a jornada nunca deveria ser solitária."
+        consequence: "Eclesiastes 4:9-10: 'Melhor é serem dois do que um, pois se caírem, um levanta o companheiro.' Fiel é a provisão divina de companhia — a jornada nunca deveria ser solitária.",
+        toneOptions: [
+          { tone: 'humble', emoji: '🙏', label: 'Com gratidão', npcReaction: 'Fiel sorri: "É bom não estar sozinho. Deus providenciou."', effects: { fe: 1 } },
+          { tone: 'firm', emoji: '💪', label: 'Com entusiasmo', npcReaction: 'Fiel ri: "Esse é o espírito! Juntos somos mais fortes."', effects: { coragem: 1 } },
+        ]
       }
     ]
   },
@@ -1802,6 +1806,10 @@ export const storyChapters: Record<string, StoryChapter> = {
         consequence: "Marcos 8:38: 'Qualquer que se envergonhar de mim e das minhas palavras, o Filho do homem também se envergonhará dele.' Defender Fiel é defender a verdade diante do tribunal do mundo.",
         flag: "permaneceu_diferente",
         item: "pedra_memorial",
+        toneOptions: [
+          { tone: 'humble', emoji: '🙏', label: 'Com mansidão', npcReaction: 'O juiz vacila por um instante. Sua mansidão desconcerta.', effects: { fe: 1 } },
+          { tone: 'firm', emoji: '🔥', label: 'Com autoridade', npcReaction: 'Sua voz ecoa no tribunal. Até os guardas recuam um passo.', effects: { coragem: 1 } },
+        ],
         conditionalEffects: [
           { attr: "coragem", threshold: 6, bonus: { perseveranca: 1 }, penalty: {} }
         ]
@@ -2020,7 +2028,11 @@ export const storyChapters: Record<string, StoryChapter> = {
         nextChapterId: "fase4-cena11",
         effects: { fe: 2, discernimento: 1 },
         consequence: "1 Timóteo 6:9: 'Os que querem ser ricos caem em tentação e cilada.' Demas é descendente de Geazi e parente de Judas — homens que venderam o eterno por prata.",
-        flag: "rejeitou_demas"
+        flag: "rejeitou_demas",
+        toneOptions: [
+          { tone: 'humble', emoji: '🙏', label: 'Com compaixão', npcReaction: 'Demas hesita. Por um instante, algo muda em seus olhos. Mas logo volta a sorrir para outros viajantes.', effects: { fe: 1 } },
+          { tone: 'firm', emoji: '😤', label: 'Com repreensão', npcReaction: 'Demas recua. Sua máscara cai por um segundo, revelando o medo por trás da ganância.', effects: { coragem: 1 } },
+        ]
       },
       {
         text: "Ir olhar a mina — só uma espiada",
