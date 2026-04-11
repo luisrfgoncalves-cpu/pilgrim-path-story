@@ -26,11 +26,11 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 
 const memoryCache = new Map<string, string>();
+let globalAudio: HTMLAudioElement | null = null;
+let globalPlaybackToken = 0;
 
-// Provider priority: best first
 const PROVIDER_PRIORITY = ['elevenlabs', 'freetts', 'eidosspeech'] as const;
 
-// ─── IndexedDB ───
 const DB_NAME = 'peregrino-tts-cache';
 const DB_VERSION = 1;
 const STORE_NAME = 'audio';
@@ -71,7 +71,6 @@ async function saveToIDB(key: string, blob: Blob): Promise<void> {
     const store = tx.objectStore(STORE_NAME);
     store.put(blob, key);
   } catch {
-    // Cache is optional
   }
 }
 
@@ -86,8 +85,17 @@ function getCacheKey(text: string, emotion: string): string {
   return `${emotion}:${text.slice(0, 200)}`;
 }
 
+function stopGlobalAudio() {
+  if (globalAudio) {
+    globalAudio.pause();
+    globalAudio.currentTime = 0;
+    globalAudio = null;
+  }
+}
+
 function playAudioUrl(url: string): { audio: HTMLAudioElement; promise: Promise<void> } {
   const audio = new Audio(url);
+  audio.preload = 'auto';
   const promise = new Promise<void>((resolve, reject) => {
     audio.onended = () => resolve();
     audio.onerror = () => reject(new Error('Audio playback failed'));
@@ -98,66 +106,71 @@ function playAudioUrl(url: string): { audio: HTMLAudioElement; promise: Promise<
 export function useTTS() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTier, setCurrentTier] = useState<TTSTier | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const tokenRef = useRef(0);
 
   const stop = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      audioRef.current = null;
-    }
+    globalPlaybackToken += 1;
+    tokenRef.current = globalPlaybackToken;
+    stopGlobalAudio();
     setIsPlaying(false);
     setCurrentTier(null);
+  }, []);
+
+  const finalizeIfCurrent = useCallback((token: number, tier: TTSTier | null = null) => {
+    if (token !== globalPlaybackToken) return false;
+    setIsPlaying(false);
+    setCurrentTier(tier);
+    return true;
+  }, []);
+
+  const playResolvedUrl = useCallback(async (url: string, token: number, tier: TTSTier, cacheKey?: string, blob?: Blob) => {
+    if (token !== globalPlaybackToken) return false;
+    const { audio, promise } = playAudioUrl(url);
+    stopGlobalAudio();
+    globalAudio = audio;
+    setCurrentTier(tier);
+    if (cacheKey && blob) {
+      memoryCache.set(cacheKey, url);
+      saveToIDB(cacheKey, blob);
+    }
+    await audio.play();
+    await promise;
+    if (token === globalPlaybackToken) {
+      globalAudio = null;
+      setIsPlaying(false);
+      setCurrentTier(null);
+    }
+    return true;
   }, []);
 
   const speak = useCallback(async (text: string, options: TTSOptions = {}) => {
     stop();
 
     const { emotion = 'neutral' } = options;
-
-    const cleanText = text
-      .replace(/\{\{\/?\w+\}\}/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
-
+    const cleanText = text.replace(/\{\{\/?\w+\}\}/g, '').replace(/\s+/g, ' ').trim();
     if (!cleanText) return;
 
+    const token = globalPlaybackToken;
+    tokenRef.current = token;
     setIsPlaying(true);
-
     const cacheKey = getCacheKey(cleanText, emotion);
 
-    // ═══ LAYER 1: Memory cache ═══
     if (memoryCache.has(cacheKey)) {
       try {
-        const { audio, promise } = playAudioUrl(memoryCache.get(cacheKey)!);
-        audioRef.current = audio;
-        setCurrentTier('cached');
-        await audio.play();
-        await promise;
-        setIsPlaying(false);
-        setCurrentTier(null);
-        return;
-      } catch { /* fall through */ }
+        const ok = await playResolvedUrl(memoryCache.get(cacheKey)!, token, 'cached');
+        if (ok) return;
+      } catch {}
     }
 
-    // ═══ LAYER 2: IndexedDB ═══
     try {
       const cachedBlob = await getFromIDB(cacheKey);
       if (cachedBlob) {
         const url = URL.createObjectURL(cachedBlob);
-        memoryCache.set(cacheKey, url);
-        const { audio, promise } = playAudioUrl(url);
-        audioRef.current = audio;
-        setCurrentTier('cached');
-        await audio.play();
-        await promise;
-        setIsPlaying(false);
-        setCurrentTier(null);
-        return;
+        const ok = await playResolvedUrl(url, token, 'cached', cacheKey, cachedBlob);
+        if (ok) return;
       }
-    } catch { /* fall through */ }
+    } catch {}
 
-    // ═══ LAYER 3: Supabase Storage — try best provider first ═══
     try {
       const hash = await hashKey(cleanText, emotion);
       for (const provider of PROVIDER_PRIORITY) {
@@ -171,23 +184,14 @@ export function useTTS() {
             const blob = await resp.blob();
             if (blob.size > 100) {
               const url = URL.createObjectURL(blob);
-              memoryCache.set(cacheKey, url);
-              saveToIDB(cacheKey, blob);
-              const { audio, promise } = playAudioUrl(url);
-              audioRef.current = audio;
-              setCurrentTier(provider as TTSTier);
-              await audio.play();
-              await promise;
-              setIsPlaying(false);
-              setCurrentTier(null);
-              return;
+              const ok = await playResolvedUrl(url, token, provider as TTSTier, cacheKey, blob);
+              if (ok) return;
             }
           }
-        } catch { /* try next provider */ }
+        } catch {}
       }
-    } catch { /* fall through */ }
+    } catch {}
 
-    // ═══ LAYER 4: Edge Function (generates + caches) ═══
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 30000);
@@ -204,29 +208,19 @@ export function useTTS() {
       clearTimeout(timeout);
 
       if (response.ok) {
-        const source = response.headers.get('X-TTS-Source') || 'unknown';
+        const source = (response.headers.get('X-TTS-Source') || 'unknown') as TTSTier;
         const blob = await response.blob();
         if (blob.size > 100) {
           const url = URL.createObjectURL(blob);
-          memoryCache.set(cacheKey, url);
-          saveToIDB(cacheKey, blob);
-          const { audio, promise } = playAudioUrl(url);
-          audioRef.current = audio;
-          setCurrentTier(source as TTSTier);
-          await audio.play();
-          await promise;
-          setIsPlaying(false);
-          setCurrentTier(null);
-          return;
+          const ok = await playResolvedUrl(url, token, source, cacheKey, blob);
+          if (ok) return;
         }
       }
-    } catch { /* fall through */ }
+    } catch {}
 
-    // All failed — no audio (no robotic voice)
     console.log('[TTS] All providers unavailable. Text-only mode.');
-    setIsPlaying(false);
-    setCurrentTier(null);
-  }, [stop]);
+    finalizeIfCurrent(token, null);
+  }, [finalizeIfCurrent, playResolvedUrl, stop]);
 
   return { speak, stop, isPlaying, currentTier };
 }
