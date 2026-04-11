@@ -948,11 +948,11 @@ const ScenePage = () => {
           </div>
 
           <div className="space-y-3 mb-6" style={atmosphere.textStyle}>
-            {currentNarrative && (
+            {currentBeat && (
               (() => {
                 const sceneAtmo = getSceneAtmosphere(chapter.id);
                 return <div
-                key={`${chapter.id}-${narrativeIndex}`}
+                key={`${chapter.id}-beat-${beatIndex}`}
                 className="fade-in rounded-xl border px-4 py-4"
                 style={{
                   boxShadow: sceneAtmo.textGlow
@@ -962,41 +962,66 @@ const ScenePage = () => {
                   borderColor: sceneAtmo.borderAccent || 'hsl(var(--border) / 0.6)',
                 }}
               >
-                <p className="narrative-text text-foreground/90" style={sceneAtmo.textColor ? { color: sceneAtmo.textColor } : undefined}>
-                  {renderNarrative(currentNarrative)}
-                </p>
+                {currentBeat.lines.map((line, li) => (
+                  <p
+                    key={li}
+                    className="narrative-text text-foreground/90 mb-2 last:mb-0"
+                    style={{
+                      ...(sceneAtmo.textColor ? { color: sceneAtmo.textColor } : {}),
+                      animation: `fade-in 0.5s ease-out ${li * 200}ms both`,
+                    }}
+                  >
+                    {renderNarrative(line)}
+                  </p>
+                ))}
               </div>;
               })()
             )}
 
-            {fullNarrative.length > 0 && !showChoices && (
+            {beats.length > 0 && !showChoices && (
               <div className="space-y-2 sticky bottom-0 z-10 pb-2 pt-2" style={{ background: 'linear-gradient(to top, hsl(var(--background)) 60%, transparent)' }}>
                 {/* Navigation: back + forward buttons always visible */}
                 <div className="flex items-center gap-2 rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm px-3 py-2.5">
                   {/* Back button */}
                   <button
                     onClick={() => {
-                      if (narrativeIndex > 0) {
-                        setNarrativeIndex(prev => Math.max(0, prev - 1));
+                      if (beatIndex > 0) {
+                        setBeatIndex(prev => Math.max(0, prev - 1));
                       }
                     }}
-                    disabled={narrativeIndex === 0}
+                    disabled={beatIndex === 0}
                     className="btn-medieval-secondary px-3 py-2 text-xs flex items-center gap-1.5 flex-shrink-0 disabled:opacity-40 disabled:pointer-events-none"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" /> Voltar
                   </button>
                   {/* Progress indicator */}
                   <p className="text-[10px] font-display uppercase tracking-[0.15em] text-muted-foreground flex-1 text-center">
-                    {Math.min(narrativeIndex + 1, fullNarrative.length)}/{fullNarrative.length}
+                    {Math.min(beatIndex + 1, beats.length)}/{beats.length} ✦
                   </p>
+                  {/* TTS button */}
+                  {currentBeat && (
+                    <button
+                      onClick={() => {
+                        if (ttsPlaying) {
+                          stopTTS();
+                        } else {
+                          speak(currentBeat.lines.join(' '), { isEpic: hasEpicMoment });
+                        }
+                      }}
+                      className="btn-medieval-icon !p-2 !rounded-lg flex items-center justify-center active:scale-95"
+                      aria-label={ttsPlaying ? 'Parar narração' : 'Ouvir narração'}
+                    >
+                      {ttsPlaying ? <VolumeX className="w-3.5 h-3.5 text-primary" /> : <Volume2 className="w-3.5 h-3.5 text-muted-foreground" />}
+                    </button>
+                  )}
                   {/* Continue button */}
                   <button
                     onClick={handleAdvanceNarrative}
-                    disabled={!hasMoreNarrative && !canShowChoices}
+                    disabled={!hasMoreBeats && !canShowChoices && !hasEpicMoment}
                     className="btn-medieval min-w-[120px] px-4 py-2 text-xs disabled:pointer-events-none disabled:opacity-60 flex items-center justify-center gap-1.5"
                   >
-                    {hasMoreNarrative ? 'Continuar' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'} 
-                    {hasMoreNarrative && <ArrowRight className="w-3.5 h-3.5" />}
+                    {hasMoreBeats ? 'Continuar' : (hasEpicMoment && !epicMomentDone) ? '✦ Momento' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'} 
+                    {hasMoreBeats && <ArrowRight className="w-3.5 h-3.5" />}
                   </button>
                 </div>
               </div>
