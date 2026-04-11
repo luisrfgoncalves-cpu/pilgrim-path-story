@@ -211,12 +211,15 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "esposa_cristao", "livro_antigo"],
     sceneEvent: { type: 'tension', intensity: 1, duration: 3000, message: 'Um peso esmagador cai sobre os ombros de Cristão...' },
     narrative: [
-      "Cristão estava em casa, na Cidade da Destruição, quando abriu um livro antigo.",
-      "{{tremor}}As palavras falam de juízo. De uma cidade condenada. {{emphasis}}Da sua cidade.{{/emphasis}}{{/tremor}}",
-      "Suas mãos tremem. As páginas parecem brilhar com uma luz própria.",
-      "{{tremor}}Um peso surge nas suas costas, como se cada frase virasse pedra.{{/tremor}}",
-      "Cristão tentou arrancá-lo. Não conseguiu. {{heart}}O fardo é real.{{/heart}}",
-      "{{fade}}À noite, uma frase não sai da sua cabeça:{{/fade}} {{divine}}\"Fugi da ira vindoura.\"{{/divine}}"
+      "Na Cidade da Destruição, numa casa simples de paredes escuras, Cristão vivia com sua família como qualquer outro homem.",
+      "Certa noite, enquanto todos dormiam, ele encontrou um livro antigo esquecido numa prateleira empoeirada.",
+      "{{tremor}}Ao abrir as páginas, as palavras pareciam pulsar — falavam de juízo, de uma cidade condenada. {{emphasis}}Da sua cidade.{{/emphasis}}{{/tremor}}",
+      "Suas mãos começaram a tremer. As letras brilhavam com uma luz que não vinha de nenhuma vela.",
+      "{{tremor}}Então aconteceu algo que ele jamais esqueceria: um peso invisível surgiu sobre seus ombros, como se cada palavra lida virasse pedra.{{/tremor}}",
+      "Cristão tentou arrancar o fardo. Puxou, empurrou, contorceu-se. {{heart}}Mas o peso era real — e não saía.{{/heart}}",
+      "Sua esposa acordou assustada e o encontrou no chão, suando, abraçado ao livro. \"O que há com você?\"",
+      "Ele tentou explicar, mas as palavras saíam quebradas. Ela sacudiu a cabeça e mandou-o voltar para a cama.",
+      "{{fade}}Cristão obedeceu, mas não dormiu. A noite inteira uma única frase ecoou na sua mente:{{/fade}} {{divine}}\"Fugi da ira vindoura.\"{{/divine}}"
     ],
     replayNarrative: [
       "O livro está aqui de novo. O fardo, também. Mas desta vez Cristão sabe — sabe que há uma porta, um caminho, e que cada escolha adiante moldaria quem ele se tornaria."
@@ -247,13 +250,15 @@ export const storyChapters: Record<string, StoryChapter> = {
     location: "Cidade da Destruição",
     characters: ["cristao", "obstinado", "flexivel"],
     reflection: "r2",
-        sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'As vozes se dividem ao redor de Cristão...' },
+    sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'As vozes se dividem ao redor de Cristão...' },
     narrative: [
-      "Cristão tentou agir como se nada tivesse acontecido, mas o fardo continua ali.",
-      "{{villain}}Obstinado percebe primeiro. \"Você enlouqueceu. Volte ao normal.\"{{/villain}}",
-      "{{tremor}}Ele te segura pelo braço com força.{{/tremor}}",
-      "Flexível não ri. {{dialog}}\"E se ele estiver certo? E se a cidade realmente for destruída?\"{{/dialog}}",
-      "Os dois esperam sua resposta. {{heart}}Um te puxa para trás. O outro olha para a estrada.{{/heart}}"
+      "Nos dias seguintes, Cristão tentou viver como antes. Ia ao mercado, cumprimentava os vizinhos, sentava-se à mesa com a família.",
+      "Mas o fardo nas costas não diminuía. Cada manhã parecia mais pesado que a anterior.",
+      "Foi então que seus vizinhos começaram a notar algo estranho. Cristão andava curvado, falava sozinho, e às vezes parava no meio da rua com os olhos perdidos.",
+      "{{villain}}Obstinado foi o primeiro a confrontá-lo. Cruzou os braços na porta da casa de Cristão e disse sem rodeios: \"Você enlouqueceu. Largue esse livro e volte ao normal.\"{{/villain}}",
+      "{{tremor}}Ele segurou Cristão pelo braço com força, como quem puxa alguém da beira de um precipício — mas para o lado errado.{{/tremor}}",
+      "Flexível, porém, ficou em silêncio por um momento. Olhou para o livro debaixo do braço de Cristão. {{dialog}}\"E se ele estiver certo? E se a cidade realmente for destruída?\"{{/dialog}}",
+      "Os dois esperavam a resposta dele. {{heart}}Um puxava para a segurança do que já conhecia. O outro olhava para a estrada que levava ao desconhecido.{{/heart}}"
     ],
     choices: [
       {
@@ -275,18 +280,19 @@ export const storyChapters: Record<string, StoryChapter> = {
   "cena3": {
     id: "cena3",
     title: "O Clamor",
-    location: "Cidade da Destruição",
+    location: "Arredores da Cidade da Destruição",
     sceneEvent: { type: 'tension', intensity: 1, duration: 2000 },
     characters: ["cristao", "flexivel"],
     reflection: "r3",
     narrative: [
-      "{{tremor}}Cristão correu para fora da cidade com o livro apertado no peito.{{/tremor}}",
-      "Para não ouvir os gritos atrás de si, tapou os próprios ouvidos.",
-      "{{shout}}\"Vida! Vida eterna!\"{{/shout}}",
-      "{{fade}}A cidade fica menor. O campo à frente parece imenso.{{/fade}} {{whisper}}E sem direção.{{/whisper}}"
+      "Cristão não olhou para trás. Com o livro apertado contra o peito, passou pelo portão da cidade e começou a correr.",
+      "As casas foram ficando menores atrás dele. Os gritos dos vizinhos — \"Volta, louco!\" — se misturavam com o vento.",
+      "Para não ouvir, tapou os próprios ouvidos e gritou enquanto corria: {{shout}}\"Vida! Vida eterna!\"{{/shout}}",
+      "Aos poucos, a estrada de pedra virou terra batida. As últimas casas da cidade desapareceram. O campo à frente era imenso.",
+      "{{fade}}Cristão parou para recuperar o fôlego. O fardo pesava mais que nunca. A cidade ficava cada vez menor no horizonte, mas para onde ir?{{/fade}} {{whisper}}Não havia placas. Não havia caminho marcado. Só o campo aberto e o céu cinzento.{{/whisper}}"
     ],
     flagNarrative: [
-      { flag: "convidou_flexivel", text: "Flexível corre ao seu lado, ofegante: \"Onde vamos? Mostre-me esse lugar de que você fala!\" Sua companhia é reconfortante, mas será que ele aguentará o caminho?" }
+      { flag: "convidou_flexivel", text: "Flexível correu ao seu lado, ofegante e tropeçando nos buracos da estrada: \"Espere por mim! Onde vamos? Mostre-me esse lugar de que você fala!\" Sua companhia era reconfortante — mas já parecia mais assustado do que convicto." }
     ],
     choices: [
       {
@@ -307,18 +313,19 @@ export const storyChapters: Record<string, StoryChapter> = {
   "cena4": {
     id: "cena4",
     title: "O Fardo Insuportável",
-    location: "Cidade da Destruição",
+    location: "Cidade da Destruição — Casa de Cristão",
     characters: ["cristao"],
     interactionType: 'timed',
     timeLimit: 12,
     timeoutChoiceIndex: 1,
     sceneEvent: { type: 'tension', intensity: 2, duration: 3000 },
     narrative: [
-      "{{tremor}}Cristão voltou para casa, mas o peso só aumentou.{{/tremor}}",
-      "{{tremor}}À noite, as paredes pareciam se fechar ao redor dele.{{/tremor}}",
-      "As palavras do livro queimam na mente: {{heart}}\"A ira vindoura...\"{{/heart}}",
-      "{{fade}}A família percebeu que algo se rompera dentro dele.{{/fade}}",
-      "{{emphasis}}Ficar dói. Partir também. Mas só um dos caminhos tem esperança.{{/emphasis}}"
+      "{{tremor}}Cristão voltou para casa. Trancou a porta. Guardou o livro debaixo da cama. Mas nada mudou.{{/tremor}}",
+      "O fardo continuava ali, mais pesado a cada hora que passava.",
+      "{{tremor}}À noite, deitado ao lado da família adormecida, as paredes pareciam se fechar ao redor dele. A escuridão ganhava peso e forma.{{/tremor}}",
+      "As palavras do livro queimavam na mente como ferro em brasa: {{heart}}\"A ira vindoura... a ira vindoura...\"{{/heart}}",
+      "{{fade}}Sua esposa murmurou algo no sono. As crianças ressonavam. Todos dormiam em paz — menos ele, que sabia o que ninguém queria ouvir.{{/fade}}",
+      "{{emphasis}}Ficar dói. Partir também. Mas só um dos caminhos tem esperança. E o tempo está acabando.{{/emphasis}}"
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 6, highText: "No fundo da agonia, uma voz mansa sussurra: \"Há uma saída. Busque-a.\"", lowThreshold: 3, lowText: "O desespero era tão espesso que Cristão mal conseguia respirar. Existiria saída, ou o fardo era para sempre?" }
@@ -682,18 +689,21 @@ export const storyChapters: Record<string, StoryChapter> = {
   "cena1b": {
     id: "cena1b",
     title: "A Angústia Secreta",
-    location: "Cidade da Destruição",
+    location: "Cidade da Destruição — Ruas e Casa de Cristão",
     characters: ["cristao", "esposa_cristao", "vizinhos"],
     sceneEvent: { type: 'tension', intensity: 1, duration: 3000 },
     narrative: [
-      "{{shout}}Cristão correu pelas ruas gritando, mas ninguém entendia.{{/shout}}",
-      "Os vizinhos fecham as janelas. As crianças riem do homem que chora em público.",
-      "Em casa, sua esposa segura seus ombros: {{dialog}}\"Você está assustando as crianças.\"{{/dialog}}",
-      "Cristão tentou explicar o livro, o juízo, a cidade condenada. As palavras saíram quebradas.",
-      "A esposa mandou-o dormir. {{whisper}}Cristão sabia que o peso amanheceria com ele.{{/whisper}}"
+      "Cristão não aguentou ficar em casa. Saiu pela porta da frente e desceu a rua principal da cidade, ainda de madrugada.",
+      "{{shout}}\"O que devo fazer para ser salvo?\" — gritou ele, sem se importar com quem ouvia.{{/shout}}",
+      "Os primeiros vizinhos que o viram pararam e olharam com espanto. Depois, um a um, foram fechando as janelas. Alguém riu. Uma criança apontou.",
+      "Cristão bateu na porta de três casas. Ninguém abriu. {{whisper}}O homem que chorava em público era, para todos, apenas um louco.{{/whisper}}",
+      "Quando voltou para casa, encontrou sua esposa acordada na porta, com os olhos vermelhos. Ela segurou seus ombros com firmeza: {{dialog}}\"Você está assustando as crianças. Precisa parar com isso.\"{{/dialog}}",
+      "Cristão tentou explicar — o livro, as palavras de juízo, o fardo que não saía. Mas quanto mais falava, mais a esposa sacudia a cabeça.",
+      "Por fim, ela mandou-o para a cama. Cristão obedeceu. Deitou-se no escuro, ouvindo a respiração calma da família adormecida.",
+      "{{fade}}Mas ele sabia: o peso amanheceria com ele. E amanhã seria pior.{{/fade}}"
     ],
     toneNarrative: [
-      { attr: "fe", highThreshold: 5, highText: "Mesmo rejeitado, uma certeza ardia no peito de Cristão: o que lera era verdade. Se ninguém acreditava, ele iria sozinho.", lowThreshold: 3, lowText: "Talvez sua esposa tenha razão. Talvez seja febre. Talvez o livro seja só... um livro." }
+      { attr: "fe", highThreshold: 5, highText: "Mesmo rejeitado por todos, uma certeza ardia no peito de Cristão: o que lera era verdade. Se ninguém acreditava, ele iria sozinho.", lowThreshold: 3, lowText: "Talvez sua esposa tenha razão. Talvez seja febre. Talvez o livro seja só... um livro velho." }
     ],
     choices: [
       {
