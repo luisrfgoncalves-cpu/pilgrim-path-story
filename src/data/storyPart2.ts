@@ -848,7 +848,11 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase5-cena2",
         effects: { coragem: 2, fe: 1 },
         flag: "encorajou_ataque_castelo",
-        consequence: "A decisão de atacar a Dúvida em vez de contorná-la é a diferença entre a jornada de Cristão e a de Cristã. O que a primeira geração sobreviveu, a segunda destrói. — Romanos 16:20: \"O Deus de paz em breve esmagará Satanás debaixo dos vossos pés.\""
+        consequence: "A decisão de atacar a Dúvida em vez de contorná-la é a diferença entre a jornada de Cristão e a de Cristã. O que a primeira geração sobreviveu, a segunda destrói. — Romanos 16:20: \"O Deus de paz em breve esmagará Satanás debaixo dos vossos pés.\"",
+        toneOptions: [
+          { tone: 'firm', emoji: '⚔️', label: 'Gritando ordem de ataque', npcReaction: 'Grande-Coração bate a espada no escudo: "Essa é a voz de quem já venceu o medo!"', effects: { coragem: 1 } },
+          { tone: 'humble', emoji: '🙏', label: 'Orando antes da batalha', npcReaction: 'Valente-pela-Verdade se ajoelha ao lado: "Quem ora antes de lutar nunca luta sozinho."', effects: { fe: 1 } }
+        ]
       },
       {
         text: "Orar antes da batalha — pedir proteção divina",
@@ -1035,7 +1039,11 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase6-cena2",
         effects: { fe: 2, coragem: 1 },
         flag: "admirou_firme",
-        consequence: "Firme resistiu não com espada, mas de joelhos. A oração é a arma mais poderosa contra a tentação — silenciosa, invisível, invencível. — Tiago 4:7: \"Resisti ao diabo, e ele fugirá de vós.\""
+        consequence: "Firme resistiu não com espada, mas de joelhos. A oração é a arma mais poderosa contra a tentação — silenciosa, invisível, invencível. — Tiago 4:7: \"Resisti ao diabo, e ele fugirá de vós.\"",
+        toneOptions: [
+          { tone: 'humble', emoji: '🤲', label: 'Com reverência', npcReaction: 'Firme abre os olhos e vê Cristã: "Vocês chegaram na hora certa. A tentação estava quase vencendo."', effects: { fe: 1 } },
+          { tone: 'firm', emoji: '🛡️', label: 'Repreendendo Madame Bolha', npcReaction: 'Madame Bolha recua: "Essa mulher tem autoridade. Não é como as outras." Desaparece como fumaça.', effects: { coragem: 1 } }
+        ]
       },
       {
         text: "Perguntar a Firme como resistiu à tentação",
