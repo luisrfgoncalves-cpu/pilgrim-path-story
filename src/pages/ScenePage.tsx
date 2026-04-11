@@ -44,7 +44,7 @@ import { groupIntoBeats, NarrativeBeat } from '@/hooks/useNarrativeBeats';
 import EpicMoment, { epicMoments } from '@/components/EpicMoment';
 import EpicDefeatScreen from '@/components/EpicDefeatScreen';
 import { useTTS } from '@/hooks/useTTS';
-import { getSceneEmotion, autoNarrateScenes } from '@/data/sceneEmotions';
+import { getSceneEmotion } from '@/data/sceneEmotions';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
   fe: { label: 'Fé', emoji: '🔥', icon: Flame },
@@ -627,14 +627,25 @@ const ScenePage = () => {
 
   // Scene emotion for TTS (before early return to satisfy hooks rules)
   const sceneEmotion = chapter ? getSceneEmotion(chapter.id) : 'neutral' as const;
-  const shouldAutoNarrate = chapter ? autoNarrateScenes.has(chapter.id) : false;
-  const primaryBeatCount = useMemo(() => groupIntoBeats(primaryNarrative, 3).length, [primaryNarrative]);
+  const mappedBeatImageCount = useMemo(() => {
+    if (!chapter) return 0;
+    let count = 0;
+    for (let i = 1; i <= 12; i++) {
+      if (sceneImages[`${chapter.id}__beat${i}`]) count += 1;
+    }
+    return count;
+  }, [chapter?.id]);
+  const linesPerBeat = useMemo(() => {
+    if (primaryNarrative.length === 0) return 3;
+    if (mappedBeatImageCount <= 1) return 3;
+    return Math.max(1, Math.min(3, Math.floor(primaryNarrative.length / mappedBeatImageCount) || 1));
+  }, [primaryNarrative.length, mappedBeatImageCount]);
+  const primaryBeatCount = useMemo(() => groupIntoBeats(primaryNarrative, linesPerBeat).length, [primaryNarrative, linesPerBeat]);
 
-  // ═══ BEATS SYSTEM — group narrative into 2-3 line beats ═══
-  // Group only PRIMARY narrative into beats (for correct image mapping)
-  // Supplementary lines are merged into the final primary beat so the scene flow stays linear
+  // ═══ BEATS SYSTEM — adapt granularity to available image coverage ═══
+  // Scenes with richer image coverage get smaller beats so visuals stay aligned with the spoken text.
   const beats = useMemo(() => {
-    const primaryBeats = groupIntoBeats(primaryNarrative, 3);
+    const primaryBeats = groupIntoBeats(primaryNarrative, linesPerBeat);
 
     if (supplementaryLines.length > 0 && primaryBeats.length > 0) {
       const lastBeatIndex = primaryBeats.length - 1;
@@ -647,89 +658,17 @@ const ScenePage = () => {
     }
 
     return primaryBeats;
-  }, [primaryNarrative, supplementaryLines]);
+  }, [primaryNarrative, supplementaryLines, linesPerBeat]);
   const currentBeat = beats[beatIndex] ?? null;
   const hasMoreBeats = beatIndex < beats.length - 1;
 
-  // Beat-specific image logic
+  // Beat-specific image logic — keep the visual locked to the current narrated beat.
   const beatImageKey = chapter && currentBeat
     ? [`${chapter.id}__beat${Math.min(beatIndex + 1, primaryBeatCount)}`, `${chapter.id}__${currentBeat.startIndex}`]
     : [];
   const bgImage = chapter
     ? beatImageKey.map(key => sceneImages[key]).find(Boolean) || bgImageFallback
     : undefined;
-
-  // ═══ SLIDESHOW: collect ALL beat images for this scene for crossfade during narration ═══
-  const allBeatImages = useMemo(() => {
-    if (!chapter) return [];
-    const images: string[] = [];
-    const seen = new Set<string>();
-    for (let i = 1; i <= 10; i++) {
-      const key = `${chapter.id}__beat${i}`;
-      const img = sceneImages[key];
-      if (img && !seen.has(img)) {
-        seen.add(img);
-        images.push(img);
-      }
-    }
-    // Fallback: at least include the main scene image
-    if (images.length === 0 && bgImageFallback && !seen.has(bgImageFallback)) {
-      images.push(bgImageFallback);
-    }
-    return images;
-  }, [chapter?.id, bgImageFallback]);
-
-  // Slideshow auto-cycle during TTS playback
-  const [slideshowIndex, setSlideshowIndex] = useState(0);
-  const slideshowTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    // Reset slideshow on scene change
-    setSlideshowIndex(0);
-    if (slideshowTimerRef.current) {
-      clearInterval(slideshowTimerRef.current);
-      slideshowTimerRef.current = null;
-    }
-  }, [chapter?.id]);
-
-  useEffect(() => {
-    // During TTS playback with multiple images, advance sequentially from current beat every 6s
-    if (ttsPlaying && allBeatImages.length > 1) {
-      // Start from the current beat's image position
-      const currentBeatImg = bgImage;
-      const startIdx = allBeatImages.indexOf(currentBeatImg || '');
-      if (startIdx >= 0) setSlideshowIndex(startIdx);
-
-      slideshowTimerRef.current = setInterval(() => {
-        setSlideshowIndex(prev => {
-          const next = prev + 1;
-          // Stop at the end instead of looping — images follow narrative order
-          return next < allBeatImages.length ? next : prev;
-        });
-      }, 6000);
-      return () => {
-        if (slideshowTimerRef.current) clearInterval(slideshowTimerRef.current);
-      };
-    } else {
-      if (slideshowTimerRef.current) {
-        clearInterval(slideshowTimerRef.current);
-        slideshowTimerRef.current = null;
-      }
-    }
-  }, [ttsPlaying, allBeatImages.length, bgImage]);
-
-  // When beat changes manually, sync slideshow to beat
-  useEffect(() => {
-    if (allBeatImages.length > 0 && !ttsPlaying) {
-      const beatImg = bgImage;
-      const idx = allBeatImages.indexOf(beatImg || '');
-      if (idx >= 0) setSlideshowIndex(idx);
-    }
-  }, [beatIndex, bgImage]);
-
-  const slideshowImage = ttsPlaying && allBeatImages.length > 1
-    ? allBeatImages[slideshowIndex % allBeatImages.length]
-    : bgImage;
 
   // Epic moment detection
   const hasEpicMoment = chapter ? !!epicMoments[chapter.id] : false;
@@ -957,74 +896,39 @@ const ScenePage = () => {
         {/* Scene content — hidden when inline mini-game is active */}
         {!(miniGameReady && !miniGameDone && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id]?.type)) && (
         <>
-        {/* Scene image with preloading — crossfade slideshow during narration */}
-        {(slideshowImage || bgImage) && (
+        {/* Scene image with preloading — locked to the current beat so it never runs ahead of the narration */}
+        {bgImage && (
           <div className="relative w-full overflow-hidden" style={{ maxHeight: '320px', minHeight: '200px', background: 'hsl(var(--card))' }}>
-            {/* Crossfade: render current + previous image for smooth transition */}
-            {ttsPlaying && allBeatImages.length > 1 ? (
-              <>
-                {allBeatImages.map((img, idx) => {
-                  const variationKey = chapter.id;
-                  const imgVar = getSceneImageVariation(variationKey);
-                  const isActive = idx === slideshowIndex % allBeatImages.length;
-                  // Slow ken-burns: each image gets a unique slow zoom/pan
-                  const kenBurnsScale = 1.05 + (idx % 3) * 0.03;
-                  const kenBurnsX = ((idx % 3) - 1) * 3;
-                  return (
-                    <img
-                      key={`slideshow-${chapter.id}-${idx}`}
-                      src={img}
-                      alt={chapter.title}
-                      width={1024}
-                      height={576}
-                      loading="eager"
-                      className="absolute inset-0 w-full h-full object-cover"
-                      style={{
-                        opacity: isActive ? 1 : 0,
-                        transition: 'opacity 2s ease-in-out, transform 8s ease-in-out',
-                        transform: isActive
-                          ? `scale(${kenBurnsScale}) translateX(${kenBurnsX}px)`
-                          : `scale(1) translateX(0px)`,
-                        objectPosition: imgVar.objectPosition,
-                        filter: getSceneAtmosphere(chapter.id).imageFilter || 'brightness(1.05) saturate(1.0)',
-                        zIndex: isActive ? 2 : 1,
-                      }}
-                    />
-                  );
-                })}
-              </>
-            ) : (
-              (() => {
-                const variationKey = beatImageKey.find(key => sceneImages[key]) || chapter.id;
-                const imgVar = getSceneImageVariation(variationKey);
-                const beatShiftX = ((beatIndex % 3) - 1) * 4;
-                const beatScale = 1 + ((beatIndex % 4) * 0.02);
-                return (
-                  <img
-                    key={`${chapter.id}-${beatIndex}-${bgImage}`}
-                    src={bgImage}
-                    alt={chapter.title}
-                    width={1024}
-                    height={576}
-                    loading="eager"
-                    decoding="async"
-                    fetchPriority="high"
-                    onLoad={() => setImageLoaded(true)}
-                    className="w-full h-auto object-cover scene-image scene-image-alive transition-all duration-[1200ms] ease-in-out"
-                    style={{
-                      ...atmosphere.imageStyle,
-                      objectPosition: imgVar.objectPosition,
-                      transform: `${imgVar.transform} translateX(${beatShiftX}px) scale(${beatScale})`,
-                      transformOrigin: 'center center',
-                      filter: [
-                        getSceneAtmosphere(chapter.id).imageFilter || 'brightness(1.05) saturate(1.0)',
-                        imgVar.extraFilter || '',
-                      ].filter(Boolean).join(' ') || undefined,
-                    }}
-                  />
-                );
-              })()
-            )}
+            {(() => {
+              const variationKey = beatImageKey.find(key => sceneImages[key]) || chapter.id;
+              const imgVar = getSceneImageVariation(variationKey);
+              const beatShiftX = ((beatIndex % 3) - 1) * 4;
+              const beatScale = 1 + ((beatIndex % 4) * 0.02);
+              return (
+                <img
+                  key={`${chapter.id}-${beatIndex}-${bgImage}`}
+                  src={bgImage}
+                  alt={chapter.title}
+                  width={1024}
+                  height={576}
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
+                  onLoad={() => setImageLoaded(true)}
+                  className="w-full h-auto object-cover scene-image scene-image-alive transition-all duration-[1200ms] ease-in-out"
+                  style={{
+                    ...atmosphere.imageStyle,
+                    objectPosition: imgVar.objectPosition,
+                    transform: `${imgVar.transform} translateX(${beatShiftX}px) scale(${beatScale})`,
+                    transformOrigin: 'center center',
+                    filter: [
+                      getSceneAtmosphere(chapter.id).imageFilter || 'brightness(1.05) saturate(1.0)',
+                      imgVar.extraFilter || '',
+                    ].filter(Boolean).join(' ') || undefined,
+                  }}
+                />
+              );
+            })()}
             {/* Particle effects overlay */}
             {imageLoaded && (() => {
               const pType = getParticleTypeForScene(chapter.id, legacyTone);

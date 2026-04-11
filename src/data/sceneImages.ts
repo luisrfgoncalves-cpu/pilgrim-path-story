@@ -153,16 +153,25 @@ import cristaChegadaCelestial from '@/assets/scenes/crista-chegada-celestial.jpg
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
   'cena1': cristaoLendoLivro,
-  'cena1__beat1': cristaoFamiliaDormindo,        // casa, família dormindo
-  'cena1__beat2': cristaoLendoLivro,             // encontra o livro
-  'cena1__beat3': fardoEsmagando,                // fardo aparece
-  'cena1__beat4': fardoArrancando,               // tenta arrancar
-  'cena1__beat5': cristaoFamiliaNoite,            // esposa acorda
-  'cena1__beat6': cristaoNoiteTormento,           // noite de tormento
+  'cena1__beat1': cristaoFamiliaDormindo,
+  'cena1__beat2': cristaoLendoLivro,
+  'cena1__beat3': livroPalavrasJuizo,
+  'cena1__beat4': cristaoLendoLivro,
+  'cena1__beat5': fardoEsmagando,
+  'cena1__beat6': fardoArrancando,
+  'cena1__beat7': cristaoFamiliaNoite,
+  'cena1__beat8': cristaoFamiliaNoite,
+  'cena1__beat9': cristaoNoiteTormento,
   // startIndex fallbacks
   'cena1__0': cristaoFamiliaDormindo,
-  'cena1__3': fardoArrancando,
-  'cena1__6': cristaoNoiteTormento,
+  'cena1__1': cristaoLendoLivro,
+  'cena1__2': livroPalavrasJuizo,
+  'cena1__3': cristaoLendoLivro,
+  'cena1__4': fardoEsmagando,
+  'cena1__5': fardoArrancando,
+  'cena1__6': cristaoFamiliaNoite,
+  'cena1__7': cristaoFamiliaNoite,
+  'cena1__8': cristaoNoiteTormento,
   'cena1b': cidadeDestruicaoPanoramica,
   'cena1b__beat1': cidadeDestruicaoPanoramica,    // saindo de casa de madrugada
   'cena1b__beat2': vizinhosRuasZombando,          // vizinhos fecham janelas

@@ -12,6 +12,7 @@ import { useBackgroundTTSPregen } from "@/hooks/useBackgroundTTSPregen";
 import { useAudioPrewarm } from "@/hooks/useAudioPrewarm";
 import { lazy, Suspense, useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { prewarmNarrator } from "@/lib/narrator";
 
 // Eagerly loaded pages (needed immediately)
 import Index from "./pages/Index.tsx";
@@ -101,6 +102,7 @@ const AudioBootstrap = () => {
 
   // Unlock HTMLAudioElement autoplay on first user gesture (persists for session)
   useEffect(() => {
+    prewarmNarrator();
     let unlocked = false;
     const unlock = () => {
       if (unlocked) return;
@@ -108,6 +110,7 @@ const AudioBootstrap = () => {
       const silent = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
       silent.volume = 0;
       silent.play().catch(() => {});
+      prewarmNarrator();
       ['touchstart', 'mousedown', 'keydown'].forEach(e => document.removeEventListener(e, unlock));
     };
     ['touchstart', 'mousedown', 'keydown'].forEach(e => document.addEventListener(e, unlock, { passive: true }));
