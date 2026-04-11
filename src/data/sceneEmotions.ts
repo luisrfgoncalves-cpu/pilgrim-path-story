@@ -9,23 +9,25 @@ export type TTSEmotion = 'neutral' | 'dramatic' | 'solemn' | 'urgent' | 'celesti
 export const sceneEmotions: Record<string, TTSEmotion> = {
   // ═══ FASE 1 — O Despertar ═══
   'cena1': 'solemn',        // Despertar com o fardo
-  'cena2': 'urgent',        // Família recusa
+  'cena1b': 'solemn',       // Angústia em casa e nas ruas
+  'cena2': 'dramatic',      // Obstinado e Flexível
   'cena3': 'urgent',        // Fuga da Cidade da Destruição
-  'cena4': 'villain',       // Sabedoria Mundana
+  'cena4': 'dramatic',      // O peso aumenta em casa
   'cena5': 'solemn',        // Evangelista
-  'cena5b': 'celestial',    // Bênção do Evangelista
-  'cena6': 'dramatic',      // Monte Sinai
-  'cena7': 'celestial',     // Porta Estreita
+  'cena5b': 'solemn',       // Peso da partida
+  'cena6': 'solemn',        // Sozinho com o fardo
+  'cena7': 'dramatic',      // Encruzilhada e porta ao longe
   'cena7b': 'urgent',       // Flechas na Porta
-  'cena8': 'villain',       // Legalista
-  'cena9': 'dramatic',      // Peso da Lei
+  'cena8': 'villain',       // Prudência Mundana
+  'cena9': 'celestial',     // Porta Estreita
+  'cena9b': 'solemn',       // Instrução de Boa-Vontade
   'cena10': 'dramatic',     // Monte Sinai tremendo
   'cena11': 'urgent',       // Pântano do Desânimo
-  'cena11b': 'urgent',      // Afundando no Pântano
-  'cena12': 'dramatic',     // Mais fundo
+  'cena11b': 'villain',     // Vozes na lama
+  'cena12': 'solemn',       // Degraus ocultos
   'cena13': 'urgent',       // Quase morrendo
   'cena14': 'celestial',    // O Auxílio chega
-  'cena14b': 'celestial',   // Resgate completo
+  'cena14b': 'solemn',      // Explicação do resgate
   'cena15': 'celestial',    // A Cruz! O fardo cai!
   'cena15b': 'celestial',   // Três Resplandecentes
 

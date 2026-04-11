@@ -1,13 +1,24 @@
 /**
- * useNarrativeBeats — groups narrative lines into "beats" of 2-3 sentences.
- * Special markup lines ({{shout}}, {{divine}}, etc.) get their own solo beat.
+ * useNarrativeBeats — groups narrative lines into readable beats of up to 3 lines.
+ * Only very short, high-impact dramatic lines become solo beats.
  */
 
 const MARKUP_TAGS = /\{\{(shout|whisper|divine|emphasis|dialog|villain|heart|tremor|fade)\}\}/;
+const STRONG_MARKUP_TAGS = /^\s*\{\{(shout|divine|villain|heart)\}\}/;
+const MARKUP_STRIP = /\{\{\/?(shout|whisper|divine|emphasis|dialog|villain|heart|tremor|fade)\}\}/g;
+const FULLY_WRAPPED_MARKUP = /^\s*\{\{(shout|whisper|divine|emphasis|dialog|villain|heart|tremor|fade)\}\}[\s\S]*\{\{\/(shout|whisper|divine|emphasis|dialog|villain|heart|tremor|fade)\}\}\s*$/;
 
-/** Check if a line contains dramatic markup that deserves solo display */
+/** Check if a line is a brief dramatic punchline that deserves solo display */
 function isDramaticLine(line: string): boolean {
-  return MARKUP_TAGS.test(line);
+  if (!MARKUP_TAGS.test(line) || !FULLY_WRAPPED_MARKUP.test(line) || !STRONG_MARKUP_TAGS.test(line)) {
+    return false;
+  }
+
+  const stripped = line.replace(MARKUP_STRIP, '').replace(/\s+/g, ' ').trim();
+  const wordCount = stripped ? stripped.split(' ').length : 0;
+  const punctuationCount = (stripped.match(/[.!?…]+/g) || []).length;
+
+  return stripped.length <= 72 && wordCount <= 10 && punctuationCount <= 2;
 }
 
 export interface NarrativeBeat {
@@ -18,8 +29,8 @@ export interface NarrativeBeat {
 
 /**
  * Groups narrative lines into beats.
- * - Dramatic lines (with markup) become solo beats
- * - Regular lines are grouped in pairs of 2-3
+ * - Only short dramatic punchlines become solo beats
+ * - Regular lines are grouped in readable blocks of up to 3
  */
 export function groupIntoBeats(narrative: string[], linesPerBeat = 3): NarrativeBeat[] {
   if (narrative.length === 0) return [];
