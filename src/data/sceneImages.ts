@@ -101,6 +101,24 @@ import casteloDuvidaExterior from '@/assets/scenes/castelo-duvida-exterior.jpg';
 import montanhasPastores from '@/assets/scenes/montanhas-pastores.jpg';
 import paisBeulaDescanso from '@/assets/scenes/pais-beula-descanso.jpg';
 
+// ── Imagens corrigidas (estilo consistente) ──
+import fardoArrancando from '@/assets/scenes/fardo-arrancando.jpg';
+import cristaoFamiliaDormindo from '@/assets/scenes/cristao-familia-dormindo.jpg';
+import cristaoGritandoVida from '@/assets/scenes/cristao-gritando-vida.jpg';
+import palavrasQueimandoParedes from '@/assets/scenes/palavras-queimando-paredes.jpg';
+import familiaPercebeMudanca from '@/assets/scenes/familia-percebe-mudanca.jpg';
+import interpreteVisaoFinal from '@/assets/scenes/interprete-visao-final.jpg';
+import apolionBatalhaEpica from '@/assets/scenes/apolion-batalha-epica.jpg';
+import valeSombraProfundo from '@/assets/scenes/vale-sombra-profundo.jpg';
+import vergonhaConfrontaFiel from '@/assets/scenes/vergonha-confronta-fiel.jpg';
+import celaFeiraVaidade from '@/assets/scenes/cela-feira-vaidade.jpg';
+import calaboucoSofrimento from '@/assets/scenes/calabouco-sofrimento.jpg';
+import lisongieiroArmadilha from '@/assets/scenes/lisonjeiro-armadilha.jpg';
+import rioReflexao from '@/assets/scenes/rio-reflexao.jpg';
+import rioAguasProfundas from '@/assets/scenes/rio-aguas-profundas.jpg';
+import feiraVaidadePassagem from '@/assets/scenes/feira-vaidade-passagem.jpg';
+import casteloDuvidaInterior from '@/assets/scenes/castelo-duvida-interior.jpg';
+
 // ── Novas imagens Parte 2 ──
 import cristaSonhoCarta from '@/assets/scenes/crista-sonho-carta.jpg';
 import misericordiaJuncao from '@/assets/scenes/misericordia-juncao.jpg';
@@ -125,149 +143,149 @@ import cristaChegadaCelestial from '@/assets/scenes/crista-chegada-celestial.jpg
 
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
-  'cena1': cristaoLendoLivro,             // Beat 1: Cristão lendo o livro
-  'cena1__beat1': cristaoLendoLivro,       // Abrindo o livro com a família
-  'cena1__beat2': livroPalavrasJuizo,      // Palavras de juízo brilhando
-  'cena1__beat3': fardoEsmagando,          // O fardo surge nas costas
-  'cena1__beat4': fardoEsmagando,          // Tentando arrancar o fardo
-  'cena1__beat5': cristaoNoiteTormento,    // À noite, a frase o atormenta
-  'cena1__beat6': cristaoNoiteTormento,    // "Fugi da ira vindoura"
-  'cena1b': vizinhosRuasZombando,          // Vizinhos zombando nas ruas
-  'cena1b__beat1': vizinhosRuasZombando,   // Saindo para as ruas
-  'cena1b__beat2': cidadeDestruicaoPanoramica, // A cidade condenada
-  'cena2': obstinadoSegurandoBraco,        // Encontro com Obstinado e Flexível
-  'cena2__beat1': encontroObstinadoFlexivel, // Fardo ainda ali
-  'cena2__beat2': obstinadoSegurandoBraco, // Obstinado segura o braço
-  'cena2__beat3': encontroObstinadoFlexivel, // Flexível hesita
-  'cena3': cristaoCorrendo,                // Fuga da cidade
-  'cena3__beat1': cristaoCorrendo,         // Correndo para fora
-  'cena3__beat2': cristaoCorrendo,         // "Vida! Vida eterna!"
-  'cena3__beat3': cristaoCampoSemDirecao,  // Campo imenso sem direção
-  'cena4': cristaoParedes,                 // Cristão voltou para casa
-  'cena4__beat1': cristaoParedes,          // Paredes fechando
-  'cena4__beat2': cristaoParedes,          // Palavras queimando
-  'cena4__beat3': cristaoNoiteTormento,    // Família percebe a mudança
-  'cena5': evangelistaApontando,           // Evangelista apontando o caminho
-  'cena5b': tresDorminhocoesCaminho,       // Presunção, Preguiça e Simples
-  'cena6': tresDorminhocoes,               // Dorminhocões (variação)
+  'cena1': cristaoLendoLivro,
+  'cena1__beat1': cristaoLendoLivro,
+  'cena1__beat2': livroPalavrasJuizo,
+  'cena1__beat3': fardoEsmagando,
+  'cena1__beat4': fardoArrancando,              // CORRIGIDO: tentando arrancar o fardo
+  'cena1__beat5': cristaoNoiteTormento,
+  'cena1__beat6': cristaoFamiliaDormindo,        // CORRIGIDO: família dormindo, ele acordado
+  'cena1b': vizinhosRuasZombando,
+  'cena1b__beat1': vizinhosRuasZombando,
+  'cena1b__beat2': cidadeDestruicaoPanoramica,
+  'cena2': obstinadoSegurandoBraco,
+  'cena2__beat1': encontroObstinadoFlexivel,
+  'cena2__beat2': obstinadoSegurandoBraco,
+  'cena2__beat3': encontroObstinadoFlexivel,
+  'cena3': cristaoCorrendo,
+  'cena3__beat1': cristaoCorrendo,
+  'cena3__beat2': cristaoGritandoVida,           // CORRIGIDO: gritando "Vida! Vida eterna!"
+  'cena3__beat3': cristaoCampoSemDirecao,
+  'cena4': cristaoParedes,
+  'cena4__beat1': cristaoParedes,
+  'cena4__beat2': palavrasQueimandoParedes,       // CORRIGIDO: palavras queimando nas paredes
+  'cena4__beat3': familiaPercebeMudanca,          // CORRIGIDO: família percebe a mudança
+  'cena5': evangelistaApontando,
+  'cena5b': tresDorminhocoesCaminho,
+  'cena6': tresDorminhocoes,
   'cena7': portaoEstreitoAproximacao,
   'cena7b': portaoEstreitoBatendo,
   'cena8': sabedoriaMundana,
   'cena9': portaoEstreitoPassagem,
   'cena9b': portaoEstreito,
-  'cena10': monteSinaiTremendo,          // Monte Sinai tremendo com fogo
-  'cena11': pantanoDesanimo,             // Chegada ao pântano
-  'cena11b': pantanoAfundando,           // Afundando no pântano
-  'cena12': pantanoProfundo,             // Mais fundo
-  'cena13': pantanoQuaseMorrendo,        // Quase morrendo
-  'cena14': auxilioResgate,              // Auxílio estendendo a mão
-  'cena14b': auxilioResgate,             // Resgate completo
+  'cena10': monteSinaiTremendo,
+  'cena11': pantanoDesanimo,
+  'cena11b': pantanoAfundando,
+  'cena12': pantanoProfundo,
+  'cena13': pantanoQuaseMorrendo,
+  'cena14': auxilioResgate,
+  'cena14b': auxilioResgate,
   'cena15': cruzFardo,
   'cena15b': cruzFardo,
 
   // FASE 2: Casa do Intérprete + Colina + Leões
-  'fase2-cena1': casaInterprete,            // Chegada à Casa
-  'fase2-cena2': interpreteVisaoFogo,       // Visão do fogo inextinguível
-  'fase2-cena3': interpreteSalaPoeira,      // Sala da poeira
-  'fase2-cena4': interpreteVisoes,          // Mais visões
-  'fase2-cena5': casaInterprete,            // Visão final
-  'fase2-cena6': interpreteDespedida,       // Despedida
+  'fase2-cena1': casaInterprete,
+  'fase2-cena2': interpreteVisaoFogo,
+  'fase2-cena3': interpreteSalaPoeira,
+  'fase2-cena4': interpreteVisoes,
+  'fase2-cena5': interpreteVisaoFinal,            // CORRIGIDO: visão final diferente
+  'fase2-cena6': interpreteDespedida,
   'fase2-cena7': palacioBeloChegada,
   'fase2-cena8': gaiolaFerro,
   'fase2-cena9': armaduraCrista,
   'fase2-cena10': palacioBelo,
-  'fase2-cena11': colinaSubidaDramatica,    // Subida íngreme
-  'fase2-cena12': colinaDificuldadeSubida,  // Formalista e Hipocrisia
-  'fase2-cena13': caramanchaoSono,          // Sono no caramanchão
-  'fase2-cena14': palacioLeoesEntrada,      // Leões acorrentados
+  'fase2-cena11': colinaSubidaDramatica,
+  'fase2-cena12': colinaDificuldadeSubida,
+  'fase2-cena13': caramanchaoSono,
+  'fase2-cena14': palacioLeoesEntrada,
 
   // FASE 3: Vale da Humilhação e Apolião
-  'fase3-cena1': valeHumilhacao,            // Descida ao vale
-  'fase3-cena2': apolionConfronto,          // Apolião aparece
-  'fase3-cena3': apolionBatalha,            // Confronto escalado
-  'fase3-cena4': apolionBatalha,            // Batalha épica
-  'fase3-cena5': valeSombraAbismo,          // Vale da Sombra entrada
-  'fase3-cena6': curaPosBatalha,            // Cura divina pós-batalha
-  'fase3-cena7': valeSombra,                // Mais fundo no vale
-  'fase3-cena8': fielCristaoEncontro,       // Encontro com Fiel
-  'fase3-cena9': valeSombra,                // Vergonha confronta Fiel
-  'fase3-cena10': fielEncontro,             // Fiel e Cristão conversam
+  'fase3-cena1': valeHumilhacao,
+  'fase3-cena2': apolionConfronto,
+  'fase3-cena3': apolionBatalha,
+  'fase3-cena4': apolionBatalhaEpica,             // CORRIGIDO: batalha épica diferente
+  'fase3-cena5': valeSombraAbismo,
+  'fase3-cena6': curaPosBatalha,
+  'fase3-cena7': valeSombraProfundo,              // CORRIGIDO: mais fundo no vale
+  'fase3-cena8': fielCristaoEncontro,
+  'fase3-cena9': vergonhaConfrontaFiel,           // CORRIGIDO: Vergonha confronta Fiel
+  'fase3-cena10': fielEncontro,
 
   // FASE 4: Feira da Vaidade + Demas
-  'fase4-cena1': feiraVaidadeEntrada,       // Chegada à Feira
-  'fase4-cena2': feiraVaidadeTentacoes,     // Tentações da Feira
-  'fase4-cena3': feiraAmorDinheiro,         // Amor ao Dinheiro
-  'fase4-cena4': prisaoFeira,               // Prisão na Feira
-  'fase4-cena5': julgamentoFeira,           // Na cela / pré-julgamento
-  'fase4-cena6': julgamentoFeira,           // Julgamento de Fiel
-  'fase4-cena7': martirioFiel,              // Martírio de Fiel
-  'fase4-cena8': esperancaJuncaoCaminho,    // Esperança aparece
-  'fase4-cena9': feiraVergonha,             // Vergonha
-  'fase4-cena10': demasMinaPrata,           // Demas na mina de prata
-  'fase4-cena11b': minaPrataDemas,          // Dentro da mina
-  'fase4-cena11': esperancaEncontro,        // Interesses
-  'fase4-cena12': fielEncontro,             // Pequena-Fé
+  'fase4-cena1': feiraVaidadeEntrada,
+  'fase4-cena2': feiraVaidadeTentacoes,
+  'fase4-cena3': feiraAmorDinheiro,
+  'fase4-cena4': prisaoFeira,
+  'fase4-cena5': celaFeiraVaidade,                // CORRIGIDO: cela da feira
+  'fase4-cena6': julgamentoFeira,
+  'fase4-cena7': martirioFiel,
+  'fase4-cena8': esperancaJuncaoCaminho,
+  'fase4-cena9': feiraVergonha,
+  'fase4-cena10': demasMinaPrata,
+  'fase4-cena11b': minaPrataDemas,
+  'fase4-cena11': esperancaEncontro,
+  'fase4-cena12': fielEncontro,
 
   // FASE 5: Castelo da Dúvida
-  'fase5-cena1': pradoAgradavel,            // Prado Agradável
-  'fase5-cena2': pradoDesvio,               // Desvio perigoso
-  'fase5-cena3': giganteDesesperoCalab,     // Gigante Desespero
-  'fase5-cena4': masmorrasCastelo,          // Calabouço
-  'fase5-cena5': masmorrasCastelo,          // Sofrimento
-  'fase5-cena6': chavePromessa,             // Chave da Promessa!
-  'fase5-cena7': fugaCastelo,               // Fuga do castelo
-  'fase5-cena8': casteloDuvidaExterior,     // Lisonjeiro
-  'fase5-cena9': montanhasDeleitosas,       // Montanhas Deleitosas
-  'fase5-cena10': montanhasPastores,        // Pastores
-  'fase5-cena11': redeLisonjeiro,           // Rede do Lisonjeiro
-  'fase5-cena12': redeLisonjeiro,           // Resgate
-  'fase5-cena13': terraEncantadaFlores,     // Terra Encantada
-  'fase5-cena14': paisBeulaDescanso,        // País de Beulá
+  'fase5-cena1': pradoAgradavel,
+  'fase5-cena2': pradoDesvio,
+  'fase5-cena3': giganteDesesperoCalab,
+  'fase5-cena4': masmorrasCastelo,
+  'fase5-cena5': calaboucoSofrimento,             // CORRIGIDO: sofrimento no calabouço
+  'fase5-cena6': chavePromessa,
+  'fase5-cena7': fugaCastelo,
+  'fase5-cena8': lisongieiroArmadilha,            // CORRIGIDO: armadilha do Lisonjeiro
+  'fase5-cena9': montanhasDeleitosas,
+  'fase5-cena10': montanhasPastores,
+  'fase5-cena11': redeLisonjeiro,
+  'fase5-cena12': lisongieiroArmadilha,           // Resgate da rede
+  'fase5-cena13': terraEncantadaFlores,
+  'fase5-cena14': paisBeulaDescanso,
 
   // FASE 6: Rio e Cidade Celestial
-  'fase6-cena1': rioFinal,                  // Avistando o rio
-  'fase6-cena2': rioMorteTravessia,         // Entrando no rio
-  'fase6-cena3': paisBeula,                 // Esperança encoraja
-  'fase6-cena4': rioMorteTravessia,         // Águas profundas
-  'fase6-cena5': chegadaCelestial,          // Outra margem
-  'fase6-cena6': rioFinal,                  // Reflexão
-  'fase6-cena7': chegadaCelestial,          // Portões à vista
-  'fase6-cena8': cidadeCelestial,           // Cidade Celestial!
-  'fase6-cena9': cidadeCelestial,           // Glória final
+  'fase6-cena1': rioFinal,
+  'fase6-cena2': rioMorteTravessia,
+  'fase6-cena3': paisBeula,
+  'fase6-cena4': rioAguasProfundas,               // CORRIGIDO: águas profundas
+  'fase6-cena5': chegadaCelestial,
+  'fase6-cena6': rioReflexao,                     // CORRIGIDO: reflexão no rio
+  'fase6-cena7': chegadaCelestial,
+  'fase6-cena8': cidadeCelestial,
+  'fase6-cena9': cidadeCelestial,
 
   // ═══════ PARTE II ═══════
-  'p2-cena1': cristaSonhoCarta,              // Cristã lendo a carta do Rei
-  'p2-cena2': misericordiaJuncao,            // Misericórdia se juntando ao grupo
-  'p2-cena3': cristaPantano,                 // Cristã e filhos no pântano
-  'p2-cena4': cristaPortaoEstreito,          // Cristã batendo no portão
-  'p2-cena5': boaVontadePortao,              // Boa-Vontade abrindo o portão
-  'p2-cena6': cristaCasaInterprete,          // Cristã na Casa do Intérprete
-  'p2-fase2-cena1': grandeCoracaoGuia,       // Grande-Coração designado como guia
-  'p2-fase2-cena2': cristaCruzFardo,         // Cristã e filhos na Cruz
-  'p2-fase2-cena3': cristaColinaSubida,      // Subida da Colina da Dificuldade
-  'p2-fase2-cena4': cristaPalacioLeoes,      // Leões acorrentados com Grande-Coração
-  'p2-fase2-cena5': palacioBelo,             // Palácio Belo (hospedagem)
-  'p2-fase3-cena1': velhoHonestoEncontro,    // Encontro com Velho Honesto
-  'p2-fase3-cena2': grandeCoracaoVsGigante,  // Grande-Coração vs Gigante Maul
-  'p2-fase3-cena3': resgateMenteFraca,       // Resgate de Mente-Fraca
-  'p2-fase3-cena4': hospedariaGaioFesta,     // Festa na hospedaria de Gaio
-  'p2-fase3-cena5': resgateMenteFraca,       // Gigante Mata-Bons derrotado
-  'p2-fase3-cena6': feiraVaidade,            // Feira da Vaidade (passagem)
-  'p2-fase4-cena1': esperancaEncontro,       // Pronto-para-Parar
-  'p2-fase4-cena2': minaDemas,               // Mina de Demas
-  'p2-fase4-cena3': valenteVerdadeEncontro,  // Valente-pela-Verdade encontrado
-  'p2-fase4-cena4': pradoAgradavel,          // Prado Agradável
-  'p2-fase5-cena1': casteloDuvida,           // Castelo da Dúvida
-  'p2-fase5-cena2': casteloDuvida,           // Dentro do castelo
-  'p2-fase5-cena3': resgateDesanimoMedo,     // Resgate de Sr. Desânimo e Muito-Medo
-  'p2-fase5-cena4': casteloDuvidaDestruido,  // Castelo destruído por Grande-Coração
-  'p2-fase5-cena5': montanhasDeleitosas,     // Montanhas Deleitosas
-  'p2-fase6-cena1': firmeMadameBolha,        // Firme resistindo Madame Bolha
-  'p2-fase6-cena2': paisBeula,               // País de Beulá
-  'p2-fase6-cena3': cristaRioTravessia,      // Travessia do rio
-  'p2-fase6-cena4': cristaRioTravessia,      // Cada um atravessa diferente
-  'p2-fase6-cena5': cristaRioTravessia,      // Últimas travessias
-  'p2-fase6-cena6': cristaChegadaCelestial,  // Chegada à Cidade Celestial!
+  'p2-cena1': cristaSonhoCarta,
+  'p2-cena2': misericordiaJuncao,
+  'p2-cena3': cristaPantano,
+  'p2-cena4': cristaPortaoEstreito,
+  'p2-cena5': boaVontadePortao,
+  'p2-cena6': cristaCasaInterprete,
+  'p2-fase2-cena1': grandeCoracaoGuia,
+  'p2-fase2-cena2': cristaCruzFardo,
+  'p2-fase2-cena3': cristaColinaSubida,
+  'p2-fase2-cena4': cristaPalacioLeoes,
+  'p2-fase2-cena5': palacioBelo,
+  'p2-fase3-cena1': velhoHonestoEncontro,
+  'p2-fase3-cena2': grandeCoracaoVsGigante,
+  'p2-fase3-cena3': resgateMenteFraca,
+  'p2-fase3-cena4': hospedariaGaioFesta,
+  'p2-fase3-cena5': giganteMataBons,              // CORRIGIDO: usa imagem própria
+  'p2-fase3-cena6': feiraVaidadePassagem,          // CORRIGIDO: passagem pela feira
+  'p2-fase4-cena1': esperancaEncontro,
+  'p2-fase4-cena2': minaDemas,
+  'p2-fase4-cena3': valenteVerdadeEncontro,
+  'p2-fase4-cena4': pradoAgradavel,
+  'p2-fase5-cena1': casteloDuvida,
+  'p2-fase5-cena2': casteloDuvidaInterior,         // CORRIGIDO: interior do castelo
+  'p2-fase5-cena3': resgateDesanimoMedo,
+  'p2-fase5-cena4': casteloDuvidaDestruido,
+  'p2-fase5-cena5': montanhasDeleitosas,
+  'p2-fase6-cena1': firmeMadameBolha,
+  'p2-fase6-cena2': paisBeula,
+  'p2-fase6-cena3': cristaRioTravessia,
+  'p2-fase6-cena4': cristaRioTravessia,
+  'p2-fase6-cena5': cristaRioTravessia,
+  'p2-fase6-cena6': cristaChegadaCelestial,
   'p2-final-desistencia': terraEncantada,
   'p2-final-terra-encantada': terraEncantada,
 };
