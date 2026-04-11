@@ -10,7 +10,7 @@ import {
 import { TileEventType } from '@/data/rpg/types';
 import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { playGameSfx, GameSfx } from '@/lib/gameSfx';
-// Narration removed — text-only experience
+import { useBoardTTS } from '@/hooks/useBoardTTS';
 import {
   playVillainPresence, playCrowdCheer, playTensionDrum,
   playHolyChime, playDramaticReveal, playNarrativeChime,
