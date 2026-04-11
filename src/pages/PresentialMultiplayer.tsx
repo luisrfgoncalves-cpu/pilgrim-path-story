@@ -890,8 +890,15 @@ const PresentialMultiplayer = () => {
         }));
       }
 
+      // Show passive triggered notification
+      if (effect.passiveTriggered) {
+        setStreakAnnounce(effect.passiveTriggered);
+        setTimeout(() => setStreakAnnounce(null), 5000);
+      }
+
       // Show tile message for ALL tiles (every tile opens a popup)
-      setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
+      const passivePrefix = effect.passiveTriggered ? `\n\n${effect.passiveTriggered}` : '';
+      setTileMessage({ message: effect.message + passivePrefix, emoji: effect.emoji, tileType, playerName: player.name });
     };
 
     // Store pending action — if phase changed, show transition first
