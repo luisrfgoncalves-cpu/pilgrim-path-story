@@ -44,6 +44,7 @@ import { groupIntoBeats, NarrativeBeat } from '@/hooks/useNarrativeBeats';
 import EpicMoment, { epicMoments } from '@/components/EpicMoment';
 import EpicDefeatScreen from '@/components/EpicDefeatScreen';
 import { useTTS } from '@/hooks/useTTS';
+import { getSceneEmotion, autoNarrateScenes } from '@/data/sceneEmotions';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
   fe: { label: 'Fé', emoji: '🔥', icon: Flame },
