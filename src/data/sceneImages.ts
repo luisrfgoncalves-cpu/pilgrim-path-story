@@ -55,6 +55,15 @@ import portaoEstreitoPassagem from '@/assets/scenes/portao-estreito-passagem.jpg
 import pantanoProfundo from '@/assets/scenes/pantano-profundo.jpg';
 import pantanoQuaseMorrendo from '@/assets/scenes/pantano-quase-morrendo.jpg';
 
+// ── Novas imagens Parte 2 corrigidas ──
+import malEncaradosAtaque from '@/assets/scenes/mal-encarados-ataque.jpg';
+import valeSombraPilarFogo from '@/assets/scenes/vale-sombra-pilar-fogo.jpg';
+import giganteMaulCombate from '@/assets/scenes/gigante-maul-combate.jpg';
+import prontoParaPararEncontro from '@/assets/scenes/pronto-para-parar-encontro.jpg';
+import batalhaGiganteDesesperoP2 from '@/assets/scenes/batalha-gigante-desespero-p2.jpg';
+import cristaChamadoCarta from '@/assets/scenes/crista-chamado-carta.jpg';
+import despedidasRioP2 from '@/assets/scenes/despedidas-rio-p2.jpg';
+
 // ── Imagens por beat narrativo ──
 import cristaoLendoLivro from '@/assets/scenes/cristao-lendo-livro.jpg';
 import livroPalavrasJuizo from '@/assets/scenes/livro-palavras-juizo.jpg';
@@ -258,7 +267,7 @@ export const sceneImages: Record<string, string> = {
   'p2-cena2': misericordiaJuncao,
   'p2-cena3': cristaPantano,
   'p2-cena4': cristaPortaoEstreito,
-  'p2-cena5': boaVontadePortao,
+  'p2-cena5': malEncaradosAtaque,                  // CORRIGIDO: Mal-Encarados atacam após o portão
   'p2-cena6': cristaCasaInterprete,
   'p2-fase2-cena1': grandeCoracaoGuia,
   'p2-fase2-cena2': cristaCruzFardo,
@@ -266,24 +275,24 @@ export const sceneImages: Record<string, string> = {
   'p2-fase2-cena4': cristaPalacioLeoes,
   'p2-fase2-cena5': palacioBelo,
   'p2-fase3-cena1': velhoHonestoEncontro,
-  'p2-fase3-cena2': grandeCoracaoVsGigante,
-  'p2-fase3-cena3': resgateMenteFraca,
+  'p2-fase3-cena2': valeSombraPilarFogo,            // CORRIGIDO: Vale da Sombra com pilar de fogo
+  'p2-fase3-cena3': giganteMaulCombate,             // CORRIGIDO: Combate contra Gigante Maul
   'p2-fase3-cena4': hospedariaGaioFesta,
-  'p2-fase3-cena5': giganteMataBons,              // CORRIGIDO: usa imagem própria
-  'p2-fase3-cena6': feiraVaidadePassagem,          // CORRIGIDO: passagem pela feira
-  'p2-fase4-cena1': esperancaEncontro,
+  'p2-fase3-cena5': giganteMataBons,
+  'p2-fase3-cena6': feiraVaidadePassagem,
+  'p2-fase4-cena1': prontoParaPararEncontro,        // CORRIGIDO: Pronto-para-Parar com muletas
   'p2-fase4-cena2': minaDemas,
   'p2-fase4-cena3': valenteVerdadeEncontro,
   'p2-fase4-cena4': pradoAgradavel,
   'p2-fase5-cena1': casteloDuvida,
-  'p2-fase5-cena2': casteloDuvidaInterior,         // CORRIGIDO: interior do castelo
+  'p2-fase5-cena2': batalhaGiganteDesesperoP2,      // CORRIGIDO: Batalha épica vs Gigante Desespero
   'p2-fase5-cena3': resgateDesanimoMedo,
   'p2-fase5-cena4': casteloDuvidaDestruido,
   'p2-fase5-cena5': montanhasDeleitosas,
   'p2-fase6-cena1': firmeMadameBolha,
   'p2-fase6-cena2': paisBeula,
-  'p2-fase6-cena3': cristaRioTravessia,
-  'p2-fase6-cena4': cristaRioTravessia,
+  'p2-fase6-cena3': cristaChamadoCarta,             // CORRIGIDO: Carta do chamado individual
+  'p2-fase6-cena4': despedidasRioP2,                // CORRIGIDO: Despedidas dos companheiros
   'p2-fase6-cena5': cristaRioTravessia,
   'p2-fase6-cena6': cristaChegadaCelestial,
   'p2-final-desistencia': terraEncantada,
