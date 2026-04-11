@@ -1328,6 +1328,7 @@ const PresentialMultiplayer = () => {
 
   if (allFinished && phase !== 'finished') {
     setPhase('finished');
+    clearSave(); // Clear save on game completion
   }
 
   if (phase === 'finished') {
