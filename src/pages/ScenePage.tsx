@@ -770,11 +770,20 @@ const ScenePage = () => {
 
   const handleAdvanceNarrative = () => {
     if (hasMoreBeats) {
+      // Clear any auto-advance timer
+      if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current);
       setBeatIndex(prev => prev + 1);
-      // TTS for next beat with scene emotion
+      // TTS for next beat with auto-advance chaining
       if (audioOn && beats[beatIndex + 1]) {
         const beatText = beats[beatIndex + 1].lines.join(' ');
-        speak(beatText, { emotion: sceneEmotion, isEpic: hasEpicMoment });
+        speak(beatText, {
+          emotion: sceneEmotion,
+          isEpic: hasEpicMoment,
+          onEnd: () => advanceBeatAuto(),
+        });
+      } else if (!audioOn && beats[beatIndex + 1]) {
+        const words = beats[beatIndex + 1].lines.join(' ').split(' ').length;
+        autoAdvanceRef.current = setTimeout(() => advanceBeatAuto(), Math.max(3000, words * 300));
       }
       return;
     }
