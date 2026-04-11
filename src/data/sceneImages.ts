@@ -83,6 +83,11 @@ import chavePromessa from '@/assets/scenes/chave-promessa.jpg';
 import fugaCastelo from '@/assets/scenes/fuga-castelo.jpg';
 import rioMorteTravessia from '@/assets/scenes/rio-morte-travessia.jpg';
 import chegadaCelestial from '@/assets/scenes/chegada-celestial.jpg';
+import palacioBeloChegada from '@/assets/scenes/palacio-belo-chegada.jpg';
+import esperancaJuncaoCaminho from '@/assets/scenes/esperanca-juncao-caminho.jpg';
+import casteloDuvidaExterior from '@/assets/scenes/castelo-duvida-exterior.jpg';
+import montanhasPastores from '@/assets/scenes/montanhas-pastores.jpg';
+import paisBeulaDescanso from '@/assets/scenes/pais-beula-descanso.jpg';
 
 // ── Novas imagens Parte 2 ──
 import cristaSonhoCarta from '@/assets/scenes/crista-sonho-carta.jpg';
