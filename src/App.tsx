@@ -93,10 +93,17 @@ const PreviewResultGate = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+/** Invisible background TTS pre-generator */
+const BackgroundPregen = () => {
+  useBackgroundTTSPregen();
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <ThemeProvider>
+      <BackgroundPregen />
       <TooltipProvider>
         <Toaster />
         <Sonner />
