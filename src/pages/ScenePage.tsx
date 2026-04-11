@@ -1033,7 +1033,7 @@ const ScenePage = () => {
                         if (ttsPlaying) {
                           stopTTS();
                         } else {
-                          speak(currentBeat.lines.join(' '), { isEpic: hasEpicMoment });
+                          speak(currentBeat.lines.join(' '), { emotion: sceneEmotion, isEpic: hasEpicMoment });
                         }
                       }}
                       className="btn-medieval-icon !p-2 !rounded-lg flex items-center justify-center active:scale-95"

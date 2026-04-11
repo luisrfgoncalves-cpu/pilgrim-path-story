@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { sceneImages } from '@/data/sceneImages';
 import { ArrowRight } from 'lucide-react';
+import { useTTS } from '@/hooks/useTTS';
 
 interface CinematicRecapProps {
   currentChapterId: string;
@@ -68,12 +69,21 @@ const CinematicRecap = ({ currentChapterId, chapterTitle, onContinue, onDismiss 
   const [phase, setPhase] = useState<'enter' | 'text' | 'ready'>('enter');
   const bgImage = sceneImages[currentChapterId];
   const recapText = getRecapText(currentChapterId);
+  const { speak, stop } = useTTS();
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase('text'), 400);
     const t2 = setTimeout(() => setPhase('ready'), 2200);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
+
+  // Auto-narrate recap text with solemn emotion
+  useEffect(() => {
+    const t = setTimeout(() => {
+      speak(recapText, { emotion: 'solemn' });
+    }, 800);
+    return () => { clearTimeout(t); stop(); };
+  }, [recapText]);
 
   return (
     <div className="fixed inset-0 z-[70] flex flex-col items-center justify-center overflow-hidden">
@@ -120,7 +130,7 @@ const CinematicRecap = ({ currentChapterId, chapterTitle, onContinue, onDismiss 
 
         {/* Continue button */}
         <button
-          onClick={onContinue}
+          onClick={() => { stop(); onContinue(); }}
           className={`btn-medieval px-8 py-3 flex items-center gap-3 mx-auto transition-all duration-500 ${phase === 'ready' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
         >
           Continuar Jornada <ArrowRight className="w-5 h-5" />
@@ -128,7 +138,7 @@ const CinematicRecap = ({ currentChapterId, chapterTitle, onContinue, onDismiss 
 
         {/* Skip */}
         <button
-          onClick={onDismiss}
+          onClick={() => { stop(); onDismiss(); }}
           className={`text-[10px] font-display uppercase tracking-widest mt-4 transition-opacity duration-500 ${phase === 'ready' ? 'opacity-50' : 'opacity-0'}`}
           style={{ color: 'hsl(0 0% 45%)' }}
         >
