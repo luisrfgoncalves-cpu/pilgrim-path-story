@@ -7,115 +7,64 @@ const corsHeaders = {
 
 type EmotionType = 'neutral' | 'dramatic' | 'solemn' | 'urgent' | 'celestial' | 'villain';
 
-/**
- * Voice settings calibrados para narração expressiva tipo dublagem profissional.
- * Cada emoção controla: estabilidade (consistência), estilo (expressividade),
- * velocidade e similaridade (fidelidade ao timbre original).
- * 
- * stability baixa = mais variação emocional (bom para drama)
- * style alto = mais expressividade (bom para momentos épicos)
- * speed < 1.0 = mais lento e solene
- */
 const VOICE_SETTINGS: Record<EmotionType, {
   stability: number;
   similarity_boost: number;
   style: number;
   speed: number;
 }> = {
-  neutral: {
-    stability: 0.50,
-    similarity_boost: 0.75,
-    style: 0.30,
-    speed: 0.95,  // Ligeiramente mais lento que fala normal para clareza
-  },
-  dramatic: {
-    stability: 0.25,   // Mais variação = mais emoção
-    similarity_boost: 0.80,
-    style: 0.70,        // Alta expressividade
-    speed: 0.90,        // Pausado para impacto
-  },
-  solemn: {
-    stability: 0.60,    // Mais estável = gravidade
-    similarity_boost: 0.70,
-    style: 0.40,
-    speed: 0.80,        // Bem lento, reverente
-  },
-  urgent: {
-    stability: 0.30,    // Variação para tensão
-    similarity_boost: 0.75,
-    style: 0.60,
-    speed: 1.10,        // Acelerado, respiração curta
-  },
-  celestial: {
-    stability: 0.55,
-    similarity_boost: 0.80,
-    style: 0.50,
-    speed: 0.85,        // Lento, majestoso
-  },
-  villain: {
-    stability: 0.20,    // Muito instável = ameaçador, imprevisível
-    similarity_boost: 0.85,
-    style: 0.80,        // Máxima expressividade
-    speed: 0.88,        // Lento e sinistro
-  },
+  neutral:   { stability: 0.50, similarity_boost: 0.75, style: 0.30, speed: 0.95 },
+  dramatic:  { stability: 0.25, similarity_boost: 0.80, style: 0.70, speed: 0.90 },
+  solemn:    { stability: 0.60, similarity_boost: 0.70, style: 0.40, speed: 0.80 },
+  urgent:    { stability: 0.30, similarity_boost: 0.75, style: 0.60, speed: 1.10 },
+  celestial: { stability: 0.55, similarity_boost: 0.80, style: 0.50, speed: 0.85 },
+  villain:   { stability: 0.20, similarity_boost: 0.85, style: 0.80, speed: 0.88 },
 };
 
-// Daniel — voz masculina PT-BR, quente e narrativa
 const VOICE_ID = 'onwK4e9ZLuTAKqWW03F9';
 
-/**
- * Pré-processamento do texto para narração expressiva.
- * Adiciona pausas naturais, respira pontuação, cria ritmo de dublagem.
- */
+// ═══ FreeTTS voice mapping by emotion ═══
+const FREETTS_VOICES: Record<EmotionType, string> = {
+  neutral:   'pt-BR-FranciscaNeural',
+  dramatic:  'pt-BR-AntonioNeural',
+  solemn:    'pt-BR-FranciscaNeural',
+  urgent:    'pt-BR-AntonioNeural',
+  celestial: 'pt-BR-FranciscaNeural',
+  villain:   'pt-BR-AntonioNeural',
+};
+
+const FREETTS_SPEEDS: Record<EmotionType, number> = {
+  neutral: 0.95,
+  dramatic: 0.90,
+  solemn: 0.80,
+  urgent: 1.10,
+  celestial: 0.85,
+  villain: 0.88,
+};
+
 function preprocessForExpressiveNarration(text: string, emotion: EmotionType): string {
   let processed = text;
-
-  // ═══ 1. Respeitar pontuação com pausas naturais ═══
-  // Reticências = pausa dramática longa (ElevenLabs respeita "..." nativamente)
-  // Já funciona bem, manter.
-
-  // ═══ 2. Travessões = pausa de respiração ═══
   processed = processed.replace(/\s*—\s*/g, '... ');
   processed = processed.replace(/\s*–\s*/g, '... ');
-
-  // ═══ 3. Exclamações duplas/triplas = ênfase ═══
   processed = processed.replace(/!{2,}/g, '!');
-
-  // ═══ 4. Aspas de diálogo = pausa antes e depois para separar narrador de personagem ═══
   processed = processed.replace(/"([^"]+)"/g, '... "$1" ...');
   processed = processed.replace(/"([^"]+)"/g, '... "$1" ...');
 
-  // ═══ 5. Palavras em CAPS = o ElevenLabs já enfatiza naturalmente ═══
-  // Não precisa mudar.
-
-  // ═══ 6. Ajustes por emoção ═══
   if (emotion === 'solemn' || emotion === 'celestial') {
-    // Adicionar micro-pausas em vírgulas para gravidade
     processed = processed.replace(/,\s/g, ', ... ');
   }
-
   if (emotion === 'villain') {
-    // Sussurro sinistro — palavras-chave ganham ênfase
-    processed = processed.replace(/\b(destruição|morte|trevas|maldade|condenação|inferno)\b/gi, 
+    processed = processed.replace(/\b(destruição|morte|trevas|maldade|condenação|inferno)\b/gi,
       (match) => `... ${match.toUpperCase()} ...`);
   }
-
   if (emotion === 'urgent') {
-    // Menos pausas, mais corrido para tensão
     processed = processed.replace(/\.\.\.\s\.\.\./g, '...');
   }
-
-  // ═══ 7. Limpar pausas excessivas ═══
   processed = processed.replace(/(\.\.\.\s*){3,}/g, '... ');
   processed = processed.replace(/\s{2,}/g, ' ');
-
   return processed.trim();
 }
 
-/**
- * Rotação inteligente de chaves — usa 1 por vez,
- * troca só quando a atual falhar (429/401).
- */
 let currentKeyIndex = 0;
 
 function getApiKeys(): string[] {
@@ -130,16 +79,13 @@ function getApiKeys(): string[] {
 }
 
 function getCurrentKey(keys: string[]): string {
-  if (keys.length === 0) throw new Error('No keys configured');
   return keys[currentKeyIndex % keys.length];
 }
 
-function rotateToNextKey(keys: string[]): string | null {
+function rotateToNextKey(keys: string[]): boolean {
   const startIndex = currentKeyIndex;
   currentKeyIndex = (currentKeyIndex + 1) % keys.length;
-  // Se voltou ao mesmo, todas falharam
-  if (currentKeyIndex === startIndex) return null;
-  return keys[currentKeyIndex];
+  return currentKeyIndex !== startIndex;
 }
 
 async function hashKey(text: string, emotion: string): Promise<string> {
@@ -149,32 +95,136 @@ async function hashKey(text: string, emotion: string): Promise<string> {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-async function generateWithKey(
-  apiKey: string,
+// ═══ FreeTTS.org — Microsoft Neural voices (FREE, no key needed) ═══
+async function generateWithFreeTTS(text: string, emotion: EmotionType): Promise<ArrayBuffer | null> {
+  try {
+    const voice = FREETTS_VOICES[emotion] || 'pt-BR-FranciscaNeural';
+    const speed = FREETTS_SPEEDS[emotion] || 0.95;
+
+    console.log(`[TTS FreeTTS] Trying voice: ${voice}, speed: ${speed}`);
+
+    const response = await fetch('https://freetts.org/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, voice, speed }),
+    });
+
+    if (!response.ok) {
+      console.log(`[TTS FreeTTS] Failed: ${response.status}`);
+      return null;
+    }
+
+    const buffer = await response.arrayBuffer();
+    if (buffer.byteLength < 100) {
+      console.log(`[TTS FreeTTS] Response too small (${buffer.byteLength}B)`);
+      return null;
+    }
+
+    console.log(`[TTS FreeTTS] Success (${(buffer.byteLength / 1024).toFixed(1)}KB)`);
+    return buffer;
+  } catch (e) {
+    console.log(`[TTS FreeTTS] Error: ${e instanceof Error ? e.message : e}`);
+    return null;
+  }
+}
+
+// ═══ eidosSpeech.xyz — Another free neural TTS ═══
+async function generateWithEidos(text: string, emotion: EmotionType): Promise<ArrayBuffer | null> {
+  try {
+    const voice = (emotion === 'villain' || emotion === 'dramatic' || emotion === 'urgent')
+      ? 'pt-BR-AntonioNeural'
+      : 'pt-BR-FranciscaNeural';
+
+    console.log(`[TTS Eidos] Trying voice: ${voice}`);
+
+    const response = await fetch('https://eidosspeech.xyz/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, voice }),
+    });
+
+    if (!response.ok) {
+      console.log(`[TTS Eidos] Failed: ${response.status}`);
+      return null;
+    }
+
+    const buffer = await response.arrayBuffer();
+    if (buffer.byteLength < 100) {
+      console.log(`[TTS Eidos] Response too small`);
+      return null;
+    }
+
+    console.log(`[TTS Eidos] Success (${(buffer.byteLength / 1024).toFixed(1)}KB)`);
+    return buffer;
+  } catch (e) {
+    console.log(`[TTS Eidos] Error: ${e instanceof Error ? e.message : e}`);
+    return null;
+  }
+}
+
+// ═══ ElevenLabs generation ═══
+async function generateWithElevenLabs(
   text: string,
   settings: typeof VOICE_SETTINGS.neutral,
-): Promise<Response> {
-  return await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?output_format=mp3_22050_32`,
-    {
-      method: 'POST',
-      headers: {
-        'xi-api-key': apiKey,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text,
-        model_id: 'eleven_multilingual_v2',
-        voice_settings: {
-          stability: settings.stability,
-          similarity_boost: settings.similarity_boost,
-          style: settings.style,
-          use_speaker_boost: true,
-          speed: settings.speed,
+  allKeys: string[],
+): Promise<ArrayBuffer | null> {
+  if (allKeys.length === 0) return null;
+
+  let attempts = 0;
+  const maxAttempts = Math.min(allKeys.length, 6);
+
+  while (attempts < maxAttempts) {
+    const apiKey = getCurrentKey(allKeys);
+    attempts++;
+
+    try {
+      const response = await fetch(
+        `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?output_format=mp3_22050_32`,
+        {
+          method: 'POST',
+          headers: {
+            'xi-api-key': apiKey,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            text,
+            model_id: 'eleven_multilingual_v2',
+            voice_settings: {
+              stability: settings.stability,
+              similarity_boost: settings.similarity_boost,
+              style: settings.style,
+              use_speaker_boost: true,
+              speed: settings.speed,
+            },
+          }),
         },
-      }),
-    },
-  );
+      );
+
+      if (response.status === 429 || response.status === 401) {
+        const errText = await response.text();
+        console.log(`[TTS EL] Key ${currentKeyIndex} limited: ${errText.slice(0, 80)}`);
+        if (!rotateToNextKey(allKeys)) break;
+        await new Promise(r => setTimeout(r, 500));
+        continue;
+      }
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log(`[TTS EL] Error [${response.status}]: ${errorText.slice(0, 100)}`);
+        return null;
+      }
+
+      const buffer = await response.arrayBuffer();
+      console.log(`[TTS EL] Success (${(buffer.byteLength / 1024).toFixed(1)}KB)`);
+      return buffer;
+    } catch (e) {
+      console.log(`[TTS EL] Key ${currentKeyIndex} error: ${e instanceof Error ? e.message : e}`);
+      rotateToNextKey(allKeys);
+      continue;
+    }
+  }
+
+  return null;
 }
 
 Deno.serve(async (req) => {
@@ -199,7 +249,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // ═══ STEP 1: Check Supabase Storage cache ═══
+    // ═══ STEP 1: Check cache ═══
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, serviceRoleKey);
@@ -220,98 +270,70 @@ Deno.serve(async (req) => {
           'Content-Type': 'audio/mpeg',
           'Cache-Control': 'public, max-age=604800',
           'X-TTS-Cache': 'hit',
+          'X-TTS-Source': 'cache',
         },
       });
     }
 
-    console.log(`[TTS Cache MISS] ${cachePath} — generating...`);
+    console.log(`[TTS Cache MISS] ${cachePath}`);
 
-    // ═══ STEP 2: Pre-process text for expressive narration ═══
     const emotionType = (emotion as EmotionType) || 'neutral';
     const expressiveText = preprocessForExpressiveNarration(text, emotionType);
     const settings = VOICE_SETTINGS[emotionType] || VOICE_SETTINGS.neutral;
 
-    console.log(`[TTS] Emotion: ${emotionType}, Speed: ${settings.speed}, Style: ${settings.style}`);
+    // ═══ STEP 2: Try ElevenLabs first (best quality) ═══
+    let audioBuffer = await generateWithElevenLabs(expressiveText, settings, getApiKeys());
+    let source = 'elevenlabs';
 
-    // ═══ STEP 3: Generate with smart key rotation ═══
-    const allKeys = getApiKeys();
+    // ═══ STEP 3: Fallback to FreeTTS (Microsoft Neural — free, no key) ═══
+    if (!audioBuffer) {
+      console.log(`[TTS] ElevenLabs unavailable, trying FreeTTS...`);
+      audioBuffer = await generateWithFreeTTS(text, emotionType);
+      source = 'freetts';
+    }
 
-    if (allKeys.length === 0) {
+    // ═══ STEP 4: Fallback to eidosSpeech (free, no key) ═══
+    if (!audioBuffer) {
+      console.log(`[TTS] FreeTTS unavailable, trying eidosSpeech...`);
+      audioBuffer = await generateWithEidos(text, emotionType);
+      source = 'eidosspeech';
+    }
+
+    // ═══ All failed ═══
+    if (!audioBuffer) {
       return new Response(
-        JSON.stringify({ error: 'No ElevenLabs API keys configured' }),
+        JSON.stringify({ error: 'All TTS providers unavailable. Try again later.' }),
         { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
 
-    let attempts = 0;
-    const maxAttempts = Math.min(allKeys.length, 6); // No máximo tenta todas as chaves
-
-    while (attempts < maxAttempts) {
-      const apiKey = getCurrentKey(allKeys);
-      attempts++;
-
-      try {
-        const response = await generateWithKey(apiKey, expressiveText, settings);
-
-        if (response.status === 429 || response.status === 401) {
-          const errText = await response.text();
-          console.log(`[TTS] Key ${currentKeyIndex} limited (${response.status}): ${errText.slice(0, 80)}`);
-          const nextKey = rotateToNextKey(allKeys);
-          if (!nextKey) break; // Todas tentadas
-          // Pequeno delay entre rotações para não parecer bot
-          await new Promise(r => setTimeout(r, 500));
-          continue;
-        }
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.log(`[TTS] ElevenLabs error [${response.status}]: ${errorText.slice(0, 200)}`);
-          return new Response(
-            JSON.stringify({ error: `ElevenLabs error: ${response.status}` }),
-            { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
-          );
-        }
-
-        const audioBuffer = await response.arrayBuffer();
-
-        // ═══ STEP 4: Save to global cache ═══
-        try {
-          const { error: uploadError } = await supabase.storage
-            .from('tts-cache')
-            .upload(cachePath, audioBuffer, {
-              contentType: 'audio/mpeg',
-              cacheControl: '604800',
-              upsert: true,
-            });
-          if (uploadError) {
-            console.error(`[TTS Cache] Upload failed: ${uploadError.message}`);
-          } else {
-            console.log(`[TTS Cache STORED] ${cachePath} (${(audioBuffer.byteLength / 1024).toFixed(1)}KB)`);
-          }
-        } catch (e) {
-          console.error(`[TTS Cache] Storage error: ${e}`);
-        }
-
-        return new Response(audioBuffer, {
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'audio/mpeg',
-            'Cache-Control': 'public, max-age=604800',
-            'X-TTS-Cache': 'miss',
-          },
+    // ═══ STEP 5: Save to global cache ═══
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from('tts-cache')
+        .upload(cachePath, audioBuffer, {
+          contentType: 'audio/mpeg',
+          cacheControl: '604800',
+          upsert: true,
         });
-      } catch (e) {
-        const errMsg = e instanceof Error ? e.message : String(e);
-        console.log(`[TTS] Key ${currentKeyIndex} error: ${errMsg}`);
-        rotateToNextKey(allKeys);
-        continue;
+      if (uploadError) {
+        console.error(`[TTS Cache] Upload failed: ${uploadError.message}`);
+      } else {
+        console.log(`[TTS Cache STORED] ${cachePath} via ${source} (${(audioBuffer.byteLength / 1024).toFixed(1)}KB)`);
       }
+    } catch (e) {
+      console.error(`[TTS Cache] Storage error: ${e}`);
     }
 
-    return new Response(
-      JSON.stringify({ error: 'All API keys rate-limited. Try again in a few minutes.' }),
-      { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
-    );
+    return new Response(audioBuffer, {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'audio/mpeg',
+        'Cache-Control': 'public, max-age=604800',
+        'X-TTS-Cache': 'miss',
+        'X-TTS-Source': source,
+      },
+    });
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Unknown error';
     return new Response(
