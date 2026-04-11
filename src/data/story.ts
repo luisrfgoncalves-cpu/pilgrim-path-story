@@ -1730,7 +1730,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Escárnio",
     location: "Feira da Vaidade",
     characters: ["cristao"],
-    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'A multidão se volta contra os peregrinos!' }, },
+    sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'A multidão se volta contra os peregrinos!' },
     narrative: [
       "{{tremor}}Sua recusa em comprar provoca escárnio. Vendedores zombam. A multidão começa a cercá-los.{{/tremor}} Alguns cospem em vocês. Outros jogam lama.",
       "{{shout}}\"Loucos!\"{{/shout}}, gritam. {{villain}}\"Fanáticos! Quem vem à feira e não compra nada?\"{{/villain}}",
