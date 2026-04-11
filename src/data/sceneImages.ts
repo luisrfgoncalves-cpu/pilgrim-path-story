@@ -185,15 +185,15 @@ export const sceneImages: Record<string, string> = {
 
   // FASE 2: Casa do Intérprete + Colina + Leões
   'fase2-cena1': casaInterprete,
-  'fase2-cena2': interpreteVisaoFogo,
-  'fase2-cena3': interpreteSalaPoeira,
-  'fase2-cena4': interpreteVisoes,
-  'fase2-cena5': interpreteVisaoFinal,            // CORRIGIDO: visão final diferente
-  'fase2-cena6': interpreteDespedida,
+  'fase2-cena2': interpreteVisoes,                // Retrato na Parede — sala de visões
+  'fase2-cena3': cristaoCampoSemDirecao,          // Caminho Sem Instrução — estrada aberta
+  'fase2-cena4': interpreteSalaPoeira,             // Sala da Poeira — poeira sendo varrida
+  'fase2-cena5': interpreteVisaoFinal,             // Resposta do Intérprete
+  'fase2-cena6': interpreteVisaoFogo,              // Fogo que Não Apaga — visão do fogo
   'fase2-cena7': palacioBeloChegada,
   'fase2-cena8': gaiolaFerro,
   'fase2-cena9': armaduraCrista,
-  'fase2-cena10': palacioBelo,
+  'fase2-cena10': interpreteDespedida,             // Despedida do Intérprete
   'fase2-cena11': colinaSubidaDramatica,
   'fase2-cena12': colinaDificuldadeSubida,
   'fase2-cena13': caramanchaoSono,
@@ -208,7 +208,7 @@ export const sceneImages: Record<string, string> = {
   'fase3-cena6': curaPosBatalha,
   'fase3-cena7': valeSombraProfundo,              // CORRIGIDO: mais fundo no vale
   'fase3-cena8': fielCristaoEncontro,
-  'fase3-cena9': vergonhaConfrontaFiel,           // CORRIGIDO: Vergonha confronta Fiel
+  'fase3-cena9': valeSombra,                       // Peso do Medo — esqueletos no vale
   'fase3-cena10': fielEncontro,
 
   // FASE 4: Feira da Vaidade + Demas
@@ -216,9 +216,9 @@ export const sceneImages: Record<string, string> = {
   'fase4-cena2': feiraVaidadeTentacoes,
   'fase4-cena3': feiraAmorDinheiro,
   'fase4-cena4': prisaoFeira,
-  'fase4-cena5': celaFeiraVaidade,                // CORRIGIDO: cela da feira
-  'fase4-cena6': julgamentoFeira,
-  'fase4-cena7': martirioFiel,
+  'fase4-cena5': celaFeiraVaidade,                // cela da feira
+  'fase4-cena6': martirioFiel,                     // Martírio de Fiel — queimado na estaca
+  'fase4-cena7': julgamentoFeira,                  // Tentação de Desistir — pós-julgamento
   'fase4-cena8': esperancaJuncaoCaminho,
   'fase4-cena9': feiraVergonha,
   'fase4-cena10': demasMinaPrata,
