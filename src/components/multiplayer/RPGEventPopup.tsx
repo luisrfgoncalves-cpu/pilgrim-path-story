@@ -203,8 +203,10 @@ export default function RPGEventPopup({
     else if (tileEventType === 'refuge' || tileEventType === 'special') playRealSfx('chime', 0.3);
     else playRealSfx('bell', 0.2);
 
-    // Narrate the suspense text
+    // Narrate the suspense text with neural voice
     const suspense = getSuspenseText();
+    narrateBoard(suspense.text, getEmotion(tileEventType));
+
     const timer = window.setTimeout(() => {
       setPhase('context');
       // Play the main contextual SFX when transitioning
