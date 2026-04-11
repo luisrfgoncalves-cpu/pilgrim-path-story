@@ -625,26 +625,21 @@ useEffect(() => {
   const linesPerBeat = useMemo(() => {
     if (primaryNarrative.length === 0) return 3;
     if (mappedBeatImageCount <= 1) return 3;
-    return Math.max(1, Math.min(3, Math.floor(primaryNarrative.length / mappedBeatImageCount) || 1));
+    return Math.max(1, Math.min(3, Math.ceil(primaryNarrative.length / mappedBeatImageCount)));
   }, [primaryNarrative.length, mappedBeatImageCount]);
   const primaryBeatCount = useMemo(() => groupIntoBeats(primaryNarrative, linesPerBeat).length, [primaryNarrative, linesPerBeat]);
 
-  // ═══ BEATS SYSTEM — adapt granularity to available image coverage ═══
-  // Scenes with richer image coverage get smaller beats so visuals stay aligned with the spoken text.
+  // ═══ BEATS SYSTEM — cinematic flow uses only the core narrative so image + áudio stay locked ═══
   const beats = useMemo(() => {
-    const primaryBeats = groupIntoBeats(primaryNarrative, linesPerBeat);
-
-    if (supplementaryLines.length > 0 && primaryBeats.length > 0) {
-      const lastBeatIndex = primaryBeats.length - 1;
-      primaryBeats[lastBeatIndex] = {
-        ...primaryBeats[lastBeatIndex],
-        lines: [...primaryBeats[lastBeatIndex].lines, ...supplementaryLines],
-      };
-    } else if (supplementaryLines.length > 0) {
-      primaryBeats.push({ lines: supplementaryLines, startIndex: 0 });
+    if (primaryNarrative.length > 0) {
+      return groupIntoBeats(primaryNarrative, linesPerBeat);
     }
 
-    return primaryBeats;
+    if (supplementaryLines.length > 0) {
+      return groupIntoBeats(supplementaryLines, 3);
+    }
+
+    return [];
   }, [primaryNarrative, supplementaryLines, linesPerBeat]);
   const currentBeat = beats[beatIndex] ?? null;
   const hasMoreBeats = beatIndex < beats.length - 1;

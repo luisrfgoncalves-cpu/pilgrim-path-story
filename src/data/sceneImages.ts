@@ -173,22 +173,35 @@ export const sceneImages: Record<string, string> = {
   'cena1__7': cristaoFamiliaNoite,
   'cena1__8': cristaoNoiteTormento,
   'cena1b': cidadeDestruicaoPanoramica,
-  'cena1b__beat1': cidadeDestruicaoPanoramica,    // saindo de casa de madrugada
-  'cena1b__beat2': vizinhosRuasZombando,          // vizinhos fecham janelas
-  'cena1b__beat3': cristaoFamiliaNoite,           // volta para casa, esposa na porta
-  'cena1b__beat4': cristaoNoiteTormento,          // deitado no escuro
+  'cena1b__beat1': cidadeDestruicaoPanoramica,
+  'cena1b__beat2': vizinhosRuasZombando,
+  'cena1b__beat3': cristaoFamiliaNoite,
+  'cena1b__beat4': cristaoNoiteTormento,
+  'cena1b__0': cidadeDestruicaoPanoramica,
+  'cena1b__1': vizinhosRuasZombando,
+  'cena1b__2': cristaoFamiliaNoite,
+  'cena1b__3': cristaoNoiteTormento,
   'cena2': encontroObstinadoFlexivel,
-  'cena2__beat1': cidadeDestruicaoPanoramica,     // dias seguintes na cidade
-  'cena2__beat2': obstinadoSegurandoBraco,        // Obstinado confronta
-  'cena2__beat3': encontroObstinadoFlexivel,      // Flexível questiona
+  'cena2__beat1': cidadeDestruicaoPanoramica,
+  'cena2__beat2': obstinadoSegurandoBraco,
+  'cena2__beat3': encontroObstinadoFlexivel,
+  'cena2__0': cidadeDestruicaoPanoramica,
+  'cena2__1': obstinadoSegurandoBraco,
+  'cena2__2': encontroObstinadoFlexivel,
   'cena3': cristaoCorrendo,
   'cena3__beat1': cristaoCorrendo,
-  'cena3__beat2': cristaoGritandoVida,           // CORRIGIDO: gritando "Vida! Vida eterna!"
+  'cena3__beat2': cristaoGritandoVida,
   'cena3__beat3': cristaoCampoSemDirecao,
+  'cena3__0': cristaoCorrendo,
+  'cena3__1': cristaoGritandoVida,
+  'cena3__2': cristaoCampoSemDirecao,
   'cena4': cristaoParedes,
   'cena4__beat1': cristaoParedes,
-  'cena4__beat2': palavrasQueimandoParedes,       // CORRIGIDO: palavras queimando nas paredes
-  'cena4__beat3': familiaPercebeMudanca,          // CORRIGIDO: família percebe a mudança
+  'cena4__beat2': palavrasQueimandoParedes,
+  'cena4__beat3': familiaPercebeMudanca,
+  'cena4__0': cristaoParedes,
+  'cena4__1': palavrasQueimandoParedes,
+  'cena4__2': familiaPercebeMudanca,
   'cena5': evangelistaApontando,
   'cena5b': tresDorminhocoesCaminho,
   'cena6': cristaoCampoDesespero,
