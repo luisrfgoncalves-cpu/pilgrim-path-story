@@ -1,3 +1,5 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1';
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -5,7 +7,6 @@ const corsHeaders = {
 
 type EmotionType = 'neutral' | 'dramatic' | 'solemn' | 'urgent' | 'celestial' | 'villain';
 
-// Voice settings per emotion — stability baixa = mais expressividade
 const VOICE_SETTINGS: Record<EmotionType, { stability: number; similarity_boost: number; style: number; speed: number }> = {
   neutral:   { stability: 0.5, similarity_boost: 0.75, style: 0.3, speed: 1.0 },
   dramatic:  { stability: 0.25, similarity_boost: 0.8, style: 0.7, speed: 0.95 },
@@ -15,26 +16,24 @@ const VOICE_SETTINGS: Record<EmotionType, { stability: number; similarity_boost:
   villain:   { stability: 0.2, similarity_boost: 0.85, style: 0.8, speed: 0.9 },
 };
 
-// Daniel voice — deep, dramatic, works well for PT-BR narration
 const VOICE_ID = 'onwK4e9ZLuTAKqWW03F9';
 
-// Rotate between 3 API keys to maximize free tier (30k chars/month total)
 let keyIndex = 0;
 
-function getNextApiKey(): string {
-  const keys = [
+function getApiKeys(): string[] {
+  return [
     Deno.env.get('ELEVENLABS_API_KEY_1'),
     Deno.env.get('ELEVENLABS_API_KEY_2'),
     Deno.env.get('ELEVENLABS_API_KEY_3'),
   ].filter(Boolean) as string[];
+}
 
-  if (keys.length === 0) {
-    throw new Error('No ElevenLabs API keys configured');
-  }
-
-  const key = keys[keyIndex % keys.length];
-  keyIndex++;
-  return key;
+/** Generate a stable hash for cache key from text + emotion */
+async function hashKey(text: string, emotion: string): Promise<string> {
+  const data = new TextEncoder().encode(`${emotion}:${text}`);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 Deno.serve(async (req) => {
@@ -59,17 +58,37 @@ Deno.serve(async (req) => {
       );
     }
 
-    const settings = VOICE_SETTINGS[emotion as EmotionType] || VOICE_SETTINGS.neutral;
+    // ═══ STEP 1: Check Supabase Storage cache ═══
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
     
-    // Try each key until one works
-    const keys = [getNextApiKey()];
-    // If first fails, try remaining keys
-    const allKeys = [
-      Deno.env.get('ELEVENLABS_API_KEY_1'),
-      Deno.env.get('ELEVENLABS_API_KEY_2'),
-      Deno.env.get('ELEVENLABS_API_KEY_3'),
-    ].filter(Boolean) as string[];
+    const cacheKey = await hashKey(text, emotion);
+    const cachePath = `${emotion}/${cacheKey}.mp3`;
 
+    // Check if cached audio exists
+    const { data: cachedFile } = await supabase.storage
+      .from('tts-cache')
+      .download(cachePath);
+
+    if (cachedFile) {
+      console.log(`[TTS Cache HIT] ${cachePath}`);
+      const buffer = await cachedFile.arrayBuffer();
+      return new Response(buffer, {
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'audio/mpeg',
+          'Cache-Control': 'public, max-age=604800',
+          'X-TTS-Cache': 'hit',
+        },
+      });
+    }
+
+    console.log(`[TTS Cache MISS] ${cachePath} — generating...`);
+
+    // ═══ STEP 2: Generate audio via ElevenLabs ═══
+    const settings = VOICE_SETTINGS[emotion as EmotionType] || VOICE_SETTINGS.neutral;
+    const allKeys = getApiKeys();
     let lastError: Error | null = null;
 
     for (const apiKey of allKeys) {
@@ -97,7 +116,6 @@ Deno.serve(async (req) => {
         );
 
         if (response.status === 429 || response.status === 401) {
-          // Rate limited or quota exceeded — try next key
           await response.text();
           continue;
         }
@@ -109,11 +127,30 @@ Deno.serve(async (req) => {
 
         const audioBuffer = await response.arrayBuffer();
 
+        // ═══ STEP 3: Save to Supabase Storage for future users ═══
+        try {
+          const { error: uploadError } = await supabase.storage
+            .from('tts-cache')
+            .upload(cachePath, audioBuffer, {
+              contentType: 'audio/mpeg',
+              cacheControl: '604800',
+              upsert: true,
+            });
+          if (uploadError) {
+            console.error(`[TTS Cache] Upload failed: ${uploadError.message}`);
+          } else {
+            console.log(`[TTS Cache STORED] ${cachePath}`);
+          }
+        } catch (e) {
+          console.error(`[TTS Cache] Storage error: ${e}`);
+        }
+
         return new Response(audioBuffer, {
           headers: {
             ...corsHeaders,
             'Content-Type': 'audio/mpeg',
-            'Cache-Control': 'public, max-age=86400',
+            'Cache-Control': 'public, max-age=604800',
+            'X-TTS-Cache': 'miss',
           },
         });
       } catch (e) {
