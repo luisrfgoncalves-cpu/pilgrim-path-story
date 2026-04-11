@@ -55,6 +55,15 @@ import portaoEstreitoPassagem from '@/assets/scenes/portao-estreito-passagem.jpg
 import pantanoProfundo from '@/assets/scenes/pantano-profundo.jpg';
 import pantanoQuaseMorrendo from '@/assets/scenes/pantano-quase-morrendo.jpg';
 
+// ── Novas imagens Parte 2 corrigidas ──
+import malEncaradosAtaque from '@/assets/scenes/mal-encarados-ataque.jpg';
+import valeSombraPilarFogo from '@/assets/scenes/vale-sombra-pilar-fogo.jpg';
+import giganteMaulCombate from '@/assets/scenes/gigante-maul-combate.jpg';
+import prontoParaPararEncontro from '@/assets/scenes/pronto-para-parar-encontro.jpg';
+import batalhaGiganteDesesperoP2 from '@/assets/scenes/batalha-gigante-desespero-p2.jpg';
+import cristaChamadoCarta from '@/assets/scenes/crista-chamado-carta.jpg';
+import despedidasRioP2 from '@/assets/scenes/despedidas-rio-p2.jpg';
+
 // ── Imagens por beat narrativo ──
 import cristaoLendoLivro from '@/assets/scenes/cristao-lendo-livro.jpg';
 import livroPalavrasJuizo from '@/assets/scenes/livro-palavras-juizo.jpg';
