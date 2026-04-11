@@ -12,7 +12,7 @@ import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { playGameSfx, GameSfx } from '@/lib/gameSfx';
 // Narration removed — text-only experience
 import {
-  playEvilLaugh, playCrowdCheer, playTensionDrum,
+  playVillainPresence, playCrowdCheer, playTensionDrum,
   playHolyChime, playDramaticReveal, playNarrativeChime,
 } from './BoardSounds';
 import { playRealSfx, getSfxForTileEvent, playNarrativeSfx } from '@/lib/realSfx';
@@ -305,7 +305,7 @@ export default function RPGEventPopup({
   // Play contextual SFX based on event type
   const playContextSfx = useCallback((eventType: string) => {
     switch (eventType) {
-      case 'boss': playEvilLaugh(); break;
+      case 'boss': playVillainPresence(); break;
       case 'trap': playTensionDrum(); break;
       case 'refuge': case 'special': playHolyChime(); break;
       case 'scripture': playNarrativeChime(); break;
@@ -368,7 +368,7 @@ export default function RPGEventPopup({
       const realSfx = getSfxForTileEvent(tileEventType, true);
       if (realSfx) playRealSfx(realSfx, 0.5);
     } else {
-      if (boss) playEvilLaugh();
+      if (boss) playVillainPresence();
       const realSfx = getSfxForTileEvent(tileEventType, false);
       if (realSfx) playRealSfx(realSfx, 0.4);
     }

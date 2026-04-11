@@ -217,14 +217,23 @@ export function playRiverAmbient() {
 
 // ─── Contextual narrative SFX ───
 
-export function playEvilLaugh() {
+/** Dark menacing tone for villains/bosses — replaces old evil laugh */
+export function playVillainPresence() {
   const c = getCtx();
   if (!c) return;
-  [220, 180, 140, 110].forEach((freq, i) => {
-    setTimeout(() => {
-      playTone(freq, 0.3, 'sawtooth', 0.06);
-    }, i * 150);
-  });
+  // Deep ominous rumble + dissonant chord
+  playTone(55, 0.8, 'sawtooth', 0.06);
+  setTimeout(() => playTone(82, 0.6, 'sawtooth', 0.05), 100);
+  setTimeout(() => playTone(110, 0.5, 'sawtooth', 0.04), 250);
+  setTimeout(() => {
+    playTone(73, 0.4, 'sine', 0.03);
+    playTone(77, 0.4, 'sine', 0.03);
+  }, 450);
+}
+
+/** @deprecated Use playVillainPresence instead */
+export function playEvilLaugh() {
+  playVillainPresence();
 }
 
 export function playCrowdCheer() {
