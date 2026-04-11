@@ -3,16 +3,10 @@ import { narrate, stopNarration, type NarrationStyle } from '@/lib/narrator';
 
 /**
  * useTTS — Text-to-Speech com cache inteligente + narração neural.
- * 
- * Cache paths por provedor: elevenlabs/ > freetts/ > eidosspeech/
- * O client tenta o melhor provedor primeiro (ElevenLabs),
- * depois fallback para FreeTTS e eidosSpeech.
- * 
- * Cache:
- *   1. Memória (sessão)
- *   2. IndexedDB (persistente no celular)
- *   3. Supabase Storage (global — separado por provedor)
- *   4. Edge Function gera e salva automaticamente
+ *
+ * Para garantir consistência vocal na jornada, o cliente trava a narração
+ * em um único provedor/voz masculina (FreeTTS AntonioNeural) e só cai para
+ * a voz local masculina em caso extremo.
  */
 
 type TTSTier = 'elevenlabs' | 'freetts' | 'eidosspeech' | 'cached' | 'local';
@@ -26,12 +20,13 @@ interface TTSOptions {
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
+const LOCKED_PROVIDER: Extract<TTSTier, 'freetts'> = 'freetts';
 
 const memoryCache = new Map<string, string>();
 let globalAudio: HTMLAudioElement | null = null;
 let globalPlaybackToken = 0;
 
-const PROVIDER_PRIORITY = ['elevenlabs', 'freetts', 'eidosspeech'] as const;
+const PROVIDER_PRIORITY = [LOCKED_PROVIDER] as const;
 
 const DB_NAME = 'peregrino-tts-cache';
 const DB_VERSION = 1;
@@ -84,7 +79,7 @@ async function hashKey(text: string, emotion: string): Promise<string> {
 }
 
 function getCacheKey(text: string, emotion: string): string {
-  return `${emotion}:${text.slice(0, 200)}`;
+  return `${LOCKED_PROVIDER}:${emotion}:${text.slice(0, 200)}`;
 }
 
 function getNarrationStyle(emotion: EmotionType): NarrationStyle {
@@ -221,7 +216,10 @@ export function useTTS() {
 
     const { emotion = 'neutral', onEnd } = options;
     const cleanText = text.replace(/\{\{\/?\w+\}\}/g, '').replace(/\s+/g, ' ').trim();
-    if (!cleanText) { onEnd?.(); return; }
+    if (!cleanText) {
+      onEnd?.();
+      return;
+    }
 
     const token = globalPlaybackToken;
     tokenRef.current = token;
@@ -230,7 +228,7 @@ export function useTTS() {
 
     if (memoryCache.has(cacheKey)) {
       try {
-        const ok = await playResolvedUrl(memoryCache.get(cacheKey)!, token, 'cached', undefined, undefined, onEnd, cleanText.length);
+        const ok = await playResolvedUrl(memoryCache.get(cacheKey)!, token, LOCKED_PROVIDER, undefined, undefined, onEnd, cleanText.length);
         if (ok) return;
       } catch {}
     }
@@ -239,7 +237,7 @@ export function useTTS() {
       const cachedBlob = await getFromIDB(cacheKey);
       if (cachedBlob) {
         const url = URL.createObjectURL(cachedBlob);
-        const ok = await playResolvedUrl(url, token, 'cached', cacheKey, cachedBlob, onEnd, cleanText.length);
+        const ok = await playResolvedUrl(url, token, LOCKED_PROVIDER, cacheKey, cachedBlob, onEnd, cleanText.length);
         if (ok) return;
       }
     } catch {}
@@ -257,7 +255,7 @@ export function useTTS() {
             const blob = await resp.blob();
             if (blob.size > 100) {
               const url = URL.createObjectURL(blob);
-              const ok = await playResolvedUrl(url, token, provider as TTSTier, cacheKey, blob, onEnd, cleanText.length);
+              const ok = await playResolvedUrl(url, token, provider, cacheKey, blob, onEnd, cleanText.length);
               if (ok) return;
             }
           }
@@ -275,17 +273,16 @@ export function useTTS() {
           apikey: SUPABASE_KEY,
           Authorization: `Bearer ${SUPABASE_KEY}`,
         },
-        body: JSON.stringify({ text: cleanText, emotion }),
+        body: JSON.stringify({ text: cleanText, emotion, forceProvider: LOCKED_PROVIDER }),
         signal: controller.signal,
       });
       clearTimeout(timeout);
 
       if (response.ok) {
-        const source = (response.headers.get('X-TTS-Source') || 'unknown') as TTSTier;
         const blob = await response.blob();
         if (blob.size > 100) {
           const url = URL.createObjectURL(blob);
-          const ok = await playResolvedUrl(url, token, source, cacheKey, blob, onEnd, cleanText.length);
+          const ok = await playResolvedUrl(url, token, LOCKED_PROVIDER, cacheKey, blob, onEnd, cleanText.length);
           if (ok) return;
         }
       }
@@ -296,7 +293,6 @@ export function useTTS() {
 
     console.log('[TTS] All providers unavailable. Text-only mode.');
     finalizeIfCurrent(token, null);
-    // Even if all providers fail, call onEnd so auto-advance continues
     onEnd?.();
   }, [finalizeIfCurrent, playLocalFallback, playResolvedUrl, stop]);
 
