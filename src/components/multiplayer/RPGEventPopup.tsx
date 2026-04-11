@@ -37,6 +37,8 @@ interface RPGEventPopupProps {
   currentPlayerIdx: number;
   tileEventType: TileEventType;
   sourceTileType?: TileType;
+  currentCharacterId?: string;
+  passiveMessage?: string;
   onResult: (result: {
     success: boolean;
     posAdjust?: number;
@@ -57,7 +59,8 @@ type PopupPhase = 'suspense_intro' | 'context' | 'mode_reveal' | 'player_select'
 
 export default function RPGEventPopup({
   visible, eventKey, difficulty, playerNames, currentPlayerIdx,
-  tileEventType, sourceTileType, onResult, onDismiss, rotationState,
+  tileEventType, sourceTileType, currentCharacterId, passiveMessage,
+  onResult, onDismiss, rotationState,
   chainState, currentTurn,
 }: RPGEventPopupProps) {
   const [phase, setPhase] = useState<PopupPhase>('suspense_intro');
