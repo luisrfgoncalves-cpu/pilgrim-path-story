@@ -17,25 +17,28 @@ function loadVoice() {
   if (voices.length === 0) return;
   voicesLoaded = true;
 
-  // Priority: Natural/Premium voices > Google > Microsoft > any pt-BR > pt > default
-  // Filter pt-BR voices first
+  // Priority: Male Natural/Premium voices > Male Google > Male Microsoft > any male pt-BR > pt > default
   const ptBrVoices = voices.filter(v => v.lang.startsWith('pt-BR'));
   const ptVoices = voices.filter(v => v.lang.startsWith('pt'));
   
-  // Prefer "natural", "premium", "enhanced", "neural" voices (more realistic)
+  const maleKeywords = ['male', 'daniel', 'luciano', 'antonio', 'humberto', 'julio', 'rafael', 'marcos'];
   const naturalKeywords = ['natural', 'premium', 'enhanced', 'neural', 'wavenet', 'online'];
-  const findNatural = (list: SpeechSynthesisVoice[]) =>
-    list.find(v => naturalKeywords.some(k => v.name.toLowerCase().includes(k)));
   
-  const ptBrGoogle = ptBrVoices.find(v => v.name.includes('Google'));
-  const ptBrMicrosoft = ptBrVoices.find(v => v.name.includes('Microsoft'));
-  const ptBrNatural = findNatural(ptBrVoices);
-  const ptBrMale = ptBrVoices.find(v => v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('daniel') || v.name.toLowerCase().includes('luciano'));
-  const ptBr = ptBrVoices[0];
-  const ptNatural = findNatural(ptVoices);
-  const pt = ptVoices[0];
+  const isMale = (v: SpeechSynthesisVoice) => maleKeywords.some(k => v.name.toLowerCase().includes(k));
+  const isNatural = (v: SpeechSynthesisVoice) => naturalKeywords.some(k => v.name.toLowerCase().includes(k));
+  
+  // Male pt-BR voices first
+  const ptBrMaleNatural = ptBrVoices.find(v => isMale(v) && isNatural(v));
+  const ptBrMaleGoogle = ptBrVoices.find(v => isMale(v) && v.name.includes('Google'));
+  const ptBrMaleMicrosoft = ptBrVoices.find(v => isMale(v) && v.name.includes('Microsoft'));
+  const ptBrMale = ptBrVoices.find(v => isMale(v));
+  // Fallback: any male pt voice
+  const ptMale = ptVoices.find(v => isMale(v));
+  // Last resort: any pt-BR
+  const ptBrAny = ptBrVoices[0];
+  const ptAny = ptVoices[0];
 
-  selectedVoice = ptBrNatural || ptBrGoogle || ptBrMicrosoft || ptBrMale || ptBr || ptNatural || pt || voices[0] || null;
+  selectedVoice = ptBrMaleNatural || ptBrMaleGoogle || ptBrMaleMicrosoft || ptBrMale || ptMale || ptBrAny || ptAny || voices[0] || null;
   
   if (selectedVoice) {
     console.log(`[Narrator] Voice selected: ${selectedVoice.name} (${selectedVoice.lang})`);

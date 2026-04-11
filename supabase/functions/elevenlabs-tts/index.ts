@@ -25,11 +25,11 @@ const VOICE_SETTINGS: Record<EmotionType, {
 const VOICE_ID = 'onwK4e9ZLuTAKqWW03F9';
 
 const FREETTS_VOICES: Record<EmotionType, string> = {
-  neutral:   'pt-BR-FranciscaNeural',
+  neutral:   'pt-BR-AntonioNeural',
   dramatic:  'pt-BR-AntonioNeural',
-  solemn:    'pt-BR-FranciscaNeural',
+  solemn:    'pt-BR-AntonioNeural',
   urgent:    'pt-BR-AntonioNeural',
-  celestial: 'pt-BR-FranciscaNeural',
+  celestial: 'pt-BR-AntonioNeural',
   villain:   'pt-BR-AntonioNeural',
 };
 
