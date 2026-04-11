@@ -88,7 +88,8 @@ export default function RPGEventPopup({
   const [hintIndex, setHintIndex] = useState(0);
   const [riddleAnswerRevealed, setRiddleAnswerRevealed] = useState(false);
   const [currentRevelation, setCurrentRevelation] = useState<HiddenRevelation | null>(null);
-  const [narrativeStage, setNarrativeStage] = useState(0); // 0=intro dramática, 1=contexto, 2=pergunta retórica
+  const [narrativeStage, setNarrativeStage] = useState(0);
+  const [wisdomHint, setWisdomHint] = useState<string | null>(null);
 
   const timerRef = useRef<number | null>(null);
   const narratedKeyRef = useRef('');
@@ -118,6 +119,7 @@ export default function RPGEventPopup({
     narratedKeyRef.current = '';
     setCurrentRevelation(null);
     setNarrativeStage(0);
+    setWisdomHint(null);
 
     // Clear all content
     setQuestion(null); setRiddle(null); setDilemma(null);
