@@ -23,6 +23,7 @@ interface PregenProgress {
   completedHashes: string[];
   lastKeyIdx: number;
   lastRunAt: number;
+  failedHashes: string[]; // hashes that failed all 9 keys — skip temporarily
 }
 
 function getProgress(): PregenProgress {
