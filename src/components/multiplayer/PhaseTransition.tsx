@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { PHASES } from './ImmersiveBoardTypes';
 import { characterImages } from '@/data/characterImages';
+import { useBoardTTS } from '@/hooks/useBoardTTS';
 
 interface PhaseTransitionProps {
   phaseIdx: number;
@@ -69,6 +70,7 @@ export default function PhaseTransition({ phaseIdx, onComplete }: PhaseTransitio
   const [lineIdx, setLineIdx] = useState(0);
   const [opacity, setOpacity] = useState(0);
   const [exiting, setExiting] = useState(false);
+  const { narrateBoard, stopBoard } = useBoardTTS();
 
   const phase = PHASES[phaseIdx];
   const narrative = PHASE_NARRATIVES[phaseIdx] || PHASE_NARRATIVES[0];
@@ -78,6 +80,12 @@ export default function PhaseTransition({ phaseIdx, onComplete }: PhaseTransitio
     // Fade in
     const fadeIn = setTimeout(() => setOpacity(1), 100);
 
+    // Narrate all lines as one block
+    const fullText = narrative.lines.join(' ');
+    const narrateTimer = setTimeout(() => {
+      narrateBoard(fullText, 'solemn');
+    }, 500);
+
     // Advance lines automatically
     const timers: number[] = [];
     narrative.lines.forEach((_, i) => {
@@ -86,11 +94,11 @@ export default function PhaseTransition({ phaseIdx, onComplete }: PhaseTransitio
       }
     });
 
-    // Do NOT auto-close — user must close manually
-
     return () => {
       clearTimeout(fadeIn);
+      clearTimeout(narrateTimer);
       timers.forEach(clearTimeout);
+      stopBoard();
     };
   }, []);
 

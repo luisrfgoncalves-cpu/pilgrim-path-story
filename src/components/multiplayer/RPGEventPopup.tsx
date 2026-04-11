@@ -10,7 +10,7 @@ import {
 import { TileEventType } from '@/data/rpg/types';
 import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { playGameSfx, GameSfx } from '@/lib/gameSfx';
-// Narration removed — text-only experience
+import { useBoardTTS } from '@/hooks/useBoardTTS';
 import {
   playVillainPresence, playCrowdCheer, playTensionDrum,
   playHolyChime, playDramaticReveal, playNarrativeChime,
@@ -89,6 +89,7 @@ export default function RPGEventPopup({
   const timerRef = useRef<number | null>(null);
   const narratedKeyRef = useRef('');
   const initializedEventKeyRef = useRef<string | null>(null);
+  const { narrateBoard, stopBoard, getEmotion } = useBoardTTS();
 
   // Load content when popup becomes visible
   useEffect(() => {
@@ -202,8 +203,10 @@ export default function RPGEventPopup({
     else if (tileEventType === 'refuge' || tileEventType === 'special') playRealSfx('chime', 0.3);
     else playRealSfx('bell', 0.2);
 
-    // Narrate the suspense text
+    // Narrate the suspense text with neural voice
     const suspense = getSuspenseText();
+    narrateBoard(suspense.text, getEmotion(tileEventType));
+
     const timer = window.setTimeout(() => {
       setPhase('context');
       // Play the main contextual SFX when transitioning
@@ -331,7 +334,9 @@ export default function RPGEventPopup({
       || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative || '';
     if (rawContext) playNarrativeSfx(rawContext);
 
+    // Narrate context with neural voice
     const timer = window.setTimeout(() => {
+      narrateBoard(text, getEmotion(tileEventType));
     }, 400);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -348,7 +353,9 @@ export default function RPGEventPopup({
     if (narratedKeyRef.current === key) return;
     narratedKeyRef.current = key;
 
+    // Narrate challenge/question with neural voice
     const timer = window.setTimeout(() => {
+      narrateBoard(text, tileEventType === 'boss' ? 'villain' : 'dramatic');
     }, 300);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -373,8 +380,10 @@ export default function RPGEventPopup({
       if (realSfx) playRealSfx(realSfx, 0.4);
     }
 
+    // Narrate result with neural voice
     const timer = window.setTimeout(() => {
-      }, 200);
+      narrateBoard(resultData.message, resultData.success ? 'celestial' : 'urgent');
+    }, 200);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, showResult, resultData]);
@@ -504,6 +513,7 @@ export default function RPGEventPopup({
   }, [boss, bossPhaseIdx, bossWins, selectedAnswer]);
 
   const handleFinalDismiss = useCallback(() => {
+    stopBoard(); // Stop any ongoing narration
     if (!resultData) { onDismiss(); return; }
 
     let posAdjust = 0;

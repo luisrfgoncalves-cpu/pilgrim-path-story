@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Crown, Trophy } from 'lucide-react';
 import { playVictory, playPhaseTransitionSound } from './BoardSounds';
 import { useDeviceCapability } from '@/hooks/useDeviceCapability';
+import { useBoardTTS } from '@/hooks/useBoardTTS';
 
 interface PlayerStats {
   trapsHit: number;
@@ -102,6 +103,7 @@ export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: Epic
   const [showFireworks, setShowFireworks] = useState(false);
   const hasPlayed = useRef(false);
   const capability = useDeviceCapability();
+  const { narrateBoard, stopBoard } = useBoardTTS();
 
   const sorted = [...players]
     .filter(p => p.finishOrder !== null)
@@ -112,6 +114,8 @@ export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: Epic
   useEffect(() => {
     // Phase 1: Approach — narrative lines
     playPhaseTransitionSound(5);
+    // Narrate arrival text
+    narrateBoard(ARRIVAL_NARRATIVE.join(' '), 'celestial');
 
     const narrativeTimers: number[] = [];
     ARRIVAL_NARRATIVE.forEach((_, i) => {
@@ -137,6 +141,7 @@ export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: Epic
     const t4 = setTimeout(() => {
       setPhase('ignorance');
       setNarrativeIdx(0);
+      narrateBoard(IGNORANCE_NARRATIVE.join(' '), 'urgent');
     }, gatesTime + 7000);
 
     // Phase 5: Rankings
