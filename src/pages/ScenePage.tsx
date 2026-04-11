@@ -1619,6 +1619,33 @@ const ScenePage = () => {
           }}
         />
       )}
+
+      {/* ═══ EPIC MOMENT — immersive full-screen for key scenes ═══ */}
+      {epicMomentActive && chapter && epicMoments[chapter.id] && (
+        <EpicMoment
+          sceneId={chapter.id}
+          config={epicMoments[chapter.id]}
+          onComplete={() => {
+            setEpicMomentActive(false);
+            setEpicMomentDone(true);
+            if (canShowChoices) setShowChoices(true);
+          }}
+        />
+      )}
+
+      {/* ═══ EPIC DEFEAT SCREEN — dramatic failure with hold-to-rise ═══ */}
+      {showDefeatScreen && (
+        <EpicDefeatScreen
+          message={defeatMessage}
+          villain={defeatVillain}
+          onRise={() => {
+            setShowDefeatScreen(false);
+            // Grant +1 perseverance for rising
+            const riseEffects = { perseveranca: 1 };
+            triggerChoiceEffect(riseEffects);
+          }}
+        />
+      )}
     </div>
   );
 };
