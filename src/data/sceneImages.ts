@@ -49,10 +49,17 @@ import auxilioResgate from '@/assets/scenes/auxilio-resgate.jpg';
 import evangelistaApontando from '@/assets/scenes/evangelista-apontando.jpg';
 import monteSinaiTremendo from '@/assets/scenes/monte-sinai-tremendo.jpg';
 import tresDorminhocoesCaminho from '@/assets/scenes/tres-dorminhocoes-caminho.jpg';
+import portaoEstreitoAproximacao from '@/assets/scenes/portao-estreito-aproximacao.jpg';
+import portaoEstreitoBatendo from '@/assets/scenes/portao-estreito-batendo.jpg';
+import portaoEstreitoPassagem from '@/assets/scenes/portao-estreito-passagem.jpg';
+import pantanoProfundo from '@/assets/scenes/pantano-profundo.jpg';
+import pantanoQuaseMorrendo from '@/assets/scenes/pantano-quase-morrendo.jpg';
 
 // ── Novas imagens Fase 2-3 ──
 import interpreteVisaoFogo from '@/assets/scenes/interprete-visao-fogo.jpg';
 import interpreteSalaPoeira from '@/assets/scenes/interprete-sala-poeira.jpg';
+import interpreteVisoes from '@/assets/scenes/interprete-visoes.jpg';
+import interpreteDespedida from '@/assets/scenes/interprete-despedida.jpg';
 import colinaSubidaDramatica from '@/assets/scenes/colina-subida-dramatica.jpg';
 import apolionConfronto from '@/assets/scenes/apolion-confronto.jpg';
 import apolionBatalha from '@/assets/scenes/apolion-batalha.jpg';
@@ -64,6 +71,9 @@ import caramanchaoSono from '@/assets/scenes/caramanchao-sono.jpg';
 
 // ── Novas imagens Fase 4-6 ──
 import feiraVaidadeEntrada from '@/assets/scenes/feira-vaidade-entrada.jpg';
+import feiraVaidadeTentacoes from '@/assets/scenes/feira-vaidade-tentacoes.jpg';
+import feiraAmorDinheiro from '@/assets/scenes/feira-amor-dinheiro.jpg';
+import feiraVergonha from '@/assets/scenes/feira-vergonha.jpg';
 import prisaoFeira from '@/assets/scenes/prisao-feira.jpg';
 import martirioFiel from '@/assets/scenes/martirio-fiel.jpg';
 import demasMinaPrata from '@/assets/scenes/demas-mina-prata.jpg';
@@ -106,16 +116,16 @@ export const sceneImages: Record<string, string> = {
   'cena5': evangelistaApontando,         // Evangelista apontando o caminho
   'cena5b': tresDorminhocoesCaminho,     // Presunção, Preguiça e Simples
   'cena6': tresDorminhocoes,             // Dorminhocões (variação)
-  'cena7': portaoEstreito,
-  'cena7b': portaoEstreito,
+  'cena7': portaoEstreitoAproximacao,
+  'cena7b': portaoEstreitoBatendo,
   'cena8': sabedoriaMundana,
-  'cena9': portaoEstreito,
+  'cena9': portaoEstreitoPassagem,
   'cena9b': portaoEstreito,
   'cena10': monteSinaiTremendo,          // Monte Sinai tremendo com fogo
   'cena11': pantanoDesanimo,             // Chegada ao pântano
   'cena11b': pantanoAfundando,           // Afundando no pântano
-  'cena12': pantanoAfundando,            // Mais fundo
-  'cena13': pantanoAfundando,            // Quase morrendo
+  'cena12': pantanoProfundo,             // Mais fundo
+  'cena13': pantanoQuaseMorrendo,        // Quase morrendo
   'cena14': auxilioResgate,              // Auxílio estendendo a mão
   'cena14b': auxilioResgate,             // Resgate completo
   'cena15': cruzFardo,
@@ -125,9 +135,9 @@ export const sceneImages: Record<string, string> = {
   'fase2-cena1': casaInterprete,            // Chegada à Casa
   'fase2-cena2': interpreteVisaoFogo,       // Visão do fogo inextinguível
   'fase2-cena3': interpreteSalaPoeira,      // Sala da poeira
-  'fase2-cena4': casaInterprete,            // Mais visões
+  'fase2-cena4': interpreteVisoes,          // Mais visões
   'fase2-cena5': casaInterprete,            // Visão final
-  'fase2-cena6': casaInterprete,            // Despedida
+  'fase2-cena6': interpreteDespedida,       // Despedida
   'fase2-cena7': palacioBelo,
   'fase2-cena8': gaiolaFerro,
   'fase2-cena9': armaduraCrista,
@@ -140,25 +150,25 @@ export const sceneImages: Record<string, string> = {
   // FASE 3: Vale da Humilhação e Apolião
   'fase3-cena1': valeHumilhacao,            // Descida ao vale
   'fase3-cena2': apolionConfronto,          // Apolião aparece
-  'fase3-cena3': apolionConfronto,          // Confronto
+  'fase3-cena3': apolionBatalha,            // Confronto escalado
   'fase3-cena4': apolionBatalha,            // Batalha épica
   'fase3-cena5': valeSombraAbismo,          // Vale da Sombra entrada
   'fase3-cena6': curaPosBatalha,            // Cura divina pós-batalha
-  'fase3-cena7': valeSombraAbismo,          // Mais fundo no vale
+  'fase3-cena7': valeSombra,                // Mais fundo no vale
   'fase3-cena8': fielCristaoEncontro,       // Encontro com Fiel
   'fase3-cena9': valeSombra,                // Vergonha confronta Fiel
-  'fase3-cena10': fielCristaoEncontro,      // Fiel e Cristão conversam
+  'fase3-cena10': fielEncontro,             // Fiel e Cristão conversam
 
   // FASE 4: Feira da Vaidade + Demas
   'fase4-cena1': feiraVaidadeEntrada,       // Chegada à Feira
-  'fase4-cena2': feiraVaidade,              // Tentações da Feira
-  'fase4-cena3': feiraVaidade,              // Amor ao Dinheiro
+  'fase4-cena2': feiraVaidadeTentacoes,     // Tentações da Feira
+  'fase4-cena3': feiraAmorDinheiro,         // Amor ao Dinheiro
   'fase4-cena4': prisaoFeira,               // Prisão na Feira
-  'fase4-cena5': prisaoFeira,               // Na cela
+  'fase4-cena5': julgamentoFeira,           // Na cela / pré-julgamento
   'fase4-cena6': julgamentoFeira,           // Julgamento de Fiel
   'fase4-cena7': martirioFiel,              // Martírio de Fiel
   'fase4-cena8': esperancaEncontro,         // Esperança aparece
-  'fase4-cena9': feiraVaidade,              // Vergonha
+  'fase4-cena9': feiraVergonha,             // Vergonha
   'fase4-cena10': demasMinaPrata,           // Demas na mina de prata
   'fase4-cena11b': minaPrataDemas,          // Dentro da mina
   'fase4-cena11': esperancaEncontro,        // Interesses
