@@ -174,12 +174,7 @@ const ScenePage = () => {
 
     return portraits;
   }, [chapter, progress.campaign]);
-  const beatImageKey = chapter && currentBeat
-    ? [`${chapter.id}__beat${beatIndex + 1}`, `${chapter.id}__${currentBeat.startIndex}`]
-    : [];
-  const bgImage = chapter
-    ? beatImageKey.map(key => sceneImages[key]).find(Boolean) || sceneImages[chapter.id]
-    : undefined;
+  const bgImageFallback = chapter ? sceneImages[chapter.id] : undefined;
 
   // Preload next scene images + character images for instant loading
   useEffect(() => {
