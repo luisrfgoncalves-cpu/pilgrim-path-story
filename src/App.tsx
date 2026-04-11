@@ -9,7 +9,8 @@ import ScrollToTop from "@/components/ScrollToTop";
 import PreviewPaywall from "@/components/PreviewPaywall";
 import PreviewTrialGate from "@/components/PreviewTrialGate";
 import { useBackgroundTTSPregen } from "@/hooks/useBackgroundTTSPregen";
-import { lazy, Suspense } from "react";
+import { useAudioPrewarm } from "@/hooks/useAudioPrewarm";
+import { lazy, Suspense, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
 // Eagerly loaded pages (needed immediately)
@@ -93,9 +94,28 @@ const PreviewResultGate = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-/** Invisible background TTS pre-generator */
-const BackgroundPregen = () => {
+/** Global audio unlock + background TTS pre-generator */
+const AudioBootstrap = () => {
+  useAudioPrewarm();
   useBackgroundTTSPregen();
+
+  // Unlock HTMLAudioElement autoplay on first user gesture (persists for session)
+  useEffect(() => {
+    let unlocked = false;
+    const unlock = () => {
+      if (unlocked) return;
+      unlocked = true;
+      const silent = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+      silent.volume = 0;
+      silent.play().catch(() => {});
+      ['touchstart', 'mousedown', 'keydown'].forEach(e => document.removeEventListener(e, unlock));
+    };
+    ['touchstart', 'mousedown', 'keydown'].forEach(e => document.addEventListener(e, unlock, { passive: true }));
+    return () => {
+      ['touchstart', 'mousedown', 'keydown'].forEach(e => document.removeEventListener(e, unlock));
+    };
+  }, []);
+
   return null;
 };
 
@@ -103,7 +123,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <ThemeProvider>
-      <BackgroundPregen />
+      <AudioBootstrap />
       <TooltipProvider>
         <Toaster />
         <Sonner />

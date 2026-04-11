@@ -154,11 +154,14 @@ export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
   'cena1': cristaoLendoLivro,
   'cena1__beat1': cristaoLendoLivro,
-  'cena1__beat2': livroPalavrasJuizo,
-  'cena1__beat3': fardoEsmagando,
-  'cena1__beat4': fardoArrancando,              // CORRIGIDO: tentando arrancar o fardo
+  'cena1__beat2': fardoEsmagando,
+  'cena1__beat3': cristaoFamiliaDormindo,
+  'cena1__beat4': fardoArrancando,
   'cena1__beat5': cristaoNoiteTormento,
-  'cena1__beat6': cristaoFamiliaDormindo,        // CORRIGIDO: família dormindo, ele acordado
+  'cena1__beat6': cristaoFamiliaDormindo,
+  // startIndex fallbacks (linesPerBeat=3 gera beats nos índices 0 e 3)
+  'cena1__0': cristaoLendoLivro,
+  'cena1__3': cristaoNoiteTormento,
   'cena1b': vizinhosRuasZombando,
   'cena1b__beat1': vizinhosRuasZombando,
   'cena1b__beat2': cidadeDestruicaoPanoramica,
