@@ -334,7 +334,9 @@ export default function RPGEventPopup({
       || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative || '';
     if (rawContext) playNarrativeSfx(rawContext);
 
+    // Narrate context with neural voice
     const timer = window.setTimeout(() => {
+      narrateBoard(text, getEmotion(tileEventType));
     }, 400);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -351,7 +353,9 @@ export default function RPGEventPopup({
     if (narratedKeyRef.current === key) return;
     narratedKeyRef.current = key;
 
+    // Narrate challenge/question with neural voice
     const timer = window.setTimeout(() => {
+      narrateBoard(text, tileEventType === 'boss' ? 'villain' : 'dramatic');
     }, 300);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
