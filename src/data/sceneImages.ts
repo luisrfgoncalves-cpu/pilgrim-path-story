@@ -50,6 +50,18 @@ import evangelistaApontando from '@/assets/scenes/evangelista-apontando.jpg';
 import monteSinaiTremendo from '@/assets/scenes/monte-sinai-tremendo.jpg';
 import tresDorminhocoesCaminho from '@/assets/scenes/tres-dorminhocoes-caminho.jpg';
 
+// ── Novas imagens Fase 2-3 ──
+import interpreteVisaoFogo from '@/assets/scenes/interprete-visao-fogo.jpg';
+import interpreteSalaPoeira from '@/assets/scenes/interprete-sala-poeira.jpg';
+import colinaSubidaDramatica from '@/assets/scenes/colina-subida-dramatica.jpg';
+import apolionConfronto from '@/assets/scenes/apolion-confronto.jpg';
+import apolionBatalha from '@/assets/scenes/apolion-batalha.jpg';
+import curaPosBatalha from '@/assets/scenes/cura-pos-batalha.jpg';
+import valeSombraAbismo from '@/assets/scenes/vale-sombra-abismo.jpg';
+import fielCristaoEncontro from '@/assets/scenes/fiel-cristao-encontro.jpg';
+import palacioLeoesEntrada from '@/assets/scenes/palacio-leoes-entrada.jpg';
+import caramanchaoSono from '@/assets/scenes/caramanchao-sono.jpg';
+
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
   'cena1': cristaoFamiliaNoite,         // Cristão com a família à noite
