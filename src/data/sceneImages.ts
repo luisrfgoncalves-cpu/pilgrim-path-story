@@ -38,28 +38,40 @@ import caramanchaoColina from '@/assets/scenes/caramanchao-colina.jpg';
 import minaPrataDemas from '@/assets/scenes/mina-prata-demas.jpg';
 import terraEncantadaFlores from '@/assets/scenes/terra-encantada-flores.jpg';
 
+// ── Novas imagens situacionais ──
+import cristaoFamiliaNoite from '@/assets/scenes/cristao-familia-noite.jpg';
+import encontroObstinadoFlexivel from '@/assets/scenes/encontro-obstinado-flexivel.jpg';
+import fugaCidadeDestruicao from '@/assets/scenes/fuga-cidade-destruicao.jpg';
+import cristaoCampoDesespero from '@/assets/scenes/cristao-campo-desespero.jpg';
+import vizinhosZombando from '@/assets/scenes/vizinhos-zombando.jpg';
+import pantanoAfundando from '@/assets/scenes/pantano-afundando.jpg';
+import auxilioResgate from '@/assets/scenes/auxilio-resgate.jpg';
+import evangelistaApontando from '@/assets/scenes/evangelista-apontando.jpg';
+import monteSinaiTremendo from '@/assets/scenes/monte-sinai-tremendo.jpg';
+import tresDorminhocoesCaminho from '@/assets/scenes/tres-dorminhocoes-caminho.jpg';
+
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
-  'cena1': cidadeDestruicao,
-  'cena1b': cidadeDestruicao,
-  'cena2': cidadeDestruicao,
-  'cena3': cidadeDestruicao,
-  'cena4': cidadeDestruicao,
-  'cena5': sabedoriaMundana,
-  'cena5b': tresDorminhocoes,
-  'cena6': tresDorminhocoes,
+  'cena1': cristaoFamiliaNoite,         // Cristão com a família à noite
+  'cena1b': vizinhosZombando,            // Vizinhos zombando nas ruas
+  'cena2': encontroObstinadoFlexivel,    // Encontro com Obstinado e Flexível
+  'cena3': fugaCidadeDestruicao,         // Fuga da cidade em chamas
+  'cena4': cristaoCampoDesespero,        // Cristão no campo com o Livro
+  'cena5': evangelistaApontando,         // Evangelista apontando o caminho
+  'cena5b': tresDorminhocoesCaminho,     // Presunção, Preguiça e Simples
+  'cena6': tresDorminhocoes,             // Dorminhocões (variação)
   'cena7': portaoEstreito,
   'cena7b': portaoEstreito,
   'cena8': sabedoriaMundana,
   'cena9': portaoEstreito,
   'cena9b': portaoEstreito,
-  'cena10': monteSinai,
-  'cena11': pantanoDesanimo,
-  'cena11b': pantanoDesanimo,
-  'cena12': pantanoDesanimo,
-  'cena13': pantanoDesanimo,
-  'cena14': pantanoDesanimo,
-  'cena14b': pantanoDesanimo,
+  'cena10': monteSinaiTremendo,          // Monte Sinai tremendo com fogo
+  'cena11': pantanoDesanimo,             // Chegada ao pântano
+  'cena11b': pantanoAfundando,           // Afundando no pântano
+  'cena12': pantanoAfundando,            // Mais fundo
+  'cena13': pantanoAfundando,            // Quase morrendo
+  'cena14': auxilioResgate,              // Auxílio estendendo a mão
+  'cena14b': auxilioResgate,             // Resgate completo
   'cena15': cruzFardo,
   'cena15b': cruzFardo,
 
