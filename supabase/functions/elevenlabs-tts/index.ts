@@ -33,13 +33,14 @@ const FREETTS_VOICES: Record<EmotionType, string> = {
   villain:   'pt-BR-AntonioNeural',
 };
 
-const FREETTS_SPEEDS: Record<EmotionType, number> = {
-  neutral: 0.95,
-  dramatic: 0.90,
-  solemn: 0.80,
-  urgent: 1.10,
-  celestial: 0.85,
-  villain: 0.88,
+// FreeTTS now uses rate as percentage offset string (e.g., "-5%", "+10%")
+const FREETTS_RATES: Record<EmotionType, string> = {
+  neutral: '-5%',
+  dramatic: '-10%',
+  solemn: '-20%',
+  urgent: '+10%',
+  celestial: '-15%',
+  villain: '-12%',
 };
 
 function preprocessForExpressiveNarration(text: string, emotion: EmotionType): string {
@@ -97,22 +98,37 @@ async function hashKey(text: string, emotion: string): Promise<string> {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// ═══ FreeTTS.org — Microsoft Neural voices (FREE) ═══
+// ═══ FreeTTS.org — Microsoft Neural voices (FREE, 2-step API) ═══
 async function generateWithFreeTTS(text: string, emotion: EmotionType): Promise<ArrayBuffer | null> {
   try {
     const voice = FREETTS_VOICES[emotion] || 'pt-BR-FranciscaNeural';
-    const speed = FREETTS_SPEEDS[emotion] || 0.95;
-    console.log(`[TTS FreeTTS] Trying voice: ${voice}, speed: ${speed}`);
-    const response = await fetch('https://freetts.org/api/tts', {
+    const rate = FREETTS_RATES[emotion] || '+0%';
+    console.log(`[TTS FreeTTS] Trying voice: ${voice}, rate: ${rate}`);
+
+    // Step 1: POST to generate — returns { file_id }
+    const genResponse = await fetch('https://freetts.org/api/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, voice, speed }),
+      body: JSON.stringify({ text, voice, rate, pitch: '+0Hz' }),
     });
-    if (!response.ok) {
-      console.log(`[TTS FreeTTS] Failed: ${response.status}`);
+    if (!genResponse.ok) {
+      console.log(`[TTS FreeTTS] Generate failed: ${genResponse.status}`);
       return null;
     }
-    const buffer = await response.arrayBuffer();
+    const genData = await genResponse.json();
+    const fileId = genData?.file_id;
+    if (!fileId) {
+      console.log(`[TTS FreeTTS] No file_id in response`);
+      return null;
+    }
+
+    // Step 2: GET audio file by file_id
+    const audioResponse = await fetch(`https://freetts.org/api/audio/${fileId}`);
+    if (!audioResponse.ok) {
+      console.log(`[TTS FreeTTS] Audio download failed: ${audioResponse.status}`);
+      return null;
+    }
+    const buffer = await audioResponse.arrayBuffer();
     if (buffer.byteLength < 100) {
       console.log(`[TTS FreeTTS] Response too small (${buffer.byteLength}B)`);
       return null;
@@ -125,33 +141,9 @@ async function generateWithFreeTTS(text: string, emotion: EmotionType): Promise<
   }
 }
 
-// ═══ eidosSpeech.xyz ═══
-async function generateWithEidos(text: string, emotion: EmotionType): Promise<ArrayBuffer | null> {
-  try {
-    const voice = (emotion === 'villain' || emotion === 'dramatic' || emotion === 'urgent')
-      ? 'pt-BR-AntonioNeural'
-      : 'pt-BR-FranciscaNeural';
-    console.log(`[TTS Eidos] Trying voice: ${voice}`);
-    const response = await fetch('https://eidosspeech.xyz/api/tts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, voice }),
-    });
-    if (!response.ok) {
-      console.log(`[TTS Eidos] Failed: ${response.status}`);
-      return null;
-    }
-    const buffer = await response.arrayBuffer();
-    if (buffer.byteLength < 100) {
-      console.log(`[TTS Eidos] Response too small`);
-      return null;
-    }
-    console.log(`[TTS Eidos] Success (${(buffer.byteLength / 1024).toFixed(1)}KB)`);
-    return buffer;
-  } catch (e) {
-    console.log(`[TTS Eidos] Error: ${e instanceof Error ? e.message : e}`);
-    return null;
-  }
+// ═══ eidosSpeech — offline since April 2026, kept as stub for cache compatibility ═══
+async function generateWithEidos(_text: string, _emotion: EmotionType): Promise<ArrayBuffer | null> {
+  return null;
 }
 
 // ═══ ElevenLabs generation ═══
