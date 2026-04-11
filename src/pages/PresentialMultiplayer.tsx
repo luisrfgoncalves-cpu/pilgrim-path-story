@@ -13,6 +13,8 @@ import RPGBriefing, { GameMode } from '@/components/multiplayer/RPGBriefing';
 import RPGEventPopup from '@/components/multiplayer/RPGEventPopup';
 import AttributePanel from '@/components/multiplayer/AttributePanel';
 import ResultFeedback from '@/components/multiplayer/ResultFeedback';
+import { PILGRIM_CHARACTERS, getCharacter, checkPassive } from '@/data/rpg/characters';
+import { saveGame, loadGame, clearSave, BoardSaveData } from '@/lib/boardSaveSystem';
 import { Difficulty, TileEventType as RPGTileEventType, ChainState } from '@/data/rpg/types';
 import { createRotationState, RotationState } from '@/data/rpg/rotationEngine';
 import { createChainState } from '@/data/rpg/chainSystem';
@@ -82,16 +84,28 @@ interface LocalPlayer {
   checkpoint: number;
   extraTurn: boolean;
   stats: PlayerStats;
-  lastPhase: number; // track which phase they were in
+  lastPhase: number;
+  characterId?: string;
+  shieldHits?: number; // for shield_keeper passive
 }
 
-function createPlayer(index: number, name?: string): LocalPlayer {
+function createPlayer(index: number, name?: string, characterId?: string): LocalPlayer {
+  const char = characterId ? getCharacter(characterId) : undefined;
+  const baseAttrs = { fe: 3, perseveranca: 3, discernimento: 3, coragem: 3 };
+  // Apply starting bonus from character
+  if (char?.startingBonus) {
+    for (const [key, val] of Object.entries(char.startingBonus)) {
+      if (key in baseAttrs) {
+        (baseAttrs as any)[key] += val;
+      }
+    }
+  }
   return {
     id: `p${index}`,
     name: name || DEFAULT_NAMES[index] || `Jogador ${index + 1}`,
-    color: COLORS[index % COLORS.length],
+    color: char?.color || COLORS[index % COLORS.length],
     position: 0,
-    attributes: { fe: 3, perseveranca: 3, discernimento: 3, coragem: 3 },
+    attributes: baseAttrs,
     lastDice: null,
     finished: false,
     finishOrder: null,
@@ -102,6 +116,8 @@ function createPlayer(index: number, name?: string): LocalPlayer {
     extraTurn: false,
     stats: emptyStats(),
     lastPhase: 0,
+    characterId: characterId || undefined,
+    shieldHits: 0,
   };
 }
 
@@ -152,6 +168,7 @@ function resolveTileEffect(
   emoji: string;
   statUpdate: Partial<PlayerStats>;
   collectiveEffect?: { type: 'blessing_all' | 'curse_all'; message: string };
+  passiveTriggered?: string; // passive ability message
 } {
   const rng = ((seed * 1103515245 + 12345) & 0x7fffffff) % 100;
   const result: ReturnType<typeof resolveTileEffect> = {
@@ -163,12 +180,26 @@ function resolveTileEffect(
 
   const narrative = getPhaseNarrative(phaseIdx, tileType, seed);
 
+  // Get character passive
+  const char = player.characterId ? getCharacter(player.characterId) : undefined;
+  const passive = char?.passive.effect;
+
   switch (tileType) {
-    case 'refuge':
-      result.attrChanges = { fe: 1, perseveranca: 1 };
+    case 'refuge': {
+      let feBonus = 1, persBonus = 1;
+      // Caridade: healing_touch passive — extra attr restore at refuges
+      if (passive?.type === 'healing_touch') {
+        feBonus = passive.attrRestore;
+        persBonus = passive.attrRestore;
+        result.passiveTriggered = `⚡ ${char!.passive.name}: ${char!.name} cura o grupo com mãos abençoadas! +${passive.attrRestore} em todos os atributos!`;
+        result.attrChanges = { fe: feBonus, perseveranca: persBonus, discernimento: passive.attrRestore, coragem: passive.attrRestore };
+      } else {
+        result.attrChanges = { fe: feBonus, perseveranca: persBonus };
+      }
       result.message = narrative || '🏠 Um lugar de descanso se revela no caminho — muros antigos, uma lareira crepitante e o silêncio que só a paz verdadeira oferece. Suas forças se renovam como raízes que encontram água após longa seca.';
       result.emoji = '🏠';
       break;
+    }
     case 'challenge':
       if (rng >= 40) {
         result.posAdjust = 3;
@@ -223,6 +254,11 @@ function resolveTileEffect(
       if (player.hasShield) {
         result.message = '🛡️ A armadilha se arma com violência — mas o escudo da fé absorve o golpe como rocha absorve a chuva! O inimigo preparou o ataque, mas não contava com a proteção que você carrega!';
         result.emoji = '🛡️';
+      } else if (passive?.type === 'trap_resistance' && checkPassive(passive, 'trap_resistance')) {
+        // Cristão: trap_resistance passive
+        result.message = `⚡ ${char!.passive.name}! O fardo que caiu na Cruz te protege — a armadilha se desarma diante de quem já foi liberto! ${player.name} ignora a armadilha!`;
+        result.emoji = '⚡';
+        result.passiveTriggered = `⚡ ${char!.passive.name} ativado!`;
       } else {
         result.posAdjust = -3;
         result.attrChanges = { perseveranca: -1 };
@@ -236,8 +272,14 @@ function resolveTileEffect(
         result.message = '🛡️ O Gigante ataca com fúria descomunal — mas seu escudo resplandece com luz que cega a criatura! O monstro recua urra de dor, incapaz de penetrar a proteção divina!';
         result.emoji = '🛡️';
       } else if (rng >= 70) {
-        result.stun = true;
-        result.stunTurns = 1;
+        let stunAmount = 1;
+        // Esperança: stun_reduction passive
+        if (passive?.type === 'stun_reduction') {
+          stunAmount = Math.max(0, stunAmount - passive.amount);
+          result.passiveTriggered = `⚡ ${char!.passive.name}: A esperança brilha mesmo nas trevas! Paralisia reduzida!`;
+        }
+        result.stun = stunAmount > 0;
+        result.stunTurns = stunAmount;
         result.message = narrative || '💀 O Gigante te captura com mãos do tamanho de troncos! Seus dedos se fecham como gaiolas de ferro. Você perde 1 turno preso em suas garras — ore para que a libertação venha antes que seja tarde.';
         result.emoji = '💀';
         result.statUpdate.giantsLost = 1;
@@ -256,10 +298,16 @@ function resolveTileEffect(
       result.emoji = '🛡️';
       result.statUpdate.shieldsGained = 1;
       break;
-    case 'blessing':
-      result.posAdjust = 4;
+    case 'blessing': {
+      let blessingMove = 4;
+      // Evangelista: faithful_stride passive — extra move on blessings
+      if (passive?.type === 'faithful_stride') {
+        blessingMove += passive.extraMove;
+        result.passiveTriggered = `⚡ ${char!.passive.name}: Evangelista vê além! +${passive.extraMove} casa extra de avanço!`;
+      }
+      result.posAdjust = blessingMove;
       result.attrChanges = { fe: 2 };
-      result.message = narrative || '⭐ Uma bênção inconfundível desce sobre você como chuva dourada em pleno deserto! O ar muda, o passo se torna leve, e o caminho que antes parecia infinito agora mostra 4 casas a menos entre você e a glória. A fé explode como fogo sagrado!';
+      result.message = narrative || `⭐ Uma bênção inconfundível desce sobre você como chuva dourada em pleno deserto! O ar muda, o passo se torna leve, e o caminho que antes parecia infinito agora mostra ${blessingMove} casas a menos entre você e a glória. A fé explode como fogo sagrado!`;
       result.emoji = '⭐';
       result.statUpdate.blessingsReceived = 1;
       if (rng < 25) {
@@ -269,6 +317,7 @@ function resolveTileEffect(
         };
       }
       break;
+    }
     case 'swap':
       result.message = narrative || '🔄 O caminho se distorce como espelho d\'água perturbado — e quando a realidade se estabiliza, os peregrinos percebem que suas posições foram completamente trocadas! O destino tem senso de humor.';
       result.emoji = '🔄';
@@ -525,7 +574,7 @@ const PresentialMultiplayer = () => {
     setEditingNames(prev => { const n = { ...prev }; delete n[id]; return n; });
   };
 
-  const startGame = (config?: { difficulty: Difficulty; gameMode: GameMode; playerNames: string[]; hostPlayerIndex: number }) => {
+  const startGame = (config?: { difficulty: Difficulty; gameMode: GameMode; playerNames: string[]; hostPlayerIndex: number; characterIds?: string[] }) => {
     let finalPlayers: LocalPlayer[];
     if (config) {
       // From RPGBriefing
@@ -533,7 +582,7 @@ const PresentialMultiplayer = () => {
       setRpgGameMode(config.gameMode);
       setRpgHostIndex(config.hostPlayerIndex);
       rotationStateRef.current = createRotationState();
-      finalPlayers = config.playerNames.map((name, i) => createPlayer(i, name));
+      finalPlayers = config.playerNames.map((name, i) => createPlayer(i, name, config.characterIds?.[i]));
     } else {
       finalPlayers = players.map(p => {
         const editName = editingNames[p.id];
@@ -541,7 +590,8 @@ const PresentialMultiplayer = () => {
       });
     }
     setPlayers(finalPlayers);
-    setTileTypes(generateImmersiveTiles(Date.now()));
+    const tiles = generateImmersiveTiles(Date.now());
+    setTileTypes(tiles);
     setPhase('playing');
     setCurrentTurn(0);
     playTurnStart();
@@ -553,6 +603,67 @@ const PresentialMultiplayer = () => {
     setTurnAnnounce(`Vez de ${finalPlayers[0].name}!`);
     setShowPhaseTransition(0);
   };
+
+  // Resume from saved game
+  const resumeGame = useCallback((save: BoardSaveData) => {
+    setRpgDifficulty(save.difficulty as Difficulty);
+    setRpgGameMode(save.gameMode as GameMode);
+    setRpgHostIndex(save.hostIndex);
+    rotationStateRef.current = createRotationState();
+    const restoredPlayers: LocalPlayer[] = save.players.map((p, i) => ({
+      ...p,
+      stats: emptyStats(),
+      extraTurn: p.extraTurn || false,
+      characterId: p.characterId,
+      shieldHits: p.shieldHits || 0,
+    }));
+    setPlayers(restoredPlayers);
+    setTileTypes(save.tileTypes as TileType[]);
+    setCurrentTurn(save.currentTurn);
+    setFinishCount(save.finishCount);
+    setPhase('playing');
+    playTurnStart();
+    playGameSfx('gameStart');
+    const currentPhase = Math.floor(Math.max(...restoredPlayers.map(p => p.position)) / TILES_PER_PHASE);
+    playPhaseAmbient(currentPhase);
+    startAmbientMusic(currentPhase);
+    lastPhaseAmbientRef.current = currentPhase;
+    setTurnAnnounce(`Partida retomada! Vez de ${restoredPlayers[save.currentTurn]?.name}!`);
+    clearSave();
+  }, []);
+
+  // Auto-save every turn change
+  useEffect(() => {
+    if (phase !== 'playing' || players.length === 0 || tileTypes.length === 0) return;
+    saveGame({
+      version: 1,
+      savedAt: new Date().toISOString(),
+      difficulty: rpgDifficulty,
+      gameMode: rpgGameMode,
+      hostIndex: rpgHostIndex,
+      tileTypes,
+      currentTurn,
+      finishCount,
+      players: players.map(p => ({
+        id: p.id,
+        name: p.name,
+        color: p.color,
+        position: p.position,
+        attributes: p.attributes,
+        lastDice: p.lastDice,
+        finished: p.finished,
+        finishOrder: p.finishOrder,
+        isStunned: p.isStunned,
+        stunTurns: p.stunTurns,
+        hasShield: p.hasShield,
+        checkpoint: p.checkpoint,
+        extraTurn: p.extraTurn,
+        lastPhase: p.lastPhase,
+        characterId: p.characterId,
+        shieldHits: p.shieldHits,
+      })),
+    });
+  }, [currentTurn, phase]);
 
   const handlePhaseTransitionComplete = useCallback(() => {
     setShowPhaseTransition(null);
@@ -779,8 +890,15 @@ const PresentialMultiplayer = () => {
         }));
       }
 
+      // Show passive triggered notification
+      if (effect.passiveTriggered) {
+        setStreakAnnounce(effect.passiveTriggered);
+        setTimeout(() => setStreakAnnounce(null), 5000);
+      }
+
       // Show tile message for ALL tiles (every tile opens a popup)
-      setTileMessage({ message: effect.message, emoji: effect.emoji, tileType, playerName: player.name });
+      const passivePrefix = effect.passiveTriggered ? `\n\n${effect.passiveTriggered}` : '';
+      setTileMessage({ message: effect.message + passivePrefix, emoji: effect.emoji, tileType, playerName: player.name });
     };
 
     // Store pending action — if phase changed, show transition first
@@ -1024,7 +1142,7 @@ const PresentialMultiplayer = () => {
   }, [tileMessage, players, currentTurn, nextTurn, tileTypes]);
 
   const resetGame = () => {
-    setPlayers(prev => prev.map((p, i) => createPlayer(i, p.name)));
+    setPlayers(prev => prev.map((p, i) => createPlayer(i, p.name, p.characterId)));
     setCurrentTurn(0);
     setFinishCount(0);
     setTileTypes(generateImmersiveTiles(Date.now()));
@@ -1032,6 +1150,7 @@ const PresentialMultiplayer = () => {
     chainStateRef.current = createChainState();
     setRpgEvent(null);
     setPhase('playing');
+    clearSave();
     playGameSfx('gameStart');
     playPhaseAmbient(0);
     lastPhaseAmbientRef.current = 0;
@@ -1197,6 +1316,7 @@ const PresentialMultiplayer = () => {
     return (
       <RPGBriefing
         onStart={startGame}
+        onResume={resumeGame}
         onBack={() => navigate('/multiplayer')}
       />
     );
@@ -1208,6 +1328,7 @@ const PresentialMultiplayer = () => {
 
   if (allFinished && phase !== 'finished') {
     setPhase('finished');
+    clearSave(); // Clear save on game completion
   }
 
   if (phase === 'finished') {
@@ -1340,7 +1461,11 @@ const PresentialMultiplayer = () => {
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="font-display text-sm text-foreground">
+              <h1 className="font-display text-sm text-foreground flex items-center gap-1.5">
+                {currentPlayer?.characterId && (() => {
+                  const c = getCharacter(currentPlayer.characterId!);
+                  return c ? <span>{c.emoji}</span> : null;
+                })()}
                 {`Vez de ${currentPlayer?.name || '...'}`}
               </h1>
               {currentPlayer && (
@@ -1354,6 +1479,16 @@ const PresentialMultiplayer = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                // Save is auto, just confirm and go back
+                navigate('/multiplayer');
+              }}
+              className="text-xs text-muted-foreground font-display bg-card px-3 py-2 rounded-lg border border-border hover:border-primary/30 active:scale-95 transition-all"
+              title="Sair e salvar"
+            >
+              💾 Pausar
+            </button>
             <button
               onClick={() => setShowStats(true)}
               className="text-sm text-primary font-display font-bold bg-card px-4 py-2 rounded-lg border border-primary/30 hover:bg-primary/10 active:scale-95 transition-all"

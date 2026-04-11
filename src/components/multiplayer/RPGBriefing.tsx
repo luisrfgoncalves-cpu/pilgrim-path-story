@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Difficulty } from '@/data/rpg/types';
 import { getContentStats } from '@/data/rpg/rotationEngine';
-import { BookOpen, Users, Shield, Swords, Crown, ChevronRight, AlertTriangle, Heart, Sword, Star, Zap, ChevronDown } from 'lucide-react';
+import { PILGRIM_CHARACTERS, PilgrimCharacter } from '@/data/rpg/characters';
+import { hasSavedGame, loadGame, clearSave, BoardSaveData } from '@/lib/boardSaveSystem';
+import { BookOpen, Users, Shield, Swords, Crown, ChevronRight, AlertTriangle, Heart, Sword, Star, Zap, ChevronDown, Save, Trash2 } from 'lucide-react';
 
 export type GameMode = 'cooperative' | 'individual';
 
@@ -10,8 +12,10 @@ interface RPGBriefingProps {
     difficulty: Difficulty;
     gameMode: GameMode;
     playerNames: string[];
-    hostPlayerIndex: number; // who holds the phone
+    hostPlayerIndex: number;
+    characterIds: string[];
   }) => void;
+  onResume?: (save: BoardSaveData) => void;
   onBack: () => void;
 }
 
@@ -35,16 +39,32 @@ const DIFFICULTY_CONFIG: Record<Difficulty, { label: string; desc: string; icon:
 
 const DEFAULT_NAMES = ['Cristão', 'Fiel', 'Esperança', 'Misericórdia', 'Valente', 'Honesto', 'Prudência', 'Caridade'];
 
-export default function RPGBriefing({ onStart, onBack }: RPGBriefingProps) {
-  const [step, setStep] = useState<'briefing' | 'tutorial' | 'config'>('briefing');
+export default function RPGBriefing({ onStart, onResume, onBack }: RPGBriefingProps) {
+  const [step, setStep] = useState<'briefing' | 'tutorial' | 'config' | 'characters'>('briefing');
   const [difficulty, setDifficulty] = useState<Difficulty>('peregrino');
   const [gameMode, setGameMode] = useState<GameMode>('cooperative');
   const [playerCount, setPlayerCount] = useState(3);
   const [playerNames, setPlayerNames] = useState<string[]>(DEFAULT_NAMES.slice(0, 8));
   const [hostIndex, setHostIndex] = useState(0);
   const [tutorialSection, setTutorialSection] = useState<string | null>(null);
+  const [selectedCharacters, setSelectedCharacters] = useState<string[]>(
+    PILGRIM_CHARACTERS.slice(0, 8).map(c => c.id)
+  );
 
+  const savedGame = hasSavedGame() ? loadGame() : null;
   const stats = getContentStats();
+
+  const handleResumeSave = () => {
+    if (savedGame && onResume) {
+      onResume(savedGame);
+    }
+  };
+
+  const handleDeleteSave = () => {
+    clearSave();
+    // Force re-render
+    window.location.reload();
+  };
 
   if (step === 'briefing') {
     return (
@@ -59,6 +79,35 @@ export default function RPGBriefing({ onStart, onBack }: RPGBriefingProps) {
         </header>
 
         <main className="flex-1 max-w-lg mx-auto w-full px-5 py-6 space-y-6 overflow-y-auto pb-32">
+          {/* Resume saved game */}
+          {savedGame && (
+            <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Save className="w-5 h-5 text-primary shrink-0" />
+                <h3 className="font-display text-sm font-bold text-foreground">PARTIDA SALVA</h3>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {savedGame.players.length} peregrinos · Casa {Math.max(...savedGame.players.map(p => p.position)) + 1}/120 · 
+                Salvo em {new Date(savedGame.savedAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleResumeSave}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 transition-all"
+                >
+                  <Save className="w-4 h-4" />
+                  Continuar Partida
+                </button>
+                <button
+                  onClick={handleDeleteSave}
+                  className="flex items-center justify-center px-4 py-3 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive font-display text-sm hover:bg-destructive/20 transition-all"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Epic intro */}
           <div className="text-center space-y-3">
             <div className="text-5xl mb-2">📜</div>
@@ -366,6 +415,128 @@ export default function RPGBriefing({ onStart, onBack }: RPGBriefingProps) {
     );
   }
 
+  // ─── CHARACTER SELECTION STEP ───
+  if (step === 'characters') {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-3">
+          <div className="max-w-lg mx-auto flex items-center gap-3">
+            <button onClick={() => setStep('config')} className="text-muted-foreground hover:text-foreground">
+              <ChevronRight className="w-5 h-5 rotate-180" />
+            </button>
+            <h1 className="font-display text-lg text-foreground">🛡️ Escolha os Peregrinos</h1>
+          </div>
+        </header>
+
+        <main className="flex-1 max-w-lg mx-auto w-full px-5 py-6 space-y-4 overflow-y-auto pb-32">
+          <p className="text-sm text-muted-foreground text-center">
+            Cada peregrino tem uma <strong className="text-foreground">habilidade passiva única</strong> que afeta o jogo.
+            Toque para selecionar quem cada jogador será.
+          </p>
+
+          {Array.from({ length: playerCount }).map((_, playerIdx) => {
+            const charId = selectedCharacters[playerIdx];
+            const char = PILGRIM_CHARACTERS.find(c => c.id === charId);
+            const playerName = playerNames[playerIdx] || DEFAULT_NAMES[playerIdx];
+
+            return (
+              <div key={playerIdx} className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+                    style={{
+                      backgroundColor: char?.color ? `${char.color}33` : 'hsl(var(--muted))',
+                      color: char?.color || 'hsl(var(--foreground))',
+                    }}
+                  >
+                    {playerIdx + 1}
+                  </div>
+                  <span className="text-sm font-display font-bold text-foreground">{playerName}</span>
+                </div>
+
+                <div className="grid grid-cols-4 gap-2">
+                  {PILGRIM_CHARACTERS.map(c => {
+                    const isSelected = charId === c.id;
+                    const isTakenByOther = selectedCharacters.slice(0, playerCount).includes(c.id) && !isSelected;
+
+                    return (
+                      <button
+                        key={c.id}
+                        onClick={() => {
+                          if (isTakenByOther) return;
+                          const newSel = [...selectedCharacters];
+                          newSel[playerIdx] = c.id;
+                          setSelectedCharacters(newSel);
+                          // Also update player name to character name
+                          const newNames = [...playerNames];
+                          newNames[playerIdx] = c.name;
+                          setPlayerNames(newNames);
+                        }}
+                        disabled={isTakenByOther}
+                        className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all ${
+                          isSelected
+                            ? 'border-primary/60 bg-primary/15 scale-105'
+                            : isTakenByOther
+                            ? 'border-border/30 bg-card/20 opacity-30 cursor-not-allowed'
+                            : 'border-border bg-card/50 hover:border-primary/30'
+                        }`}
+                      >
+                        <span className="text-2xl">{c.emoji}</span>
+                        <span className="text-[10px] font-display font-bold text-foreground truncate w-full text-center">{c.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Show selected character details */}
+                {char && (
+                  <div className="px-3 py-2 rounded-lg border border-primary/20 bg-primary/5">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-lg">{char.emoji}</span>
+                      <div>
+                        <span className="font-display font-bold text-xs text-foreground">{char.name}</span>
+                        <span className="text-[10px] text-muted-foreground ml-1">— {char.title}</span>
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mb-1">{char.description}</p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <span className="text-[10px] font-bold text-primary">⚡ {char.passive.name}:</span>
+                      <span className="text-[10px] text-muted-foreground">{char.passive.description}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </main>
+
+        <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background via-background to-transparent pt-6 pb-5 px-5">
+          <button
+            onClick={() => {
+              const names = Array.from({ length: playerCount }).map((_, i) =>
+                (playerNames[i] || DEFAULT_NAMES[i]).trim() || `Jogador ${i + 1}`
+              );
+              const charIds = Array.from({ length: playerCount }).map((_, i) =>
+                selectedCharacters[i] || PILGRIM_CHARACTERS[i].id
+              );
+              onStart({
+                difficulty,
+                gameMode,
+                playerNames: names,
+                hostPlayerIndex: hostIndex,
+                characterIds: charIds,
+              });
+            }}
+            className="w-full max-w-lg mx-auto flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 transition-all"
+            style={{ boxShadow: '0 0 30px hsl(40 60% 55% / 0.3)' }}
+          >
+            <Crown className="w-5 h-5" />
+            Iniciar RPG ({playerCount} peregrinos · {DIFFICULTY_CONFIG[difficulty].label})
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // ─── CONFIG STEP ───
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -521,25 +692,16 @@ export default function RPGBriefing({ onStart, onBack }: RPGBriefingProps) {
         </div>
       </main>
 
-      {/* Fixed CTA */}
+      {/* Fixed CTA — goes to character selection */}
       <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-background via-background to-transparent pt-6 pb-5 px-5">
         <button
-          onClick={() => {
-            const names = Array.from({ length: playerCount }).map((_, i) =>
-              (playerNames[i] || DEFAULT_NAMES[i]).trim() || `Jogador ${i + 1}`
-            );
-            onStart({
-              difficulty,
-              gameMode,
-              playerNames: names,
-              hostPlayerIndex: hostIndex,
-            });
-          }}
+          onClick={() => setStep('characters')}
           className="w-full max-w-lg mx-auto flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 transition-all"
           style={{ boxShadow: '0 0 30px hsl(40 60% 55% / 0.3)' }}
         >
-          <Crown className="w-5 h-5" />
-          Iniciar RPG ({playerCount} peregrinos · {DIFFICULTY_CONFIG[difficulty].label})
+          <Shield className="w-5 h-5" />
+          Escolher Peregrinos
+          <ChevronRight className="w-4 h-4" />
         </button>
       </div>
     </div>
