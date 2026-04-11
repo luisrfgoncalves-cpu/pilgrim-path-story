@@ -94,9 +94,28 @@ const PreviewResultGate = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-/** Invisible background TTS pre-generator */
-const BackgroundPregen = () => {
+/** Global audio unlock + background TTS pre-generator */
+const AudioBootstrap = () => {
+  useAudioPrewarm();
   useBackgroundTTSPregen();
+
+  // Unlock HTMLAudioElement autoplay on first user gesture (persists for session)
+  useEffect(() => {
+    let unlocked = false;
+    const unlock = () => {
+      if (unlocked) return;
+      unlocked = true;
+      const silent = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+      silent.volume = 0;
+      silent.play().catch(() => {});
+      ['touchstart', 'mousedown', 'keydown'].forEach(e => document.removeEventListener(e, unlock));
+    };
+    ['touchstart', 'mousedown', 'keydown'].forEach(e => document.addEventListener(e, unlock, { passive: true }));
+    return () => {
+      ['touchstart', 'mousedown', 'keydown'].forEach(e => document.removeEventListener(e, unlock));
+    };
+  }, []);
+
   return null;
 };
 
