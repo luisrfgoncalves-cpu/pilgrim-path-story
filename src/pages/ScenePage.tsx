@@ -649,12 +649,29 @@ const ScenePage = () => {
 
   // Merge all choices: base + dynamic
   const allChoices = [...availableChoices, ...dynamicChoicesMapped];
-  const currentNarrative = fullNarrative[narrativeIndex] ?? null;
-  const hasMoreNarrative = narrativeIndex < fullNarrative.length - 1;
+
+  // ═══ BEATS SYSTEM — group narrative into 2-3 line beats ═══
+  const beats = useMemo(() => groupIntoBeats(fullNarrative, 2), [fullNarrative]);
+  const currentBeat = beats[beatIndex] ?? null;
+  const hasMoreBeats = beatIndex < beats.length - 1;
+
+  // Epic moment detection
+  const hasEpicMoment = chapter ? !!epicMoments[chapter.id] : false;
 
   const handleAdvanceNarrative = () => {
-    if (hasMoreNarrative) {
-      setNarrativeIndex(prev => prev + 1);
+    if (hasMoreBeats) {
+      setBeatIndex(prev => prev + 1);
+      // TTS for next beat
+      if (audioOn && beats[beatIndex + 1]) {
+        const beatText = beats[beatIndex + 1].lines.join(' ');
+        speak(beatText, { isEpic: hasEpicMoment });
+      }
+      return;
+    }
+
+    // Check for epic moment before showing choices
+    if (hasEpicMoment && !epicMomentDone) {
+      setEpicMomentActive(true);
       return;
     }
 
