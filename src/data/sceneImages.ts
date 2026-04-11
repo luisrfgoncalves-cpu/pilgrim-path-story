@@ -62,6 +62,18 @@ import fielCristaoEncontro from '@/assets/scenes/fiel-cristao-encontro.jpg';
 import palacioLeoesEntrada from '@/assets/scenes/palacio-leoes-entrada.jpg';
 import caramanchaoSono from '@/assets/scenes/caramanchao-sono.jpg';
 
+// ── Novas imagens Fase 4-6 ──
+import feiraVaidadeEntrada from '@/assets/scenes/feira-vaidade-entrada.jpg';
+import prisaoFeira from '@/assets/scenes/prisao-feira.jpg';
+import martirioFiel from '@/assets/scenes/martirio-fiel.jpg';
+import demasMinaPrata from '@/assets/scenes/demas-mina-prata.jpg';
+import pradoDesvio from '@/assets/scenes/prado-desvio.jpg';
+import giganteDesesperoCalab from '@/assets/scenes/gigante-desespero-calabouco.jpg';
+import chavePromessa from '@/assets/scenes/chave-promessa.jpg';
+import fugaCastelo from '@/assets/scenes/fuga-castelo.jpg';
+import rioMorteTravessia from '@/assets/scenes/rio-morte-travessia.jpg';
+import chegadaCelestial from '@/assets/scenes/chegada-celestial.jpg';
+
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
   'cena1': cristaoFamiliaNoite,         // Cristão com a família à noite
