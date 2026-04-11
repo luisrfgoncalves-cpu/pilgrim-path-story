@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { useProgressSync } from '@/hooks/useProgressSync';
@@ -82,6 +82,8 @@ const ScenePage = () => {
   const [defeatVillain, setDefeatVillain] = useState<string | undefined>();
   // TTS
   const { speak, stop: stopTTS, isPlaying: ttsPlaying } = useTTS();
+  const speakRef = useRef(speak);
+  speakRef.current = speak;
   const [sceneEventDone, setSceneEventDone] = useState(false);
   const [sceneEventActive, setSceneEventActive] = useState(false);
   const [suspenseActive, setSuspenseActive] = useState(false);
@@ -666,10 +668,11 @@ const ScenePage = () => {
     const firstBeatText = beats[0]?.lines.join(' ') || '';
     if (!firstBeatText || beatIndex !== 0) return;
     const t = setTimeout(() => {
-      speak(firstBeatText, { emotion: sceneEmotion, isEpic: hasEpicMoment });
+      speakRef.current(firstBeatText, { emotion: sceneEmotion, isEpic: hasEpicMoment });
     }, 500);
     return () => clearTimeout(t);
-  }, [chapter?.id, transitioning, audioOn, shouldAutoNarrate, canShowChoices, beatIndex, beats, sceneEmotion, hasEpicMoment, speak]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chapter?.id, transitioning, audioOn, shouldAutoNarrate, canShowChoices, beatIndex, sceneEmotion, hasEpicMoment]);
 
   if (!chapter) {
     navigate('/');
