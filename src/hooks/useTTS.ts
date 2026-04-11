@@ -141,7 +141,7 @@ export function useTTS() {
     return true;
   }, []);
 
-  const playResolvedUrl = useCallback(async (url: string, token: number, tier: TTSTier, cacheKey?: string, blob?: Blob) => {
+  const playResolvedUrl = useCallback(async (url: string, token: number, tier: TTSTier, cacheKey?: string, blob?: Blob, onEnd?: () => void) => {
     if (token !== globalPlaybackToken) return false;
     const { audio, promise } = playAudioUrl(url);
     stopGlobalAudio();
@@ -157,6 +157,7 @@ export function useTTS() {
       globalAudio = null;
       setIsPlaying(false);
       setCurrentTier(null);
+      onEnd?.();
     }
     return true;
   }, []);
