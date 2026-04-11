@@ -9,7 +9,8 @@ import ScrollToTop from "@/components/ScrollToTop";
 import PreviewPaywall from "@/components/PreviewPaywall";
 import PreviewTrialGate from "@/components/PreviewTrialGate";
 import { useBackgroundTTSPregen } from "@/hooks/useBackgroundTTSPregen";
-import { lazy, Suspense } from "react";
+import { useAudioPrewarm } from "@/hooks/useAudioPrewarm";
+import { lazy, Suspense, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
 // Eagerly loaded pages (needed immediately)
