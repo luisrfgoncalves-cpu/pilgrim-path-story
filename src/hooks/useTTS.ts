@@ -162,7 +162,7 @@ export function useTTS() {
     return true;
   }, []);
 
-  const playLocalFallback = useCallback(async (text: string, token: number, emotion: EmotionType) => {
+  const playLocalFallback = useCallback(async (text: string, token: number, emotion: EmotionType, onEnd?: () => void) => {
     if (typeof window === 'undefined' || !window.speechSynthesis || token !== globalPlaybackToken) {
       return false;
     }
@@ -180,6 +180,7 @@ export function useTTS() {
         if (token === globalPlaybackToken) {
           setIsPlaying(false);
           setCurrentTier(null);
+          onEnd?.();
         }
         resolve(ok);
       };
