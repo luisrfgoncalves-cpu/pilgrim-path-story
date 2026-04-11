@@ -219,7 +219,7 @@ export const storyChapters: Record<string, StoryChapter> = {
       "{{fade}}À noite, uma frase não sai da sua cabeça:{{/fade}} {{divine}}\"Fugi da ira vindoura.\"{{/divine}}"
     ],
     replayNarrative: [
-      "O livro está aqui de novo. O fardo, também. Mas desta vez Cristão sabe — sabe que há uma porta, um caminho, e que cada escolha adiante moldará quem você se tornará."
+      "O livro está aqui de novo. O fardo, também. Mas desta vez Cristão sabe — sabe que há uma porta, um caminho, e que cada escolha adiante moldaria quem ele se tornaria."
     ],
     toneNarrative: [
       { attr: "fe", highThreshold: 7, highText: "Mesmo no terror, uma certeza cresceu em Cristão: essas palavras são verdadeiras. E se são verdadeiras, deve haver um caminho.", lowThreshold: 3, lowText: "Será loucura? Talvez o livro esteja errado. Talvez o peso seja só imaginação. Mas ele continua ali, esmagando." }
@@ -321,7 +321,7 @@ export const storyChapters: Record<string, StoryChapter> = {
       "{{emphasis}}Ficar dói. Partir também. Mas só um dos caminhos tem esperança.{{/emphasis}}"
     ],
     toneNarrative: [
-      { attr: "fe", highThreshold: 6, highText: "No fundo da agonia, uma voz mansa sussurra: \"Há uma saída. Busque-a.\"", lowThreshold: 3, lowText: "O desespero é tão espesso que você mal consegue respirar. Será que existe saída, ou o fardo é para sempre?" }
+      { attr: "fe", highThreshold: 6, highText: "No fundo da agonia, uma voz mansa sussurra: \"Há uma saída. Busque-a.\"", lowThreshold: 3, lowText: "O desespero era tão espesso que Cristão mal conseguia respirar. Existiria saída, ou o fardo era para sempre?" }
     ],
     choices: [
       {
@@ -353,7 +353,7 @@ export const storyChapters: Record<string, StoryChapter> = {
       "{{whisper}}Antes de partir, ele avisa: \"Não olhe para trás.\"{{/whisper}}"
     ],
     flagNarrative: [
-      { flag: "convidou_flexivel", text: "Flexível olha para Evangelista com desconfiança: \"Esse caminho parece perigoso. Tem certeza?\" Evangelista o ignora e fala diretamente com você." }
+      { flag: "convidou_flexivel", text: "Flexível olha para Evangelista com desconfiança: \"Esse caminho parece perigoso. Tem certeza?\" Evangelista o ignorou e falou diretamente com Cristão." }
     ],
     choices: [
       {
@@ -390,7 +390,7 @@ export const storyChapters: Record<string, StoryChapter> = {
       "{{fade}}No horizonte, uma luz fraca insiste em piscar.{{/fade}}"
     ],
     flagNarrative: [
-      { flag: "convidou_flexivel", text: "Flexível te olha e diz: \"Isso é loucura. Volto para a cidade.\" Ele se vai. Agora você está completamente sozinho." }
+      { flag: "convidou_flexivel", text: "Flexível olhou para Cristão e disse: \"Isso é loucura. Volto para a cidade.\" Ele se vai. Agora ele estava completamente sozinho." }
     ],
     choices: [
       {
@@ -424,10 +424,10 @@ export const storyChapters: Record<string, StoryChapter> = {
       "O pergaminho de Evangelista pesa no bolso: {{emphasis}}\"A porta estreita.\"{{/emphasis}}"
     ],
     replayNarrative: [
-      "Você conhece essa encruzilhada. Da última vez, escolheu um caminho. Agora sabe aonde cada um leva. A pergunta é: terá coragem de escolher diferente?"
+      "Cristão conhecia a encruzilhada. Da última vez, escolhera um caminho. Agora sabia aonde cada um levava. A pergunta era: teria coragem de escolher diferente?"
     ],
     toneNarrative: [
-      { attr: "discernimento", highThreshold: 6, highText: "Os olhos de Cristão percebiam o que outros não viam: o caminho largo, embora bonito, desce imperceptivelmente. Quem entra nele não percebe que está descendo até ser tarde demais.", lowThreshold: 3, lowText: "Os dois caminhos parecem igualmente válidos. Você não consegue discernir a diferença entre eles." },
+      { attr: "discernimento", highThreshold: 6, highText: "Os olhos de Cristão percebiam o que outros não viam: o caminho largo, embora bonito, desce imperceptivelmente. Quem entra nele não percebe que está descendo até ser tarde demais.", lowThreshold: 3, lowText: "Os dois caminhos pareciam igualmente válidos. Cristão não conseguia discernir a diferença entre eles." },
       { attr: "coragem", highThreshold: 6, highText: "Algo dentro de Cristão se inclinava para o desafio. A dificuldade não te assusta — ela te chama.", lowThreshold: 3, lowText: "O medo puxava Cristão para o caminho mais seguro. Os espinhos do caminho estreito parecem afiados demais." }
     ],
     choices: [
@@ -490,7 +490,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     sceneEvent: { type: 'suspense', delay: 1000, duration: 2000, message: 'A porta se ergue diante de Cristão...' },
     characters: ["cristao", "boa_vontade"],
     narrative: [
-      "A subida era árdua. Os espinhos rasgavam suas roupas e a inclinação faz o fardo pesar ainda mais. Várias vezes você escorrega e cai de joelhos.",
+      "A subida era árdua. Os espinhos rasgavam suas roupas e a inclinação faz o fardo pesar ainda mais. Várias vezes Cristão escorregou e caiu de joelhos.",
       "Mas no topo, a porta está ali. Pequena, quase insignificante, mas real. Uma inscrição brilha acima dela: \"Batei, e abrir-se-vos-á.\"",
       "Cristão bateu. Uma voz do outro lado perguntou: \"Quem é?\" Cristão respondeu com a única verdade que tinha: \"Um pecador carregado, fugindo da ira vindoura.\"",
       "A porta se abriu. Mãos fortes o puxaram para dentro. Do outro lado, o mundo parece diferente. O fardo ainda pesa — mas agora há um caminho."
@@ -518,7 +518,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "evangelista"],
     narrative: [
       "O vilarejo da Moralidade fica ao pé de uma montanha chamada Sinai. Ao se aproximar, o monte começa a tremer. Pedras despencam. Fogo parece arder no topo.",
-      "O homem Legalidade não está em lugar nenhum. A montanha ruge como se fosse esmagar tudo ao redor. Você percebe, com horror, que este caminho não pode remover seu fardo — ele só acrescenta medo ao peso.",
+      "O homem Legalidade não está em lugar nenhum. A montanha ruge como se fosse esmagar tudo ao redor. Cristão percebeu, com horror, que aquele caminho não podia remover o fardo — ele só acrescenta medo ao peso.",
       "Evangelista aparece novamente, com rosto severo: \"Por que você se desviou? O caminho de Prudência Mundana leva à morte. Volte à Porta Estreita.\""
     ],
     sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'A montanha treme e fogo arde no topo!' },
@@ -641,7 +641,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Auxílio puxou Cristão com força para fora da lama. No solo firme, Cristão caiu de joelhos, ofegante, coberto de lodo.",
       "\"Por que não usou os degraus?\", pergunta Auxílio gentilmente. \"O Rei os colocou ali por uma razão.\"",
-      "Cristão olhou para trás. O pântano borbulhava, sombrio. Mas você está do outro lado. O fardo ainda está nas suas costas — porém mais leve agora, como se parte da lama tivesse ficado para trás."
+      "Cristão olhou para trás. O pântano borbulhava, sombrio. Mas ele estava do outro lado. O fardo ainda estava nas costas de Cristão — porém mais leve agora, como se parte da lama tivesse ficado para trás."
     ],
     choices: [
       {
@@ -686,14 +686,14 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "esposa_cristao", "vizinhos"],
     sceneEvent: { type: 'tension', intensity: 1, duration: 3000 },
     narrative: [
-      "{{shout}}Você corre pelas ruas gritando, mas ninguém entende.{{/shout}}",
+      "{{shout}}Cristão correu pelas ruas gritando, mas ninguém entendia.{{/shout}}",
       "Os vizinhos fecham as janelas. As crianças riem do homem que chora em público.",
       "Em casa, sua esposa segura seus ombros: {{dialog}}\"Você está assustando as crianças.\"{{/dialog}}",
-      "Você tenta explicar o livro, o juízo, a cidade condenada. As palavras saem quebradas.",
-      "Ela manda você dormir. {{whisper}}Você sabe que o peso vai amanhecer com você.{{/whisper}}"
+      "Cristão tentou explicar o livro, o juízo, a cidade condenada. As palavras saíram quebradas.",
+      "A esposa mandou-o dormir. {{whisper}}Cristão sabia que o peso amanheceria com ele.{{/whisper}}"
     ],
     toneNarrative: [
-      { attr: "fe", highThreshold: 5, highText: "Mesmo rejeitado, uma certeza arde no seu peito: o que você leu é verdade. Se ninguém acredita, você irá sozinho.", lowThreshold: 3, lowText: "Talvez sua esposa tenha razão. Talvez seja febre. Talvez o livro seja só... um livro." }
+      { attr: "fe", highThreshold: 5, highText: "Mesmo rejeitado, uma certeza ardia no peito de Cristão: o que lera era verdade. Se ninguém acreditava, ele iria sozinho.", lowThreshold: 3, lowText: "Talvez sua esposa tenha razão. Talvez seja febre. Talvez o livro seja só... um livro." }
     ],
     choices: [
       {
@@ -725,14 +725,14 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "evangelista", "presuncao_preguica_simples"],
         sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'Três figuras dormem acorrentadas...' },
     narrative: [
-      "Você olha para trás uma última vez. {{heart}}A cidade ainda parece casa.{{/heart}}",
+      "Cristão olhou para trás uma última vez. {{heart}}A cidade ainda parecia casa.{{/heart}}",
       "Mas cada passo à frente confirma: ficar não é mais opção.",
       "Na estrada, três homens dormem acorrentados: {{emphasis}}Presunção, Preguiça e Simples{{/emphasis}}.",
       "{{shout}}\"Acordem! O perigo é real!\"{{/shout}}",
       "{{villain}}\"Cada um cuide de si.\"{{/villain}} {{villain}}\"Mais um cochilo...\"{{/villain}} {{villain}}\"Não vejo perigo nenhum.\"{{/villain}}"
     ],
     flagNarrative: [
-      { flag: "partiu_em_segredo", text: "Você saiu de casa antes do sol nascer, sem acordar ninguém. O silêncio da madrugada pesou mais que o fardo. Será que um dia eles entenderão por que você partiu?" }
+      { flag: "partiu_em_segredo", text: "Cristão saíra de casa antes do sol nascer, sem acordar ninguém. O silêncio da madrugada pesou mais que o fardo. Será que um dia entenderiam por que ele partira?" }
     ],
     choices: [
       {
@@ -761,10 +761,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     timeLimit: 8,
     timeoutChoiceIndex: 0,
     narrative: [
-      "A subida castiga. Os espinhos rasgam. O fardo puxa você para trás.",
-      "Quando a porta aparece, você corre e bate com os punhos: {{shout}}\"Abram! Pelo amor de Deus, abram!\"{{/shout}}",
+      "A subida castigava. Os espinhos rasgavam. O fardo puxava Cristão para trás.",
+      "Quando a porta apareceu, Cristão correu e bateu com os punhos: {{shout}}\"Abram! Pelo amor de Deus, abram!\"{{/shout}}",
       "{{tremor}}Flechas cortam o ar ao redor da sua cabeça!{{/tremor}}",
-      "Antes que outra acerte você, {{emphasis}}Boa-Vontade{{/emphasis}} abre e te puxa para dentro com força.",
+      "Antes que outra acertasse Cristão, {{emphasis}}Boa-Vontade{{/emphasis}} abriu a porta e o puxou para dentro com força.",
       "Uma flecha crava na porta onde sua cabeça estava.",
       "Ele fecha a porta e diz: {{divine}}\"Quem chega até aqui não é rejeitado.\"{{/divine}}"
     ],
@@ -870,10 +870,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "auxilio"],
         sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'O sol aquece suas roupas encharcadas...' },
     narrative: [
-      "No solo firme, coberto de lama da cabeça aos pés, você se senta ao lado de Auxílio. Ele não parece com pressa de ir embora.",
+      "No solo firme, coberto de lama da cabeça aos pés, Cristão se sentou ao lado de Auxílio. Ele não parece com pressa de ir embora.",
       "\"Você quer saber por que o pântano existe?\", ele pergunta, como se lesse seus pensamentos. \"É assim: quando um pecador desperta para sua condição, medos, dúvidas e terrores surgem na sua alma. Eles se acumulam e escorrem para este lugar.\"",
       "Ele aponta para a lama: \"Por isso o pântano nunca seca. O Rei mandou colocar degraus de pedra firme sob a lama — são Suas promessas de perdão. Mas no desespero, as pessoas não olham para baixo. Só olham para a lama.\"",
-      "Você olha para suas mãos sujas. Cada mancha de lama é uma dúvida que quase te engoliu. Mas agora você está do outro lado.",
+      "Cristão olhou para as próprias mãos sujas. Cada mancha de lama era uma dúvida que quase o engolira. Mas agora ele estava do outro lado.",
       "\"O caminho continua\", diz Auxílio, apontando para uma colina à frente. \"E o melhor está por vir. Naquela colina, seu fardo será tratado de um jeito que você não espera.\""
     ],
     choices: [
@@ -900,14 +900,14 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "tres_resplandecentes"],
         sceneEvent: { type: 'suspense', delay: 1000, duration: 3000, message: 'Luz sobrenatural envolve tudo...' },
     narrative: [
-      "Você ainda está de joelhos quando três figuras luminosas aparecem diante de você. A luz que emana deles é tão intensa que você cobre os olhos com as mãos.",
+      "Cristão ainda estava de joelhos quando três figuras luminosas apareceram diante dele. A luz que emanava delas era tão intensa que ele cobriu os olhos com as mãos.",
       "O primeiro se adianta. Sua voz é como trovão gentil: \"Paz a você. O Senhor perdoou os teus pecados.\" As palavras atravessam o seu peito como fogo que não queima — purifica.",
-      "O segundo se ajoelha ao seu lado e, com mãos que parecem feitas de luz, remove seus trapos sujos e imundos — as velhas roupas da Cidade da Destruição. No lugar, veste você com roupas novas, brancas e limpas. Pela primeira vez, você não sente vergonha do que veste.",
+      "O segundo se ajoelha ao seu lado e, com mãos que parecem feitas de luz, removeu os trapos sujos e imundos de Cristão — as velhas roupas da Cidade da Destruição. No lugar, vestiu-o com roupas novas, brancas e limpas. Pela primeira vez, Cristão não sentiu vergonha do que vestia.",
       "O terceiro coloca um selo na sua testa — uma marca invisível mas real — e estende um pergaminho selado com um selo dourado. \"Este é seu passaporte\", ele diz. \"Guarde-o com sua vida. Você precisará dele nos portões da Cidade Celestial. Não o perca.\"",
-      "Os três desaparecem como vieram — em luz. Você fica ali, de pé, com roupas novas, sem fardo, com um pergaminho selado no peito. O caminho à frente parece possível agora."
+      "Os três desapareceram como vieram — em luz. Cristão ficou ali, de pé, com roupas novas, sem fardo, com um pergaminho selado no peito. O caminho à frente parecia possível agora."
     ],
     toneNarrative: [
-      { attr: "fe", highThreshold: 7, highText: "Neste momento, tudo faz sentido. O fardo, o pântano, as flechas, a porta — tudo levava até aqui. Até a Cruz.", lowThreshold: 3, lowText: "Você quase não acredita no que aconteceu. Será real? Será que o fardo realmente se foi? Você toca as costas — nada ali. Pela primeira vez em muito tempo, nada ali." }
+      { attr: "fe", highThreshold: 7, highText: "Neste momento, tudo faz sentido. O fardo, o pântano, as flechas, a porta — tudo levava até aqui. Até a Cruz.", lowThreshold: 3, lowText: "Cristão quase não acreditava no que acontecera. Seria real? O fardo realmente se fora? Tocou as costas — nada ali. Pela primeira vez em muito tempo, nada ali." }
     ],
     choices: [
       {
@@ -941,11 +941,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "interprete"],
     sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'Uma presença sábia aguarda dentro...' },
     narrative: [
-      "O caminho leva a uma casa grande e sóbria. Uma placa sobre a porta diz: {{emphasis}}\"Casa do Intérprete.\"{{/emphasis}} Antes de bater, você hesita. {{fade}}A casa emana silêncio — o tipo de silêncio que precede revelações.{{/fade}}",
-      "A porta se abre antes de você bater. Um homem de olhar profundo e voz calma diz: {{divine}}\"Eu estava te esperando. Entre. Vou te mostrar coisas que serão úteis para o restante da sua jornada.\"{{/divine}}"
+      "O caminho leva a uma casa grande e sóbria. Uma placa sobre a porta diz: {{emphasis}}\"Casa do Intérprete.\"{{/emphasis}} Antes de bater, Cristão hesitou. {{fade}}A casa emana silêncio — o tipo de silêncio que precede revelações.{{/fade}}",
+      "A porta se abriu antes de Cristão bater. Um homem de olhar profundo e voz calma diz: {{divine}}\"Eu estava te esperando. Entre. Vou te mostrar coisas que serão úteis para o restante da sua jornada.\"{{/divine}}"
     ],
     replayNarrative: [
-      "A casa é a mesma. Mas seus olhos mudaram. Desta vez, o que você verá nas salas do Intérprete?"
+      "A casa era a mesma. Mas os olhos de Cristão haviam mudado. Desta vez, o que ele veria nas salas do Intérprete?"
     ],
     choices: [
       {
@@ -974,11 +974,11 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "A primeira sala contém apenas um retrato. O homem pintado tem {{divine}}olhos erguidos ao céu{{/divine}}, o melhor dos livros nas mãos, a lei da verdade escrita nos lábios e o mundo atrás de si. Ele está de pé, como se suplicasse aos homens.",
       "{{dialog}}\"Grave este rosto\"{{/dialog}}, diz o Intérprete. {{emphasis}}\"Este homem é o único guia autorizado para o caminho que você percorre.\"{{/emphasis}} \"Muitos vão se oferecer para guiá-lo — Prudência Mundana, Legalidade, outros. Mas só este homem conhece a verdade.\"",
-      "{{fade}}Você estuda o retrato. Os olhos do homem pintado parecem vivos, cheios de urgência e compaixão.{{/fade}}"
+      "{{fade}}Cristão estudou o retrato. Os olhos do homem pintado parecem vivos, cheios de urgência e compaixão.{{/fade}}"
     ],
     toneNarrative: [
-      { attr: "fe", highThreshold: 7, highText: "Olhando o retrato, você reconhece algo. É como se já conhecesse esse homem — não pelo rosto, mas pelo que ele representa.", lowThreshold: 3, lowText: "O retrato é perturbador. Você não entende por que deveria confiar em alguém que nunca viu." },
-      { attr: "discernimento", highThreshold: 6, highText: "Cada detalhe do retrato fala: o livro, os olhos ao céu, o mundo atrás de si. É um mapa visual para a jornada.", lowThreshold: 3, lowText: "É só uma pintura. Você olha sem entender e logo desvia os olhos." }
+      { attr: "fe", highThreshold: 7, highText: "Olhando o retrato, Cristão reconheceu algo. É como se já conhecesse esse homem — não pelo rosto, mas pelo que ele representa.", lowThreshold: 3, lowText: "O retrato era perturbador. Cristão não entendia por que deveria confiar em alguém que nunca vira." },
+      { attr: "discernimento", highThreshold: 6, highText: "Cada detalhe do retrato fala: o livro, os olhos ao céu, o mundo atrás de si. É um mapa visual para a jornada.", lowThreshold: 3, lowText: "Era só uma pintura. Cristão olhou sem entender e logo desviou os olhos." }
     ],
     choices: [
       {
@@ -1003,8 +1003,8 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'Uma sensação de vazio acompanha Cristão...' },
     narrative: [
-      "{{fade}}Você segue adiante sem entrar na casa. O caminho parece igual, mas algo falta.{{/fade}} Sem as lições do Intérprete, cada decisão futura será mais difícil.",
-      "{{whisper}}Na estrada, um sentimento de perda te acompanha. Os perigos à frente exigirão sabedoria que você não tem.{{/whisper}}",
+      "{{fade}}Cristão seguiu adiante sem entrar na casa. O caminho parece igual, mas algo falta.{{/fade}} Sem as lições do Intérprete, cada decisão futura será mais difícil.",
+      "{{whisper}}Na estrada, um sentimento de perda te acompanha. Os perigos à frente exigiriam sabedoria que ele não possuía.{{/whisper}}",
       "Ao longe, {{divine}}a porta da Casa do Intérprete ainda está aberta.{{/divine}}"
     ],
     choices: [
@@ -1037,7 +1037,7 @@ export const storyChapters: Record<string, StoryChapter> = {
       "{{divine}}\"A poeira é o pecado\"{{/divine}}, explica o Intérprete. \"A vassoura é a Lei, que revela o pecado mas não pode limpá-lo — apenas levanta mais poeira. {{emphasis}}A água é a Graça, que purifica o coração onde a Lei apenas condena.{{/emphasis}}\""
     ],
     flagNarrative: [
-      { flag: "pediu_ajuda_pantano", text: "Você se lembra do pântano. Lá, tentar sozinho te afundou. Aqui, a lição se repete: a vassoura sozinha piora tudo. Só a água limpa." },
+      { flag: "pediu_ajuda_pantano", text: "Cristão se lembrou do pântano. Lá, tentar sozinho o afundara. Aqui, a lição se repete: a vassoura sozinha piora tudo. Só a água limpa." },
       { flag: "escolheu_caminho_facil", text: "O caminho largo era como a vassoura — parecia resolver, mas só levantava mais problemas." }
     ],
     choices: [
@@ -1122,7 +1122,7 @@ export const storyChapters: Record<string, StoryChapter> = {
       "{{whisper}}\"O Reino dos Céus padece violência\"{{/whisper}}, murmura o Intérprete, {{emphasis}}\"e são os violentos que o tomam por força.\"{{/emphasis}}"
     ],
     flagNarrative: [
-      { flag: "ignorou_inquietacao", text: "Você pensa em como quase ignorou o chamado. Aquele homem corajoso não hesitou — e você?" }
+      { flag: "ignorou_inquietacao", text: "Cristão pensou em como quase ignorara o chamado. Aquele homem corajoso não hesitara — e ele?" }
     ],
     choices: [
       {
@@ -1367,10 +1367,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "{{fade}}O Vale da Humilhação é estreito e escuro. Paredes de rocha se erguem dos dois lados. O sol desaparece atrás das nuvens.{{/fade}}",
       "{{whisper}}O silêncio aqui é diferente. Não é paz — é espera. Como se o próprio vale prendesse a respiração.{{/whisper}}",
-      "{{tremor}}Seus passos ecoam entre as pedras. A armadura da fé que você recebeu parece fina demais.{{/tremor}} O pergaminho pesa no bolso como um lembrete: {{emphasis}}você tem algo pelo que lutar.{{/emphasis}}"
+      "{{tremor}}Seus passos ecoam entre as pedras. A armadura da fé que você recebeu parece fina demais.{{/tremor}} O pergaminho pesa no bolso como um lembrete: {{emphasis}}ele tinha algo pelo que lutar.{{/emphasis}}"
     ],
     replayNarrative: [
-      "O vale é o mesmo. Mas você sabe quem espera nas sombras. Da última vez, enfrentou Apolião — ou fugiu. Desta vez, o que fará?"
+      "O vale era o mesmo. Mas Cristão sabia quem esperava nas sombras. Da última vez, enfrentara Apolião — ou fugira. Desta vez, o que faria?"
     ],
     flagNarrative: [
       { flag: "entrou_casa_interprete", text: "As visões do Intérprete ecoam: o homem que avançou de espada contra os guardas do palácio. Será que você tem a mesma coragem?" }
@@ -1469,10 +1469,10 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "apolion"],
     sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'Dardos flamejantes cortam o ar!' },
     narrative: [
-      "{{tremor}}A batalha dura horas. Apolião lança dardos flamejantes.{{/tremor}} Você os apara com o escudo da fé, mas alguns passam e ferem suas mãos, sua cabeça, seu pé.",
-      "Em um momento terrível, {{tremor}}Apolião te derruba. Sua espada voa de suas mãos.{{/tremor}} Ele se ergue sobre você, pronto para o golpe final.",
-      "Mas sua mão encontra a espada novamente. {{divine}}Com um grito que não vem de você — vem de algo maior — você desfere um golpe que faz Apolião recuar.{{/divine}} {{fade}}Ele abre as asas de dragão e foge, deixando para trás apenas o fedor de enxofre.{{/fade}}",
-      "{{heart}}Você está ferido, sangrando, exausto. Mas vivo. E vitorioso.{{/heart}}"
+      "{{tremor}}A batalha durou horas. Apolião lançou dardos flamejantes.{{/tremor}} Cristão os aparou com o escudo da fé, mas alguns passam e ferem suas mãos, sua cabeça, seu pé.",
+      "Em um momento terrível, {{tremor}}Apolião te derruba. A espada voou das mãos de Cristão.{{/tremor}} Ele se ergue sobre você, pronto para o golpe final.",
+      "Mas a mão de Cristão encontrou a espada novamente. {{divine}}Com um grito que não vem de você — vem de algo maior — você desfere um golpe que faz Apolião recuar.{{/divine}} {{fade}}Ele abre as asas de dragão e foge, deixando para trás apenas o fedor de enxofre.{{/fade}}",
+      "{{heart}}Cristão estava ferido, sangrando, exausto. Mas vivo. E vitorioso.{{/heart}}"
     ],
     adaptiveNarrative: [
       { minAttr: "perseveranca", minValue: 8, text: "Cada cicatriz da jornada preparou você para este momento. A perseverança acumulada sustentou cada golpe." }
@@ -1601,7 +1601,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     narrative: [
       "Do outro lado do vale, uma surpresa: {{emphasis}}outro peregrino{{/emphasis}}. Seu nome é {{emphasis}}Fiel{{/emphasis}}. Ele também veio da Cidade da Destruição, por um caminho diferente.",
       "{{dialog}}\"Eu também carreguei o fardo\"{{/dialog}}, diz Fiel. {{dialog}}\"Eu também passei pela cruz. O meu caminho foi diferente do seu, mas chegamos ao mesmo ponto.\"{{/dialog}}",
-      "{{heart}}Pela primeira vez na jornada, você tem um companheiro verdadeiro. Alguém que entende o peso, a luta, e a esperança.{{/heart}} Juntos, vocês seguem em direção à Feira da Vaidade."
+      "{{heart}}Pela primeira vez na jornada, você tem um companheiro verdadeiro. Alguém que entende o peso, a luta, e a esperança.{{/heart}} Juntos, os dois seguiram em direção à Feira da Vaidade."
     ],
     choices: [
       {
@@ -1624,9 +1624,9 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao"],
     sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'O medo paralisa seus membros...' },
     narrative: [
-      "{{tremor}}Os esqueletos te paralisam. Cada um deles foi um peregrino como você.{{/tremor}} Eles tinham fé, coragem, pergaminhos — e mesmo assim morreram aqui.",
-      "{{whisper}}A pergunta martela: se eles não conseguiram, como você conseguiria?{{/whisper}}",
-      "Mas então você olha para suas mãos. {{divine}}O pergaminho ainda está ali. O selo na sua testa ainda brilha.{{/divine}} {{emphasis}}Você ainda está de pé.{{/emphasis}}"
+      "{{tremor}}Os esqueletos paralisaram Cristão. Cada um deles foi um peregrino como você.{{/tremor}} Eles tinham fé, coragem, pergaminhos — e mesmo assim morreram aqui.",
+      "{{whisper}}A pergunta martelava: se eles não conseguiram, como Cristão conseguiria?{{/whisper}}",
+      "Mas então Cristão olhou para as próprias mãos. {{divine}}O pergaminho ainda está ali. O selo na sua testa ainda brilha.{{/divine}} {{emphasis}}Você ainda está de pé.{{/emphasis}}"
     ],
     flagNarrative: [
       { flag: "pediu_ajuda_pantano", text: "No pântano, a mão de Auxílio te salvou. Você não precisa vencer sozinho." }
