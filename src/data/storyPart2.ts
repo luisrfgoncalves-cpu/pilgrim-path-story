@@ -102,7 +102,11 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-cena3",
         effects: { fe: 1, perseveranca: 1 },
         flag: "aceitou_misericordia",
-        consequence: "Cristã estende a mão a Misericórdia. A companhia na jornada de fé é um dom de Deus. — Eclesiastes 4:9-10: \"Melhor é serem dois do que um, pois se um cair, o outro o levanta.\""
+        consequence: "Cristã estende a mão a Misericórdia. A companhia na jornada de fé é um dom de Deus. — Eclesiastes 4:9-10: \"Melhor é serem dois do que um, pois se um cair, o outro o levanta.\"",
+        toneOptions: [
+          { tone: 'humble', emoji: '🤲', label: 'Com ternura maternal', npcReaction: 'Misericórdia se comove às lágrimas: "Nunca ninguém me tratou assim. Vou contigo até o fim."', effects: { fe: 1 } },
+          { tone: 'firm', emoji: '✊', label: 'Com firmeza e convicção', npcReaction: 'Misericórdia se surpreende: "Se essa é tua certeza, então eu também terei."', effects: { coragem: 1 } }
+        ]
       },
       {
         text: "\"Não tenho certeza se posso levar mais alguém...\"",
@@ -171,7 +175,11 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-cena5",
         effects: { fe: 1, coragem: 1 },
         flag: "intercedeu_por_misericordia",
-        consequence: "A intercessão de Cristã por Misericórdia é um eco da graça divina: ninguém é salvo por mérito próprio, mas pela misericórdia do Rei. — Efésios 2:8-9: \"Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus.\""
+        consequence: "A intercessão de Cristã por Misericórdia é um eco da graça divina: ninguém é salvo por mérito próprio, mas pela misericórdia do Rei. — Efésios 2:8-9: \"Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus.\"",
+        toneOptions: [
+          { tone: 'humble', emoji: '🙏', label: 'Com súplica humilde', npcReaction: 'O guardião se comove: "A humildade abre esta porta mais rápido que qualquer força."', effects: { fe: 1 } },
+          { tone: 'firm', emoji: '📜', label: 'Mostrando a carta do Rei', npcReaction: 'O guardião lê a carta e se curva: "O Rei a enviou. Quem sou eu para questionar?"', effects: { coragem: 1 } }
+        ]
       },
       {
         text: "Entrar e esperar que Misericórdia se recupere sozinha",
@@ -207,7 +215,11 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-cena6",
         effects: { coragem: 2, fe: 1 },
         flag: "coragem_apos_ataque",
-        consequence: "A coragem de Cristã não nasce da ausência de medo, mas da presença de uma promessa maior que o perigo. — Josué 1:9: \"Não te mandei eu? Sê forte e corajoso; não temas, nem te espantes; porque o Senhor teu Deus é contigo, por onde quer que andares.\""
+        consequence: "A coragem de Cristã não nasce da ausência de medo, mas da presença de uma promessa maior que o perigo. — Josué 1:9: \"Não te mandei eu? Sê forte e corajoso; não temas, nem te espantes; porque o Senhor teu Deus é contigo, por onde quer que andares.\"",
+        toneOptions: [
+          { tone: 'firm', emoji: '⚔️', label: 'Com bravura', npcReaction: 'Os Mal-Encarados recuam diante da firmeza de Cristã. O guardião sorri: "Você é forte como seu marido."', effects: { coragem: 1 } },
+          { tone: 'humble', emoji: '🙏', label: 'Tremendo mas orando', npcReaction: 'O guardião se aproxima: "A coragem não é ausência de medo — é fé em meio ao medo."', effects: { fe: 1 } }
+        ]
       },
       {
         text: "Tremer mas continuar — em silêncio, segurando os filhos",
@@ -836,7 +848,11 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase5-cena2",
         effects: { coragem: 2, fe: 1 },
         flag: "encorajou_ataque_castelo",
-        consequence: "A decisão de atacar a Dúvida em vez de contorná-la é a diferença entre a jornada de Cristão e a de Cristã. O que a primeira geração sobreviveu, a segunda destrói. — Romanos 16:20: \"O Deus de paz em breve esmagará Satanás debaixo dos vossos pés.\""
+        consequence: "A decisão de atacar a Dúvida em vez de contorná-la é a diferença entre a jornada de Cristão e a de Cristã. O que a primeira geração sobreviveu, a segunda destrói. — Romanos 16:20: \"O Deus de paz em breve esmagará Satanás debaixo dos vossos pés.\"",
+        toneOptions: [
+          { tone: 'firm', emoji: '⚔️', label: 'Gritando ordem de ataque', npcReaction: 'Grande-Coração bate a espada no escudo: "Essa é a voz de quem já venceu o medo!"', effects: { coragem: 1 } },
+          { tone: 'humble', emoji: '🙏', label: 'Orando antes da batalha', npcReaction: 'Valente-pela-Verdade se ajoelha ao lado: "Quem ora antes de lutar nunca luta sozinho."', effects: { fe: 1 } }
+        ]
       },
       {
         text: "Orar antes da batalha — pedir proteção divina",
@@ -1023,7 +1039,11 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-fase6-cena2",
         effects: { fe: 2, coragem: 1 },
         flag: "admirou_firme",
-        consequence: "Firme resistiu não com espada, mas de joelhos. A oração é a arma mais poderosa contra a tentação — silenciosa, invisível, invencível. — Tiago 4:7: \"Resisti ao diabo, e ele fugirá de vós.\""
+        consequence: "Firme resistiu não com espada, mas de joelhos. A oração é a arma mais poderosa contra a tentação — silenciosa, invisível, invencível. — Tiago 4:7: \"Resisti ao diabo, e ele fugirá de vós.\"",
+        toneOptions: [
+          { tone: 'humble', emoji: '🤲', label: 'Com reverência', npcReaction: 'Firme abre os olhos e vê Cristã: "Vocês chegaram na hora certa. A tentação estava quase vencendo."', effects: { fe: 1 } },
+          { tone: 'firm', emoji: '🛡️', label: 'Repreendendo Madame Bolha', npcReaction: 'Madame Bolha recua: "Essa mulher tem autoridade. Não é como as outras." Desaparece como fumaça.', effects: { coragem: 1 } }
+        ]
       },
       {
         text: "Perguntar a Firme como resistiu à tentação",

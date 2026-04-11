@@ -1,43 +1,104 @@
 import { useState, useCallback, useRef } from 'react';
 
 /**
- * useTTS — Text-to-Speech com 3 camadas de vozes neurais PT-BR:
+ * useTTS — Text-to-Speech com cache inteligente de 3 camadas:
  * 
- * 1. ElevenLabs (3 API keys em rotação via Edge Function)
- *    - Vozes neurais premium, usadas para momentos épicos
- *    - 10k chars/mês por key = 30k total
+ * Cache Layer 1: IndexedDB local (celular do usuário — instantâneo)
+ * Cache Layer 2: Supabase Storage (global — todos os usuários compartilham)
+ * Geração:  ElevenLabs via Edge Function (só na 1ª vez de cada frase)
+ * Fallback: FreeTTS.org / eidosSpeech.xyz se ElevenLabs falhar
  * 
- * 2. FreeTTS.org (vozes Microsoft Neural, gratuito, sem key)
- *    - Narração principal, sem limite declarado
- *    - 20 req/min rate limit
- * 
- * 3. eidosSpeech.xyz (vozes Edge Neural, 30 req/dia grátis)
- *    - Fallback final de qualidade neural
- * 
- * SEM Web Speech API — nenhuma voz robótica de celular.
- * Se todas as APIs falharem, o texto permanece apenas escrito.
+ * RESULTADO: Cada frase é gerada UMA VEZ na vida.
+ * Depois disso, todos os usuários usam o áudio salvo.
  */
 
-type TTSTier = 'elevenlabs' | 'freetts' | 'eidosspeech';
+type TTSTier = 'elevenlabs' | 'freetts' | 'eidosspeech' | 'cached';
 type EmotionType = 'neutral' | 'dramatic' | 'solemn' | 'urgent' | 'celestial' | 'villain';
 
 interface TTSOptions {
   emotion?: EmotionType;
-  /** Is this an epic moment? If true, tries ElevenLabs first */
   isEpic?: boolean;
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 
-// In-memory audio cache to avoid repeated API calls
-const audioCache = new Map<string, string>();
+// In-memory cache (session lifetime)
+const memoryCache = new Map<string, string>();
 
-function getCacheKey(text: string, tier: string): string {
-  return `${tier}:${text.slice(0, 100)}`;
+// ─── IndexedDB persistent cache ───
+const DB_NAME = 'peregrino-tts-cache';
+const DB_VERSION = 1;
+const STORE_NAME = 'audio';
+
+function openDB(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME);
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
 }
 
-// ─── FreeTTS.org — Microsoft Neural voices, free, no key ───
+async function getFromIDB(key: string): Promise<Blob | null> {
+  try {
+    const db = await openDB();
+    return new Promise((resolve) => {
+      const tx = db.transaction(STORE_NAME, 'readonly');
+      const store = tx.objectStore(STORE_NAME);
+      const req = store.get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  } catch {
+    return null;
+  }
+}
+
+async function saveToIDB(key: string, blob: Blob): Promise<void> {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.put(blob, key);
+  } catch {
+    // Silently fail — cache is optional
+  }
+}
+
+// ─── Hash function (matches edge function) ───
+async function hashKey(text: string, emotion: string): Promise<string> {
+  const data = new TextEncoder().encode(`${emotion}:${text}`);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function getCacheKey(text: string, emotion: string): string {
+  return `${emotion}:${text.slice(0, 200)}`;
+}
+
+// ─── Play audio from URL/Blob ───
+function playAudioUrl(url: string): { audio: HTMLAudioElement; promise: Promise<void> } {
+  const audio = new Audio(url);
+  const promise = new Promise<void>((resolve, reject) => {
+    audio.onended = () => resolve();
+    audio.onerror = () => reject(new Error('Audio playback failed'));
+  });
+  return { audio, promise };
+}
+
+// ─── Supabase Storage direct URL (public bucket) ───
+function getStorageUrl(emotion: string, hash: string): string {
+  return `${SUPABASE_URL}/storage/v1/object/public/tts-cache/${emotion}/${hash}.mp3`;
+}
+
+// ─── FreeTTS.org fallback ───
 const FREETTS_VOICES: Record<EmotionType, string> = {
   neutral: 'pt-BR-FranciscaNeural',
   dramatic: 'pt-BR-AntonioNeural',
@@ -47,12 +108,8 @@ const FREETTS_VOICES: Record<EmotionType, string> = {
   villain: 'pt-BR-AntonioNeural',
 };
 
-async function speakWithFreeTTS(text: string, emotion: EmotionType): Promise<string> {
-  const cacheKey = getCacheKey(text, 'freetts');
-  if (audioCache.has(cacheKey)) return audioCache.get(cacheKey)!;
-
+async function speakWithFreeTTS(text: string, emotion: EmotionType): Promise<Blob> {
   const voice = FREETTS_VOICES[emotion] || 'pt-BR-FranciscaNeural';
-
   const response = await fetch('https://freetts.org/api/tts', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -62,69 +119,22 @@ async function speakWithFreeTTS(text: string, emotion: EmotionType): Promise<str
       speed: emotion === 'urgent' ? 1.15 : emotion === 'solemn' ? 0.85 : 1.0,
     }),
   });
-
   if (!response.ok) throw new Error(`FreeTTS failed: ${response.status}`);
-
-  const blob = await response.blob();
-  const url = URL.createObjectURL(blob);
-  audioCache.set(cacheKey, url);
-  return url;
+  return await response.blob();
 }
 
-// ─── eidosSpeech.xyz — Edge Neural voices, 30 req/day free ───
-async function speakWithEidos(text: string, emotion: EmotionType): Promise<string> {
-  const cacheKey = getCacheKey(text, 'eidosspeech');
-  if (audioCache.has(cacheKey)) return audioCache.get(cacheKey)!;
-
+// ─── eidosSpeech.xyz fallback ───
+async function speakWithEidos(text: string, emotion: EmotionType): Promise<Blob> {
   const voice = emotion === 'villain' || emotion === 'dramatic'
     ? 'pt-BR-AntonioNeural'
     : 'pt-BR-FranciscaNeural';
-
   const response = await fetch('https://eidosspeech.xyz/api/tts', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text, voice }),
   });
-
   if (!response.ok) throw new Error(`eidosSpeech failed: ${response.status}`);
-
-  const blob = await response.blob();
-  const url = URL.createObjectURL(blob);
-  audioCache.set(cacheKey, url);
-  return url;
-}
-
-// ─── ElevenLabs via Edge Function (3 keys rotation server-side) ───
-async function speakWithElevenLabs(text: string, emotion: EmotionType): Promise<string> {
-  const cacheKey = getCacheKey(text, 'elevenlabs');
-  if (audioCache.has(cacheKey)) return audioCache.get(cacheKey)!;
-
-  const response = await fetch(`${SUPABASE_URL}/functions/v1/elevenlabs-tts`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-    },
-    body: JSON.stringify({ text, emotion }),
-  });
-
-  if (!response.ok) throw new Error(`ElevenLabs TTS failed: ${response.status}`);
-
-  const blob = await response.blob();
-  const url = URL.createObjectURL(blob);
-  audioCache.set(cacheKey, url);
-  return url;
-}
-
-// ─── Play audio from URL with Promise ───
-function playAudioUrl(url: string): { audio: HTMLAudioElement; promise: Promise<void> } {
-  const audio = new Audio(url);
-  const promise = new Promise<void>((resolve, reject) => {
-    audio.onended = () => resolve();
-    audio.onerror = () => reject(new Error('Audio playback failed'));
-  });
-  return { audio, promise };
+  return await response.blob();
 }
 
 export function useTTS() {
@@ -147,7 +157,6 @@ export function useTTS() {
 
     const { emotion = 'neutral', isEpic = false } = options;
 
-    // Strip markup tags for TTS
     const cleanText = text
       .replace(/\{\{\/?\w+\}\}/g, '')
       .replace(/\s+/g, ' ')
@@ -157,22 +166,94 @@ export function useTTS() {
 
     setIsPlaying(true);
 
-    // Tier cascade — all neural, no robotic voices
+    const cacheKey = getCacheKey(cleanText, emotion);
+
+    // ═══ LAYER 1: Memory cache (instant) ═══
+    if (memoryCache.has(cacheKey)) {
+      try {
+        const { audio, promise } = playAudioUrl(memoryCache.get(cacheKey)!);
+        audioRef.current = audio;
+        setCurrentTier('cached');
+        await audio.play();
+        await promise;
+        setIsPlaying(false);
+        setCurrentTier(null);
+        return;
+      } catch { /* fall through */ }
+    }
+
+    // ═══ LAYER 2: IndexedDB cache (persistent on device) ═══
+    try {
+      const cachedBlob = await getFromIDB(cacheKey);
+      if (cachedBlob) {
+        const url = URL.createObjectURL(cachedBlob);
+        memoryCache.set(cacheKey, url);
+        const { audio, promise } = playAudioUrl(url);
+        audioRef.current = audio;
+        setCurrentTier('cached');
+        await audio.play();
+        await promise;
+        setIsPlaying(false);
+        setCurrentTier(null);
+        return;
+      }
+    } catch { /* fall through */ }
+
+    // ═══ LAYER 3: Supabase Storage (global cache — check via direct URL) ═══
+    try {
+      const hash = await hashKey(cleanText, emotion);
+      const storageUrl = getStorageUrl(emotion, hash);
+      const headResp = await fetch(storageUrl, { method: 'HEAD' });
+      if (headResp.ok) {
+        // Audio exists in global cache!
+        const audioResp = await fetch(storageUrl);
+        const blob = await audioResp.blob();
+        const url = URL.createObjectURL(blob);
+        memoryCache.set(cacheKey, url);
+        await saveToIDB(cacheKey, blob); // Save locally for next time
+        const { audio, promise } = playAudioUrl(url);
+        audioRef.current = audio;
+        setCurrentTier('cached');
+        await audio.play();
+        await promise;
+        setIsPlaying(false);
+        setCurrentTier(null);
+        return;
+      }
+    } catch { /* fall through */ }
+
+    // ═══ LAYER 4: Generate via API (only happens ONCE per phrase ever) ═══
     const tiers: TTSTier[] = isEpic
       ? ['elevenlabs', 'freetts', 'eidosspeech']
       : ['freetts', 'elevenlabs', 'eidosspeech'];
 
     for (const tier of tiers) {
       try {
-        let url: string;
+        let blob: Blob;
 
         if (tier === 'elevenlabs') {
-          url = await speakWithElevenLabs(cleanText, emotion);
+          // This goes through edge function which also saves to Storage
+          const response = await fetch(`${SUPABASE_URL}/functions/v1/elevenlabs-tts`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              apikey: SUPABASE_KEY,
+              Authorization: `Bearer ${SUPABASE_KEY}`,
+            },
+            body: JSON.stringify({ text: cleanText, emotion }),
+          });
+          if (!response.ok) throw new Error(`ElevenLabs TTS failed: ${response.status}`);
+          blob = await response.blob();
         } else if (tier === 'freetts') {
-          url = await speakWithFreeTTS(cleanText, emotion);
+          blob = await speakWithFreeTTS(cleanText, emotion);
         } else {
-          url = await speakWithEidos(cleanText, emotion);
+          blob = await speakWithEidos(cleanText, emotion);
         }
+
+        // Save to local caches
+        const url = URL.createObjectURL(blob);
+        memoryCache.set(cacheKey, url);
+        await saveToIDB(cacheKey, blob);
 
         const { audio, promise } = playAudioUrl(url);
         audioRef.current = audio;
@@ -183,12 +264,11 @@ export function useTTS() {
         setCurrentTier(null);
         return;
       } catch {
-        // Try next tier
         continue;
       }
     }
 
-    // All tiers failed — text remains written only, no robotic fallback
+    // All tiers failed — text remains written only
     setIsPlaying(false);
     setCurrentTier(null);
   }, [stop]);
