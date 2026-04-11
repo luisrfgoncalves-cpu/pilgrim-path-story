@@ -83,6 +83,7 @@ const ScenePage = () => {
   // TTS
   const { speak, stop: stopTTS, isPlaying: ttsPlaying } = useTTS();
   const [sceneEventDone, setSceneEventDone] = useState(false);
+  const [sceneEventActive, setSceneEventActive] = useState(false);
   const [suspenseActive, setSuspenseActive] = useState(false);
   const [pendingChoice, setPendingChoice] = useState<(() => void) | null>(null);
   const [transitioning, setTransitioning] = useState(false);
@@ -277,6 +278,7 @@ const ScenePage = () => {
     setImageLoaded(true); // keep true — show image area immediately, avoid brown flash
     setPlaythroughRecorded(false);
     setSceneEventDone(false);
+    setSceneEventActive(false);
     setSuspenseActive(false);
     setPendingChoice(null);
     setBeatIndex(0);
@@ -624,6 +626,7 @@ const ScenePage = () => {
   // Scene emotion for TTS (before early return to satisfy hooks rules)
   const sceneEmotion = chapter ? getSceneEmotion(chapter.id) : 'neutral' as const;
   const shouldAutoNarrate = chapter ? autoNarrateScenes.has(chapter.id) : false;
+  const primaryBeatCount = useMemo(() => groupIntoBeats(primaryNarrative, 3).length, [primaryNarrative]);
 
   // ═══ BEATS SYSTEM — group narrative into 2-3 line beats ═══
   // Group only PRIMARY narrative into beats (for correct image mapping)
@@ -648,7 +651,7 @@ const ScenePage = () => {
 
   // Beat-specific image logic
   const beatImageKey = chapter && currentBeat
-    ? [`${chapter.id}__beat${Math.min(beatIndex + 1, groupIntoBeats(primaryNarrative, 3).length)}`, `${chapter.id}__${currentBeat.startIndex}`]
+    ? [`${chapter.id}__beat${Math.min(beatIndex + 1, primaryBeatCount)}`, `${chapter.id}__${currentBeat.startIndex}`]
     : [];
   const bgImage = chapter
     ? beatImageKey.map(key => sceneImages[key]).find(Boolean) || bgImageFallback
@@ -711,6 +714,11 @@ const ScenePage = () => {
         const beatText = beats[beatIndex + 1].lines.join(' ');
         speak(beatText, { emotion: sceneEmotion, isEpic: hasEpicMoment });
       }
+      return;
+    }
+
+    if (chapter.sceneEvent && !sceneEventDone) {
+      setSceneEventActive(true);
       return;
     }
 
@@ -1037,7 +1045,7 @@ const ScenePage = () => {
               })()
             )}
 
-            {beats.length > 0 && !showChoices && (
+            {beats.length > 0 && !showChoices && !sceneEventActive && (
               <div className="space-y-2 sticky bottom-0 z-10 pb-2 pt-2" style={{ background: 'linear-gradient(to top, hsl(var(--background)) 60%, transparent)' }}>
                 {/* Navigation: back + forward buttons always visible */}
                 <div className="flex items-center gap-2 rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm px-3 py-2.5">
@@ -1088,15 +1096,26 @@ const ScenePage = () => {
           </div>
 
           {/* Scene events */}
-          {chapter.sceneEvent && !sceneEventDone && showChoices && (
+          {chapter.sceneEvent && sceneEventActive && !sceneEventDone && !showChoices && (
             <>
               {chapter.sceneEvent.type === 'sinking' && (
                 <div className="mb-5">
                   <SinkingEvent
                     duration={chapter.sceneEvent.duration}
                     message={chapter.sceneEvent.message}
-                    onEscape={() => setSceneEventDone(true)}
+                    onEscape={() => {
+                      setSceneEventActive(false);
+                      setSceneEventDone(true);
+                      if (hasEpicMoment && !epicMomentDone) {
+                        setEpicMomentActive(true);
+                        return;
+                      }
+                      if (canShowChoices) {
+                        setShowChoices(true);
+                      }
+                    }}
                     onDrown={() => {
+                      setSceneEventActive(false);
                       setSceneEventDone(true);
                       // Auto-pick worst choice on drown
                       const worst = availableChoices[chapter.timeoutChoiceIndex ?? availableChoices.length - 1];
@@ -1109,7 +1128,17 @@ const ScenePage = () => {
                 <TensionPulse
                   intensity={chapter.sceneEvent.intensity || 2}
                   duration={chapter.sceneEvent.duration || 3000}
-                  onComplete={() => setSceneEventDone(true)}
+                  onComplete={() => {
+                    setSceneEventActive(false);
+                    setSceneEventDone(true);
+                    if (hasEpicMoment && !epicMomentDone) {
+                      setEpicMomentActive(true);
+                      return;
+                    }
+                    if (canShowChoices) {
+                      setShowChoices(true);
+                    }
+                  }}
                 />
               )}
             </>

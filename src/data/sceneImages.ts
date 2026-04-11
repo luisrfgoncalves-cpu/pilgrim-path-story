@@ -176,7 +176,7 @@ export const sceneImages: Record<string, string> = {
   'cena4__beat3': familiaPercebeMudanca,          // CORRIGIDO: família percebe a mudança
   'cena5': evangelistaApontando,
   'cena5b': tresDorminhocoesCaminho,
-  'cena6': tresDorminhocoes,
+  'cena6': cristaoCampoDesespero,
   'cena7': portaoEstreitoAproximacao,
   'cena7b': portaoEstreitoBatendo,
   'cena8': sabedoriaMundana,
