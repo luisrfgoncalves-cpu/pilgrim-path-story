@@ -3,6 +3,8 @@ import { sceneImages } from '@/data/sceneImages';
 import { playGameSfx } from '@/lib/gameSfx';
 import { playRealSfx } from '@/lib/realSfx';
 import { renderNarrative } from '@/lib/narrativeRenderer';
+import { useTTS } from '@/hooks/useTTS';
+import { getSceneEmotion } from '@/data/sceneEmotions';
 
 export interface EpicMomentConfig {
   /** Unique key for this moment */

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { playGameSfx } from '@/lib/gameSfx';
+import { useTTS } from '@/hooks/useTTS';
 
 interface EpicDefeatScreenProps {
   /** Contextual dramatic text */
