@@ -524,10 +524,10 @@ const ScenePage = () => {
   const canShowChoices = !hasCharReveal;
 
   useEffect(() => {
-    if (!chapter || fullNarrative.length > 0 || !canShowChoices) return;
+    if (!chapter || primaryNarrative.length > 0 || !canShowChoices) return;
     const timer = setTimeout(() => setShowChoices(true), 180);
     return () => clearTimeout(timer);
-  }, [chapter, fullNarrative.length, canShowChoices]);
+  }, [chapter, primaryNarrative.length, canShowChoices]);
 
   // Delayed mini-game trigger button — appears 12s after choices show
   // Auto-popup notification after 30s if user hasn't clicked the button
