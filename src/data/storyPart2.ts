@@ -96,6 +96,22 @@ export const part2Chapters: Record<string, StoryChapter> = {
       { flag: "aceitou_convite_imediato", text: "Sua decisão rápida inspirou Misericórdia. \"Se você tem tanta certeza\", diz ela, \"então deve ser real.\"" },
       { flag: "hesitou_convite", text: "\"Eu também tenho medo\", confessa Misericórdia. \"Mas prefiro ter medo no caminho certo do que conforto no lugar errado.\"" }
     ],
+    toneOptions: [
+      {
+        label: "Com ternura maternal",
+        tone: "gentle",
+        npcReaction: "Misericórdia se comove às lágrimas: \"Nunca ninguém me tratou assim. Vou contigo até o fim.\"",
+        effects: { fe: 1, perseveranca: 1 },
+        flag: "aceitou_misericordia"
+      },
+      {
+        label: "Com firmeza e convicção",
+        tone: "firm",
+        npcReaction: "Misericórdia se surpreende com a força da resposta: \"Se essa é tua certeza, então eu também terei.\"",
+        effects: { coragem: 1, fe: 1 },
+        flag: "aceitou_misericordia"
+      }
+    ],
     choices: [
       {
         text: "\"Venha comigo, Misericórdia! A porta está aberta para todos.\"",
