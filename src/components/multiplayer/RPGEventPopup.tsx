@@ -12,7 +12,7 @@ import { TileType, TILE_TYPES } from './ImmersiveBoardTypes';
 import { playGameSfx, GameSfx } from '@/lib/gameSfx';
 // Narration removed — text-only experience
 import {
-  playEvilLaugh, playCrowdCheer, playTensionDrum,
+  playVillainPresence, playCrowdCheer, playTensionDrum,
   playHolyChime, playDramaticReveal, playNarrativeChime,
 } from './BoardSounds';
 import { playRealSfx, getSfxForTileEvent, playNarrativeSfx } from '@/lib/realSfx';
