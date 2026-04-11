@@ -274,6 +274,11 @@ const ScenePage = () => {
     setSceneEventDone(false);
     setSuspenseActive(false);
     setPendingChoice(null);
+    setBeatIndex(0);
+    setEpicMomentActive(false);
+    setEpicMomentDone(false);
+    setShowDefeatScreen(false);
+    stopTTS();
     setMiniGameDone(false);
     setMiniGameResult(null);
     setShowMiniGameResult(false);
