@@ -55,6 +55,18 @@ import portaoEstreitoPassagem from '@/assets/scenes/portao-estreito-passagem.jpg
 import pantanoProfundo from '@/assets/scenes/pantano-profundo.jpg';
 import pantanoQuaseMorrendo from '@/assets/scenes/pantano-quase-morrendo.jpg';
 
+// ── Imagens por beat narrativo ──
+import cristaoLendoLivro from '@/assets/scenes/cristao-lendo-livro.jpg';
+import livroPalavrasJuizo from '@/assets/scenes/livro-palavras-juizo.jpg';
+import fardoEsmagando from '@/assets/scenes/fardo-esmagando.jpg';
+import cristaoNoiteTormento from '@/assets/scenes/cristao-noite-tormento.jpg';
+import cidadeDestruicaoPanoramica from '@/assets/scenes/cidade-destruicao-panoramica.jpg';
+import vizinhosRuasZombando from '@/assets/scenes/vizinhos-ruas-zombando.jpg';
+import obstinadoSegurandoBraco from '@/assets/scenes/obstinado-segurando-braco.jpg';
+import cristaoCorrendo from '@/assets/scenes/cristao-correndo-campo.jpg';
+import cristaoCampoSemDirecao from '@/assets/scenes/cristao-campo-sem-direcao.jpg';
+import cristaoParedes from '@/assets/scenes/cristao-paredes-fechando.jpg';
+
 // ── Novas imagens Fase 2-3 ──
 import interpreteVisaoFogo from '@/assets/scenes/interprete-visao-fogo.jpg';
 import interpreteSalaPoeira from '@/assets/scenes/interprete-sala-poeira.jpg';
