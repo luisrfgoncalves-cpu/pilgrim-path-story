@@ -175,7 +175,11 @@ export const part2Chapters: Record<string, StoryChapter> = {
         nextChapterId: "p2-cena5",
         effects: { fe: 1, coragem: 1 },
         flag: "intercedeu_por_misericordia",
-        consequence: "A intercessão de Cristã por Misericórdia é um eco da graça divina: ninguém é salvo por mérito próprio, mas pela misericórdia do Rei. — Efésios 2:8-9: \"Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus.\""
+        consequence: "A intercessão de Cristã por Misericórdia é um eco da graça divina: ninguém é salvo por mérito próprio, mas pela misericórdia do Rei. — Efésios 2:8-9: \"Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus.\"",
+        toneOptions: [
+          { tone: 'humble', emoji: '🙏', label: 'Com súplica humilde', npcReaction: 'O guardião se comove: "A humildade abre esta porta mais rápido que qualquer força."', effects: { fe: 1 } },
+          { tone: 'firm', emoji: '📜', label: 'Mostrando a carta do Rei', npcReaction: 'O guardião lê a carta e se curva: "O Rei a enviou. Quem sou eu para questionar?"', effects: { coragem: 1 } }
+        ]
       },
       {
         text: "Entrar e esperar que Misericórdia se recupere sozinha",

@@ -149,17 +149,41 @@ export function getSceneEmotion(sceneId: string): TTSEmotion {
 
 /** Scenes where TTS auto-plays (epic/critical moments) */
 export const autoNarrateScenes = new Set([
+  // PARTE 1
+  'cena1',        // Despertar — abertura
   'cena15',       // A Cruz
   'cena15b',      // Três Resplandecentes
+  'fase2-cena1',  // Casa do Intérprete
+  'fase2-cena8',  // Homem na Gaiola
   'fase2-cena9',  // Armadura de Deus
   'fase3-cena3',  // Apolião surge
   'fase3-cena5',  // Clímax Apolião
+  'fase3-cena8',  // Encontro com Fiel
+  'fase4-cena1',  // Feira da Vaidade
   'fase4-cena6',  // Julgamento de Fiel
+  'fase4-cena7',  // Martírio de Fiel
+  'fase5-cena3',  // Gigante Desespero
   'fase5-cena6',  // Chave da Promessa
+  'fase5-cena9',  // Montanhas Deleitosas
+  'fase6-cena1',  // Rio da Morte
   'fase6-cena7',  // Portões à vista
   'fase6-cena8',  // Cidade Celestial
   'fase6-cena9',  // Glória final
+  // PARTE 2
+  'p2-cena1',       // Sonho e Carta — abertura
+  'p2-cena2',       // Misericórdia
+  'p2-cena4',       // Portão Estreito
+  'p2-cena6',       // Banho e Vestes
+  'p2-fase2-cena1', // Grande-Coração
   'p2-fase2-cena2', // Cruz (Parte 2)
-  'p2-fase5-cena2', // Destruição do Castelo
+  'p2-fase3-cena3', // Gigante Maul
+  'p2-fase3-cena5', // Gigante Mata-Bons
+  'p2-fase4-cena3', // Valente-pela-Verdade
+  'p2-fase5-cena2', // Batalha Gigante Desespero
+  'p2-fase5-cena4', // Demolição do Castelo
+  'p2-fase6-cena1', // Firme e Madame Bolha
+  'p2-fase6-cena3', // Chamado Individual
+  'p2-fase6-cena4', // Despedidas (palavras de Valente)
+  'p2-fase6-cena5', // Travessia de Cristã
   'p2-fase6-cena6', // Cidade Celestial (Parte 2)
 ]);
