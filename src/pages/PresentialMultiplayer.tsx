@@ -84,16 +84,28 @@ interface LocalPlayer {
   checkpoint: number;
   extraTurn: boolean;
   stats: PlayerStats;
-  lastPhase: number; // track which phase they were in
+  lastPhase: number;
+  characterId?: string;
+  shieldHits?: number; // for shield_keeper passive
 }
 
-function createPlayer(index: number, name?: string): LocalPlayer {
+function createPlayer(index: number, name?: string, characterId?: string): LocalPlayer {
+  const char = characterId ? getCharacter(characterId) : undefined;
+  const baseAttrs = { fe: 3, perseveranca: 3, discernimento: 3, coragem: 3 };
+  // Apply starting bonus from character
+  if (char?.startingBonus) {
+    for (const [key, val] of Object.entries(char.startingBonus)) {
+      if (key in baseAttrs) {
+        (baseAttrs as any)[key] += val;
+      }
+    }
+  }
   return {
     id: `p${index}`,
     name: name || DEFAULT_NAMES[index] || `Jogador ${index + 1}`,
-    color: COLORS[index % COLORS.length],
+    color: char?.color || COLORS[index % COLORS.length],
     position: 0,
-    attributes: { fe: 3, perseveranca: 3, discernimento: 3, coragem: 3 },
+    attributes: baseAttrs,
     lastDice: null,
     finished: false,
     finishOrder: null,
@@ -104,6 +116,8 @@ function createPlayer(index: number, name?: string): LocalPlayer {
     extraTurn: false,
     stats: emptyStats(),
     lastPhase: 0,
+    characterId: characterId || undefined,
+    shieldHits: 0,
   };
 }
 
