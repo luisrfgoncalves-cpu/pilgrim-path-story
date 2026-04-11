@@ -672,18 +672,66 @@ const ScenePage = () => {
 
   // Epic moment detection
   const hasEpicMoment = chapter ? !!epicMoments[chapter.id] : false;
-  // Auto-narrate first beat only after all reveal/cards are closed
+  // Auto-narrate and auto-advance beats like a movie — no clicking needed
+  const autoAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  
+  const advanceBeatAuto = useCallback(() => {
+    setBeatIndex(prev => {
+      const next = prev + 1;
+      if (next < beats.length) {
+        // Speak next beat with onEnd to chain further
+        const nextBeatText = beats[next]?.lines.join(' ') || '';
+        if (audioOn && nextBeatText) {
+          setTimeout(() => {
+            speakRef.current(nextBeatText, {
+              emotion: sceneEmotion,
+              isEpic: hasEpicMoment,
+              onEnd: () => advanceBeatAuto(),
+            });
+          }, 600); // small pause between beats
+        } else if (nextBeatText) {
+          // No audio — auto-advance after reading time (100ms per word)
+          const words = nextBeatText.split(' ').length;
+          autoAdvanceRef.current = setTimeout(() => advanceBeatAuto(), Math.max(3000, words * 300));
+        }
+        return next;
+      }
+      // All beats done — show choices or trigger scene events
+      setTimeout(() => {
+        if (chapter?.sceneEvent && !sceneEventDone) {
+          setSceneEventActive(true);
+        } else if (hasEpicMoment && !epicMomentDone) {
+          setEpicMomentActive(true);
+        } else if (canShowChoices) {
+          setShowChoices(true);
+        }
+      }, 800);
+      return prev;
+    });
+  }, [beats, audioOn, sceneEmotion, hasEpicMoment, chapter, sceneEventDone, epicMomentDone, canShowChoices]);
+
   useEffect(() => {
-    if (!chapter || transitioning || !audioOn || beats.length === 0) return;
+    if (!chapter || transitioning || beats.length === 0) return;
     if (!canShowChoices) return;
+    if (beatIndex !== 0) return; // only trigger on scene entry
     const firstBeatText = beats[0]?.lines.join(' ') || '';
-    if (!firstBeatText || beatIndex !== 0) return;
+    if (!firstBeatText) return;
     const t = setTimeout(() => {
-      speakRef.current(firstBeatText, { emotion: sceneEmotion, isEpic: hasEpicMoment });
+      if (audioOn) {
+        speakRef.current(firstBeatText, {
+          emotion: sceneEmotion,
+          isEpic: hasEpicMoment,
+          onEnd: () => advanceBeatAuto(),
+        });
+      } else {
+        // No audio — auto-advance after reading time
+        const words = firstBeatText.split(' ').length;
+        autoAdvanceRef.current = setTimeout(() => advanceBeatAuto(), Math.max(3000, words * 300));
+      }
     }, 500);
-    return () => clearTimeout(t);
+    return () => { clearTimeout(t); if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapter?.id, transitioning, audioOn, canShowChoices, beatIndex, sceneEmotion, hasEpicMoment]);
+  }, [chapter?.id, transitioning, canShowChoices, beatIndex, sceneEmotion, hasEpicMoment, audioOn]);
 
   if (!chapter) {
     navigate('/');
@@ -722,11 +770,20 @@ const ScenePage = () => {
 
   const handleAdvanceNarrative = () => {
     if (hasMoreBeats) {
+      // Clear any auto-advance timer
+      if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current);
       setBeatIndex(prev => prev + 1);
-      // TTS for next beat with scene emotion
+      // TTS for next beat with auto-advance chaining
       if (audioOn && beats[beatIndex + 1]) {
         const beatText = beats[beatIndex + 1].lines.join(' ');
-        speak(beatText, { emotion: sceneEmotion, isEpic: hasEpicMoment });
+        speak(beatText, {
+          emotion: sceneEmotion,
+          isEpic: hasEpicMoment,
+          onEnd: () => advanceBeatAuto(),
+        });
+      } else if (!audioOn && beats[beatIndex + 1]) {
+        const words = beats[beatIndex + 1].lines.join(' ').split(' ').length;
+        autoAdvanceRef.current = setTimeout(() => advanceBeatAuto(), Math.max(3000, words * 300));
       }
       return;
     }

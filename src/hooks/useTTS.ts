@@ -21,6 +21,7 @@ type EmotionType = 'neutral' | 'dramatic' | 'solemn' | 'urgent' | 'celestial' | 
 interface TTSOptions {
   emotion?: EmotionType;
   isEpic?: boolean;
+  onEnd?: () => void;
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
@@ -140,7 +141,7 @@ export function useTTS() {
     return true;
   }, []);
 
-  const playResolvedUrl = useCallback(async (url: string, token: number, tier: TTSTier, cacheKey?: string, blob?: Blob) => {
+  const playResolvedUrl = useCallback(async (url: string, token: number, tier: TTSTier, cacheKey?: string, blob?: Blob, onEnd?: () => void) => {
     if (token !== globalPlaybackToken) return false;
     const { audio, promise } = playAudioUrl(url);
     stopGlobalAudio();
@@ -156,11 +157,12 @@ export function useTTS() {
       globalAudio = null;
       setIsPlaying(false);
       setCurrentTier(null);
+      onEnd?.();
     }
     return true;
   }, []);
 
-  const playLocalFallback = useCallback(async (text: string, token: number, emotion: EmotionType) => {
+  const playLocalFallback = useCallback(async (text: string, token: number, emotion: EmotionType, onEnd?: () => void) => {
     if (typeof window === 'undefined' || !window.speechSynthesis || token !== globalPlaybackToken) {
       return false;
     }
@@ -178,6 +180,7 @@ export function useTTS() {
         if (token === globalPlaybackToken) {
           setIsPlaying(false);
           setCurrentTier(null);
+          onEnd?.();
         }
         resolve(ok);
       };
@@ -201,9 +204,9 @@ export function useTTS() {
   const speak = useCallback(async (text: string, options: TTSOptions = {}) => {
     stop();
 
-    const { emotion = 'neutral' } = options;
+    const { emotion = 'neutral', onEnd } = options;
     const cleanText = text.replace(/\{\{\/?\w+\}\}/g, '').replace(/\s+/g, ' ').trim();
-    if (!cleanText) return;
+    if (!cleanText) { onEnd?.(); return; }
 
     const token = globalPlaybackToken;
     tokenRef.current = token;
@@ -212,7 +215,7 @@ export function useTTS() {
 
     if (memoryCache.has(cacheKey)) {
       try {
-        const ok = await playResolvedUrl(memoryCache.get(cacheKey)!, token, 'cached');
+        const ok = await playResolvedUrl(memoryCache.get(cacheKey)!, token, 'cached', undefined, undefined, onEnd);
         if (ok) return;
       } catch {}
     }
@@ -221,7 +224,7 @@ export function useTTS() {
       const cachedBlob = await getFromIDB(cacheKey);
       if (cachedBlob) {
         const url = URL.createObjectURL(cachedBlob);
-        const ok = await playResolvedUrl(url, token, 'cached', cacheKey, cachedBlob);
+        const ok = await playResolvedUrl(url, token, 'cached', cacheKey, cachedBlob, onEnd);
         if (ok) return;
       }
     } catch {}
@@ -239,7 +242,7 @@ export function useTTS() {
             const blob = await resp.blob();
             if (blob.size > 100) {
               const url = URL.createObjectURL(blob);
-              const ok = await playResolvedUrl(url, token, provider as TTSTier, cacheKey, blob);
+              const ok = await playResolvedUrl(url, token, provider as TTSTier, cacheKey, blob, onEnd);
               if (ok) return;
             }
           }
@@ -267,17 +270,19 @@ export function useTTS() {
         const blob = await response.blob();
         if (blob.size > 100) {
           const url = URL.createObjectURL(blob);
-          const ok = await playResolvedUrl(url, token, source, cacheKey, blob);
+          const ok = await playResolvedUrl(url, token, source, cacheKey, blob, onEnd);
           if (ok) return;
         }
       }
     } catch {}
 
-    const localOk = await playLocalFallback(cleanText, token, emotion);
+    const localOk = await playLocalFallback(cleanText, token, emotion, onEnd);
     if (localOk) return;
 
     console.log('[TTS] All providers unavailable. Text-only mode.');
     finalizeIfCurrent(token, null);
+    // Even if all providers fail, call onEnd so auto-advance continues
+    onEnd?.();
   }, [finalizeIfCurrent, playLocalFallback, playResolvedUrl, stop]);
 
   return { speak, stop, isPlaying, currentTier };
