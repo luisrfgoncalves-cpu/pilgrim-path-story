@@ -98,114 +98,96 @@ const MultiplayerPage = () => {
   // ─── MENU ───
   if (currentView === 'menu') {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <header className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-3">
+      <div className="min-h-screen flex flex-col" style={{
+        background: 'linear-gradient(180deg, hsl(30 20% 6%) 0%, hsl(25 25% 10%) 40%, hsl(30 20% 6%) 100%)',
+      }}>
+        <header className="sticky top-0 z-10 backdrop-blur-sm border-b px-4 py-3" style={{
+          background: 'hsl(30 20% 8% / 0.9)',
+          borderColor: 'hsl(40 30% 20% / 0.3)',
+        }}>
           <div className="max-w-lg mx-auto flex items-center gap-3">
             <button onClick={() => navigate('/')} className="text-muted-foreground hover:text-foreground">
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <h1 className="font-display text-lg text-foreground">Multiplayer</h1>
+            <h1 className="font-display text-lg text-foreground">RPG de Tabuleiro</h1>
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col items-center justify-center px-5 gap-6 max-w-sm mx-auto w-full">
-          {/* Hero */}
-          <div className="text-center space-y-3">
-            <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mx-auto" style={{
-              boxShadow: '0 0 60px hsl(40 60% 55% / 0.12), inset 0 0 20px hsl(40 60% 55% / 0.05)',
-              border: '1px solid hsl(40 60% 55% / 0.2)',
+        <main className="flex-1 flex flex-col items-center px-5 pt-8 pb-12 gap-8 max-w-sm mx-auto w-full">
+          {/* Hero icon */}
+          <div className="text-center space-y-4">
+            <div className="w-28 h-28 rounded-2xl flex items-center justify-center mx-auto" style={{
+              background: 'linear-gradient(135deg, hsl(40 50% 18%), hsl(35 40% 12%))',
+              boxShadow: '0 0 80px hsl(40 60% 50% / 0.15), inset 0 1px 0 hsl(40 60% 40% / 0.2)',
+              border: '1px solid hsl(40 50% 30% / 0.4)',
             }}>
-              <Swords className="w-12 h-12 text-primary" />
+              <Swords className="w-14 h-14" style={{ color: 'hsl(40 70% 60%)' }} />
             </div>
-            <h2 className="font-display text-2xl text-foreground">RPG de Tabuleiro</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Corra até a Cidade Celestial com seus amigos!<br />
-              <span className="text-primary">2–8 jogadores</span> · 30 casas · 65 eventos
+            <h2 className="font-display text-3xl" style={{ color: 'hsl(40 50% 75%)', textShadow: '0 0 30px hsl(40 60% 50% / 0.2)' }}>
+              O Peregrino
+            </h2>
+            <p className="text-sm leading-relaxed" style={{ color: 'hsl(30 15% 55%)' }}>
+              Uma jornada épica de fé, coragem e decisões<br />
+              que mudarão o destino dos peregrinos.
             </p>
           </div>
 
-          {/* Guest name input */}
-          <div className="w-full space-y-2">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 block text-center">Seu nome de peregrino</label>
-            <div className="flex items-center gap-2 p-1 rounded-xl bg-card border border-border">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <User className="w-5 h-5 text-primary" />
+          {/* Stats cards */}
+          <div className="grid grid-cols-3 gap-3 w-full">
+            {[
+              { icon: <Users className="w-4 h-4" />, value: '2–8', label: 'Jogadores' },
+              { icon: <Flame className="w-4 h-4" />, value: '120', label: 'Casas' },
+              { icon: <Sparkles className="w-4 h-4" />, value: '300+', label: 'Eventos' },
+            ].map((stat, i) => (
+              <div key={i} className="flex flex-col items-center gap-1 py-3 rounded-xl" style={{
+                background: 'hsl(30 15% 10% / 0.6)',
+                border: '1px solid hsl(40 30% 20% / 0.3)',
+              }}>
+                <div style={{ color: 'hsl(40 60% 55%)' }}>{stat.icon}</div>
+                <span className="font-display text-lg font-bold" style={{ color: 'hsl(40 50% 75%)' }}>{stat.value}</span>
+                <span className="text-[10px] uppercase tracking-widest" style={{ color: 'hsl(30 15% 45%)' }}>{stat.label}</span>
               </div>
-              <input
-                type="text"
-                value={guestName}
-                onChange={e => setGuestName(e.target.value)}
-                placeholder="Ex: Cristão, Fiel, Valente..."
-                maxLength={20}
-                className="flex-1 bg-transparent border-none text-sm text-foreground font-display outline-none placeholder:text-muted-foreground/40"
-              />
-            </div>
+            ))}
           </div>
 
-          {/* Create room */}
+          {/* Features list */}
+          <div className="w-full space-y-2.5">
+            {[
+              { icon: <Crown className="w-4 h-4" />, text: 'Mestre do Jogo narra como um RPG real' },
+              { icon: <Shield className="w-4 h-4" />, text: 'Perguntas bíblicas, charadas e dilemas morais' },
+              { icon: <Zap className="w-4 h-4" />, text: 'Bosses épicos, armadilhas e bênçãos' },
+              { icon: <Star className="w-4 h-4" />, text: 'Modo cooperativo ou competitivo' },
+              { icon: <Trophy className="w-4 h-4" />, text: 'Funciona 100% offline — sem internet' },
+            ].map((feat, i) => (
+              <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{
+                background: 'hsl(30 15% 10% / 0.4)',
+                border: '1px solid hsl(40 30% 20% / 0.15)',
+              }}>
+                <div style={{ color: 'hsl(40 60% 55%)' }}>{feat.icon}</div>
+                <span className="text-sm" style={{ color: 'hsl(30 15% 70%)' }}>{feat.text}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA Button */}
           <button
-            onClick={async () => {
-              const r = await createRoom();
-              if (r) setView('lobby');
+            onClick={() => navigate('/multiplayer/presencial')}
+            className="w-full flex items-center justify-center gap-3 px-5 py-5 rounded-2xl font-display text-base transition-all active:scale-[0.98]"
+            style={{
+              background: 'linear-gradient(135deg, hsl(40 50% 30%), hsl(35 45% 22%))',
+              border: '2px solid hsl(40 60% 45% / 0.5)',
+              color: 'hsl(40 80% 85%)',
+              boxShadow: '0 0 40px hsl(40 60% 50% / 0.15), 0 4px 20px rgba(0,0,0,0.4)',
+              textShadow: '0 1px 4px rgba(0,0,0,0.3)',
             }}
-            disabled={loading || !guestName.trim()}
-            className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-primary text-primary-foreground font-display text-sm hover:opacity-90 glow-gold transition-opacity disabled:opacity-50"
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Crown className="w-5 h-5" />}
-            Criar Sala
+            <Swords className="w-5 h-5" />
+            Iniciar Jornada
           </button>
-
-          {/* Join room */}
-          <div className="w-full space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="flex-1 h-px bg-border/30" />
-              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">ou entre com código</span>
-              <div className="flex-1 h-px bg-border/30" />
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={joinCode}
-                onChange={e => setJoinCode(e.target.value.toUpperCase())}
-                placeholder="CÓDIGO"
-                maxLength={5}
-                className="flex-1 h-14 rounded-xl bg-card border border-border text-center text-xl font-mono text-foreground tracking-[0.3em] uppercase focus:border-primary/40 focus:ring-1 focus:ring-primary/20 outline-none transition-all"
-              />
-              <button
-                onClick={async () => {
-                  const ok = await joinRoom(joinCode);
-                  if (ok) setView('lobby');
-                }}
-                disabled={loading || joinCode.length < 5 || !guestName.trim()}
-                className="px-6 h-14 rounded-xl bg-primary text-primary-foreground font-display disabled:opacity-50 transition-opacity"
-              >
-                Entrar
-              </button>
-            </div>
-          </div>
-
-          {error && (
-            <p className="text-xs text-destructive bg-destructive/10 px-4 py-2 rounded-lg">{error}</p>
-          )}
-
-          {/* Presential mode separator */}
-          <div className="w-full space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="flex-1 h-px bg-border/30" />
-              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">modo presencial</span>
-              <div className="flex-1 h-px bg-border/30" />
-            </div>
-            <button
-              onClick={() => navigate('/multiplayer/presencial')}
-              className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-card border border-primary/20 text-foreground font-display text-sm hover:border-primary/40 transition-all"
-            >
-              <Users className="w-5 h-5 text-primary" />
-              Jogar Reunidos (Sem Internet)
-            </button>
-            <p className="text-[10px] text-center text-muted-foreground/60 leading-relaxed">
-              Um celular como tabuleiro · Dado digital ou físico · 2-8 jogadores
-            </p>
-          </div>
+          <p className="text-[10px] text-center leading-relaxed" style={{ color: 'hsl(30 15% 40%)' }}>
+            Reúna seus amigos ao redor de um celular.<br />
+            O app será o tabuleiro e o Mestre do Jogo.
+          </p>
         </main>
       </div>
     );
