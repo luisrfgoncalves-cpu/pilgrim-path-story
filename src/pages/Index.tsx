@@ -11,6 +11,7 @@ import PilgrimAvatar from '@/components/PilgrimAvatar';
 import SplashScreen from '@/components/SplashScreen';
 import Onboarding from '@/components/Onboarding';
 import GameNotification from '@/components/GameNotification';
+import CinematicRecap from '@/components/CinematicRecap';
 import { ChevronRight, Sparkles, RotateCcw, Map, Users, Flame, Swords, BookOpen, Home, Sun, Moon } from 'lucide-react';
 import { Smartphone, X } from 'lucide-react';
 import { toast } from 'sonner';
