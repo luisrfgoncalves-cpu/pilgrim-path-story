@@ -3,16 +3,14 @@ import { useState, useCallback, useRef } from 'react';
 /**
  * useTTS — Text-to-Speech com cache inteligente de 3 camadas:
  * 
- * Cache Layer 1: IndexedDB local (celular do usuário — instantâneo)
- * Cache Layer 2: Supabase Storage (global — todos os usuários compartilham)
- * Geração:  ElevenLabs via Edge Function (só na 1ª vez de cada frase)
- * Fallback: FreeTTS.org / eidosSpeech.xyz se ElevenLabs falhar
- * 
- * RESULTADO: Cada frase é gerada UMA VEZ na vida.
- * Depois disso, todos os usuários usam o áudio salvo.
+ * Cache Layer 1: Memória (sessão)
+ * Cache Layer 2: IndexedDB (persistente no celular)
+ * Cache Layer 3: Supabase Storage (global — todos compartilham)
+ * Geração:  ElevenLabs via Edge Function (só na 1ª vez)
+ * Fallback: Web Speech API (offline, sempre disponível)
  */
 
-type TTSTier = 'elevenlabs' | 'freetts' | 'eidosspeech' | 'cached';
+type TTSTier = 'elevenlabs' | 'webspeech' | 'cached';
 type EmotionType = 'neutral' | 'dramatic' | 'solemn' | 'urgent' | 'celestial' | 'villain';
 
 interface TTSOptions {
@@ -83,7 +81,7 @@ function getCacheKey(text: string, emotion: string): string {
   return `${emotion}:${text.slice(0, 200)}`;
 }
 
-// ─── Play audio from URL/Blob ───
+// ─── Play audio from URL ───
 function playAudioUrl(url: string): { audio: HTMLAudioElement; promise: Promise<void> } {
   const audio = new Audio(url);
   const promise = new Promise<void>((resolve, reject) => {
@@ -93,60 +91,55 @@ function playAudioUrl(url: string): { audio: HTMLAudioElement; promise: Promise<
   return { audio, promise };
 }
 
-// ─── Supabase Storage direct URL (public bucket) ───
-function getStorageUrl(emotion: string, hash: string): string {
-  return `${SUPABASE_URL}/storage/v1/object/public/tts-cache/${emotion}/${hash}.mp3`;
-}
-
-// ─── FreeTTS.org fallback ───
-const FREETTS_VOICES: Record<EmotionType, string> = {
-  neutral: 'pt-BR-FranciscaNeural',
-  dramatic: 'pt-BR-AntonioNeural',
-  solemn: 'pt-BR-FranciscaNeural',
-  urgent: 'pt-BR-AntonioNeural',
-  celestial: 'pt-BR-FranciscaNeural',
-  villain: 'pt-BR-AntonioNeural',
+// ─── Web Speech API fallback (always available, no network) ───
+const SPEECH_RATES: Record<EmotionType, number> = {
+  neutral: 0.9,
+  dramatic: 0.85,
+  solemn: 0.8,
+  urgent: 1.05,
+  celestial: 0.85,
+  villain: 0.8,
 };
 
-async function speakWithFreeTTS(text: string, emotion: EmotionType): Promise<Blob> {
-  const voice = FREETTS_VOICES[emotion] || 'pt-BR-FranciscaNeural';
-  const response = await fetch('https://freetts.org/api/tts', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      text,
-      voice,
-      speed: emotion === 'urgent' ? 1.15 : emotion === 'solemn' ? 0.85 : 1.0,
-    }),
-  });
-  if (!response.ok) throw new Error(`FreeTTS failed: ${response.status}`);
-  return await response.blob();
-}
+function speakWithWebSpeech(text: string, emotion: EmotionType): { cancel: () => void; promise: Promise<void> } {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'pt-BR';
+  utterance.rate = SPEECH_RATES[emotion] || 0.9;
+  utterance.pitch = emotion === 'villain' ? 0.7 : emotion === 'celestial' ? 1.2 : 1.0;
 
-// ─── eidosSpeech.xyz fallback ───
-async function speakWithEidos(text: string, emotion: EmotionType): Promise<Blob> {
-  const voice = emotion === 'villain' || emotion === 'dramatic'
-    ? 'pt-BR-AntonioNeural'
-    : 'pt-BR-FranciscaNeural';
-  const response = await fetch('https://eidosspeech.xyz/api/tts', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, voice }),
+  // Try to find a pt-BR voice
+  const voices = speechSynthesis.getVoices();
+  const ptVoice = voices.find(v => v.lang.startsWith('pt-BR')) || voices.find(v => v.lang.startsWith('pt'));
+  if (ptVoice) utterance.voice = ptVoice;
+
+  const promise = new Promise<void>((resolve, reject) => {
+    utterance.onend = () => resolve();
+    utterance.onerror = (e) => reject(new Error(e.error || 'Speech failed'));
   });
-  if (!response.ok) throw new Error(`eidosSpeech failed: ${response.status}`);
-  return await response.blob();
+
+  speechSynthesis.speak(utterance);
+
+  return {
+    cancel: () => speechSynthesis.cancel(),
+    promise,
+  };
 }
 
 export function useTTS() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTier, setCurrentTier] = useState<TTSTier | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const speechCancelRef = useRef<(() => void) | null>(null);
 
   const stop = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       audioRef.current = null;
+    }
+    if (speechCancelRef.current) {
+      speechCancelRef.current();
+      speechCancelRef.current = null;
     }
     setIsPlaying(false);
     setCurrentTier(null);
@@ -155,7 +148,7 @@ export function useTTS() {
   const speak = useCallback(async (text: string, options: TTSOptions = {}) => {
     stop();
 
-    const { emotion = 'neutral', isEpic = false } = options;
+    const { emotion = 'neutral' } = options;
 
     const cleanText = text
       .replace(/\{\{\/?\w+\}\}/g, '')
@@ -199,18 +192,20 @@ export function useTTS() {
       }
     } catch { /* fall through */ }
 
-    // ═══ LAYER 3: Supabase Storage (global cache — check via direct URL) ═══
+    // ═══ LAYER 3: Supabase Storage (global cache) ═══
     try {
       const hash = await hashKey(cleanText, emotion);
-      const storageUrl = getStorageUrl(emotion, hash);
-      const headResp = await fetch(storageUrl, { method: 'HEAD' });
-      if (headResp.ok) {
-        // Audio exists in global cache!
-        const audioResp = await fetch(storageUrl);
-        const blob = await audioResp.blob();
+      const storageUrl = `${SUPABASE_URL}/storage/v1/object/public/tts-cache/${emotion}/${hash}.mp3`;
+      // Use GET with small timeout instead of HEAD (HEAD returns 400 on missing files)
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 4000);
+      const resp = await fetch(storageUrl, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (resp.ok && resp.headers.get('content-type')?.includes('audio')) {
+        const blob = await resp.blob();
         const url = URL.createObjectURL(blob);
         memoryCache.set(cacheKey, url);
-        await saveToIDB(cacheKey, blob); // Save locally for next time
+        saveToIDB(cacheKey, blob); // fire-and-forget
         const { audio, promise } = playAudioUrl(url);
         audioRef.current = audio;
         setCurrentTier('cached');
@@ -222,53 +217,54 @@ export function useTTS() {
       }
     } catch { /* fall through */ }
 
-    // ═══ LAYER 4: Generate via API (only happens ONCE per phrase ever) ═══
-    const tiers: TTSTier[] = isEpic
-      ? ['elevenlabs', 'freetts', 'eidosspeech']
-      : ['freetts', 'elevenlabs', 'eidosspeech'];
+    // ═══ LAYER 4: Generate via ElevenLabs Edge Function ═══
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000);
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/elevenlabs-tts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+        },
+        body: JSON.stringify({ text: cleanText, emotion }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
 
-    for (const tier of tiers) {
-      try {
-        let blob: Blob;
-
-        if (tier === 'elevenlabs') {
-          // This goes through edge function which also saves to Storage
-          const response = await fetch(`${SUPABASE_URL}/functions/v1/elevenlabs-tts`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              apikey: SUPABASE_KEY,
-              Authorization: `Bearer ${SUPABASE_KEY}`,
-            },
-            body: JSON.stringify({ text: cleanText, emotion }),
-          });
-          if (!response.ok) throw new Error(`ElevenLabs TTS failed: ${response.status}`);
-          blob = await response.blob();
-        } else if (tier === 'freetts') {
-          blob = await speakWithFreeTTS(cleanText, emotion);
-        } else {
-          blob = await speakWithEidos(cleanText, emotion);
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size > 0) {
+          const url = URL.createObjectURL(blob);
+          memoryCache.set(cacheKey, url);
+          saveToIDB(cacheKey, blob); // fire-and-forget
+          const { audio, promise } = playAudioUrl(url);
+          audioRef.current = audio;
+          setCurrentTier('elevenlabs');
+          await audio.play();
+          await promise;
+          setIsPlaying(false);
+          setCurrentTier(null);
+          return;
         }
+      }
+    } catch { /* fall through */ }
 
-        // Save to local caches
-        const url = URL.createObjectURL(blob);
-        memoryCache.set(cacheKey, url);
-        await saveToIDB(cacheKey, blob);
-
-        const { audio, promise } = playAudioUrl(url);
-        audioRef.current = audio;
-        setCurrentTier(tier);
-        await audio.play();
+    // ═══ FALLBACK: Web Speech API (always works, no network needed) ═══
+    try {
+      if ('speechSynthesis' in window) {
+        setCurrentTier('webspeech');
+        const { cancel, promise } = speakWithWebSpeech(cleanText, emotion);
+        speechCancelRef.current = cancel;
         await promise;
         setIsPlaying(false);
         setCurrentTier(null);
         return;
-      } catch {
-        continue;
       }
-    }
+    } catch { /* fall through */ }
 
-    // All tiers failed — text remains written only
+    // All failed silently
     setIsPlaying(false);
     setCurrentTier(null);
   }, [stop]);
