@@ -1281,7 +1281,7 @@ const ScenePage = () => {
                     <div className="flex items-center gap-2">
                       {fullNarrative.length > 0 && (
                         <button
-                          onClick={() => { setShowChoices(false); setNarrativeIndex(0); }}
+                          onClick={() => { setShowChoices(false); setBeatIndex(0); }}
                           className="flex items-center gap-1 text-[10px] font-display text-primary/70 hover:text-primary transition-colors uppercase tracking-wider"
                         >
                           <ArrowLeft className="w-3 h-3" /> Reler
