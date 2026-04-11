@@ -651,7 +651,8 @@ const ScenePage = () => {
   const allChoices = [...availableChoices, ...dynamicChoicesMapped];
 
   // ═══ BEATS SYSTEM — group narrative into 2-3 line beats ═══
-  const beats = useMemo(() => groupIntoBeats(fullNarrative, 2), [fullNarrative]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const beats = groupIntoBeats(fullNarrative, 2);
   const currentBeat = beats[beatIndex] ?? null;
   const hasMoreBeats = beatIndex < beats.length - 1;
 
