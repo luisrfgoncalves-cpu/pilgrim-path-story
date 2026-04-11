@@ -225,7 +225,7 @@ const ScenePage = () => {
   // ═══ PRIMARY NARRATIVE (core story only — used for beats & image mapping) ═══
   const primaryNarrative = chapter ? [...chapter.narrative] : [];
 
-  // ═══ SUPPLEMENTARY LINES (dynamic content — appended to last beat, not mixed in) ═══
+  // ═══ SUPPLEMENTARY LINES (context-only — kept out of the cinematic main beats) ═══
   const supplementaryLines: string[] = chapter ? [
     ...(isReplay && chapter.replayNarrative ? chapter.replayNarrative : []),
     ...(sceneVariations[chapter.id] || [])
@@ -246,13 +246,8 @@ const ScenePage = () => {
       if (val <= tone.lowThreshold) return tone.lowText;
       return null;
     }).filter((t): t is string => t !== null),
-    ...dynamicEvents.extraNarrative,
-    ...dynamicEvents.consequenceHints.map(h => `_${h}_`),
     ...(emotional?.atmosphereLine ? [emotional.atmosphereLine] : []),
   ] : [];
-
-  // Full narrative for TTS and total content (primary + supplementary)
-  const fullNarrative = [...primaryNarrative, ...supplementaryLines];
 
   // Record playthrough completion when reaching a final ending
   const [playthroughRecorded, setPlaythroughRecorded] = useState(false);
