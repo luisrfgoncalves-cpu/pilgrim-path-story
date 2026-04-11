@@ -55,6 +55,18 @@ import portaoEstreitoPassagem from '@/assets/scenes/portao-estreito-passagem.jpg
 import pantanoProfundo from '@/assets/scenes/pantano-profundo.jpg';
 import pantanoQuaseMorrendo from '@/assets/scenes/pantano-quase-morrendo.jpg';
 
+// ── Imagens por beat narrativo ──
+import cristaoLendoLivro from '@/assets/scenes/cristao-lendo-livro.jpg';
+import livroPalavrasJuizo from '@/assets/scenes/livro-palavras-juizo.jpg';
+import fardoEsmagando from '@/assets/scenes/fardo-esmagando.jpg';
+import cristaoNoiteTormento from '@/assets/scenes/cristao-noite-tormento.jpg';
+import cidadeDestruicaoPanoramica from '@/assets/scenes/cidade-destruicao-panoramica.jpg';
+import vizinhosRuasZombando from '@/assets/scenes/vizinhos-ruas-zombando.jpg';
+import obstinadoSegurandoBraco from '@/assets/scenes/obstinado-segurando-braco.jpg';
+import cristaoCorrendo from '@/assets/scenes/cristao-correndo-campo.jpg';
+import cristaoCampoSemDirecao from '@/assets/scenes/cristao-campo-sem-direcao.jpg';
+import cristaoParedes from '@/assets/scenes/cristao-paredes-fechando.jpg';
+
 // ── Novas imagens Fase 2-3 ──
 import interpreteVisaoFogo from '@/assets/scenes/interprete-visao-fogo.jpg';
 import interpreteSalaPoeira from '@/assets/scenes/interprete-sala-poeira.jpg';
@@ -113,14 +125,31 @@ import cristaChegadaCelestial from '@/assets/scenes/crista-chegada-celestial.jpg
 
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
-  'cena1': cristaoFamiliaNoite,         // Cristão com a família à noite
-  'cena1b': vizinhosZombando,            // Vizinhos zombando nas ruas
-  'cena2': encontroObstinadoFlexivel,    // Encontro com Obstinado e Flexível
-  'cena3': fugaCidadeDestruicao,         // Fuga da cidade em chamas
-  'cena4': cristaoCampoDesespero,        // Cristão no campo com o Livro
-  'cena5': evangelistaApontando,         // Evangelista apontando o caminho
-  'cena5b': tresDorminhocoesCaminho,     // Presunção, Preguiça e Simples
-  'cena6': tresDorminhocoes,             // Dorminhocões (variação)
+  'cena1': cristaoLendoLivro,             // Beat 1: Cristão lendo o livro
+  'cena1__beat1': cristaoLendoLivro,       // Abrindo o livro com a família
+  'cena1__beat2': livroPalavrasJuizo,      // Palavras de juízo brilhando
+  'cena1__beat3': fardoEsmagando,          // O fardo surge nas costas
+  'cena1__beat4': fardoEsmagando,          // Tentando arrancar o fardo
+  'cena1__beat5': cristaoNoiteTormento,    // À noite, a frase o atormenta
+  'cena1__beat6': cristaoNoiteTormento,    // "Fugi da ira vindoura"
+  'cena1b': vizinhosRuasZombando,          // Vizinhos zombando nas ruas
+  'cena1b__beat1': vizinhosRuasZombando,   // Saindo para as ruas
+  'cena1b__beat2': cidadeDestruicaoPanoramica, // A cidade condenada
+  'cena2': obstinadoSegurandoBraco,        // Encontro com Obstinado e Flexível
+  'cena2__beat1': encontroObstinadoFlexivel, // Fardo ainda ali
+  'cena2__beat2': obstinadoSegurandoBraco, // Obstinado segura o braço
+  'cena2__beat3': encontroObstinadoFlexivel, // Flexível hesita
+  'cena3': cristaoCorrendo,                // Fuga da cidade
+  'cena3__beat1': cristaoCorrendo,         // Correndo para fora
+  'cena3__beat2': cristaoCorrendo,         // "Vida! Vida eterna!"
+  'cena3__beat3': cristaoCampoSemDirecao,  // Campo imenso sem direção
+  'cena4': cristaoParedes,                 // Cristão voltou para casa
+  'cena4__beat1': cristaoParedes,          // Paredes fechando
+  'cena4__beat2': cristaoParedes,          // Palavras queimando
+  'cena4__beat3': cristaoNoiteTormento,    // Família percebe a mudança
+  'cena5': evangelistaApontando,           // Evangelista apontando o caminho
+  'cena5b': tresDorminhocoesCaminho,       // Presunção, Preguiça e Simples
+  'cena6': tresDorminhocoes,               // Dorminhocões (variação)
   'cena7': portaoEstreitoAproximacao,
   'cena7b': portaoEstreitoBatendo,
   'cena8': sabedoriaMundana,
