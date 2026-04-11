@@ -230,7 +230,7 @@ export function useTTS() {
 
     if (memoryCache.has(cacheKey)) {
       try {
-        const ok = await playResolvedUrl(memoryCache.get(cacheKey)!, token, 'cached', undefined, undefined, onEnd);
+        const ok = await playResolvedUrl(memoryCache.get(cacheKey)!, token, 'cached', undefined, undefined, onEnd, cleanText.length);
         if (ok) return;
       } catch {}
     }
@@ -239,7 +239,7 @@ export function useTTS() {
       const cachedBlob = await getFromIDB(cacheKey);
       if (cachedBlob) {
         const url = URL.createObjectURL(cachedBlob);
-        const ok = await playResolvedUrl(url, token, 'cached', cacheKey, cachedBlob, onEnd);
+        const ok = await playResolvedUrl(url, token, 'cached', cacheKey, cachedBlob, onEnd, cleanText.length);
         if (ok) return;
       }
     } catch {}
@@ -257,7 +257,7 @@ export function useTTS() {
             const blob = await resp.blob();
             if (blob.size > 100) {
               const url = URL.createObjectURL(blob);
-              const ok = await playResolvedUrl(url, token, provider as TTSTier, cacheKey, blob, onEnd);
+              const ok = await playResolvedUrl(url, token, provider as TTSTier, cacheKey, blob, onEnd, cleanText.length);
               if (ok) return;
             }
           }
@@ -285,7 +285,7 @@ export function useTTS() {
         const blob = await response.blob();
         if (blob.size > 100) {
           const url = URL.createObjectURL(blob);
-          const ok = await playResolvedUrl(url, token, source, cacheKey, blob, onEnd);
+          const ok = await playResolvedUrl(url, token, source, cacheKey, blob, onEnd, cleanText.length);
           if (ok) return;
         }
       }

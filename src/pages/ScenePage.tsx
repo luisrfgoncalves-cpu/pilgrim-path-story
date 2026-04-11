@@ -484,53 +484,45 @@ const ScenePage = () => {
 
     const sceneSupportingChars = sceneChars.filter(char => !char.isProtagonist);
 
-    // Show first unseen allegory from the full scene cast, including protagonist
-    const firstCharId = sceneCharIds.find(id => !seenAllegoryCards.has(id) && allegoryMeanings[id] && characterImages[id]);
+  // In cinematic mode, never block the scene flow with automatic allegory popups.
+  const firstCharId = sceneCharIds.find(id => !seenAllegoryCards.has(id) && allegoryMeanings[id] && characterImages[id]);
 
-    // Prefer cinematic reveal for first supporting character, otherwise protagonist when alone
-    const revealChar = sceneSupportingChars[0] || sceneChars[0];
+  // Prefer cinematic reveal for first supporting character, otherwise protagonist when alone
+  const revealChar = sceneSupportingChars[0] || sceneChars[0];
 
-    if (firstCharId) {
-      const revealTarget = sceneChars.find(char => char.id === firstCharId) || revealChar;
-      const delay = setTimeout(() => {
-        seenAllegoryCards.add(firstCharId);
-        try { sessionStorage.setItem('seen-allegory-cards', JSON.stringify([...seenAllegoryCards])); } catch {}
-        setAllegoryCardChar(firstCharId);
-        if (revealTarget) {
-          playGameSfx(revealTarget.isVillain ? 'charRevealVillain' : 'charRevealAlly');
-        }
-      }, 250);
-      return () => clearTimeout(delay);
-    }
+  if (firstCharId) {
+    seenAllegoryCards.add(firstCharId);
+    try { sessionStorage.setItem('seen-allegory-cards', JSON.stringify([...seenAllegoryCards])); } catch {}
+  }
 
-    if (revealChar) {
-      const delay = setTimeout(() => {
-        playGameSfx('suspense');
-        setTimeout(() => {
-          playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
-        }, 200);
-        setCharReveal(revealChar);
-        setTimeout(() => {
-          setCharReveal(null);
-          setCharRevealDone(true);
-          setPersistentChar(revealChar);
-          setAllPersistentChars(sceneSupportingChars.map(({ id, name, img, role }) => ({ id, name, img, role })));
-        }, 2500);
-      }, 250);
-      return () => clearTimeout(delay);
-    }
+  if (revealChar) {
+    const delay = setTimeout(() => {
+      playGameSfx('suspense');
+      setTimeout(() => {
+        playGameSfx(revealChar.isVillain ? 'charRevealVillain' : 'charRevealAlly');
+      }, 200);
+      setCharReveal(revealChar);
+      setTimeout(() => {
+        setCharReveal(null);
+        setCharRevealDone(true);
+        setPersistentChar(revealChar);
+        setAllPersistentChars(sceneSupportingChars.map(({ id, name, img, role }) => ({ id, name, img, role })));
+      }, 2500);
+    }, 250);
+    return () => clearTimeout(delay);
+  }
 
-    setAllPersistentChars([]);
-  }, [chapter?.id, transitioning, progress.campaign]);
+  setAllPersistentChars([]);
+}, [chapter?.id, transitioning, progress.campaign]);
 
-  const hasCharReveal = !!charReveal || !!allegoryCardChar;
-  const canShowChoices = !hasCharReveal;
+const hasCharReveal = !!charReveal;
+const canShowChoices = !charReveal;
 
-  useEffect(() => {
-    if (!chapter || fullNarrative.length > 0 || !canShowChoices) return;
-    const timer = setTimeout(() => setShowChoices(true), 180);
-    return () => clearTimeout(timer);
-  }, [chapter, fullNarrative.length, canShowChoices]);
+useEffect(() => {
+  if (!chapter || primaryNarrative.length > 0 || !canShowChoices) return;
+  const timer = setTimeout(() => setShowChoices(true), 180);
+  return () => clearTimeout(timer);
+}, [chapter, primaryNarrative.length, canShowChoices]);
 
   // Delayed mini-game trigger button — appears 12s after choices show
   // Auto-popup notification after 30s if user hasn't clicked the button
@@ -1441,7 +1433,7 @@ const ScenePage = () => {
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-xs uppercase tracking-widest text-muted-foreground font-display">Escolha seu caminho</p>
                     <div className="flex items-center gap-2">
-                      {fullNarrative.length > 0 && (
+                      {primaryNarrative.length > 0 && (
                         <button
                           onClick={() => { setShowChoices(false); setBeatIndex(0); }}
                           className="flex items-center gap-1 text-[10px] font-display text-primary/70 hover:text-primary transition-colors uppercase tracking-wider"
