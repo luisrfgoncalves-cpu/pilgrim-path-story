@@ -17,6 +17,15 @@ export interface ConditionalEffect {
   penalty?: ChoiceEffect;
 }
 
+export interface ToneOption {
+  tone: 'humble' | 'firm' | 'sarcastic' | 'fearful';
+  emoji: string;
+  label: string;
+  npcReaction: string;
+  /** Extra attribute bonus/penalty for choosing this tone */
+  effects?: ChoiceEffect;
+}
+
 export interface StoryChoice {
   text: string;
   nextChapterId: string;
@@ -29,6 +38,8 @@ export interface StoryChoice {
   conditionalEffects?: ConditionalEffect[];
   /** Item granted when this choice is made */
   item?: string;
+  /** Tone options — how the player responds, affects NPC reaction */
+  toneOptions?: ToneOption[];
 }
 
 /** Tone variation: shows different text based on whether an attribute is high or low */
