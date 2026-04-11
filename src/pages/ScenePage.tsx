@@ -219,11 +219,12 @@ const ScenePage = () => {
     attributes: progress.attributes,
   }), [progress, history]);
 
-  // Build full narrative: base + variations + dynamic events + consequence hints
-  const fullNarrative = chapter ? [
-    ...chapter.narrative,
+  // ═══ PRIMARY NARRATIVE (core story only — used for beats & image mapping) ═══
+  const primaryNarrative = chapter ? [...chapter.narrative] : [];
+
+  // ═══ SUPPLEMENTARY LINES (dynamic content — appended to last beat, not mixed in) ═══
+  const supplementaryLines: string[] = chapter ? [
     ...(isReplay && chapter.replayNarrative ? chapter.replayNarrative : []),
-    // History-aware scene variations
     ...(sceneVariations[chapter.id] || [])
       .filter(v => v.condition(variationCtx))
       .map(v => v.text),
@@ -242,12 +243,13 @@ const ScenePage = () => {
       if (val <= tone.lowThreshold) return tone.lowText;
       return null;
     }).filter((t): t is string => t !== null),
-    // Dynamic events narrative (randomly selected per playthrough)
     ...dynamicEvents.extraNarrative,
-    // Consequence echoes from past dynamic choices
     ...dynamicEvents.consequenceHints.map(h => `_${h}_`),
     ...(emotional?.atmosphereLine ? [emotional.atmosphereLine] : []),
   ] : [];
+
+  // Full narrative for TTS and total content (primary + supplementary)
+  const fullNarrative = [...primaryNarrative, ...supplementaryLines];
 
   // Record playthrough completion when reaching a final ending
   const [playthroughRecorded, setPlaythroughRecorded] = useState(false);
