@@ -31,7 +31,7 @@ function getProgress(): PregenProgress {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw);
   } catch { /* ignore */ }
-  return { completedHashes: [], lastKeyIdx: 0, lastRunAt: 0 };
+  return { completedHashes: [], lastKeyIdx: 0, lastRunAt: 0, failedHashes: [] };
 }
 
 function saveProgress(progress: PregenProgress) {
@@ -84,7 +84,7 @@ export function useBackgroundTTSPregen() {
         const hash = await hashKey(phrase.text, phrase.emotion);
 
         // Skip if already completed locally
-        if (progress.completedHashes.includes(hash)) continue;
+        if (progress.completedHashes.includes(hash) || progress.failedHashes.includes(hash)) continue;
 
         // Check if cached in Supabase
         const cached = await checkCached(phrase.emotion, hash);
@@ -95,7 +95,7 @@ export function useBackgroundTTSPregen() {
         }
 
         // Found one to generate!
-        const keyIdx = (progress.lastKeyIdx + 1) % 6;
+        const keyIdx = (progress.lastKeyIdx + 1) % 9;
 
         try {
           console.log(`[BG-PreGen] Generating phrase ${i + 1}/${ALL_NARRATIVE_PHRASES.length} with key${keyIdx}...`);
@@ -126,10 +126,17 @@ export function useBackgroundTTSPregen() {
               console.log(`[BG-PreGen] ✅ Done (${progress.completedHashes.length}/${ALL_NARRATIVE_PHRASES.length})`);
             } else {
               // Key might be rate-limited, try next key next time
+              const nextKeyIdx = (keyIdx + 1) % 9;
               progress.lastKeyIdx = keyIdx;
               progress.lastRunAt = Date.now();
+              // If we've tried all 9 keys for this phrase, skip it
+              if (nextKeyIdx === 0) {
+                progress.failedHashes.push(hash);
+                console.log(`[BG-PreGen] ⛔ All 9 keys failed for phrase ${i + 1}, skipping`);
+              } else {
+                console.log(`[BG-PreGen] ⏳ Key${keyIdx} limited, will try key${nextKeyIdx} next`);
+              }
               saveProgress(progress);
-              console.log(`[BG-PreGen] ⏳ Key${keyIdx} limited, will try key${(keyIdx + 1) % 6} next`);
             }
           }
         } catch (e) {
