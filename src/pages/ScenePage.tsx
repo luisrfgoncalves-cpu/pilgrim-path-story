@@ -627,17 +627,20 @@ const ScenePage = () => {
 
   // ═══ BEATS SYSTEM — group narrative into 2-3 line beats ═══
   // Group only PRIMARY narrative into beats (for correct image mapping)
-  // Then append supplementary lines to the last beat
+  // Supplementary lines are merged into the final primary beat so the scene flow stays linear
   const beats = useMemo(() => {
-    const primaryBeats = groupIntoBeats(primaryNarrative, 5);
+    const primaryBeats = groupIntoBeats(primaryNarrative, 3);
+
     if (supplementaryLines.length > 0 && primaryBeats.length > 0) {
-      // Append supplementary lines as an extra beat at the end
-      const lastBeatEnd = primaryBeats[primaryBeats.length - 1];
-      const startIdx = lastBeatEnd.startIndex + lastBeatEnd.lines.length;
-      primaryBeats.push({ lines: supplementaryLines, startIndex: startIdx });
-    } else if (supplementaryLines.length > 0 && primaryBeats.length === 0) {
+      const lastBeatIndex = primaryBeats.length - 1;
+      primaryBeats[lastBeatIndex] = {
+        ...primaryBeats[lastBeatIndex],
+        lines: [...primaryBeats[lastBeatIndex].lines, ...supplementaryLines],
+      };
+    } else if (supplementaryLines.length > 0) {
       primaryBeats.push({ lines: supplementaryLines, startIndex: 0 });
     }
+
     return primaryBeats;
   }, [primaryNarrative, supplementaryLines]);
   const currentBeat = beats[beatIndex] ?? null;
@@ -645,7 +648,7 @@ const ScenePage = () => {
 
   // Beat-specific image logic
   const beatImageKey = chapter && currentBeat
-    ? [`${chapter.id}__beat${beatIndex + 1}`, `${chapter.id}__${currentBeat.startIndex}`]
+    ? [`${chapter.id}__beat${Math.min(beatIndex + 1, groupIntoBeats(primaryNarrative, 3).length)}`, `${chapter.id}__${currentBeat.startIndex}`]
     : [];
   const bgImage = chapter
     ? beatImageKey.map(key => sceneImages[key]).find(Boolean) || bgImageFallback
