@@ -141,6 +141,7 @@ export default function EpicVictoryScreen({ players, onPlayAgain, onExit }: Epic
     const t4 = setTimeout(() => {
       setPhase('ignorance');
       setNarrativeIdx(0);
+      narrateBoard(IGNORANCE_NARRATIVE.join(' '), 'urgent');
     }, gatesTime + 7000);
 
     // Phase 5: Rankings
