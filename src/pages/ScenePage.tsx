@@ -93,6 +93,8 @@ const ScenePage = () => {
   // Streak counter (internal only — no popup)
   const [streak, setStreak] = useState(0);
   const [lastStreakEffect, setLastStreakEffect] = useState<'positive' | 'negative' | null>(null);
+  // Tone selection for dialogue choices
+  const [selectedTone, setSelectedTone] = useState<Record<number, string>>({});
   // Mini-game state
   const [miniGameDone, setMiniGameDone] = useState(false);
   const [miniGameResult, setMiniGameResult] = useState<MiniGameResult | null>(null);
