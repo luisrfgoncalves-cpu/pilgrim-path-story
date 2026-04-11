@@ -72,7 +72,7 @@ const ScenePage = () => {
   const [showChoices, setShowChoices] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(true);
   const [showStats, setShowStats] = useState(false);
-  const [audioOn, setAudioOn] = useState(true);
+  const [audioOn, setAudioOn] = useState(() => localStorage.getItem('peregrino-narration') !== 'off');
   // Epic moment state
   const [epicMomentActive, setEpicMomentActive] = useState(false);
   const [epicMomentDone, setEpicMomentDone] = useState(false);
@@ -624,7 +624,7 @@ const ScenePage = () => {
   const shouldAutoNarrate = chapter ? autoNarrateScenes.has(chapter.id) : false;
 
   // ═══ BEATS SYSTEM — group narrative into 2-3 line beats ═══
-  const beats = useMemo(() => groupIntoBeats(fullNarrative, 2), [fullNarrative]);
+  const beats = useMemo(() => groupIntoBeats(fullNarrative, 5), [fullNarrative]);
   const currentBeat = beats[beatIndex] ?? null;
   const hasMoreBeats = beatIndex < beats.length - 1;
 
@@ -763,7 +763,7 @@ const ScenePage = () => {
               </button>
             )}
             <button
-              onClick={() => { const next = !audioOn; setAudioOn(next); toggleAudio(next); }}
+              onClick={() => { const next = !audioOn; setAudioOn(next); toggleAudio(next); localStorage.setItem('peregrino-narration', next ? 'on' : 'off'); }}
               className="btn-medieval-icon !p-2.5 !rounded-lg flex items-center justify-center active:scale-95"
               aria-label={audioOn ? 'Desativar som' : 'Ativar som'}
             >
