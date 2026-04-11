@@ -39,6 +39,7 @@ import { shareResult } from '@/lib/socialShare';
 import { toast } from 'sonner';
 import { renderNarrative, getSceneAtmosphere } from '@/lib/narrativeRenderer';
 import { getSceneImageVariation } from '@/lib/sceneImageVariation';
+import { resolveSceneBeatVisualKey } from '@/lib/sceneBeatVisuals';
 import { AllegoryCard, allegoryMeanings } from '@/components/AllegoryCard';
 import { groupIntoBeats, NarrativeBeat } from '@/hooks/useNarrativeBeats';
 import EpicMoment, { epicMoments } from '@/components/EpicMoment';
@@ -69,6 +70,7 @@ const ScenePage = () => {
   useProgressSync(progress);
   const [narrativeIndex, setNarrativeIndex] = useState(0);
   const [beatIndex, setBeatIndex] = useState(0);
+  const beatIndexRef = useRef(0);
   const [showChoices, setShowChoices] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(true);
   const [showStats, setShowStats] = useState(false);
@@ -279,6 +281,7 @@ const ScenePage = () => {
     setSuspenseActive(false);
     setPendingChoice(null);
     setBeatIndex(0);
+    beatIndexRef.current = 0;
     setEpicMomentActive(false);
     setEpicMomentDone(false);
     setShowDefeatScreen(false);
@@ -643,77 +646,103 @@ useEffect(() => {
   }, [primaryNarrative, supplementaryLines, linesPerBeat]);
   const currentBeat = beats[beatIndex] ?? null;
   const hasMoreBeats = beatIndex < beats.length - 1;
+  useEffect(() => {
+    beatIndexRef.current = beatIndex;
+  }, [beatIndex]);
 
   // Beat-specific image logic — keep the visual locked to the current narrated beat.
-  const beatImageKey = chapter && currentBeat
-    ? [`${chapter.id}__beat${Math.min(beatIndex + 1, primaryBeatCount)}`, `${chapter.id}__${currentBeat.startIndex}`]
-    : [];
+  const resolvedBeatVisualKey = chapter
+    ? resolveSceneBeatVisualKey({
+        chapterId: chapter.id,
+        beat: currentBeat,
+        beatCount: primaryBeatCount,
+        beatIndex,
+      })
+    : undefined;
   const bgImage = chapter
-    ? beatImageKey.map(key => sceneImages[key]).find(Boolean) || bgImageFallback
+    ? (resolvedBeatVisualKey ? sceneImages[resolvedBeatVisualKey] : undefined) || bgImageFallback
     : undefined;
 
   // Epic moment detection
   const hasEpicMoment = chapter ? !!epicMoments[chapter.id] : false;
   // Auto-narrate and auto-advance beats like a movie — no clicking needed
   const autoAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearAutoAdvance = useCallback(() => {
+    if (autoAdvanceRef.current) {
+      clearTimeout(autoAdvanceRef.current);
+      autoAdvanceRef.current = null;
+    }
+  }, []);
+  const scheduleAutoAdvance = useCallback((callback: () => void, delay: number) => {
+    clearAutoAdvance();
+    autoAdvanceRef.current = setTimeout(() => {
+      autoAdvanceRef.current = null;
+      callback();
+    }, delay);
+  }, [clearAutoAdvance]);
+  const getAutoReadingDelay = useCallback((text: string) => {
+    const words = text.split(/\s+/).filter(Boolean).length;
+    return Math.max(2600, Math.min(12000, words * 320));
+  }, []);
   
   const advanceBeatAuto = useCallback(() => {
-    setBeatIndex(prev => {
-      const next = prev + 1;
-      if (next < beats.length) {
-        // Speak next beat with onEnd to chain further
-        const nextBeatText = beats[next]?.lines.join(' ') || '';
-        if (audioOn && nextBeatText) {
-          setTimeout(() => {
-            speakRef.current(nextBeatText, {
-              emotion: sceneEmotion,
-              isEpic: hasEpicMoment,
-              onEnd: () => advanceBeatAuto(),
-            });
-          }, 600); // small pause between beats
-        } else if (nextBeatText) {
-          // No audio — auto-advance after reading time (100ms per word)
-          const words = nextBeatText.split(' ').length;
-          autoAdvanceRef.current = setTimeout(() => advanceBeatAuto(), Math.max(3000, words * 300));
-        }
-        return next;
+    clearAutoAdvance();
+    const next = beatIndexRef.current + 1;
+
+    if (next < beats.length) {
+      beatIndexRef.current = next;
+      setBeatIndex(next);
+      const nextBeatText = beats[next]?.lines.join(' ') || '';
+
+      if (audioOn && nextBeatText) {
+        scheduleAutoAdvance(() => {
+          void speakRef.current(nextBeatText, {
+            emotion: sceneEmotion,
+            isEpic: hasEpicMoment,
+            allowLocalFallback: false,
+            onEnd: () => advanceBeatAuto(),
+          });
+        }, 140);
+      } else if (nextBeatText) {
+        scheduleAutoAdvance(() => advanceBeatAuto(), getAutoReadingDelay(nextBeatText));
       }
-      // All beats done — show choices or trigger scene events
-      setTimeout(() => {
-        if (chapter?.sceneEvent && !sceneEventDone) {
-          setSceneEventActive(true);
-        } else if (hasEpicMoment && !epicMomentDone) {
-          setEpicMomentActive(true);
-        } else if (canShowChoices) {
-          setShowChoices(true);
-        }
-      }, 800);
-      return prev;
-    });
-  }, [beats, audioOn, sceneEmotion, hasEpicMoment, chapter, sceneEventDone, epicMomentDone, canShowChoices]);
+
+      return;
+    }
+
+    scheduleAutoAdvance(() => {
+      if (chapter?.sceneEvent && !sceneEventDone) {
+        setSceneEventActive(true);
+      } else if (hasEpicMoment && !epicMomentDone) {
+        setEpicMomentActive(true);
+      } else if (canShowChoices) {
+        setShowChoices(true);
+      }
+    }, 450);
+  }, [beats, audioOn, sceneEmotion, hasEpicMoment, chapter, sceneEventDone, epicMomentDone, canShowChoices, clearAutoAdvance, scheduleAutoAdvance, getAutoReadingDelay]);
 
   useEffect(() => {
     if (!chapter || transitioning || beats.length === 0) return;
     if (!canShowChoices) return;
-    if (beatIndex !== 0) return; // only trigger on scene entry
+    if (beatIndexRef.current !== 0) return;
     const firstBeatText = beats[0]?.lines.join(' ') || '';
     if (!firstBeatText) return;
-    const t = setTimeout(() => {
+
+    scheduleAutoAdvance(() => {
       if (audioOn) {
-        speakRef.current(firstBeatText, {
+        void speakRef.current(firstBeatText, {
           emotion: sceneEmotion,
           isEpic: hasEpicMoment,
+          allowLocalFallback: false,
           onEnd: () => advanceBeatAuto(),
         });
       } else {
-        // No audio — auto-advance after reading time
-        const words = firstBeatText.split(' ').length;
-        autoAdvanceRef.current = setTimeout(() => advanceBeatAuto(), Math.max(3000, words * 300));
+        scheduleAutoAdvance(() => advanceBeatAuto(), getAutoReadingDelay(firstBeatText));
       }
-    }, 500);
-    return () => { clearTimeout(t); if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapter?.id, transitioning, canShowChoices, beatIndex, sceneEmotion, hasEpicMoment, audioOn]);
+    }, 320);
+
+    return clearAutoAdvance;
+  }, [chapter?.id, transitioning, canShowChoices, beats, sceneEmotion, hasEpicMoment, audioOn, advanceBeatAuto, scheduleAutoAdvance, getAutoReadingDelay, clearAutoAdvance]);
 
   if (!chapter) {
     navigate('/');
@@ -939,7 +968,7 @@ useEffect(() => {
         {bgImage && (
           <div className="relative w-full overflow-hidden" style={{ maxHeight: '320px', minHeight: '200px', background: 'hsl(var(--card))' }}>
             {(() => {
-              const variationKey = beatImageKey.find(key => sceneImages[key]) || chapter.id;
+              const variationKey = resolvedBeatVisualKey || chapter.id;
               const imgVar = getSceneImageVariation(variationKey);
               const beatShiftX = ((beatIndex % 3) - 1) * 4;
               const beatScale = 1 + ((beatIndex % 4) * 0.02);
@@ -1100,49 +1129,16 @@ useEffect(() => {
 
             {beats.length > 0 && !showChoices && !sceneEventActive && (
               <div className="space-y-2 sticky bottom-0 z-10 pb-2 pt-2" style={{ background: 'linear-gradient(to top, hsl(var(--background)) 60%, transparent)' }}>
-                {/* Navigation: back + forward buttons always visible */}
                 <div className="flex items-center gap-2 rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm px-3 py-2.5">
-                  {/* Back button */}
-                  <button
-                    onClick={() => {
-                      if (beatIndex > 0) {
-                        setBeatIndex(prev => Math.max(0, prev - 1));
-                      }
-                    }}
-                    disabled={beatIndex === 0}
-                    className="btn-medieval-secondary px-3 py-2 text-xs flex items-center gap-1.5 flex-shrink-0 disabled:opacity-40 disabled:pointer-events-none"
-                  >
-                    <ArrowLeft className="w-3.5 h-3.5" /> Voltar
-                  </button>
-                  {/* Progress indicator */}
-                  <p className="text-[10px] font-display uppercase tracking-[0.15em] text-muted-foreground flex-1 text-center">
-                    {Math.min(beatIndex + 1, beats.length)}/{beats.length} ✦
+                  <div className="h-1.5 flex-1 bg-secondary rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary rounded-full transition-all duration-500"
+                      style={{ width: `${(Math.min(beatIndex + 1, beats.length) / Math.max(beats.length, 1)) * 100}%` }}
+                    />
+                  </div>
+                  <p className="text-[10px] font-display uppercase tracking-[0.15em] text-muted-foreground whitespace-nowrap">
+                    {audioOn ? (ttsPlaying ? 'Narrando' : 'Transição') : 'Auto'} • {Math.min(beatIndex + 1, beats.length)}/{beats.length}
                   </p>
-                  {/* TTS button */}
-                  {currentBeat && (
-                    <button
-                      onClick={() => {
-                        if (ttsPlaying) {
-                          stopTTS();
-                        } else {
-                          speak(currentBeat.lines.join(' '), { emotion: sceneEmotion, isEpic: hasEpicMoment });
-                        }
-                      }}
-                      className="btn-medieval-icon !p-2 !rounded-lg flex items-center justify-center active:scale-95"
-                      aria-label={ttsPlaying ? 'Parar narração' : 'Ouvir narração'}
-                    >
-                      {ttsPlaying ? <VolumeX className="w-3.5 h-3.5 text-primary" /> : <Volume2 className="w-3.5 h-3.5 text-muted-foreground" />}
-                    </button>
-                  )}
-                  {/* Continue button */}
-                  <button
-                    onClick={handleAdvanceNarrative}
-                    disabled={!hasMoreBeats && !canShowChoices && !hasEpicMoment}
-                    className="btn-medieval min-w-[120px] px-4 py-2 text-xs disabled:pointer-events-none disabled:opacity-60 flex items-center justify-center gap-1.5"
-                  >
-                    {hasMoreBeats ? 'Continuar' : (hasEpicMoment && !epicMomentDone) ? '✦ Momento' : canShowChoices ? 'Ver escolhas' : 'Aguarde...'} 
-                    {hasMoreBeats && <ArrowRight className="w-3.5 h-3.5" />}
-                  </button>
                 </div>
               </div>
             )}
