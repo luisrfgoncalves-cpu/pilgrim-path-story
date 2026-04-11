@@ -89,6 +89,7 @@ export default function RPGEventPopup({
   const timerRef = useRef<number | null>(null);
   const narratedKeyRef = useRef('');
   const initializedEventKeyRef = useRef<string | null>(null);
+  const { narrateBoard, stopBoard, getEmotion } = useBoardTTS();
 
   // Load content when popup becomes visible
   useEffect(() => {
