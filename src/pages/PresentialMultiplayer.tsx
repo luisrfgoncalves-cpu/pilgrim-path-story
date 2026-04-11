@@ -318,11 +318,21 @@ function resolveTileEffect(
       }
       break;
     }
-    case 'swap':
-      result.message = narrative || '🔄 O caminho se distorce como espelho d\'água perturbado — e quando a realidade se estabiliza, os peregrinos percebem que suas posições foram completamente trocadas! O destino tem senso de humor.';
+    case 'swap': {
+      // Find another player to swap with (random non-finished player)
+      const others = allPlayers.filter(p => p.id !== player.id && !p.finished);
+      if (others.length > 0) {
+        const target = others[Math.floor(Math.random() * others.length)];
+        // posAdjust will move current player to target's position (relative)
+        result.posAdjust = target.position - player.position;
+        result.message = narrative || `🔄 O caminho se distorce como espelho d'água perturbado — quando a realidade se estabiliza, ${player.name} e ${target.name} percebem que trocaram de lugar! O destino tem senso de humor.`;
+      } else {
+        result.message = narrative || '🔄 Uma força tenta trocar seu lugar, mas não encontra com quem... Você permanece firme!';
+      }
       result.emoji = '🔄';
       result.statUpdate.swapsTriggered = 1;
       break;
+    }
     case 'double_dice':
       result.extraTurn = true;
       result.message = '🎲 Os dados tremem com energia sobrenatural — eles QUEREM ser lançados novamente! Uma segunda chance, uma jogada extra. O destino sorri para você: jogue novamente, peregrino!';
