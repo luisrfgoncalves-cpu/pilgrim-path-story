@@ -16,8 +16,14 @@ const VOICE_SETTINGS: Record<EmotionType, { stability: number; similarity_boost:
   villain:   { stability: 0.2, similarity_boost: 0.85, style: 0.8, speed: 0.9 },
 };
 
-// Daniel — male PT-BR voice, warm and narrative
 const VOICE_ID = 'onwK4e9ZLuTAKqWW03F9';
+
+/**
+ * Rotação inteligente de chaves:
+ * Usa apenas 1 chave por vez, troca só quando a atual falhar (429/401).
+ * Evita disparar múltiplas chaves em sequência rápida (causa bloqueio anti-fraude).
+ */
+let currentKeyIndex = 0;
 
 function getApiKeys(): string[] {
   return [
@@ -27,11 +33,45 @@ function getApiKeys(): string[] {
   ].filter((k): k is string => typeof k === 'string' && k.length > 0);
 }
 
+function getCurrentKey(keys: string[]): string {
+  if (keys.length === 0) throw new Error('No keys configured');
+  return keys[currentKeyIndex % keys.length];
+}
+
+function rotateToNextKey(keys: string[]): string {
+  currentKeyIndex = (currentKeyIndex + 1) % keys.length;
+  return keys[currentKeyIndex];
+}
+
 async function hashKey(text: string, emotion: string): Promise<string> {
   const data = new TextEncoder().encode(`${emotion}:${text}`);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function generateWithKey(apiKey: string, text: string, settings: typeof VOICE_SETTINGS.neutral): Promise<Response> {
+  return await fetch(
+    `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?output_format=mp3_22050_32`,
+    {
+      method: 'POST',
+      headers: {
+        'xi-api-key': apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text,
+        model_id: 'eleven_multilingual_v2',
+        voice_settings: {
+          stability: settings.stability,
+          similarity_boost: settings.similarity_boost,
+          style: settings.style,
+          use_speaker_boost: true,
+          speed: settings.speed,
+        },
+      }),
+    }
+  );
 }
 
 Deno.serve(async (req) => {
@@ -64,7 +104,6 @@ Deno.serve(async (req) => {
     const cacheKey = await hashKey(text, emotion);
     const cachePath = `${emotion}/${cacheKey}.mp3`;
 
-    // Check if cached audio exists via download
     const { data: cachedFile } = await supabase.storage
       .from('tts-cache')
       .download(cachePath);
@@ -84,7 +123,7 @@ Deno.serve(async (req) => {
 
     console.log(`[TTS Cache MISS] ${cachePath} — generating...`);
 
-    // ═══ STEP 2: Generate audio via ElevenLabs ═══
+    // ═══ STEP 2: Generate with current key (single key, no rapid rotation) ═══
     const settings = VOICE_SETTINGS[emotion as EmotionType] || VOICE_SETTINGS.neutral;
     const allKeys = getApiKeys();
     
@@ -95,84 +134,73 @@ Deno.serve(async (req) => {
       );
     }
 
-    let lastError = 'All keys rate-limited (429)';
+    // Try current key first
+    let apiKey = getCurrentKey(allKeys);
+    let response = await generateWithKey(apiKey, text, settings);
 
-    for (const apiKey of allKeys) {
-      try {
-        const response = await fetch(
-          `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?output_format=mp3_22050_32`,
-          {
-            method: 'POST',
-            headers: {
-              'xi-api-key': apiKey,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              text,
-              model_id: 'eleven_multilingual_v2',
-              voice_settings: {
-                stability: settings.stability,
-                similarity_boost: settings.similarity_boost,
-                style: settings.style,
-                use_speaker_boost: true,
-                speed: settings.speed,
-              },
-            }),
-          }
-        );
-
+    // If rate-limited, rotate to next key (only ONE rotation attempt)
+    if (response.status === 429 || response.status === 401) {
+      const errText = await response.text();
+      console.log(`[TTS] Key ${currentKeyIndex} limited: ${errText.slice(0, 100)}`);
+      
+      if (allKeys.length > 1) {
+        apiKey = rotateToNextKey(allKeys);
+        console.log(`[TTS] Rotated to key ${currentKeyIndex}`);
+        response = await generateWithKey(apiKey, text, settings);
+        
         if (response.status === 429 || response.status === 401) {
-          const errText = await response.text();
-          console.log(`[TTS] Key rate-limited/unauthorized: ${response.status} — ${errText.slice(0, 100)}`);
-          continue;
+          const errText2 = await response.text();
+          console.log(`[TTS] Key ${currentKeyIndex} also limited: ${errText2.slice(0, 100)}`);
+          return new Response(
+            JSON.stringify({ error: 'API keys temporarily rate-limited. Try again in a few minutes.' }),
+            { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
         }
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          lastError = `ElevenLabs [${response.status}]: ${errorText.slice(0, 200)}`;
-          console.log(`[TTS] ${lastError}`);
-          continue;
-        }
-
-        const audioBuffer = await response.arrayBuffer();
-
-        // ═══ STEP 3: Save to Supabase Storage for future users ═══
-        try {
-          const { error: uploadError } = await supabase.storage
-            .from('tts-cache')
-            .upload(cachePath, audioBuffer, {
-              contentType: 'audio/mpeg',
-              cacheControl: '604800',
-              upsert: true,
-            });
-          if (uploadError) {
-            console.error(`[TTS Cache] Upload failed: ${uploadError.message}`);
-          } else {
-            console.log(`[TTS Cache STORED] ${cachePath}`);
-          }
-        } catch (e) {
-          console.error(`[TTS Cache] Storage error: ${e}`);
-        }
-
-        return new Response(audioBuffer, {
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'audio/mpeg',
-            'Cache-Control': 'public, max-age=604800',
-            'X-TTS-Cache': 'miss',
-          },
-        });
-      } catch (e) {
-        lastError = e instanceof Error ? e.message : String(e);
-        console.log(`[TTS] Key failed: ${lastError}`);
-        continue;
+      } else {
+        return new Response(
+          JSON.stringify({ error: 'API key rate-limited. Try again later.' }),
+          { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
     }
 
-    return new Response(
-      JSON.stringify({ error: `All API keys exhausted: ${lastError}` }),
-      { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log(`[TTS] ElevenLabs error [${response.status}]: ${errorText.slice(0, 200)}`);
+      return new Response(
+        JSON.stringify({ error: `ElevenLabs error: ${response.status}` }),
+        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const audioBuffer = await response.arrayBuffer();
+
+    // ═══ STEP 3: Save to cache ═══
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from('tts-cache')
+        .upload(cachePath, audioBuffer, {
+          contentType: 'audio/mpeg',
+          cacheControl: '604800',
+          upsert: true,
+        });
+      if (uploadError) {
+        console.error(`[TTS Cache] Upload failed: ${uploadError.message}`);
+      } else {
+        console.log(`[TTS Cache STORED] ${cachePath}`);
+      }
+    } catch (e) {
+      console.error(`[TTS Cache] Storage error: ${e}`);
+    }
+
+    return new Response(audioBuffer, {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'audio/mpeg',
+        'Cache-Control': 'public, max-age=604800',
+        'X-TTS-Cache': 'miss',
+      },
+    });
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Unknown error';
     return new Response(
