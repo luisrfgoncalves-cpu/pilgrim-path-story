@@ -592,6 +592,8 @@ const ScenePage = () => {
       setConsequencePhase('enter');
       setTimeout(() => setConsequencePhase('attrs'), 600);
       setTimeout(() => setConsequencePhase('ready'), 1400);
+      // Narrate consequence text
+      speak(enrichedConsequence, { emotion: sceneEmotion });
     } else {
       makeChoice(chapter!.id, nextChapterId, choiceText, modifiedEffects, flag, conditionalEffects);
     }
