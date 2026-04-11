@@ -150,6 +150,13 @@ export const sceneImages: Record<string, string> = {
   'cena5': evangelistaApontando,           // Evangelista apontando o caminho
   'cena5b': tresDorminhocoesCaminho,       // Presunção, Preguiça e Simples
   'cena6': tresDorminhocoes,               // Dorminhocões (variação)
+  'cena7': portaoEstreitoAproximacao,
+  'cena7b': portaoEstreitoBatendo,
+  'cena8': sabedoriaMundana,
+  'cena9': portaoEstreitoPassagem,
+  'cena9b': portaoEstreito,
+  'cena10': monteSinaiTremendo,          // Monte Sinai tremendo com fogo
+  'cena11': pantanoDesanimo,             // Chegada ao pântano
   'cena11b': pantanoAfundando,           // Afundando no pântano
   'cena12': pantanoProfundo,             // Mais fundo
   'cena13': pantanoQuaseMorrendo,        // Quase morrendo
