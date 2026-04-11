@@ -19,6 +19,7 @@ type EmotionType = 'neutral' | 'dramatic' | 'solemn' | 'urgent' | 'celestial' | 
 
 interface TTSOptions {
   emotion?: EmotionType;
+  isEpic?: boolean;
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
