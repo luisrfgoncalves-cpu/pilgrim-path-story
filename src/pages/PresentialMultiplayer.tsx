@@ -540,6 +540,7 @@ const PresentialMultiplayer = () => {
   const rotationStateRef = useRef<RotationState>(createRotationState());
   const chainStateRef = useRef<ChainState>(createChainState());
   const [streakAnnounce, setStreakAnnounce] = useState<string | null>(null);
+  const [rpgPassiveMsg, setRpgPassiveMsg] = useState<string | null>(null);
   const [rpgEvent, setRpgEvent] = useState<{
     tileType: RPGTileEventType;
     sourceTileType: TileType;
@@ -1183,6 +1184,48 @@ const PresentialMultiplayer = () => {
       updatePlayerStats(playerIdx, { challengesLost: 1 });
     }
 
+    // ─── Apply character passives to RPG event results ───
+    const player = players[playerIdx];
+    const char = player?.characterId ? getCharacter(player.characterId) : undefined;
+    const passive = char?.passive.effect;
+    let passiveMsg: string | null = null;
+
+    // Prudência: scripture_bonus — extra discernimento on scripture success
+    if (result.success && passive?.type === 'scripture_bonus' && rpgEvent.tileType === 'scripture') {
+      result.attrChanges = { ...result.attrChanges, discernimento: ((result.attrChanges?.discernimento) || 0) + passive.extraAttr };
+      passiveMsg = `✨ ${char!.passive.name}: ${char!.name} ganha +${passive.extraAttr} Discernimento extra pela maestria nas Escrituras!`;
+    }
+
+    // Fiel: courage_aura — group gets +1 courage on boss win
+    if (result.success && passive?.type === 'courage_aura' && rpgEvent.tileType === 'boss') {
+      result.attrChanges = { ...result.attrChanges, coragem: ((result.attrChanges?.coragem) || 0) + passive.groupBonus };
+      result.affectsGroup = true;
+      passiveMsg = `🔥 ${char!.passive.name}: A coragem de ${char!.name} inspira TODO o grupo! +${passive.groupBonus} Coragem para todos!`;
+    }
+
+    // Esperança: stun_reduction — reduce stun from RPG events too
+    if (result.stun && result.stunTurns && passive?.type === 'stun_reduction') {
+      result.stunTurns = Math.max(0, result.stunTurns - passive.amount);
+      if (result.stunTurns === 0) result.stun = false;
+      passiveMsg = `🌟 ${char!.passive.name}: A luz de ${char!.name} brilha nas trevas! Paralisia reduzida!`;
+    }
+
+    // Valente: shield_keeper — shield lasts extra hits (applied when shield would break)
+    // This is handled at shield consumption, not here — but notify
+    if (passive?.type === 'shield_keeper' && player?.hasShield && !result.success) {
+      const currentHits = player.shieldHits || 0;
+      if (currentHits < passive.shieldDurability - 1) {
+        // Shield absorbs but doesn't break
+        passiveMsg = `🗡️ ${char!.passive.name}: O Escudo Reforçado de ${char!.name} resiste ao golpe! (${currentHits + 1}/${passive.shieldDurability} impactos)`;
+      }
+    }
+
+    // Set passive feedback for UI
+    if (passiveMsg) {
+      setRpgPassiveMsg(passiveMsg);
+      setTimeout(() => setRpgPassiveMsg(null), 8000);
+    }
+
     // Apply attribute changes
     if (result.attrChanges) {
       setPlayers(prev => prev.map((p, i) => {
@@ -1445,7 +1488,7 @@ const PresentialMultiplayer = () => {
         tileEventType={rpgEvent?.tileType || 'scripture'}
         sourceTileType={rpgEvent?.sourceTileType}
         currentCharacterId={rpgEvent ? players[rpgEvent.playerIdx]?.characterId : undefined}
-        passiveMessage={streakAnnounce || undefined}
+        passiveMessage={rpgPassiveMsg || undefined}
         onResult={handleRpgEventResult}
         onDismiss={() => {
           setRpgEvent(null);

@@ -88,7 +88,8 @@ export default function RPGEventPopup({
   const [hintIndex, setHintIndex] = useState(0);
   const [riddleAnswerRevealed, setRiddleAnswerRevealed] = useState(false);
   const [currentRevelation, setCurrentRevelation] = useState<HiddenRevelation | null>(null);
-  const [narrativeStage, setNarrativeStage] = useState(0); // 0=intro dramática, 1=contexto, 2=pergunta retórica
+  const [narrativeStage, setNarrativeStage] = useState(0);
+  const [wisdomHint, setWisdomHint] = useState<string | null>(null);
 
   const timerRef = useRef<number | null>(null);
   const narratedKeyRef = useRef('');
@@ -118,6 +119,7 @@ export default function RPGEventPopup({
     narratedKeyRef.current = '';
     setCurrentRevelation(null);
     setNarrativeStage(0);
+    setWisdomHint(null);
 
     // Clear all content
     setQuestion(null); setRiddle(null); setDilemma(null);
@@ -178,8 +180,23 @@ export default function RPGEventPopup({
       });
     }
 
+    // Misericórdia: wisdom_insight — 25% chance to auto-reveal a hint
+    if (hasContent && currentCharacterId) {
+      const charData = getCharacter(currentCharacterId);
+      const passiveEff = charData?.passive.effect;
+      if (passiveEff?.type === 'wisdom_insight' && Math.random() * 100 < passiveEff.hintChance) {
+        if (tileEventType === 'riddle') {
+          // Auto-reveal first hint for riddles
+          setHintIndex(0);
+          setWisdomHint(`🕊️ ${charData!.passive.name}: O Espírito sussurra uma pista ao ouvido de ${charData!.name}...`);
+        } else if (tileEventType === 'scripture') {
+          setWisdomHint(`🕊️ ${charData!.passive.name}: ${charData!.name} sente uma intuição divina sobre a resposta...`);
+        }
+      }
+    }
+
     return () => {};
-  }, [visible, eventKey, tileEventType, difficulty, playerNames, rotationState]);
+  }, [visible, eventKey, tileEventType, difficulty, playerNames, rotationState, currentCharacterId]);
 
   // ─── STAGED NARRATIVE: Dramatic suspense intro before context ───
   const getSuspenseText = (): { emoji: string; text: string } => {
@@ -803,6 +820,16 @@ export default function RPGEventPopup({
           {/* CHALLENGE PHASE — Question */}
           {phase === 'challenge' && !showResult && question && (
             <div className="space-y-4">
+              {/* Wisdom insight hint for questions */}
+              {wisdomHint && (
+                <div className="p-3 rounded-xl text-sm font-display" style={{
+                  background: 'hsl(200 30% 12%)',
+                  border: '1px solid hsl(200 50% 35%)',
+                  color: 'hsl(200 60% 75%)',
+                }}>
+                  {wisdomHint}
+                </div>
+              )}
               <p className="text-lg font-display font-bold text-foreground leading-relaxed">{question.question}</p>
               <p className="text-sm text-muted-foreground text-center">📖 {question.bibleReference}</p>
 
@@ -875,6 +902,16 @@ export default function RPGEventPopup({
           {/* CHALLENGE PHASE — Riddle */}
           {phase === 'challenge' && !showResult && riddle && (
             <div className="space-y-4">
+              {/* Wisdom insight hint for riddles */}
+              {wisdomHint && (
+                <div className="p-3 rounded-xl text-sm font-display" style={{
+                  background: 'hsl(200 30% 12%)',
+                  border: '1px solid hsl(200 50% 35%)',
+                  color: 'hsl(200 60% 75%)',
+                }}>
+                  {wisdomHint}
+                </div>
+              )}
               <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/30">
                 <p className="text-lg font-display font-bold text-foreground text-center leading-relaxed">{riddle.riddle}</p>
               </div>
