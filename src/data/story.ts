@@ -1789,7 +1789,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "O Julgamento",
     location: "Feira da Vaidade",
     characters: ["cristao"],
-    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'O tribunal se ergue diante dos peregrinos!' }, },
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'O tribunal se ergue diante dos peregrinos!' },
     narrative: [
       "{{tremor}}A confusão cresce. Os donos da feira decidem prender vocês.{{/tremor}} São levados a um tribunal presidido pelo juiz {{villain}}Ódio-ao-Bem{{/villain}}. O júri é formado por Cego, Sem-Bem, Malícia, Luxúria, Vive-no-Prazer, Imprudente e outros.",
       "As acusações: {{emphasis}}perturbação do comércio, desprezo pela cultura local, e influência perigosa sobre cidadãos honestos.{{/emphasis}}",
@@ -2155,7 +2155,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     title: "Perdidos no Prado",
     location: "Prado Agradável",
     characters: ["cristao", "esperanca", "gigante_desespero"],
-    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Mãos brutais sacodem os peregrinos!' }, },
+    sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Mãos brutais sacodem os peregrinos!' },
     narrative: [
       "{{tremor}}A noite cai. A chuva começa. Trovões rasgam o céu.{{/tremor}} O prado se transforma em lamaçal. Vocês tentam voltar ao caminho, mas {{fade}}a cerca desapareceu na escuridão.{{/fade}}",
       "{{whisper}}Perdidos e encharcados, vocês tropeçam até que o sono vence.{{/whisper}} Deitam-se no chão encharcado.",
