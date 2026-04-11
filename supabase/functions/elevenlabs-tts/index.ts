@@ -16,19 +16,17 @@ const VOICE_SETTINGS: Record<EmotionType, { stability: number; similarity_boost:
   villain:   { stability: 0.2, similarity_boost: 0.85, style: 0.8, speed: 0.9 },
 };
 
+// Daniel — male PT-BR voice, warm and narrative
 const VOICE_ID = 'onwK4e9ZLuTAKqWW03F9';
-
-let keyIndex = 0;
 
 function getApiKeys(): string[] {
   return [
     Deno.env.get('ELEVENLABS_API_KEY_1'),
     Deno.env.get('ELEVENLABS_API_KEY_2'),
     Deno.env.get('ELEVENLABS_API_KEY_3'),
-  ].filter(Boolean) as string[];
+  ].filter((k): k is string => typeof k === 'string' && k.length > 0);
 }
 
-/** Generate a stable hash for cache key from text + emotion */
 async function hashKey(text: string, emotion: string): Promise<string> {
   const data = new TextEncoder().encode(`${emotion}:${text}`);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -66,12 +64,12 @@ Deno.serve(async (req) => {
     const cacheKey = await hashKey(text, emotion);
     const cachePath = `${emotion}/${cacheKey}.mp3`;
 
-    // Check if cached audio exists
+    // Check if cached audio exists via download
     const { data: cachedFile } = await supabase.storage
       .from('tts-cache')
       .download(cachePath);
 
-    if (cachedFile) {
+    if (cachedFile && cachedFile.size > 0) {
       console.log(`[TTS Cache HIT] ${cachePath}`);
       const buffer = await cachedFile.arrayBuffer();
       return new Response(buffer, {
@@ -89,7 +87,15 @@ Deno.serve(async (req) => {
     // ═══ STEP 2: Generate audio via ElevenLabs ═══
     const settings = VOICE_SETTINGS[emotion as EmotionType] || VOICE_SETTINGS.neutral;
     const allKeys = getApiKeys();
-    let lastError: Error | null = null;
+    
+    if (allKeys.length === 0) {
+      return new Response(
+        JSON.stringify({ error: 'No ElevenLabs API keys configured' }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    let lastError = 'All keys rate-limited (429)';
 
     for (const apiKey of allKeys) {
       try {
@@ -116,13 +122,16 @@ Deno.serve(async (req) => {
         );
 
         if (response.status === 429 || response.status === 401) {
-          await response.text();
+          const errText = await response.text();
+          console.log(`[TTS] Key rate-limited/unauthorized: ${response.status} — ${errText.slice(0, 100)}`);
           continue;
         }
 
         if (!response.ok) {
           const errorText = await response.text();
-          throw new Error(`ElevenLabs API error [${response.status}]: ${errorText}`);
+          lastError = `ElevenLabs [${response.status}]: ${errorText.slice(0, 200)}`;
+          console.log(`[TTS] ${lastError}`);
+          continue;
         }
 
         const audioBuffer = await response.arrayBuffer();
@@ -154,13 +163,14 @@ Deno.serve(async (req) => {
           },
         });
       } catch (e) {
-        lastError = e instanceof Error ? e : new Error(String(e));
+        lastError = e instanceof Error ? e.message : String(e);
+        console.log(`[TTS] Key failed: ${lastError}`);
         continue;
       }
     }
 
     return new Response(
-      JSON.stringify({ error: `All API keys exhausted: ${lastError?.message}` }),
+      JSON.stringify({ error: `All API keys exhausted: ${lastError}` }),
       { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (e) {
