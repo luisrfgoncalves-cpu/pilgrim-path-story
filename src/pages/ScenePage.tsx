@@ -628,9 +628,16 @@ const ScenePage = () => {
   const currentBeat = beats[beatIndex] ?? null;
   const hasMoreBeats = beatIndex < beats.length - 1;
 
+  // Beat-specific image logic
+  const beatImageKey = chapter && currentBeat
+    ? [`${chapter.id}__beat${beatIndex + 1}`, `${chapter.id}__${currentBeat.startIndex}`]
+    : [];
+  const bgImage = chapter
+    ? beatImageKey.map(key => sceneImages[key]).find(Boolean) || bgImageFallback
+    : undefined;
+
   // Epic moment detection
   const hasEpicMoment = chapter ? !!epicMoments[chapter.id] : false;
-
   // Auto-narrate first beat only after all reveal/cards are closed
   useEffect(() => {
     if (!chapter || transitioning || !audioOn || beats.length === 0) return;
