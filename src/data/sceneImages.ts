@@ -88,32 +88,32 @@ export const sceneImages: Record<string, string> = {
   'cena15b': cruzFardo,
 
   // FASE 2: Casa do Intérprete + Colina + Leões
-  'fase2-cena1': casaInterprete,
-  'fase2-cena2': casaInterprete,
-  'fase2-cena3': portaoEstreito,
-  'fase2-cena4': casaInterprete,
-  'fase2-cena5': casaInterprete,
-  'fase2-cena6': casaInterprete,
+  'fase2-cena1': casaInterprete,            // Chegada à Casa
+  'fase2-cena2': interpreteVisaoFogo,       // Visão do fogo inextinguível
+  'fase2-cena3': interpreteSalaPoeira,      // Sala da poeira
+  'fase2-cena4': casaInterprete,            // Mais visões
+  'fase2-cena5': casaInterprete,            // Visão final
+  'fase2-cena6': casaInterprete,            // Despedida
   'fase2-cena7': palacioBelo,
   'fase2-cena8': gaiolaFerro,
   'fase2-cena9': armaduraCrista,
   'fase2-cena10': palacioBelo,
-  'fase2-cena11': colinaDificuldade,
-  'fase2-cena12': colinaDificuldadeSubida,
-  'fase2-cena13': caramanchaoColina,
-  'fase2-cena14': leoesPalacio,
+  'fase2-cena11': colinaSubidaDramatica,    // Subida íngreme
+  'fase2-cena12': colinaDificuldadeSubida,  // Formalista e Hipocrisia
+  'fase2-cena13': caramanchaoSono,          // Sono no caramanchão
+  'fase2-cena14': palacioLeoesEntrada,      // Leões acorrentados
 
   // FASE 3: Vale da Humilhação e Apolião
-  'fase3-cena1': valeHumilhacao,
-  'fase3-cena2': valeHumilhacao,
-  'fase3-cena3': valeHumilhacao,
-  'fase3-cena4': valeHumilhacao,
-  'fase3-cena5': valeSombra,
-  'fase3-cena6': valeSombra,
-  'fase3-cena7': valeSombra,
-  'fase3-cena8': fielEncontro,
-  'fase3-cena9': valeSombra,
-  'fase3-cena10': fielEncontro,
+  'fase3-cena1': valeHumilhacao,            // Descida ao vale
+  'fase3-cena2': apolionConfronto,          // Apolião aparece
+  'fase3-cena3': apolionConfronto,          // Confronto
+  'fase3-cena4': apolionBatalha,            // Batalha épica
+  'fase3-cena5': valeSombraAbismo,          // Vale da Sombra entrada
+  'fase3-cena6': curaPosBatalha,            // Cura divina pós-batalha
+  'fase3-cena7': valeSombraAbismo,          // Mais fundo no vale
+  'fase3-cena8': fielCristaoEncontro,       // Encontro com Fiel
+  'fase3-cena9': valeSombra,                // Vergonha confronta Fiel
+  'fase3-cena10': fielCristaoEncontro,      // Fiel e Cristão conversam
 
   // FASE 4: Feira da Vaidade + Demas
   'fase4-cena1': feiraVaidade,
