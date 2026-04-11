@@ -170,38 +170,38 @@ export const sceneImages: Record<string, string> = {
   'fase6-cena9': cidadeCelestial,           // Glória final
 
   // ═══════ PARTE II ═══════
-  'p2-cena1': cristaPartida,
-  'p2-cena2': cristaPartida,
-  'p2-cena3': pantanoDesanimo,
-  'p2-cena4': portaoEstreito,
-  'p2-cena5': portaoEstreito,
-  'p2-cena6': casaInterprete,
-  'p2-fase2-cena1': casaInterprete,
-  'p2-fase2-cena2': cruzFardo,
-  'p2-fase2-cena3': colinaDificuldadeSubida,
-  'p2-fase2-cena4': leoesPalacio,
-  'p2-fase2-cena5': palacioBelo,
-  'p2-fase3-cena1': valeHumilhacao,
-  'p2-fase3-cena2': valeSombra,
-  'p2-fase3-cena3': giganteMataBons,
-  'p2-fase3-cena4': hospedariaGaio,
-  'p2-fase3-cena5': giganteMataBons,
-  'p2-fase3-cena6': feiraVaidade,
-  'p2-fase4-cena1': esperancaEncontro,
-  'p2-fase4-cena2': minaDemas,
-  'p2-fase4-cena3': valenteEncontro,
-  'p2-fase4-cena4': pradoAgradavel,
-  'p2-fase5-cena1': casteloDuvida,
-  'p2-fase5-cena2': casteloDuvida,
-  'p2-fase5-cena3': casteloDuvida,
-  'p2-fase5-cena4': casteloDestruido,
-  'p2-fase5-cena5': montanhasDeleitosas,
-  'p2-fase6-cena1': terraEncantada,
-  'p2-fase6-cena2': paisBeula,
-  'p2-fase6-cena3': chamadoRio,
-  'p2-fase6-cena4': chamadoRio,
-  'p2-fase6-cena5': rioFinal,
-  'p2-fase6-cena6': cidadeCelestial,
+  'p2-cena1': cristaSonhoCarta,              // Cristã lendo a carta do Rei
+  'p2-cena2': misericordiaJuncao,            // Misericórdia se juntando ao grupo
+  'p2-cena3': cristaPantano,                 // Cristã e filhos no pântano
+  'p2-cena4': cristaPortaoEstreito,          // Cristã batendo no portão
+  'p2-cena5': boaVontadePortao,              // Boa-Vontade abrindo o portão
+  'p2-cena6': cristaCasaInterprete,          // Cristã na Casa do Intérprete
+  'p2-fase2-cena1': grandeCoracaoGuia,       // Grande-Coração designado como guia
+  'p2-fase2-cena2': cristaCruzFardo,         // Cristã e filhos na Cruz
+  'p2-fase2-cena3': cristaColinaSubida,      // Subida da Colina da Dificuldade
+  'p2-fase2-cena4': cristaPalacioLeoes,      // Leões acorrentados com Grande-Coração
+  'p2-fase2-cena5': palacioBelo,             // Palácio Belo (hospedagem)
+  'p2-fase3-cena1': velhoHonestoEncontro,    // Encontro com Velho Honesto
+  'p2-fase3-cena2': grandeCoracaoVsGigante,  // Grande-Coração vs Gigante Maul
+  'p2-fase3-cena3': resgateMenteFraca,       // Resgate de Mente-Fraca
+  'p2-fase3-cena4': hospedariaGaioFesta,     // Festa na hospedaria de Gaio
+  'p2-fase3-cena5': resgateMenteFraca,       // Gigante Mata-Bons derrotado
+  'p2-fase3-cena6': feiraVaidade,            // Feira da Vaidade (passagem)
+  'p2-fase4-cena1': esperancaEncontro,       // Pronto-para-Parar
+  'p2-fase4-cena2': minaDemas,               // Mina de Demas
+  'p2-fase4-cena3': valenteVerdadeEncontro,  // Valente-pela-Verdade encontrado
+  'p2-fase4-cena4': pradoAgradavel,          // Prado Agradável
+  'p2-fase5-cena1': casteloDuvida,           // Castelo da Dúvida
+  'p2-fase5-cena2': casteloDuvida,           // Dentro do castelo
+  'p2-fase5-cena3': resgateDesanimoMedo,     // Resgate de Sr. Desânimo e Muito-Medo
+  'p2-fase5-cena4': casteloDuvidaDestruido,  // Castelo destruído por Grande-Coração
+  'p2-fase5-cena5': montanhasDeleitosas,     // Montanhas Deleitosas
+  'p2-fase6-cena1': firmeMadameBolha,        // Firme resistindo Madame Bolha
+  'p2-fase6-cena2': paisBeula,               // País de Beulá
+  'p2-fase6-cena3': cristaRioTravessia,      // Travessia do rio
+  'p2-fase6-cena4': cristaRioTravessia,      // Cada um atravessa diferente
+  'p2-fase6-cena5': cristaRioTravessia,      // Últimas travessias
+  'p2-fase6-cena6': cristaChegadaCelestial,  // Chegada à Cidade Celestial!
   'p2-final-desistencia': terraEncantada,
   'p2-final-terra-encantada': terraEncantada,
 };
