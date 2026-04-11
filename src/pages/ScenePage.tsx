@@ -662,22 +662,6 @@ const ScenePage = () => {
   // Epic moment detection
   const hasEpicMoment = chapter ? !!epicMoments[chapter.id] : false;
 
-  // Scene emotion for TTS
-  const sceneEmotion = chapter ? getSceneEmotion(chapter.id) : 'neutral';
-  const shouldAutoNarrate = chapter ? autoNarrateScenes.has(chapter.id) : false;
-
-  // Auto-narrate first beat on scene entry for epic/key scenes
-  useEffect(() => {
-    if (!chapter || transitioning || !audioOn || beats.length === 0) return;
-    if (!shouldAutoNarrate) return;
-    const firstBeatText = beats[0]?.lines.join(' ') || '';
-    if (!firstBeatText) return;
-    const t = setTimeout(() => {
-      speak(firstBeatText, { emotion: sceneEmotion, isEpic: hasEpicMoment });
-    }, 1200);
-    return () => clearTimeout(t);
-  }, [chapter?.id, transitioning, audioOn, shouldAutoNarrate]);
-
   const handleAdvanceNarrative = () => {
     if (hasMoreBeats) {
       setBeatIndex(prev => prev + 1);
