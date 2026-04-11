@@ -941,7 +941,8 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", "interprete"],
     sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'Uma presença sábia aguarda dentro...' },
     narrative: [
-      "O caminho leva a uma casa grande e sóbria. Uma placa sobre a porta diz: {{emphasis}}\"Casa do Intérprete.\"{{/emphasis}} Antes de bater, Cristão hesitou. {{fade}}A casa emana silêncio — o tipo de silêncio que precede revelações.{{/fade}}",
+      "O caminho leva a uma casa grande e sóbria. Uma placa sobre a porta diz: {{emphasis}}\"Casa do Intérprete.\"{{/emphasis}}",
+      "{{fade}}A casa emana silêncio — o tipo de silêncio que precede revelações. Cristão hesitou antes de bater.{{/fade}}",
       "A porta se abriu antes de Cristão bater. Um homem de olhar profundo e voz calma diz: {{divine}}\"Eu estava te esperando. Entre. Vou te mostrar coisas que serão úteis para o restante da sua jornada.\"{{/divine}}"
     ],
     replayNarrative: [
@@ -1064,6 +1065,7 @@ export const storyChapters: Record<string, StoryChapter> = {
         sceneEvent: { type: 'suspense', delay: 300, duration: 1500, message: 'As palavras penetram seu coração...' },
     narrative: [
       "{{dialog}}\"A Lei não é inútil\"{{/dialog}}, responde o Intérprete. {{emphasis}}\"Ela revela a doença. Mas não é o remédio.{{/emphasis}} Quem tenta se curar pela Lei apenas sufoca na própria poeira.\"",
+      "{{fade}}Cristão absorveu as palavras em silêncio. A sala da poeira ainda ecoava na memória — a vassoura que só piora, a água que limpa.{{/fade}}",
       "Ele te olha fixamente: {{divine}}\"Lembre-se disso no caminho. Muitos tentarão te dizer que basta ser bom o suficiente, seguir regras o suficiente. Mas o fardo que caiu na cruz não caiu por suas obras — caiu pela Graça.\"{{/divine}}"
     ],
     choices: [
@@ -1236,6 +1238,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'O caminho se inclina para cima...' },
     narrative: [
       "{{fade}}A casa fica para trás, mas suas lições caminham com você.{{/fade}} A poeira e a vassoura. O fogo que não apaga. O homem na gaiola. O palácio que exige luta.",
+      "O ar é mais fresco aqui fora. A estrada serpenteia entre pedras e arbustos secos. {{whisper}}Cada lição do Intérprete agora pesa como arma no cinto.{{/whisper}}",
       "{{tremor}}O caminho sobe agora. Uma colina íngreme se ergue à frente — a Colina da Dificuldade.{{/tremor}}"
     ],
     choices: [
@@ -1762,7 +1765,8 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", 'fiel'],
     sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'As ofertas brilham ao seu redor...' },
     narrative: [
-      "{{fade}}As barracas oferecem tudo que seu coração poderia desejar.{{/fade}} Comida abundante, roupas finas, poder, reconhecimento. {{villain}}Vendedores sorriem e dizem: \"Apenas prove. Sem compromisso.\"{{/villain}}",
+      "{{fade}}As barracas oferecem tudo que seu coração poderia desejar.{{/fade}} Comida abundante, roupas finas, poder, reconhecimento.",
+      "{{villain}}Vendedores sorriem e dizem: \"Apenas prove. Sem compromisso.\"{{/villain}} Os aromas intoxicam. As cores cegam. {{tremor}}Cada passo para dentro da feira é um passo para longe do caminho.{{/tremor}}",
       "{{heart}}Fiel te puxa pelo braço:{{/heart}} {{dialog}}\"Cristão, lembre-se do homem na gaiola de ferro. Ele também começou apenas olhando.\"{{/dialog}}"
     ],
     adaptiveNarrative: [
@@ -1830,7 +1834,8 @@ export const storyChapters: Record<string, StoryChapter> = {
     characters: ["cristao", 'fiel'],
     sceneEvent: { type: 'tension', intensity: 2, duration: 2500, message: 'A pressão aumenta...' },
     narrative: [
-      "{{fade}}Seu silêncio não te protege. A multidão te identifica como companheiro de Fiel.{{/fade}} {{tremor}}A pressão aumenta. Olhares hostis de todos os lados.{{/tremor}}",
+      "{{fade}}Seu silêncio não te protege. A multidão te identifica como companheiro de Fiel.{{/fade}}",
+      "{{tremor}}A pressão aumenta. Olhares hostis de todos os lados. Empurrões. Cusparadas. O cerco se fecha.{{/tremor}}",
       "{{heart}}Fiel olha para você. Seus olhos não acusam — mas perguntam: \"Onde está sua coragem?\"{{/heart}}"
     ],
     toneNarrative: [
