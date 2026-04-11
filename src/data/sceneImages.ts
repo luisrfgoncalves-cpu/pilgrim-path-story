@@ -101,6 +101,24 @@ import casteloDuvidaExterior from '@/assets/scenes/castelo-duvida-exterior.jpg';
 import montanhasPastores from '@/assets/scenes/montanhas-pastores.jpg';
 import paisBeulaDescanso from '@/assets/scenes/pais-beula-descanso.jpg';
 
+// ── Imagens corrigidas (estilo consistente) ──
+import fardoArrancando from '@/assets/scenes/fardo-arrancando.jpg';
+import cristaoFamiliaDormindo from '@/assets/scenes/cristao-familia-dormindo.jpg';
+import cristaoGritandoVida from '@/assets/scenes/cristao-gritando-vida.jpg';
+import palavrasQueimandoParedes from '@/assets/scenes/palavras-queimando-paredes.jpg';
+import familiaPercebeMudanca from '@/assets/scenes/familia-percebe-mudanca.jpg';
+import interpreteVisaoFinal from '@/assets/scenes/interprete-visao-final.jpg';
+import apolionBatalhaEpica from '@/assets/scenes/apolion-batalha-epica.jpg';
+import valeSombraProfundo from '@/assets/scenes/vale-sombra-profundo.jpg';
+import vergonhaConfrontaFiel from '@/assets/scenes/vergonha-confronta-fiel.jpg';
+import celaFeiraVaidade from '@/assets/scenes/cela-feira-vaidade.jpg';
+import calaboucoSofrimento from '@/assets/scenes/calabouco-sofrimento.jpg';
+import lisongieiroArmadilha from '@/assets/scenes/lisonjeiro-armadilha.jpg';
+import rioReflexao from '@/assets/scenes/rio-reflexao.jpg';
+import rioAguasProfundas from '@/assets/scenes/rio-aguas-profundas.jpg';
+import feiraVaidadePassagem from '@/assets/scenes/feira-vaidade-passagem.jpg';
+import casteloDuvidaInterior from '@/assets/scenes/castelo-duvida-interior.jpg';
+
 // ── Novas imagens Parte 2 ──
 import cristaSonhoCarta from '@/assets/scenes/crista-sonho-carta.jpg';
 import misericordiaJuncao from '@/assets/scenes/misericordia-juncao.jpg';
