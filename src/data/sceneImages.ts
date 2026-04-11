@@ -74,7 +74,29 @@ import fugaCastelo from '@/assets/scenes/fuga-castelo.jpg';
 import rioMorteTravessia from '@/assets/scenes/rio-morte-travessia.jpg';
 import chegadaCelestial from '@/assets/scenes/chegada-celestial.jpg';
 
-export const sceneImages: Record<string, string> = {
+// ── Novas imagens Parte 2 ──
+import cristaSonhoCarta from '@/assets/scenes/crista-sonho-carta.jpg';
+import misericordiaJuncao from '@/assets/scenes/misericordia-juncao.jpg';
+import cristaPantano from '@/assets/scenes/crista-pantano.jpg';
+import cristaPortaoEstreito from '@/assets/scenes/crista-portao-estreito.jpg';
+import boaVontadePortao from '@/assets/scenes/boa-vontade-portao.jpg';
+import cristaCasaInterprete from '@/assets/scenes/crista-casa-interprete.jpg';
+import grandeCoracaoGuia from '@/assets/scenes/grande-coracao-guia.jpg';
+import cristaCruzFardo from '@/assets/scenes/crista-cruz-fardo.jpg';
+import cristaColinaSubida from '@/assets/scenes/crista-colina-subida.jpg';
+import cristaPalacioLeoes from '@/assets/scenes/crista-palacio-leoes.jpg';
+import velhoHonestoEncontro from '@/assets/scenes/velho-honesto-encontro.jpg';
+import grandeCoracaoVsGigante from '@/assets/scenes/grande-coracao-vs-gigante.jpg';
+import resgateMenteFraca from '@/assets/scenes/resgate-mente-fraca.jpg';
+import hospedariaGaioFesta from '@/assets/scenes/hospedaria-gaio-festa.jpg';
+import valenteVerdadeEncontro from '@/assets/scenes/valente-verdade-encontro.jpg';
+import resgateDesanimoMedo from '@/assets/scenes/resgate-desanimo-medo.jpg';
+import casteloDuvidaDestruido from '@/assets/scenes/castelo-duvida-destruido.jpg';
+import firmeMadameBolha from '@/assets/scenes/firme-madame-bolha.jpg';
+import cristaRioTravessia from '@/assets/scenes/crista-rio-travessia.jpg';
+import cristaChegadaCelestial from '@/assets/scenes/crista-chegada-celestial.jpg';
+
+
   // FASE 1: Cidade da Destruição ao Caminho
   'cena1': cristaoFamiliaNoite,         // Cristão com a família à noite
   'cena1b': vizinhosZombando,            // Vizinhos zombando nas ruas
