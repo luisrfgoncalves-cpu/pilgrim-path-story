@@ -6,6 +6,7 @@ const corsHeaders = {
 };
 
 type EmotionType = 'neutral' | 'dramatic' | 'solemn' | 'urgent' | 'celestial' | 'villain';
+type ProviderName = 'elevenlabs' | 'freetts' | 'eidosspeech';
 
 const VOICE_SETTINGS: Record<EmotionType, {
   stability: number;
@@ -23,7 +24,6 @@ const VOICE_SETTINGS: Record<EmotionType, {
 
 const VOICE_ID = 'onwK4e9ZLuTAKqWW03F9';
 
-// ═══ FreeTTS voice mapping by emotion ═══
 const FREETTS_VOICES: Record<EmotionType, string> = {
   neutral:   'pt-BR-FranciscaNeural',
   dramatic:  'pt-BR-AntonioNeural',
@@ -49,7 +49,6 @@ function preprocessForExpressiveNarration(text: string, emotion: EmotionType): s
   processed = processed.replace(/!{2,}/g, '!');
   processed = processed.replace(/"([^"]+)"/g, '... "$1" ...');
   processed = processed.replace(/"([^"]+)"/g, '... "$1" ...');
-
   if (emotion === 'solemn' || emotion === 'celestial') {
     processed = processed.replace(/,\s/g, ', ... ');
   }
@@ -95,31 +94,26 @@ async function hashKey(text: string, emotion: string): Promise<string> {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// ═══ FreeTTS.org — Microsoft Neural voices (FREE, no key needed) ═══
+// ═══ FreeTTS.org — Microsoft Neural voices (FREE) ═══
 async function generateWithFreeTTS(text: string, emotion: EmotionType): Promise<ArrayBuffer | null> {
   try {
     const voice = FREETTS_VOICES[emotion] || 'pt-BR-FranciscaNeural';
     const speed = FREETTS_SPEEDS[emotion] || 0.95;
-
     console.log(`[TTS FreeTTS] Trying voice: ${voice}, speed: ${speed}`);
-
     const response = await fetch('https://freetts.org/api/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, voice, speed }),
     });
-
     if (!response.ok) {
       console.log(`[TTS FreeTTS] Failed: ${response.status}`);
       return null;
     }
-
     const buffer = await response.arrayBuffer();
     if (buffer.byteLength < 100) {
       console.log(`[TTS FreeTTS] Response too small (${buffer.byteLength}B)`);
       return null;
     }
-
     console.log(`[TTS FreeTTS] Success (${(buffer.byteLength / 1024).toFixed(1)}KB)`);
     return buffer;
   } catch (e) {
@@ -128,32 +122,27 @@ async function generateWithFreeTTS(text: string, emotion: EmotionType): Promise<
   }
 }
 
-// ═══ eidosSpeech.xyz — Another free neural TTS ═══
+// ═══ eidosSpeech.xyz ═══
 async function generateWithEidos(text: string, emotion: EmotionType): Promise<ArrayBuffer | null> {
   try {
     const voice = (emotion === 'villain' || emotion === 'dramatic' || emotion === 'urgent')
       ? 'pt-BR-AntonioNeural'
       : 'pt-BR-FranciscaNeural';
-
     console.log(`[TTS Eidos] Trying voice: ${voice}`);
-
     const response = await fetch('https://eidosspeech.xyz/api/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, voice }),
     });
-
     if (!response.ok) {
       console.log(`[TTS Eidos] Failed: ${response.status}`);
       return null;
     }
-
     const buffer = await response.arrayBuffer();
     if (buffer.byteLength < 100) {
       console.log(`[TTS Eidos] Response too small`);
       return null;
     }
-
     console.log(`[TTS Eidos] Success (${(buffer.byteLength / 1024).toFixed(1)}KB)`);
     return buffer;
   } catch (e) {
@@ -169,14 +158,11 @@ async function generateWithElevenLabs(
   allKeys: string[],
 ): Promise<ArrayBuffer | null> {
   if (allKeys.length === 0) return null;
-
   let attempts = 0;
   const maxAttempts = Math.min(allKeys.length, 6);
-
   while (attempts < maxAttempts) {
     const apiKey = getCurrentKey(allKeys);
     attempts++;
-
     try {
       const response = await fetch(
         `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?output_format=mp3_22050_32`,
@@ -199,7 +185,6 @@ async function generateWithElevenLabs(
           }),
         },
       );
-
       if (response.status === 429 || response.status === 401) {
         const errText = await response.text();
         console.log(`[TTS EL] Key ${currentKeyIndex} limited: ${errText.slice(0, 80)}`);
@@ -207,13 +192,11 @@ async function generateWithElevenLabs(
         await new Promise(r => setTimeout(r, 500));
         continue;
       }
-
       if (!response.ok) {
         const errorText = await response.text();
         console.log(`[TTS EL] Error [${response.status}]: ${errorText.slice(0, 100)}`);
         return null;
       }
-
       const buffer = await response.arrayBuffer();
       console.log(`[TTS EL] Success (${(buffer.byteLength / 1024).toFixed(1)}KB)`);
       return buffer;
@@ -223,9 +206,11 @@ async function generateWithElevenLabs(
       continue;
     }
   }
-
   return null;
 }
+
+// ═══ Provider priority for playback ═══
+const PROVIDER_PRIORITY: ProviderName[] = ['elevenlabs', 'freetts', 'eidosspeech'];
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -233,7 +218,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { text, emotion = 'neutral' } = await req.json();
+    const { text, emotion = 'neutral', forceProvider } = await req.json();
 
     if (!text || typeof text !== 'string' || text.length === 0) {
       return new Response(
@@ -249,57 +234,76 @@ Deno.serve(async (req) => {
       );
     }
 
-    // ═══ STEP 1: Check cache ═══
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     const cacheKey = await hashKey(text, emotion);
-    const cachePath = `${emotion}/${cacheKey}.mp3`;
+    const emotionType = (emotion as EmotionType) || 'neutral';
 
-    const { data: cachedFile } = await supabase.storage
-      .from('tts-cache')
-      .download(cachePath);
+    // ═══ STEP 1: Check cache — try best provider first ═══
+    // If forceProvider is set (pre-generation), skip cache check
+    if (!forceProvider) {
+      for (const provider of PROVIDER_PRIORITY) {
+        const cachePath = `${provider}/${emotionType}/${cacheKey}.mp3`;
+        const { data: cachedFile } = await supabase.storage
+          .from('tts-cache')
+          .download(cachePath);
 
-    if (cachedFile && cachedFile.size > 0) {
-      console.log(`[TTS Cache HIT] ${cachePath}`);
-      const buffer = await cachedFile.arrayBuffer();
-      return new Response(buffer, {
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'audio/mpeg',
-          'Cache-Control': 'public, max-age=604800',
-          'X-TTS-Cache': 'hit',
-          'X-TTS-Source': 'cache',
-        },
-      });
+        if (cachedFile && cachedFile.size > 0) {
+          console.log(`[TTS Cache HIT] ${cachePath}`);
+          const buffer = await cachedFile.arrayBuffer();
+          return new Response(buffer, {
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'audio/mpeg',
+              'Cache-Control': 'public, max-age=604800',
+              'X-TTS-Cache': 'hit',
+              'X-TTS-Source': provider,
+            },
+          });
+        }
+      }
+      console.log(`[TTS Cache MISS] ${emotionType}/${cacheKey}`);
     }
 
-    console.log(`[TTS Cache MISS] ${cachePath}`);
-
-    const emotionType = (emotion as EmotionType) || 'neutral';
     const expressiveText = preprocessForExpressiveNarration(text, emotionType);
     const settings = VOICE_SETTINGS[emotionType] || VOICE_SETTINGS.neutral;
 
-    // ═══ STEP 2: Try ElevenLabs first (best quality) ═══
-    let audioBuffer = await generateWithElevenLabs(expressiveText, settings, getApiKeys());
-    let source = 'elevenlabs';
+    // ═══ STEP 2: Generate audio ═══
+    let audioBuffer: ArrayBuffer | null = null;
+    let source: ProviderName = 'elevenlabs';
 
-    // ═══ STEP 3: Fallback to FreeTTS (Microsoft Neural — free, no key) ═══
-    if (!audioBuffer) {
-      console.log(`[TTS] ElevenLabs unavailable, trying FreeTTS...`);
-      audioBuffer = await generateWithFreeTTS(text, emotionType);
-      source = 'freetts';
+    if (forceProvider) {
+      // Pre-generation mode: use specific provider
+      if (forceProvider === 'elevenlabs') {
+        audioBuffer = await generateWithElevenLabs(expressiveText, settings, getApiKeys());
+        source = 'elevenlabs';
+      } else if (forceProvider === 'freetts') {
+        audioBuffer = await generateWithFreeTTS(text, emotionType);
+        source = 'freetts';
+      } else if (forceProvider === 'eidosspeech') {
+        audioBuffer = await generateWithEidos(text, emotionType);
+        source = 'eidosspeech';
+      }
+    } else {
+      // Normal mode: cascade
+      audioBuffer = await generateWithElevenLabs(expressiveText, settings, getApiKeys());
+      source = 'elevenlabs';
+
+      if (!audioBuffer) {
+        console.log(`[TTS] ElevenLabs unavailable, trying FreeTTS...`);
+        audioBuffer = await generateWithFreeTTS(text, emotionType);
+        source = 'freetts';
+      }
+
+      if (!audioBuffer) {
+        console.log(`[TTS] FreeTTS unavailable, trying eidosSpeech...`);
+        audioBuffer = await generateWithEidos(text, emotionType);
+        source = 'eidosspeech';
+      }
     }
 
-    // ═══ STEP 4: Fallback to eidosSpeech (free, no key) ═══
-    if (!audioBuffer) {
-      console.log(`[TTS] FreeTTS unavailable, trying eidosSpeech...`);
-      audioBuffer = await generateWithEidos(text, emotionType);
-      source = 'eidosspeech';
-    }
-
-    // ═══ All failed ═══
     if (!audioBuffer) {
       return new Response(
         JSON.stringify({ error: 'All TTS providers unavailable. Try again later.' }),
@@ -307,7 +311,8 @@ Deno.serve(async (req) => {
       );
     }
 
-    // ═══ STEP 5: Save to global cache ═══
+    // ═══ STEP 3: Save to provider-specific path ═══
+    const cachePath = `${source}/${emotionType}/${cacheKey}.mp3`;
     try {
       const { error: uploadError } = await supabase.storage
         .from('tts-cache')
@@ -319,7 +324,7 @@ Deno.serve(async (req) => {
       if (uploadError) {
         console.error(`[TTS Cache] Upload failed: ${uploadError.message}`);
       } else {
-        console.log(`[TTS Cache STORED] ${cachePath} via ${source} (${(audioBuffer.byteLength / 1024).toFixed(1)}KB)`);
+        console.log(`[TTS Cache STORED] ${cachePath} (${(audioBuffer.byteLength / 1024).toFixed(1)}KB)`);
       }
     } catch (e) {
       console.error(`[TTS Cache] Storage error: ${e}`);
