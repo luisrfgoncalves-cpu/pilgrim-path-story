@@ -83,6 +83,11 @@ import chavePromessa from '@/assets/scenes/chave-promessa.jpg';
 import fugaCastelo from '@/assets/scenes/fuga-castelo.jpg';
 import rioMorteTravessia from '@/assets/scenes/rio-morte-travessia.jpg';
 import chegadaCelestial from '@/assets/scenes/chegada-celestial.jpg';
+import palacioBeloChegada from '@/assets/scenes/palacio-belo-chegada.jpg';
+import esperancaJuncaoCaminho from '@/assets/scenes/esperanca-juncao-caminho.jpg';
+import casteloDuvidaExterior from '@/assets/scenes/castelo-duvida-exterior.jpg';
+import montanhasPastores from '@/assets/scenes/montanhas-pastores.jpg';
+import paisBeulaDescanso from '@/assets/scenes/pais-beula-descanso.jpg';
 
 // ── Novas imagens Parte 2 ──
 import cristaSonhoCarta from '@/assets/scenes/crista-sonho-carta.jpg';
@@ -138,7 +143,7 @@ export const sceneImages: Record<string, string> = {
   'fase2-cena4': interpreteVisoes,          // Mais visões
   'fase2-cena5': casaInterprete,            // Visão final
   'fase2-cena6': interpreteDespedida,       // Despedida
-  'fase2-cena7': palacioBelo,
+  'fase2-cena7': palacioBeloChegada,
   'fase2-cena8': gaiolaFerro,
   'fase2-cena9': armaduraCrista,
   'fase2-cena10': palacioBelo,
@@ -167,7 +172,7 @@ export const sceneImages: Record<string, string> = {
   'fase4-cena5': julgamentoFeira,           // Na cela / pré-julgamento
   'fase4-cena6': julgamentoFeira,           // Julgamento de Fiel
   'fase4-cena7': martirioFiel,              // Martírio de Fiel
-  'fase4-cena8': esperancaEncontro,         // Esperança aparece
+  'fase4-cena8': esperancaJuncaoCaminho,    // Esperança aparece
   'fase4-cena9': feiraVergonha,             // Vergonha
   'fase4-cena10': demasMinaPrata,           // Demas na mina de prata
   'fase4-cena11b': minaPrataDemas,          // Dentro da mina
@@ -182,13 +187,13 @@ export const sceneImages: Record<string, string> = {
   'fase5-cena5': masmorrasCastelo,          // Sofrimento
   'fase5-cena6': chavePromessa,             // Chave da Promessa!
   'fase5-cena7': fugaCastelo,               // Fuga do castelo
-  'fase5-cena8': casteloDuvida,             // Lisonjeiro
+  'fase5-cena8': casteloDuvidaExterior,     // Lisonjeiro
   'fase5-cena9': montanhasDeleitosas,       // Montanhas Deleitosas
-  'fase5-cena10': montanhasDeleitosas,      // Pastores
+  'fase5-cena10': montanhasPastores,        // Pastores
   'fase5-cena11': redeLisonjeiro,           // Rede do Lisonjeiro
   'fase5-cena12': redeLisonjeiro,           // Resgate
   'fase5-cena13': terraEncantadaFlores,     // Terra Encantada
-  'fase5-cena14': paisBeula,                // País de Beulá
+  'fase5-cena14': paisBeulaDescanso,        // País de Beulá
 
   // FASE 6: Rio e Cidade Celestial
   'fase6-cena1': rioFinal,                  // Avistando o rio
