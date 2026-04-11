@@ -278,7 +278,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     id: "p2-fase2-cena1",
     title: "Grande-Coração",
     location: "Casa do Intérprete",
-    characters: ["crista", "misericordia", "grande_coracao"],
+    characters: ["crista", "misericordia", "grande_coracao", 'interprete'],
     reflection: "p2r3",
     sceneEvent: { type: 'suspense', delay: 1000, duration: 3000, message: 'Um guerreiro se apresenta...' },
     narrative: [
@@ -380,7 +380,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     id: "p2-fase2-cena4",
     title: "Os Leões e Grande-Coração",
     location: "Caminho dos Leões",
-    characters: ["crista", "grande_coracao"],
+    characters: ["crista", "grande_coracao", 'vigilante'],
     sceneEvent: { type: 'tension', duration: 4000, message: 'Os leões rugem!', intensity: 0.9 },
     interactionType: 'timed',
     timeLimit: 12,
@@ -636,7 +636,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     id: "p2-fase3-cena6",
     title: "A Feira da Vaidade — Desta Vez, Diferente",
     location: "Feira da Vaidade",
-    characters: ["crista", "grande_coracao", "misericordia"],
+    characters: ["crista", "grande_coracao", "misericordia", 'fiel'],
     sceneEvent: { type: 'tension', duration: 4000, message: 'A Feira da Vaidade...', intensity: 0.6 },
     narrative: [
       "A Feira da Vaidade ainda existe. Mas algo mudou. {{divine}}O martírio de Fiel, anos atrás, plantou sementes.{{/divine}}",
@@ -710,7 +710,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     id: "p2-fase4-cena2",
     title: "A Mina de Demas — De Novo",
     location: "Colina de Lucro",
-    characters: ["crista", "grande_coracao"],
+    characters: ["crista", "grande_coracao", 'demas'],
     sceneEvent: { type: 'tension', duration: 4000, message: 'O brilho da prata cega...', intensity: 0.6 },
     narrative: [
       "A mina de Demas ainda está ali. Mas Demas não. {{villain}}Dizem que ele próprio entrou na mina buscando mais prata — e nunca mais saiu.{{/villain}}",
@@ -781,7 +781,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     id: "p2-fase4-cena4",
     title: "O Prado Agradável — Lição Aprendida",
     location: "Prado Agradável",
-    characters: ["crista", "grande_coracao"],
+    characters: ["crista", "grande_coracao", 'esperanca'],
     sceneEvent: { type: 'suspense', delay: 1500, duration: 3000, message: 'O prado verde seduz...' },
     narrative: [
       "O Prado Agradável que seduziu Cristão e Esperançoso para o Castelo da Dúvida aparece à esquerda do caminho.",
@@ -868,7 +868,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     id: "p2-fase5-cena2",
     title: "A Batalha contra o Gigante Desespero",
     location: "Castelo da Dúvida",
-    characters: ["crista", "grande_coracao", "valente_pela_verdade", "gigante_desespero"],
+    characters: ["crista", "grande_coracao", "valente_pela_verdade", "gigante_desespero", 'desconfianca'],
     sceneEvent: { type: 'tension', duration: 6000, message: 'O Gigante Desespero ataca!', intensity: 1.0 },
     narrative: [
       "{{tremor}}Grande-Coração arromba os portões.{{/tremor}} O {{villain}}Gigante Desespero{{/villain}} emerge, rugindo. Desconfiança, sua esposa, grita do alto da torre.",
@@ -900,7 +900,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     id: "p2-fase5-cena3",
     title: "Os Prisioneiros Libertados",
     location: "Masmorras do Castelo",
-    characters: ["crista", "grande_coracao", "sr_desanimo", "muito_medo"],
+    characters: ["crista", "grande_coracao", "sr_desanimo", "muito_medo", 'misericordia'],
     sceneEvent: { type: 'suspense', delay: 1500, duration: 4000, message: 'Vozes nas masmorras...' },
     narrative: [
       "Nas masmorras escuras, encontram dois prisioneiros: Sr. Desânimo e sua filha, Muito-Medo. Estão pálidos, fracos, cobertos de feridas.",
@@ -1128,7 +1128,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     id: "p2-fase6-cena4",
     title: "As Despedidas",
     location: "Margem do Rio",
-    characters: ["crista", "misericordia", "grande_coracao", "valente_pela_verdade", "sr_desanimo"],
+    characters: ["crista", "misericordia", "grande_coracao", "valente_pela_verdade", "sr_desanimo", 'muito_medo'],
     sceneEvent: { type: 'suspense', delay: 2000, duration: 5000, message: 'As últimas palavras...' },
     narrative: [
       "Cada peregrino se despede à sua maneira. Valente-pela-Verdade diz as palavras mais famosas da Parte II:",
@@ -1219,7 +1219,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     id: "p2-final-desistencia",
     title: "A Desistência de Cristã",
     location: "Caminho Estreito",
-    characters: ["crista"],
+    characters: ["crista", 'misericordia'],
     sceneEvent: { type: 'sinking', duration: 5000, message: 'O peso da jornada...', intensity: 0.8 },
     narrative: [
       "O peso da jornada se tornou insuportável. Os filhos choram, os companheiros vacilam, e a estrada parece não ter fim.",
@@ -1239,7 +1239,7 @@ export const part2Chapters: Record<string, StoryChapter> = {
     id: "p2-final-terra-encantada",
     title: "O Sono Eterno",
     location: "Terra Encantada",
-    characters: ["crista", "misericordia"],
+    characters: ["crista", "misericordia", 'grande_coracao'],
     sceneEvent: { type: 'sinking', duration: 5000, message: 'Os olhos pesam...', intensity: 0.9 },
     narrative: [
       "O ar da Terra Encantada é doce demais. Os filhos adormecem primeiro. Depois Misericórdia. {{whisper}}Depois Cristã.{{/whisper}}",

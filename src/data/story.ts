@@ -1000,7 +1000,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase2-cena3",
     title: "O Caminho Sem Instrução",
     location: "Caminho Estreito",
-    characters: ["cristao"],
+    characters: ["cristao", 'interprete'],
     sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'Uma sensação de vazio acompanha Cristão...' },
     narrative: [
       "{{fade}}Cristão seguiu adiante sem entrar na casa. O caminho parece igual, mas algo falta.{{/fade}} Sem as lições do Intérprete, cada decisão futura será mais difícil.",
@@ -1252,7 +1252,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase2-cena12",
     title: "A Colina da Dificuldade",
     location: "Colina da Dificuldade",
-    characters: ["cristao"],
+    characters: ["cristao", 'formalista', 'hipocrisia'],
     sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'A colina se ergue como um muro...' },
     narrative: [
       "{{tremor}}A Colina da Dificuldade se ergue como um muro de pedra.{{/tremor}} Bunyan a descreve como tão íngreme que só se pode subir de mãos e joelhos. No pé da colina, uma fonte de água fresca — para fortalecer o peregrino antes da escalada.",
@@ -1322,7 +1322,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase2-cena14",
     title: "Os Leões Acorrentados",
     location: "Portão do Palácio Belo",
-    characters: ["cristao", "discricao"],
+    characters: ["cristao", "discricao", 'timidez_desconfianca', 'vigilante'],
     sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Rugidos ecoam entre os muros!' },
     narrative: [
       "No topo da colina, o caminho estreita entre muros altos. {{tremor}}E ali, bloqueando a passagem, dois leões enormes rugem com ferocidade.{{/tremor}}",
@@ -1397,7 +1397,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase3-cena2",
     title: "A Voz nas Sombras",
     location: "Vale da Humilhação",
-    characters: ["cristao"],
+    characters: ["cristao", 'apolion'],
     sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'O chão vibra sob seus pés...' },
     narrative: [
       "{{tremor}}Uma voz troveja entre as rochas, fazendo o chão vibrar:{{/tremor}}",
@@ -1729,7 +1729,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase4-cena2",
     title: "O Escárnio",
     location: "Feira da Vaidade",
-    characters: ["cristao"],
+    characters: ["cristao", 'fiel'],
     sceneEvent: { type: 'tension', intensity: 2, duration: 3000, message: 'A multidão se volta contra os peregrinos!' },
     narrative: [
       "{{tremor}}Sua recusa em comprar provoca escárnio. Vendedores zombam. A multidão começa a cercá-los.{{/tremor}} Alguns cospem em vocês. Outros jogam lama.",
@@ -1759,7 +1759,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase4-cena3",
     title: "A Sedução da Feira",
     location: "Feira da Vaidade",
-    characters: ["cristao"],
+    characters: ["cristao", 'fiel'],
     sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'As ofertas brilham ao seu redor...' },
     narrative: [
       "{{fade}}As barracas oferecem tudo que seu coração poderia desejar.{{/fade}} Comida abundante, roupas finas, poder, reconhecimento. {{villain}}Vendedores sorriem e dizem: \"Apenas prove. Sem compromisso.\"{{/villain}}",
@@ -1788,7 +1788,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase4-cena4",
     title: "O Julgamento",
     location: "Feira da Vaidade",
-    characters: ["cristao"],
+    characters: ["cristao", 'fiel'],
     sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'O tribunal se ergue diante dos peregrinos!' },
     narrative: [
       "{{tremor}}A confusão cresce. Os donos da feira decidem prender vocês.{{/tremor}} São levados a um tribunal presidido pelo juiz {{villain}}Ódio-ao-Bem{{/villain}}. O júri é formado por Cego, Sem-Bem, Malícia, Luxúria, Vive-no-Prazer, Imprudente e outros.",
@@ -1827,7 +1827,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase4-cena5",
     title: "O Preço do Silêncio",
     location: "Feira da Vaidade",
-    characters: ["cristao"],
+    characters: ["cristao", 'fiel'],
     sceneEvent: { type: 'tension', intensity: 2, duration: 2500, message: 'A pressão aumenta...' },
     narrative: [
       "{{fade}}Seu silêncio não te protege. A multidão te identifica como companheiro de Fiel.{{/fade}} {{tremor}}A pressão aumenta. Olhares hostis de todos os lados.{{/tremor}}",
@@ -1857,7 +1857,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase4-cena6",
     title: "O Martírio de Fiel",
     location: "Feira da Vaidade",
-    characters: ["cristao"],
+    characters: ["cristao", 'fiel'],
     sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'O fogo consome a estaca...' },
     narrative: [
       "{{tremor}}O tribunal condena Fiel.{{/tremor}} Ele é açoitado, apedrejado, esfaqueado e, por fim, queimado na estaca. {{heart}}Fiel não grita de dor. Seu rosto, mesmo no fogo, irradia paz.{{/heart}}",
@@ -1887,7 +1887,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase4-cena7",
     title: "A Tentação de Desistir",
     location: "Feira da Vaidade",
-    characters: ["cristao"],
+    characters: ["cristao", 'fiel'],
     sceneEvent: { type: 'tension', intensity: 1, duration: 2000, message: 'A solidão pesa sem Fiel...' },
     narrative: [
       "{{fade}}Sem Fiel, a solidão é esmagadora.{{/fade}} Os vendedores da feira percebem sua fraqueza e se aproximam com ofertas mais tentadoras.",
@@ -1917,7 +1917,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase4-cena8",
     title: "Esperança, o Novo Companheiro",
     location: "Saída da Feira",
-    characters: ["cristao", "esperanca"],
+    characters: ["cristao", "esperanca", 'fiel'],
     sceneEvent: { type: 'suspense', delay: 300, duration: 2000, message: 'Alguém se aproxima por trás...' },
     narrative: [
       "Na saída da feira, alguém te alcança. Seu nome é {{emphasis}}Esperança{{/emphasis}}. Ele viu tudo — o julgamento, o martírio de Fiel, sua coragem (ou falta dela).",
@@ -1983,7 +1983,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase4-cena10",
     title: "O Legado de Fiel",
     location: "Estrada além da Feira",
-    characters: ["cristao"],
+    characters: ["cristao", 'esperanca'],
     sceneEvent: { type: 'suspense', delay: 500, duration: 2500, message: 'O silêncio carrega o peso do sacrifício...' },
     narrative: [
       "{{fade}}A feira fica para trás. A estrada é silenciosa novamente.{{/fade}} Mas o silêncio não é vazio — está cheio de tudo que aconteceu.",
@@ -2184,7 +2184,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase5-cena3",
     title: "A Masmorra",
     location: "Castelo da Dúvida",
-    characters: ["cristao", "gigante_desespero", "desconfianca"],
+    characters: ["cristao", "gigante_desespero", "desconfianca", 'esperanca'],
     sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'A escuridão é total...' },
     narrative: [
       "{{tremor}}O Gigante Desespero os arrasta para seu castelo e os joga numa masmorra escura, fétida e sem esperança.{{/tremor}} {{fade}}Não há luz. Não há comida. Apenas pedra úmida e correntes.{{/fade}}",
@@ -2250,7 +2250,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase5-cena5",
     title: "O Abismo do Desespero",
     location: "Castelo da Dúvida",
-    characters: ["cristao"],
+    characters: ["cristao", 'esperanca'],
     sceneEvent: { type: 'sinking', duration: 10000, message: 'O desespero te puxa para o abismo...' },
     narrative: [
       "{{fade}}A escuridão da masmorra penetra sua alma.{{/fade}} O gigante tem razão? Todo o sofrimento, toda a luta — para quê?",
@@ -2287,7 +2287,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase5-cena6",
     title: "A Chave da Promessa",
     location: "Castelo da Dúvida",
-    characters: ["cristao"],
+    characters: ["cristao", 'esperanca'],
     sceneEvent: { type: 'suspense', delay: 500, duration: 3000, message: 'Uma lembrança surge como um raio!' },
     narrative: [
       "Na terceira noite, enquanto oram, Cristão dá um salto: {{shout}}\"Que tolo eu sou! Tenho no meu peito uma chave chamada Promessa. Ela pode abrir qualquer fechadura do Castelo da Dúvida!\"{{/shout}}",
@@ -2327,7 +2327,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase5-cena7",
     title: "Os Portões do Castelo",
     location: "Castelo da Dúvida",
-    characters: ["cristao"],
+    characters: ["cristao", 'esperanca', 'gigante_desespero'],
     sceneEvent: { type: 'tension', intensity: 3, duration: 4000, message: 'Passos pesados se aproximam!' },
     narrative: [
       "{{tremor}}A masmorra se fecha ao redor de vocês. As paredes parecem encolher.{{/tremor}} {{villain}}O Gigante Desespero ruge nos corredores superiores.{{/villain}}",
@@ -2406,7 +2406,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase5-cena10",
     title: "A Lição do Castelo",
     location: "Além das Montanhas",
-    characters: ["cristao"],
+    characters: ["cristao", 'esperanca'],
     sceneEvent: { type: 'suspense', delay: 500, duration: 2000, message: 'A jornada ganha novo sentido...' },
     narrative: [
       "{{emphasis}}O castelo ensinou uma verdade que o Intérprete não pôde mostrar — porque só se aprende na dor:{{/emphasis}} {{divine}}a promessa de Deus é uma chave que abre qualquer prisão, mas você precisa se lembrar de usá-la.{{/divine}}",
@@ -2688,7 +2688,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase6-cena4",
     title: "Afundando nas Águas",
     location: "No Rio",
-    characters: ["cristao"],
+    characters: ["cristao", 'esperanca'],
     sceneEvent: { type: 'sinking', duration: 12000, message: 'As águas escuras te cobrem!' },
     narrative: [
       "{{tremor}}Bunyan descreve este momento com dor: Cristão afunda nas águas escuras.{{/tremor}} {{villain}}As ondas cobrem sua cabeça. Todos os pecados, medos e dúvidas da jornada convergem.{{/villain}}",
@@ -2718,7 +2718,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase6-cena5",
     title: "O Outro Lado",
     location: "Margem Celestial",
-    characters: ["cristao"],
+    characters: ["cristao", 'tres_resplandecentes'],
     sceneEvent: { type: 'suspense', delay: 500, duration: 4000, message: 'Solo firme... luz... paz...' },
     narrative: [
       "{{divine}}Seus pés tocam solo firme. A água fica para trás. Do outro lado do rio, tudo muda.{{/divine}}",
@@ -2816,7 +2816,7 @@ export const storyChapters: Record<string, StoryChapter> = {
     id: "fase6-cena9",
     title: "A Rejeição de Ignorância",
     location: "Portões da Cidade Celestial",
-    characters: ["cristao", "ignorancia"],
+    characters: ["cristao", "ignorancia", 'tres_resplandecentes'],
     reflection: "r15",
     sceneEvent: { type: 'tension', intensity: 3, duration: 5000, message: 'Uma cena solene se desenrola...' },
     narrative: [
