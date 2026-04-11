@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
+import { narrate, stopNarration, type NarrationStyle } from '@/lib/narrator';
 
 /**
  * useTTS — Text-to-Speech com cache inteligente + narração neural.
@@ -14,7 +15,7 @@ import { useState, useCallback, useRef } from 'react';
  *   4. Edge Function gera e salva automaticamente
  */
 
-type TTSTier = 'elevenlabs' | 'freetts' | 'eidosspeech' | 'cached';
+type TTSTier = 'elevenlabs' | 'freetts' | 'eidosspeech' | 'cached' | 'local';
 type EmotionType = 'neutral' | 'dramatic' | 'solemn' | 'urgent' | 'celestial' | 'villain';
 
 interface TTSOptions {
@@ -85,7 +86,23 @@ function getCacheKey(text: string, emotion: string): string {
   return `${emotion}:${text.slice(0, 200)}`;
 }
 
+function getNarrationStyle(emotion: EmotionType): NarrationStyle {
+  switch (emotion) {
+    case 'urgent':
+    case 'villain':
+      return 'urgent';
+    case 'solemn':
+      return 'calm';
+    case 'celestial':
+      return 'triumphant';
+    case 'dramatic':
+    default:
+      return 'dramatic';
+  }
+}
+
 function stopGlobalAudio() {
+  stopNarration();
   if (globalAudio) {
     globalAudio.pause();
     globalAudio.currentTime = 0;
@@ -141,6 +158,44 @@ export function useTTS() {
       setCurrentTier(null);
     }
     return true;
+  }, []);
+
+  const playLocalFallback = useCallback(async (text: string, token: number, emotion: EmotionType) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis || token !== globalPlaybackToken) {
+      return false;
+    }
+
+    stopGlobalAudio();
+    setCurrentTier('local');
+
+    return await new Promise<boolean>((resolve) => {
+      let finished = false;
+      const estimatedDuration = Math.max(3000, Math.min(45000, Math.round(text.length * 85)));
+      const finish = (ok: boolean) => {
+        if (finished) return;
+        finished = true;
+        window.clearTimeout(safetyTimer);
+        if (token === globalPlaybackToken) {
+          setIsPlaying(false);
+          setCurrentTier(null);
+        }
+        resolve(ok);
+      };
+
+      const safetyTimer = window.setTimeout(() => {
+        finish(token === globalPlaybackToken);
+      }, estimatedDuration);
+
+      try {
+        narrate(text, {
+          force: true,
+          style: getNarrationStyle(emotion),
+          onEnd: () => finish(token === globalPlaybackToken),
+        });
+      } catch {
+        finish(false);
+      }
+    });
   }, []);
 
   const speak = useCallback(async (text: string, options: TTSOptions = {}) => {
@@ -218,9 +273,12 @@ export function useTTS() {
       }
     } catch {}
 
+    const localOk = await playLocalFallback(cleanText, token, emotion);
+    if (localOk) return;
+
     console.log('[TTS] All providers unavailable. Text-only mode.');
     finalizeIfCurrent(token, null);
-  }, [finalizeIfCurrent, playResolvedUrl, stop]);
+  }, [finalizeIfCurrent, playLocalFallback, playResolvedUrl, stop]);
 
   return { speak, stop, isPlaying, currentTier };
 }
