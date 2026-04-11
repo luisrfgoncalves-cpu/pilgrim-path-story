@@ -141,33 +141,9 @@ async function generateWithFreeTTS(text: string, emotion: EmotionType): Promise<
   }
 }
 
-// ═══ eidosSpeech.xyz ═══
-async function generateWithEidos(text: string, emotion: EmotionType): Promise<ArrayBuffer | null> {
-  try {
-    const voice = (emotion === 'villain' || emotion === 'dramatic' || emotion === 'urgent')
-      ? 'pt-BR-AntonioNeural'
-      : 'pt-BR-FranciscaNeural';
-    console.log(`[TTS Eidos] Trying voice: ${voice}`);
-    const response = await fetch('https://eidosspeech.xyz/api/tts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, voice }),
-    });
-    if (!response.ok) {
-      console.log(`[TTS Eidos] Failed: ${response.status}`);
-      return null;
-    }
-    const buffer = await response.arrayBuffer();
-    if (buffer.byteLength < 100) {
-      console.log(`[TTS Eidos] Response too small`);
-      return null;
-    }
-    console.log(`[TTS Eidos] Success (${(buffer.byteLength / 1024).toFixed(1)}KB)`);
-    return buffer;
-  } catch (e) {
-    console.log(`[TTS Eidos] Error: ${e instanceof Error ? e.message : e}`);
-    return null;
-  }
+// ═══ eidosSpeech — offline since April 2026, kept as stub for cache compatibility ═══
+async function generateWithEidos(_text: string, _emotion: EmotionType): Promise<ArrayBuffer | null> {
+  return null;
 }
 
 // ═══ ElevenLabs generation ═══
