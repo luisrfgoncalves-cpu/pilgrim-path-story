@@ -180,12 +180,26 @@ function resolveTileEffect(
 
   const narrative = getPhaseNarrative(phaseIdx, tileType, seed);
 
+  // Get character passive
+  const char = player.characterId ? getCharacter(player.characterId) : undefined;
+  const passive = char?.passive.effect;
+
   switch (tileType) {
-    case 'refuge':
-      result.attrChanges = { fe: 1, perseveranca: 1 };
+    case 'refuge': {
+      let feBonus = 1, persBonus = 1;
+      // Caridade: healing_touch passive — extra attr restore at refuges
+      if (passive?.type === 'healing_touch') {
+        feBonus = passive.attrRestore;
+        persBonus = passive.attrRestore;
+        result.passiveTriggered = `⚡ ${char!.passive.name}: ${char!.name} cura o grupo com mãos abençoadas! +${passive.attrRestore} em todos os atributos!`;
+        result.attrChanges = { fe: feBonus, perseveranca: persBonus, discernimento: passive.attrRestore, coragem: passive.attrRestore };
+      } else {
+        result.attrChanges = { fe: feBonus, perseveranca: persBonus };
+      }
       result.message = narrative || '🏠 Um lugar de descanso se revela no caminho — muros antigos, uma lareira crepitante e o silêncio que só a paz verdadeira oferece. Suas forças se renovam como raízes que encontram água após longa seca.';
       result.emoji = '🏠';
       break;
+    }
     case 'challenge':
       if (rng >= 40) {
         result.posAdjust = 3;
