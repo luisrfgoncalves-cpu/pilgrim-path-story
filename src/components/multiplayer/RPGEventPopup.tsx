@@ -902,6 +902,16 @@ export default function RPGEventPopup({
           {/* CHALLENGE PHASE — Riddle */}
           {phase === 'challenge' && !showResult && riddle && (
             <div className="space-y-4">
+              {/* Wisdom insight hint for riddles */}
+              {wisdomHint && (
+                <div className="p-3 rounded-xl text-sm font-display" style={{
+                  background: 'hsl(200 30% 12%)',
+                  border: '1px solid hsl(200 50% 35%)',
+                  color: 'hsl(200 60% 75%)',
+                }}>
+                  {wisdomHint}
+                </div>
+              )}
               <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/30">
                 <p className="text-lg font-display font-bold text-foreground text-center leading-relaxed">{riddle.riddle}</p>
               </div>
