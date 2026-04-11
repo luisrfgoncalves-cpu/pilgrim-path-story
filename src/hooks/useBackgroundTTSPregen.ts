@@ -147,9 +147,10 @@ export function useBackgroundTTSPregen() {
         break;
       }
 
-      // Check if all done
-      if (progress.completedHashes.length >= ALL_NARRATIVE_PHRASES.length) {
-        console.log(`[BG-PreGen] 🎉 All ${ALL_NARRATIVE_PHRASES.length} phrases cached!`);
+      // Check if all done (completed + permanently failed = all)
+      const totalProcessed = progress.completedHashes.length + progress.failedHashes.length;
+      if (totalProcessed >= ALL_NARRATIVE_PHRASES.length) {
+        console.log(`[BG-PreGen] 🎉 All ${ALL_NARRATIVE_PHRASES.length} phrases processed! (${progress.completedHashes.length} cached, ${progress.failedHashes.length} failed)`);
         runningRef.current = false;
         return;
       }
