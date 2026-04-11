@@ -1461,7 +1461,11 @@ const PresentialMultiplayer = () => {
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="font-display text-sm text-foreground">
+              <h1 className="font-display text-sm text-foreground flex items-center gap-1.5">
+                {currentPlayer?.characterId && (() => {
+                  const c = getCharacter(currentPlayer.characterId!);
+                  return c ? <span>{c.emoji}</span> : null;
+                })()}
                 {`Vez de ${currentPlayer?.name || '...'}`}
               </h1>
               {currentPlayer && (
@@ -1475,6 +1479,16 @@ const PresentialMultiplayer = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                // Save is auto, just confirm and go back
+                navigate('/multiplayer');
+              }}
+              className="text-xs text-muted-foreground font-display bg-card px-3 py-2 rounded-lg border border-border hover:border-primary/30 active:scale-95 transition-all"
+              title="Sair e salvar"
+            >
+              💾 Pausar
+            </button>
             <button
               onClick={() => setShowStats(true)}
               className="text-sm text-primary font-display font-bold bg-card px-4 py-2 rounded-lg border border-primary/30 hover:bg-primary/10 active:scale-95 transition-all"
