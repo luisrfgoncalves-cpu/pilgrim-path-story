@@ -1379,22 +1379,58 @@ const ScenePage = () => {
                         </button>
                       )}
 
-                      {allChoices.map((choice, i) => (
-                        <button
-                          key={i}
-                          onClick={() => handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item)}
-                          className="choice-btn-medieval group"
-                          style={{ animationDelay: `${i * 0.08}s` }}
-                        >
-                          <p className="text-foreground font-body text-base group-hover:text-primary transition-colors">{choice.text}</p>
-                          {choice.requires && (
-                            <p className="text-xs text-primary mt-2 uppercase tracking-wider">★ Desbloqueada por atributos</p>
-                          )}
-                          {choice.item && (
-                            <p className="text-xs text-primary/70 mt-1.5">✦ Concede um item</p>
-                          )}
-                        </button>
-                      ))}
+                      {allChoices.map((choice, i) => {
+                        const choiceTone = choice.toneOptions?.find(t => t.tone === selectedTone[i]);
+                        const toneEffects = choiceTone?.effects || {};
+                        const mergedEffects = { ...choice.effects };
+                        Object.entries(toneEffects).forEach(([k, v]) => {
+                          (mergedEffects as any)[k] = ((mergedEffects as any)[k] || 0) + (v || 0);
+                        });
+                        const toneConsequence = choiceTone
+                          ? `${choice.consequence || ''}\n\n${choiceTone.npcReaction}`
+                          : choice.consequence;
+
+                        return (
+                          <div key={i} className="space-y-2" style={{ animationDelay: `${i * 0.08}s` }}>
+                            <button
+                              onClick={() => handleChoice(choice.nextChapterId, choice.text, mergedEffects, toneConsequence, choice.flag, choice.conditionalEffects, choice.item)}
+                              className="choice-btn-medieval group w-full"
+                            >
+                              <p className="text-foreground font-body text-base group-hover:text-primary transition-colors">{choice.text}</p>
+                              {choice.requires && (
+                                <p className="text-xs text-primary mt-2 uppercase tracking-wider">★ Desbloqueada por atributos</p>
+                              )}
+                              {choice.item && (
+                                <p className="text-xs text-primary/70 mt-1.5">✦ Concede um item</p>
+                              )}
+                              {choiceTone && (
+                                <p className="text-xs mt-1.5 italic text-muted-foreground">
+                                  {choiceTone.emoji} {choiceTone.label}
+                                </p>
+                              )}
+                            </button>
+
+                            {/* Tone chips */}
+                            {choice.toneOptions && choice.toneOptions.length > 0 && (
+                              <div className="flex gap-2 flex-wrap pl-2">
+                                {choice.toneOptions.map((tone) => (
+                                  <button
+                                    key={tone.tone}
+                                    onClick={() => setSelectedTone(prev => ({ ...prev, [i]: prev[i] === tone.tone ? '' : tone.tone }))}
+                                    className={`text-xs px-3 py-1.5 rounded-full border transition-all ${
+                                      selectedTone[i] === tone.tone
+                                        ? 'bg-primary/20 border-primary/40 text-primary'
+                                        : 'bg-card/50 border-border/50 text-muted-foreground hover:border-primary/30'
+                                    }`}
+                                  >
+                                    {tone.emoji} {tone.label}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </>
                   )}
 
