@@ -13,6 +13,8 @@ import RPGBriefing, { GameMode } from '@/components/multiplayer/RPGBriefing';
 import RPGEventPopup from '@/components/multiplayer/RPGEventPopup';
 import AttributePanel from '@/components/multiplayer/AttributePanel';
 import ResultFeedback from '@/components/multiplayer/ResultFeedback';
+import { PILGRIM_CHARACTERS, getCharacter, checkPassive } from '@/data/rpg/characters';
+import { saveGame, loadGame, clearSave, BoardSaveData } from '@/lib/boardSaveSystem';
 import { Difficulty, TileEventType as RPGTileEventType, ChainState } from '@/data/rpg/types';
 import { createRotationState, RotationState } from '@/data/rpg/rotationEngine';
 import { createChainState } from '@/data/rpg/chainSystem';
