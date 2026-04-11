@@ -693,10 +693,19 @@ const ScenePage = () => {
   }, [chapter?.id]);
 
   useEffect(() => {
-    // During TTS playback with multiple images, auto-cycle every 6s
+    // During TTS playback with multiple images, advance sequentially from current beat every 6s
     if (ttsPlaying && allBeatImages.length > 1) {
+      // Start from the current beat's image position
+      const currentBeatImg = bgImage;
+      const startIdx = allBeatImages.indexOf(currentBeatImg || '');
+      if (startIdx >= 0) setSlideshowIndex(startIdx);
+
       slideshowTimerRef.current = setInterval(() => {
-        setSlideshowIndex(prev => (prev + 1) % allBeatImages.length);
+        setSlideshowIndex(prev => {
+          const next = prev + 1;
+          // Stop at the end instead of looping — images follow narrative order
+          return next < allBeatImages.length ? next : prev;
+        });
       }, 6000);
       return () => {
         if (slideshowTimerRef.current) clearInterval(slideshowTimerRef.current);
@@ -707,7 +716,7 @@ const ScenePage = () => {
         slideshowTimerRef.current = null;
       }
     }
-  }, [ttsPlaying, allBeatImages.length]);
+  }, [ttsPlaying, allBeatImages.length, bgImage]);
 
   // When beat changes manually, sync slideshow to beat
   useEffect(() => {
@@ -727,7 +736,7 @@ const ScenePage = () => {
   // Auto-narrate first beat only after all reveal/cards are closed
   useEffect(() => {
     if (!chapter || transitioning || !audioOn || beats.length === 0) return;
-    if (!shouldAutoNarrate || !canShowChoices) return;
+    if (!canShowChoices) return;
     const firstBeatText = beats[0]?.lines.join(' ') || '';
     if (!firstBeatText || beatIndex !== 0) return;
     const t = setTimeout(() => {
@@ -735,7 +744,7 @@ const ScenePage = () => {
     }, 500);
     return () => clearTimeout(t);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapter?.id, transitioning, audioOn, shouldAutoNarrate, canShowChoices, beatIndex, sceneEmotion, hasEpicMoment]);
+  }, [chapter?.id, transitioning, audioOn, canShowChoices, beatIndex, sceneEmotion, hasEpicMoment]);
 
   if (!chapter) {
     navigate('/');
