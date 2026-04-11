@@ -40,6 +40,10 @@ import { toast } from 'sonner';
 import { renderNarrative, getSceneAtmosphere } from '@/lib/narrativeRenderer';
 import { getSceneImageVariation } from '@/lib/sceneImageVariation';
 import { AllegoryCard, allegoryMeanings } from '@/components/AllegoryCard';
+import { groupIntoBeats, NarrativeBeat } from '@/hooks/useNarrativeBeats';
+import EpicMoment, { epicMoments } from '@/components/EpicMoment';
+import EpicDefeatScreen from '@/components/EpicDefeatScreen';
+import { useTTS } from '@/hooks/useTTS';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
   fe: { label: 'Fé', emoji: '🔥', icon: Flame },
