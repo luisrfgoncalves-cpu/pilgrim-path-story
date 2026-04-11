@@ -21,7 +21,7 @@ export interface NarrativeBeat {
  * - Dramatic lines (with markup) become solo beats
  * - Regular lines are grouped in pairs of 2-3
  */
-export function groupIntoBeats(narrative: string[], linesPerBeat = 5): NarrativeBeat[] {
+export function groupIntoBeats(narrative: string[], linesPerBeat = 3): NarrativeBeat[] {
   if (narrative.length === 0) return [];
 
   const beats: NarrativeBeat[] = [];
