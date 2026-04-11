@@ -541,7 +541,7 @@ const PresentialMultiplayer = () => {
     setEditingNames(prev => { const n = { ...prev }; delete n[id]; return n; });
   };
 
-  const startGame = (config?: { difficulty: Difficulty; gameMode: GameMode; playerNames: string[]; hostPlayerIndex: number }) => {
+  const startGame = (config?: { difficulty: Difficulty; gameMode: GameMode; playerNames: string[]; hostPlayerIndex: number; characterIds?: string[] }) => {
     let finalPlayers: LocalPlayer[];
     if (config) {
       // From RPGBriefing
@@ -549,7 +549,7 @@ const PresentialMultiplayer = () => {
       setRpgGameMode(config.gameMode);
       setRpgHostIndex(config.hostPlayerIndex);
       rotationStateRef.current = createRotationState();
-      finalPlayers = config.playerNames.map((name, i) => createPlayer(i, name));
+      finalPlayers = config.playerNames.map((name, i) => createPlayer(i, name, config.characterIds?.[i]));
     } else {
       finalPlayers = players.map(p => {
         const editName = editingNames[p.id];
@@ -557,7 +557,8 @@ const PresentialMultiplayer = () => {
       });
     }
     setPlayers(finalPlayers);
-    setTileTypes(generateImmersiveTiles(Date.now()));
+    const tiles = generateImmersiveTiles(Date.now());
+    setTileTypes(tiles);
     setPhase('playing');
     setCurrentTurn(0);
     playTurnStart();
@@ -569,6 +570,67 @@ const PresentialMultiplayer = () => {
     setTurnAnnounce(`Vez de ${finalPlayers[0].name}!`);
     setShowPhaseTransition(0);
   };
+
+  // Resume from saved game
+  const resumeGame = useCallback((save: BoardSaveData) => {
+    setRpgDifficulty(save.difficulty as Difficulty);
+    setRpgGameMode(save.gameMode as GameMode);
+    setRpgHostIndex(save.hostIndex);
+    rotationStateRef.current = createRotationState();
+    const restoredPlayers: LocalPlayer[] = save.players.map((p, i) => ({
+      ...p,
+      stats: emptyStats(),
+      extraTurn: p.extraTurn || false,
+      characterId: p.characterId,
+      shieldHits: p.shieldHits || 0,
+    }));
+    setPlayers(restoredPlayers);
+    setTileTypes(save.tileTypes as TileType[]);
+    setCurrentTurn(save.currentTurn);
+    setFinishCount(save.finishCount);
+    setPhase('playing');
+    playTurnStart();
+    playGameSfx('gameStart');
+    const currentPhase = Math.floor(Math.max(...restoredPlayers.map(p => p.position)) / TILES_PER_PHASE);
+    playPhaseAmbient(currentPhase);
+    startAmbientMusic(currentPhase);
+    lastPhaseAmbientRef.current = currentPhase;
+    setTurnAnnounce(`Partida retomada! Vez de ${restoredPlayers[save.currentTurn]?.name}!`);
+    clearSave();
+  }, []);
+
+  // Auto-save every turn change
+  useEffect(() => {
+    if (phase !== 'playing' || players.length === 0 || tileTypes.length === 0) return;
+    saveGame({
+      version: 1,
+      savedAt: new Date().toISOString(),
+      difficulty: rpgDifficulty,
+      gameMode: rpgGameMode,
+      hostIndex: rpgHostIndex,
+      tileTypes,
+      currentTurn,
+      finishCount,
+      players: players.map(p => ({
+        id: p.id,
+        name: p.name,
+        color: p.color,
+        position: p.position,
+        attributes: p.attributes,
+        lastDice: p.lastDice,
+        finished: p.finished,
+        finishOrder: p.finishOrder,
+        isStunned: p.isStunned,
+        stunTurns: p.stunTurns,
+        hasShield: p.hasShield,
+        checkpoint: p.checkpoint,
+        extraTurn: p.extraTurn,
+        lastPhase: p.lastPhase,
+        characterId: p.characterId,
+        shieldHits: p.shieldHits,
+      })),
+    });
+  }, [currentTurn, phase]);
 
   const handlePhaseTransitionComplete = useCallback(() => {
     setShowPhaseTransition(null);
