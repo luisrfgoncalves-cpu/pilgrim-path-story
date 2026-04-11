@@ -812,6 +812,16 @@ const ScenePage = () => {
                   triggerChoiceEffect(result.effects as Record<string, number>);
                   sfxForChoice(result.effects as Record<string, number>);
                 }
+                // Trigger epic defeat for severe failures
+                if (!result.success) {
+                  const totalLoss = Object.values(result.effects).reduce((a: number, b) => a + Math.min(0, (b as number) || 0), 0);
+                  if (totalLoss <= -3) {
+                    setTimeout(() => {
+                      setDefeatMessage(chapter ? `O desafio em ${chapter.title} foi demais para você...` : 'Você falhou no desafio...');
+                      setShowDefeatScreen(true);
+                    }, 1500);
+                  }
+                }
               }}
             />
           </div>
