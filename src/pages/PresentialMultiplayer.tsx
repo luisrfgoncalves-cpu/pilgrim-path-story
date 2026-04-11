@@ -254,6 +254,11 @@ function resolveTileEffect(
       if (player.hasShield) {
         result.message = '🛡️ A armadilha se arma com violência — mas o escudo da fé absorve o golpe como rocha absorve a chuva! O inimigo preparou o ataque, mas não contava com a proteção que você carrega!';
         result.emoji = '🛡️';
+      } else if (passive?.type === 'trap_resistance' && checkPassive(passive, 'trap_resistance')) {
+        // Cristão: trap_resistance passive
+        result.message = `⚡ ${char!.passive.name}! O fardo que caiu na Cruz te protege — a armadilha se desarma diante de quem já foi liberto! ${player.name} ignora a armadilha!`;
+        result.emoji = '⚡';
+        result.passiveTriggered = `⚡ ${char!.passive.name} ativado!`;
       } else {
         result.posAdjust = -3;
         result.attrChanges = { perseveranca: -1 };
