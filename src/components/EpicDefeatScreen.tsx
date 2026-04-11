@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { playGameSfx } from '@/lib/gameSfx';
+import { useTTS } from '@/hooks/useTTS';
 
 interface EpicDefeatScreenProps {
   /** Contextual dramatic text */
@@ -18,12 +19,21 @@ const EpicDefeatScreen = ({ message, onRise, villain }: EpicDefeatScreenProps) =
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number>(0);
   const HOLD_DURATION = 3000; // 3 seconds
+  const { speak, stop: stopTTS } = useTTS();
 
   useEffect(() => {
     playGameSfx('defeat');
     const t = setTimeout(() => setEntered(true), 100);
     return () => clearTimeout(t);
   }, []);
+
+  // Auto-narrate defeat message with dramatic emotion
+  useEffect(() => {
+    const t = setTimeout(() => {
+      speak(message, { emotion: villain ? 'villain' : 'dramatic' });
+    }, 500);
+    return () => { clearTimeout(t); stopTTS(); };
+  }, [message]);
 
   const startHold = useCallback(() => {
     if (risen) return;

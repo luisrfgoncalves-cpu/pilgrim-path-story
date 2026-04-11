@@ -3,6 +3,8 @@ import { sceneImages } from '@/data/sceneImages';
 import { playGameSfx } from '@/lib/gameSfx';
 import { playRealSfx } from '@/lib/realSfx';
 import { renderNarrative } from '@/lib/narrativeRenderer';
+import { useTTS } from '@/hooks/useTTS';
+import { getSceneEmotion } from '@/data/sceneEmotions';
 
 export interface EpicMomentConfig {
   /** Unique key for this moment */
@@ -107,10 +109,21 @@ const EpicMoment = ({ sceneId, config, onComplete }: EpicMomentProps) => {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef(0);
   const bgImage = sceneImages[sceneId];
+  const { speak, stop: stopTTS } = useTTS();
+  const emotion = getSceneEmotion(sceneId);
 
   useEffect(() => {
     const t = setTimeout(() => setEntered(true), 100);
     return () => clearTimeout(t);
+  }, []);
+
+  // Auto-narrate epic moment lines
+  useEffect(() => {
+    const allText = config.lines.join(' ');
+    const t = setTimeout(() => {
+      speak(allText, { emotion, isEpic: true });
+    }, 300);
+    return () => { clearTimeout(t); stopTTS(); };
   }, []);
 
   // Auto-advance lines
@@ -167,9 +180,12 @@ const EpicMoment = ({ sceneId, config, onComplete }: EpicMomentProps) => {
 
   const completeInteraction = () => {
     setInteractionDone(true);
+    stopTTS();
     if (config.completionSfx) {
       playGameSfx(config.completionSfx as any);
     }
+    // Narrate completion text
+    speak(config.completionText, { emotion: 'celestial', isEpic: true });
     setTimeout(() => setShowCompletion(true), 400);
     setTimeout(onComplete, 4000);
   };

@@ -44,6 +44,7 @@ import { groupIntoBeats, NarrativeBeat } from '@/hooks/useNarrativeBeats';
 import EpicMoment, { epicMoments } from '@/components/EpicMoment';
 import EpicDefeatScreen from '@/components/EpicDefeatScreen';
 import { useTTS } from '@/hooks/useTTS';
+import { getSceneEmotion, autoNarrateScenes } from '@/data/sceneEmotions';
 
 const attrLabels: Record<string, { label: string; emoji: string; icon: typeof Flame }> = {
   fe: { label: 'Fé', emoji: '🔥', icon: Flame },
@@ -591,6 +592,8 @@ const ScenePage = () => {
       setConsequencePhase('enter');
       setTimeout(() => setConsequencePhase('attrs'), 600);
       setTimeout(() => setConsequencePhase('ready'), 1400);
+      // Narrate consequence text
+      speak(enrichedConsequence, { emotion: sceneEmotion });
     } else {
       makeChoice(chapter!.id, nextChapterId, choiceText, modifiedEffects, flag, conditionalEffects);
     }
@@ -616,6 +619,30 @@ const ScenePage = () => {
     executeChoice(nextChapterId, choiceText, effects, consequence, flag, conditionalEffects, item);
   };
 
+  // Scene emotion for TTS (before early return to satisfy hooks rules)
+  const sceneEmotion = chapter ? getSceneEmotion(chapter.id) : 'neutral' as const;
+  const shouldAutoNarrate = chapter ? autoNarrateScenes.has(chapter.id) : false;
+
+  // ═══ BEATS SYSTEM — group narrative into 2-3 line beats ═══
+  const beats = useMemo(() => groupIntoBeats(fullNarrative, 2), [fullNarrative]);
+  const currentBeat = beats[beatIndex] ?? null;
+  const hasMoreBeats = beatIndex < beats.length - 1;
+
+  // Epic moment detection
+  const hasEpicMoment = chapter ? !!epicMoments[chapter.id] : false;
+
+  // Auto-narrate first beat on scene entry for epic/key scenes
+  useEffect(() => {
+    if (!chapter || transitioning || !audioOn || beats.length === 0) return;
+    if (!shouldAutoNarrate) return;
+    const firstBeatText = beats[0]?.lines.join(' ') || '';
+    if (!firstBeatText) return;
+    const t = setTimeout(() => {
+      speak(firstBeatText, { emotion: sceneEmotion, isEpic: hasEpicMoment });
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [chapter?.id, transitioning, audioOn, shouldAutoNarrate]);
+
   if (!chapter) {
     navigate('/');
     return null;
@@ -637,7 +664,6 @@ const ScenePage = () => {
     nextChapterId: dc.nextChapterId || progress.currentChapterId,
     effects: {
       ...dc.effects,
-      // Apply consequence bonuses from past dynamic decisions
       ...(dynamicEvents.consequenceBonus ? Object.fromEntries(
         Object.entries(dynamicEvents.consequenceBonus).map(([k, v]) => [k, (dc.effects[k as keyof ChoiceEffect] || 0) + (v || 0)])
       ) : {}),
@@ -652,22 +678,13 @@ const ScenePage = () => {
   // Merge all choices: base + dynamic
   const allChoices = [...availableChoices, ...dynamicChoicesMapped];
 
-  // ═══ BEATS SYSTEM — group narrative into 2-3 line beats ═══
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const beats = groupIntoBeats(fullNarrative, 2);
-  const currentBeat = beats[beatIndex] ?? null;
-  const hasMoreBeats = beatIndex < beats.length - 1;
-
-  // Epic moment detection
-  const hasEpicMoment = chapter ? !!epicMoments[chapter.id] : false;
-
   const handleAdvanceNarrative = () => {
     if (hasMoreBeats) {
       setBeatIndex(prev => prev + 1);
-      // TTS for next beat
+      // TTS for next beat with scene emotion
       if (audioOn && beats[beatIndex + 1]) {
         const beatText = beats[beatIndex + 1].lines.join(' ');
-        speak(beatText, { isEpic: hasEpicMoment });
+        speak(beatText, { emotion: sceneEmotion, isEpic: hasEpicMoment });
       }
       return;
     }
@@ -1018,7 +1035,7 @@ const ScenePage = () => {
                         if (ttsPlaying) {
                           stopTTS();
                         } else {
-                          speak(currentBeat.lines.join(' '), { isEpic: hasEpicMoment });
+                          speak(currentBeat.lines.join(' '), { emotion: sceneEmotion, isEpic: hasEpicMoment });
                         }
                       }}
                       className="btn-medieval-icon !p-2 !rounded-lg flex items-center justify-center active:scale-95"
