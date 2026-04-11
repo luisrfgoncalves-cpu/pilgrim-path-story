@@ -292,10 +292,16 @@ function resolveTileEffect(
       result.emoji = '🛡️';
       result.statUpdate.shieldsGained = 1;
       break;
-    case 'blessing':
-      result.posAdjust = 4;
+    case 'blessing': {
+      let blessingMove = 4;
+      // Evangelista: faithful_stride passive — extra move on blessings
+      if (passive?.type === 'faithful_stride') {
+        blessingMove += passive.extraMove;
+        result.passiveTriggered = `⚡ ${char!.passive.name}: Evangelista vê além! +${passive.extraMove} casa extra de avanço!`;
+      }
+      result.posAdjust = blessingMove;
       result.attrChanges = { fe: 2 };
-      result.message = narrative || '⭐ Uma bênção inconfundível desce sobre você como chuva dourada em pleno deserto! O ar muda, o passo se torna leve, e o caminho que antes parecia infinito agora mostra 4 casas a menos entre você e a glória. A fé explode como fogo sagrado!';
+      result.message = narrative || `⭐ Uma bênção inconfundível desce sobre você como chuva dourada em pleno deserto! O ar muda, o passo se torna leve, e o caminho que antes parecia infinito agora mostra ${blessingMove} casas a menos entre você e a glória. A fé explode como fogo sagrado!`;
       result.emoji = '⭐';
       result.statUpdate.blessingsReceived = 1;
       if (rng < 25) {
@@ -305,6 +311,7 @@ function resolveTileEffect(
         };
       }
       break;
+    }
     case 'swap':
       result.message = narrative || '🔄 O caminho se distorce como espelho d\'água perturbado — e quando a realidade se estabiliza, os peregrinos percebem que suas posições foram completamente trocadas! O destino tem senso de humor.';
       result.emoji = '🔄';
