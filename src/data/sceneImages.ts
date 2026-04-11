@@ -128,46 +128,46 @@ export const sceneImages: Record<string, string> = {
   'fase3-cena10': fielCristaoEncontro,      // Fiel e Cristão conversam
 
   // FASE 4: Feira da Vaidade + Demas
-  'fase4-cena1': feiraVaidade,
-  'fase4-cena2': feiraVaidade,
-  'fase4-cena3': feiraVaidade,
-  'fase4-cena4': julgamentoFeira,
-  'fase4-cena5': feiraVaidade,
-  'fase4-cena6': julgamentoFeira,
-  'fase4-cena7': feiraVaidade,
-  'fase4-cena8': esperancaEncontro,
-  'fase4-cena9': feiraVaidade,
-  'fase4-cena10': esperancaEncontro,
-  'fase4-cena11b': minaPrataDemas,
-  'fase4-cena11': esperancaEncontro,
-  'fase4-cena12': fielEncontro,
+  'fase4-cena1': feiraVaidadeEntrada,       // Chegada à Feira
+  'fase4-cena2': feiraVaidade,              // Tentações da Feira
+  'fase4-cena3': feiraVaidade,              // Amor ao Dinheiro
+  'fase4-cena4': prisaoFeira,               // Prisão na Feira
+  'fase4-cena5': prisaoFeira,               // Na cela
+  'fase4-cena6': julgamentoFeira,           // Julgamento de Fiel
+  'fase4-cena7': martirioFiel,              // Martírio de Fiel
+  'fase4-cena8': esperancaEncontro,         // Esperança aparece
+  'fase4-cena9': feiraVaidade,              // Vergonha
+  'fase4-cena10': demasMinaPrata,           // Demas na mina de prata
+  'fase4-cena11b': minaPrataDemas,          // Dentro da mina
+  'fase4-cena11': esperancaEncontro,        // Interesses
+  'fase4-cena12': fielEncontro,             // Pequena-Fé
 
   // FASE 5: Castelo da Dúvida
-  'fase5-cena1': pradoAgradavel,
-  'fase5-cena2': pradoAgradavel,
-  'fase5-cena3': casteloDuvida,
-  'fase5-cena4': masmorrasCastelo,
-  'fase5-cena5': masmorrasCastelo,
-  'fase5-cena6': masmorrasCastelo,
-  'fase5-cena7': masmorrasCastelo,
-  'fase5-cena8': casteloDuvida,
-  'fase5-cena9': montanhasDeleitosas,
-  'fase5-cena10': montanhasDeleitosas,
-  'fase5-cena11': redeLisonjeiro,
-  'fase5-cena12': redeLisonjeiro,
-  'fase5-cena13': terraEncantadaFlores,
-  'fase5-cena14': paisBeula,
+  'fase5-cena1': pradoAgradavel,            // Prado Agradável
+  'fase5-cena2': pradoDesvio,               // Desvio perigoso
+  'fase5-cena3': giganteDesesperoCalab,     // Gigante Desespero
+  'fase5-cena4': masmorrasCastelo,          // Calabouço
+  'fase5-cena5': masmorrasCastelo,          // Sofrimento
+  'fase5-cena6': chavePromessa,             // Chave da Promessa!
+  'fase5-cena7': fugaCastelo,               // Fuga do castelo
+  'fase5-cena8': casteloDuvida,             // Lisonjeiro
+  'fase5-cena9': montanhasDeleitosas,       // Montanhas Deleitosas
+  'fase5-cena10': montanhasDeleitosas,      // Pastores
+  'fase5-cena11': redeLisonjeiro,           // Rede do Lisonjeiro
+  'fase5-cena12': redeLisonjeiro,           // Resgate
+  'fase5-cena13': terraEncantadaFlores,     // Terra Encantada
+  'fase5-cena14': paisBeula,                // País de Beulá
 
   // FASE 6: Rio e Cidade Celestial
-  'fase6-cena1': rioFinal,
-  'fase6-cena2': rioFinal,
-  'fase6-cena3': paisBeula,
-  'fase6-cena4': rioFinal,
-  'fase6-cena5': cidadeCelestial,
-  'fase6-cena6': rioFinal,
-  'fase6-cena7': cidadeCelestial,
-  'fase6-cena8': cidadeCelestial,
-  'fase6-cena9': cidadeCelestial,
+  'fase6-cena1': rioFinal,                  // Avistando o rio
+  'fase6-cena2': rioMorteTravessia,         // Entrando no rio
+  'fase6-cena3': paisBeula,                 // Esperança encoraja
+  'fase6-cena4': rioMorteTravessia,         // Águas profundas
+  'fase6-cena5': chegadaCelestial,          // Outra margem
+  'fase6-cena6': rioFinal,                  // Reflexão
+  'fase6-cena7': chegadaCelestial,          // Portões à vista
+  'fase6-cena8': cidadeCelestial,           // Cidade Celestial!
+  'fase6-cena9': cidadeCelestial,           // Glória final
 
   // ═══════ PARTE II ═══════
   'p2-cena1': cristaPartida,
