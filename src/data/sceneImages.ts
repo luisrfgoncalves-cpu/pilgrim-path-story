@@ -96,7 +96,7 @@ import firmeMadameBolha from '@/assets/scenes/firme-madame-bolha.jpg';
 import cristaRioTravessia from '@/assets/scenes/crista-rio-travessia.jpg';
 import cristaChegadaCelestial from '@/assets/scenes/crista-chegada-celestial.jpg';
 
-
+export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
   'cena1': cristaoFamiliaNoite,         // Cristão com a família à noite
   'cena1b': vizinhosZombando,            // Vizinhos zombando nas ruas
