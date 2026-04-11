@@ -1,10 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1';
 
 /**
- * tts-pregenerate — Edge Function para pré-gerar áudios da narrativa.
- * 
- * Suporta forceProvider para gerar com um provedor específico.
- * Gera 1 frase por vez com delay entre cada para evitar rate-limit.
+ * tts-pregenerate — Gera áudios diretamente (sem chamar outra edge function).
  * 
  * POST /tts-pregenerate
  * Body: { phrases: [{text, emotion}], batchSize?, delayMs?, startFrom?, forceProvider? }
@@ -15,16 +12,99 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface NarrativeEntry {
-  text: string;
-  emotion: string;
+type EmotionType = 'neutral' | 'dramatic' | 'solemn' | 'urgent' | 'celestial' | 'villain';
+
+const VOICE_ID = 'onwK4e9ZLuTAKqWW03F9';
+
+const VOICE_SETTINGS: Record<EmotionType, {
+  stability: number; similarity_boost: number; style: number; speed: number;
+}> = {
+  neutral:   { stability: 0.50, similarity_boost: 0.75, style: 0.30, speed: 0.95 },
+  dramatic:  { stability: 0.25, similarity_boost: 0.80, style: 0.70, speed: 0.90 },
+  solemn:    { stability: 0.60, similarity_boost: 0.70, style: 0.40, speed: 0.80 },
+  urgent:    { stability: 0.30, similarity_boost: 0.75, style: 0.60, speed: 1.10 },
+  celestial: { stability: 0.55, similarity_boost: 0.80, style: 0.50, speed: 0.85 },
+  villain:   { stability: 0.20, similarity_boost: 0.85, style: 0.80, speed: 0.88 },
+};
+
+function preprocessText(text: string, emotion: EmotionType): string {
+  let p = text;
+  p = p.replace(/\s*—\s*/g, '... ');
+  p = p.replace(/\s*–\s*/g, '... ');
+  p = p.replace(/!{2,}/g, '!');
+  p = p.replace(/"([^"]+)"/g, '... "$1" ...');
+  p = p.replace(/"([^"]+)"/g, '... "$1" ...');
+  if (emotion === 'solemn' || emotion === 'celestial') p = p.replace(/,\s/g, ', ... ');
+  if (emotion === 'villain') p = p.replace(/\b(destruição|morte|trevas|maldade|condenação|inferno)\b/gi, (m) => `... ${m.toUpperCase()} ...`);
+  p = p.replace(/(\.\.\.\s*){3,}/g, '... ').replace(/\s{2,}/g, ' ');
+  return p.trim();
 }
 
 async function hashKey(text: string, emotion: string): Promise<string> {
   const data = new TextEncoder().encode(`${emotion}:${text}`);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  const buf = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+let keyIndex = 0;
+
+function getKeys(): string[] {
+  return [
+    Deno.env.get('ELEVENLABS_API_KEY_1'),
+    Deno.env.get('ELEVENLABS_API_KEY_2'),
+    Deno.env.get('ELEVENLABS_API_KEY_3'),
+    Deno.env.get('ELEVENLABS_API_KEY_4'),
+    Deno.env.get('ELEVENLABS_API_KEY_5'),
+    Deno.env.get('ELEVENLABS_API_KEY_6'),
+  ].filter((k): k is string => !!k && k.length > 0);
+}
+
+async function generateElevenLabs(text: string, emotion: EmotionType, singleKeyIdx: number): Promise<ArrayBuffer | null> {
+  const keys = getKeys();
+  if (keys.length === 0) return null;
+  const key = keys[singleKeyIdx % keys.length];
+  const settings = VOICE_SETTINGS[emotion] || VOICE_SETTINGS.neutral;
+  const processed = preprocessText(text, emotion);
+
+  try {
+    const resp = await fetch(
+      `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?output_format=mp3_22050_32`,
+      {
+        method: 'POST',
+        headers: { 'xi-api-key': key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: processed,
+          model_id: 'eleven_multilingual_v2',
+          voice_settings: {
+            stability: settings.stability,
+            similarity_boost: settings.similarity_boost,
+            style: settings.style,
+            use_speaker_boost: true,
+            speed: settings.speed,
+          },
+        }),
+      },
+    );
+
+    if (resp.status === 429 || resp.status === 401) {
+      const err = await resp.text();
+      console.log(`[PreGen] Key ${singleKeyIdx} limited: ${err.slice(0, 80)}`);
+      return null;
+    }
+
+    if (!resp.ok) {
+      const err = await resp.text();
+      console.log(`[PreGen] EL error ${resp.status}: ${err.slice(0, 100)}`);
+      return null;
+    }
+
+    const buf = await resp.arrayBuffer();
+    console.log(`[PreGen] EL key${singleKeyIdx} OK (${(buf.byteLength/1024).toFixed(1)}KB)`);
+    return buf;
+  } catch (e) {
+    console.log(`[PreGen] EL error: ${e instanceof Error ? e.message : e}`);
+    return null;
+  }
 }
 
 Deno.serve(async (req) => {
@@ -34,19 +114,16 @@ Deno.serve(async (req) => {
 
   try {
     const {
-      batchSize = 5,
-      delayMs = 6000,
+      batchSize = 3,
+      delayMs = 15000,
       startFrom = 0,
       phrases = [],
-      forceProvider,
+      keyIdx = 0,
     } = await req.json();
 
     if (!Array.isArray(phrases) || phrases.length === 0) {
       return new Response(
-        JSON.stringify({
-          error: 'Provide "phrases" array with { text, emotion } objects',
-          example: { phrases: [{ text: 'Cristão caminhou...', emotion: 'solemn' }], batchSize: 5, forceProvider: 'freetts' },
-        }),
+        JSON.stringify({ error: 'Provide "phrases" array' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
@@ -56,8 +133,6 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     const batch = phrases.slice(startFrom, startFrom + batchSize);
-    const providerToCheck = forceProvider || 'freetts';
-    
     const results = {
       generated: 0,
       skipped: 0,
@@ -67,71 +142,55 @@ Deno.serve(async (req) => {
       processed: startFrom + batch.length,
       nextStartFrom: startFrom + batch.length,
       done: startFrom + batch.length >= phrases.length,
-      provider: providerToCheck,
+      keyUsed: keyIdx,
     };
 
     for (let i = 0; i < batch.length; i++) {
-      const entry = batch[i] as NarrativeEntry;
+      const entry = batch[i];
       if (!entry.text || !entry.emotion) {
         results.failed++;
-        results.errors.push(`Invalid entry at index ${startFrom + i}`);
         continue;
       }
 
       const hash = await hashKey(entry.text, entry.emotion);
-      const cachePath = `${providerToCheck}/${entry.emotion}/${hash}.mp3`;
+      const cachePath = `elevenlabs/${entry.emotion}/${hash}.mp3`;
 
-      // Check if already cached for this provider
+      // Check cache
       const { data: existing } = await supabase.storage
         .from('tts-cache')
         .download(cachePath);
 
       if (existing && existing.size > 0) {
-        console.log(`[PreGen] SKIP (cached): ${entry.text.slice(0, 50)}...`);
+        console.log(`[PreGen] SKIP: ${entry.text.slice(0, 40)}...`);
         results.skipped++;
         continue;
       }
 
-      // Generate via the main TTS function with forceProvider
-      try {
-        const ttsUrl = `${supabaseUrl}/functions/v1/elevenlabs-tts`;
-        const response = await fetch(ttsUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${serviceRoleKey}`,
-          },
-          body: JSON.stringify({
-            text: entry.text,
-            emotion: entry.emotion,
-            forceProvider: providerToCheck,
-          }),
-        });
+      // Generate directly
+      const audio = await generateElevenLabs(entry.text, entry.emotion as EmotionType, keyIdx);
 
-        if (response.ok) {
-          await response.arrayBuffer();
-          console.log(`[PreGen ${providerToCheck}] GENERATED: ${entry.text.slice(0, 50)}...`);
-          results.generated++;
-        } else {
-          const err = await response.text();
-          console.log(`[PreGen] FAILED (${response.status}): ${err.slice(0, 100)}`);
+      if (audio && audio.byteLength > 100) {
+        const { error: upErr } = await supabase.storage
+          .from('tts-cache')
+          .upload(cachePath, audio, { contentType: 'audio/mpeg', cacheControl: '604800', upsert: true });
+
+        if (upErr) {
+          console.log(`[PreGen] Upload error: ${upErr.message}`);
           results.failed++;
-          results.errors.push(`${entry.text.slice(0, 30)}... → ${response.status}`);
-          
-          if (response.status === 503) {
-            console.log(`[PreGen] Rate-limited — stopping batch. Resume from ${startFrom + i}`);
-            results.nextStartFrom = startFrom + i;
-            results.processed = startFrom + i;
-            break;
-          }
+        } else {
+          console.log(`[PreGen] STORED: ${cachePath}`);
+          results.generated++;
         }
-      } catch (e) {
-        const msg = e instanceof Error ? e.message : String(e);
-        console.log(`[PreGen] ERROR: ${msg}`);
+      } else {
         results.failed++;
-        results.errors.push(msg.slice(0, 100));
+        results.errors.push(`Key${keyIdx} failed for: ${entry.text.slice(0, 30)}...`);
+        // Stop batch on failure - likely rate limited
+        results.nextStartFrom = startFrom + i;
+        results.processed = startFrom + i;
+        break;
       }
 
+      // Delay between generations
       if (i < batch.length - 1) {
         await new Promise(r => setTimeout(r, delayMs));
       }
