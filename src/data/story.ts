@@ -361,7 +361,12 @@ export const storyChapters: Record<string, StoryChapter> = {
         nextChapterId: "cena5b",
         effects: { discernimento: 1, fe: 1 },
         flag: "seguiu_evangelista",
-        consequence: "Evangelista aponta para a Porta Estreita — que é Cristo (João 10:9: 'Eu sou a porta; se alguém entrar por mim, salvar-se-á'). A luz é fraca não porque seja falsa, mas porque a fé começa pequena. Como um grão de mostarda que se torna árvore."
+        consequence: "Evangelista aponta para a Porta Estreita — que é Cristo (João 10:9: 'Eu sou a porta; se alguém entrar por mim, salvar-se-á'). A luz é fraca não porque seja falsa, mas porque a fé começa pequena. Como um grão de mostarda que se torna árvore.",
+        toneOptions: [
+          { tone: 'humble', emoji: '🙏', label: 'Com humildade', npcReaction: 'Evangelista sorri gentilmente: "A humildade é o primeiro passo da sabedoria."', effects: { fe: 1 } },
+          { tone: 'firm', emoji: '😤', label: 'Com determinação', npcReaction: 'Evangelista assente com respeito: "Essa firmeza será necessária no caminho."', effects: { coragem: 1 } },
+          { tone: 'fearful', emoji: '😰', label: 'Com medo', npcReaction: 'Evangelista coloca a mão no seu ombro: "O medo é natural. A coragem é andar apesar dele."' },
+        ]
       },
       {
         text: "Hesitar — a luz é fraca demais, o caminho incerto",
