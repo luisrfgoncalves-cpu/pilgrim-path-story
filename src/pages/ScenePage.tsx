@@ -948,39 +948,74 @@ const ScenePage = () => {
         {/* Scene content — hidden when inline mini-game is active */}
         {!(miniGameReady && !miniGameDone && miniGameMappings[chapter.id] && !FULLSCREEN_GAMES.has(miniGameMappings[chapter.id]?.type)) && (
         <>
-        {/* Scene image with preloading — BRIGHT and visible */}
-        {bgImage && (
+        {/* Scene image with preloading — crossfade slideshow during narration */}
+        {(slideshowImage || bgImage) && (
           <div className="relative w-full overflow-hidden" style={{ maxHeight: '320px', minHeight: '200px', background: 'hsl(var(--card))' }}>
-            {(() => {
-              const variationKey = beatImageKey.find(key => sceneImages[key]) || chapter.id;
-              const imgVar = getSceneImageVariation(variationKey);
-              const beatShiftX = ((beatIndex % 3) - 1) * 4;
-              const beatScale = 1 + ((beatIndex % 4) * 0.02);
-              return (
-                <img
-                  key={`${chapter.id}-${beatIndex}-${bgImage}`}
-                  src={bgImage}
-                  alt={chapter.title}
-                  width={1024}
-                  height={576}
-                  loading="eager"
-                  decoding="async"
-                  fetchPriority="high"
-                  onLoad={() => setImageLoaded(true)}
-                  className="w-full h-auto object-cover scene-image scene-image-alive transition-all duration-[1200ms] ease-in-out"
-                  style={{
-                    ...atmosphere.imageStyle,
-                    objectPosition: imgVar.objectPosition,
-                    transform: `${imgVar.transform} translateX(${beatShiftX}px) scale(${beatScale})`,
-                    transformOrigin: 'center center',
-                    filter: [
-                      getSceneAtmosphere(chapter.id).imageFilter || 'brightness(1.05) saturate(1.0)',
-                      imgVar.extraFilter || '',
-                    ].filter(Boolean).join(' ') || undefined,
-                  }}
-                />
-              );
-            })()}
+            {/* Crossfade: render current + previous image for smooth transition */}
+            {ttsPlaying && allBeatImages.length > 1 ? (
+              <>
+                {allBeatImages.map((img, idx) => {
+                  const variationKey = chapter.id;
+                  const imgVar = getSceneImageVariation(variationKey);
+                  const isActive = idx === slideshowIndex % allBeatImages.length;
+                  // Slow ken-burns: each image gets a unique slow zoom/pan
+                  const kenBurnsScale = 1.05 + (idx % 3) * 0.03;
+                  const kenBurnsX = ((idx % 3) - 1) * 3;
+                  return (
+                    <img
+                      key={`slideshow-${chapter.id}-${idx}`}
+                      src={img}
+                      alt={chapter.title}
+                      width={1024}
+                      height={576}
+                      loading="eager"
+                      className="absolute inset-0 w-full h-full object-cover"
+                      style={{
+                        opacity: isActive ? 1 : 0,
+                        transition: 'opacity 2s ease-in-out, transform 8s ease-in-out',
+                        transform: isActive
+                          ? `scale(${kenBurnsScale}) translateX(${kenBurnsX}px)`
+                          : `scale(1) translateX(0px)`,
+                        objectPosition: imgVar.objectPosition,
+                        filter: getSceneAtmosphere(chapter.id).imageFilter || 'brightness(1.05) saturate(1.0)',
+                        zIndex: isActive ? 2 : 1,
+                      }}
+                    />
+                  );
+                })}
+              </>
+            ) : (
+              (() => {
+                const variationKey = beatImageKey.find(key => sceneImages[key]) || chapter.id;
+                const imgVar = getSceneImageVariation(variationKey);
+                const beatShiftX = ((beatIndex % 3) - 1) * 4;
+                const beatScale = 1 + ((beatIndex % 4) * 0.02);
+                return (
+                  <img
+                    key={`${chapter.id}-${beatIndex}-${bgImage}`}
+                    src={bgImage}
+                    alt={chapter.title}
+                    width={1024}
+                    height={576}
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
+                    onLoad={() => setImageLoaded(true)}
+                    className="w-full h-auto object-cover scene-image scene-image-alive transition-all duration-[1200ms] ease-in-out"
+                    style={{
+                      ...atmosphere.imageStyle,
+                      objectPosition: imgVar.objectPosition,
+                      transform: `${imgVar.transform} translateX(${beatShiftX}px) scale(${beatScale})`,
+                      transformOrigin: 'center center',
+                      filter: [
+                        getSceneAtmosphere(chapter.id).imageFilter || 'brightness(1.05) saturate(1.0)',
+                        imgVar.extraFilter || '',
+                      ].filter(Boolean).join(' ') || undefined,
+                    }}
+                  />
+                );
+              })()
+            )}
             {/* Particle effects overlay */}
             {imageLoaded && (() => {
               const pType = getParticleTypeForScene(chapter.id, legacyTone);
