@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import ScrollToTop from "@/components/ScrollToTop";
 import PreviewPaywall from "@/components/PreviewPaywall";
 import PreviewTrialGate from "@/components/PreviewTrialGate";
+import { useBackgroundTTSPregen } from "@/hooks/useBackgroundTTSPregen";
 import { lazy, Suspense } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -92,10 +93,17 @@ const PreviewResultGate = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+/** Invisible background TTS pre-generator */
+const BackgroundPregen = () => {
+  useBackgroundTTSPregen();
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <ThemeProvider>
+      <BackgroundPregen />
       <TooltipProvider>
         <Toaster />
         <Sonner />
