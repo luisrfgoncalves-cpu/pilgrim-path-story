@@ -20,7 +20,7 @@ const Index = () => {
   const navigate = useNavigate();
   const { hasProgress, startJourney, resetProgress, progress, history, isReplay, loadFromCloud } = useStoryProgress();
   const { theme, toggleTheme } = useTheme();
-  useCloudSync(loadFromCloud);
+  const [narrationOn, setNarrationOn] = useState(() => localStorage.getItem('peregrino-narration') !== 'off');
 
   // ── PWA Install Banner ──
   const [installPrompt, setInstallPrompt] = useState<any>(null);
@@ -343,8 +343,25 @@ const Index = () => {
           </button>
         </div>
 
-        {/* Theme toggle */}
-        <div className="flex justify-center">
+        {/* Theme + Narration toggles */}
+        <div className="flex justify-center gap-3">
+          <button
+            onClick={() => {
+              const next = !narrationOn;
+              setNarrationOn(next);
+              localStorage.setItem('peregrino-narration', next ? 'on' : 'off');
+              toast.success(next ? 'Narração por voz ativada!' : 'Narração por voz desativada');
+            }}
+            className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border text-xs transition-all ${
+              narrationOn
+                ? 'bg-primary/10 border-primary/30 text-primary'
+                : 'bg-card border-border text-muted-foreground hover:text-foreground hover:border-primary/30'
+            }`}
+            aria-label={narrationOn ? 'Desativar narração' : 'Ativar narração'}
+          >
+            {narrationOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            <span className="font-display">{narrationOn ? 'Narração ON' : 'Narração OFF'}</span>
+          </button>
           <button
             onClick={toggleTheme}
             className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
