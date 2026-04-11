@@ -153,22 +153,25 @@ import cristaChegadaCelestial from '@/assets/scenes/crista-chegada-celestial.jpg
 export const sceneImages: Record<string, string> = {
   // FASE 1: Cidade da Destruição ao Caminho
   'cena1': cristaoLendoLivro,
-  'cena1__beat1': cristaoLendoLivro,
-  'cena1__beat2': fardoEsmagando,
-  'cena1__beat3': cristaoFamiliaDormindo,
-  'cena1__beat4': fardoArrancando,
-  'cena1__beat5': cristaoNoiteTormento,
-  'cena1__beat6': cristaoFamiliaDormindo,
-  // startIndex fallbacks (linesPerBeat=3 gera beats nos índices 0 e 3)
-  'cena1__0': cristaoLendoLivro,
-  'cena1__3': cristaoNoiteTormento,
-  'cena1b': vizinhosRuasZombando,
-  'cena1b__beat1': vizinhosRuasZombando,
-  'cena1b__beat2': cidadeDestruicaoPanoramica,
-  'cena2': obstinadoSegurandoBraco,
-  'cena2__beat1': encontroObstinadoFlexivel,
-  'cena2__beat2': obstinadoSegurandoBraco,
-  'cena2__beat3': encontroObstinadoFlexivel,
+  'cena1__beat1': cristaoFamiliaDormindo,        // casa, família dormindo
+  'cena1__beat2': cristaoLendoLivro,             // encontra o livro
+  'cena1__beat3': fardoEsmagando,                // fardo aparece
+  'cena1__beat4': fardoArrancando,               // tenta arrancar
+  'cena1__beat5': cristaoFamiliaNoite,            // esposa acorda
+  'cena1__beat6': cristaoNoiteTormento,           // noite de tormento
+  // startIndex fallbacks
+  'cena1__0': cristaoFamiliaDormindo,
+  'cena1__3': fardoArrancando,
+  'cena1__6': cristaoNoiteTormento,
+  'cena1b': cidadeDestruicaoPanoramica,
+  'cena1b__beat1': cidadeDestruicaoPanoramica,    // saindo de casa de madrugada
+  'cena1b__beat2': vizinhosRuasZombando,          // vizinhos fecham janelas
+  'cena1b__beat3': cristaoFamiliaNoite,           // volta para casa, esposa na porta
+  'cena1b__beat4': cristaoNoiteTormento,          // deitado no escuro
+  'cena2': encontroObstinadoFlexivel,
+  'cena2__beat1': cidadeDestruicaoPanoramica,     // dias seguintes na cidade
+  'cena2__beat2': obstinadoSegurandoBraco,        // Obstinado confronta
+  'cena2__beat3': encontroObstinadoFlexivel,      // Flexível questiona
   'cena3': cristaoCorrendo,
   'cena3__beat1': cristaoCorrendo,
   'cena3__beat2': cristaoGritandoVida,           // CORRIGIDO: gritando "Vida! Vida eterna!"
