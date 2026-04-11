@@ -168,6 +168,7 @@ function resolveTileEffect(
   emoji: string;
   statUpdate: Partial<PlayerStats>;
   collectiveEffect?: { type: 'blessing_all' | 'curse_all'; message: string };
+  passiveTriggered?: string; // passive ability message
 } {
   const rng = ((seed * 1103515245 + 12345) & 0x7fffffff) % 100;
   const result: ReturnType<typeof resolveTileEffect> = {
