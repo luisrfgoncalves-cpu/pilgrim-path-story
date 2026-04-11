@@ -380,8 +380,10 @@ export default function RPGEventPopup({
       if (realSfx) playRealSfx(realSfx, 0.4);
     }
 
+    // Narrate result with neural voice
     const timer = window.setTimeout(() => {
-      }, 200);
+      narrateBoard(resultData.message, resultData.success ? 'celestial' : 'urgent');
+    }, 200);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, showResult, resultData]);
