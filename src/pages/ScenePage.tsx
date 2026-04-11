@@ -779,42 +779,6 @@ useEffect(() => {
   // Merge all choices: base + dynamic
   const allChoices = [...availableChoices, ...dynamicChoicesMapped];
 
-  const handleAdvanceNarrative = () => {
-    if (hasMoreBeats) {
-      // Clear any auto-advance timer
-      if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current);
-      setBeatIndex(prev => prev + 1);
-      // TTS for next beat with auto-advance chaining
-      if (audioOn && beats[beatIndex + 1]) {
-        const beatText = beats[beatIndex + 1].lines.join(' ');
-        speak(beatText, {
-          emotion: sceneEmotion,
-          isEpic: hasEpicMoment,
-          onEnd: () => advanceBeatAuto(),
-        });
-      } else if (!audioOn && beats[beatIndex + 1]) {
-        const words = beats[beatIndex + 1].lines.join(' ').split(' ').length;
-        autoAdvanceRef.current = setTimeout(() => advanceBeatAuto(), Math.max(3000, words * 300));
-      }
-      return;
-    }
-
-    if (chapter.sceneEvent && !sceneEventDone) {
-      setSceneEventActive(true);
-      return;
-    }
-
-    // Check for epic moment before showing choices
-    if (hasEpicMoment && !epicMomentDone) {
-      setEpicMomentActive(true);
-      return;
-    }
-
-    if (canShowChoices) {
-      setShowChoices(true);
-    }
-  };
-
   return (
     <div id="scene-container" className={`min-h-screen bg-background flex flex-col transition-all duration-[2000ms] ease-in-out ${emotionalClass} ${atmosphere.wobbleClass}`} style={atmosphere.containerStyle}>
       {/* Atmosphere overlays — gradual transitions */}
