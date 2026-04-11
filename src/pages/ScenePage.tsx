@@ -219,11 +219,11 @@ const ScenePage = () => {
     attributes: progress.attributes,
   }), [progress, history]);
 
-  // Build full narrative: base + variations + dynamic events + consequence hints
-  const fullNarrative = chapter ? [
-    ...chapter.narrative,
+  // Build primary narrative separately from contextual lines so the story flow stays coherent
+  const primaryNarrative = chapter?.narrative || [];
+
+  const contextualNarrative = chapter ? [
     ...(isReplay && chapter.replayNarrative ? chapter.replayNarrative : []),
-    // History-aware scene variations
     ...(sceneVariations[chapter.id] || [])
       .filter(v => v.condition(variationCtx))
       .map(v => v.text),
@@ -242,9 +242,7 @@ const ScenePage = () => {
       if (val <= tone.lowThreshold) return tone.lowText;
       return null;
     }).filter((t): t is string => t !== null),
-    // Dynamic events narrative (randomly selected per playthrough)
     ...dynamicEvents.extraNarrative,
-    // Consequence echoes from past dynamic choices
     ...dynamicEvents.consequenceHints.map(h => `_${h}_`),
     ...(emotional?.atmosphereLine ? [emotional.atmosphereLine] : []),
   ] : [];
