@@ -659,6 +659,69 @@ const ScenePage = () => {
     ? beatImageKey.map(key => sceneImages[key]).find(Boolean) || bgImageFallback
     : undefined;
 
+  // ═══ SLIDESHOW: collect ALL beat images for this scene for crossfade during narration ═══
+  const allBeatImages = useMemo(() => {
+    if (!chapter) return [];
+    const images: string[] = [];
+    const seen = new Set<string>();
+    for (let i = 1; i <= 10; i++) {
+      const key = `${chapter.id}__beat${i}`;
+      const img = sceneImages[key];
+      if (img && !seen.has(img)) {
+        seen.add(img);
+        images.push(img);
+      }
+    }
+    // Fallback: at least include the main scene image
+    if (images.length === 0 && bgImageFallback && !seen.has(bgImageFallback)) {
+      images.push(bgImageFallback);
+    }
+    return images;
+  }, [chapter?.id, bgImageFallback]);
+
+  // Slideshow auto-cycle during TTS playback
+  const [slideshowIndex, setSlideshowIndex] = useState(0);
+  const slideshowTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    // Reset slideshow on scene change
+    setSlideshowIndex(0);
+    if (slideshowTimerRef.current) {
+      clearInterval(slideshowTimerRef.current);
+      slideshowTimerRef.current = null;
+    }
+  }, [chapter?.id]);
+
+  useEffect(() => {
+    // During TTS playback with multiple images, auto-cycle every 6s
+    if (ttsPlaying && allBeatImages.length > 1) {
+      slideshowTimerRef.current = setInterval(() => {
+        setSlideshowIndex(prev => (prev + 1) % allBeatImages.length);
+      }, 6000);
+      return () => {
+        if (slideshowTimerRef.current) clearInterval(slideshowTimerRef.current);
+      };
+    } else {
+      if (slideshowTimerRef.current) {
+        clearInterval(slideshowTimerRef.current);
+        slideshowTimerRef.current = null;
+      }
+    }
+  }, [ttsPlaying, allBeatImages.length]);
+
+  // When beat changes manually, sync slideshow to beat
+  useEffect(() => {
+    if (allBeatImages.length > 0 && !ttsPlaying) {
+      const beatImg = bgImage;
+      const idx = allBeatImages.indexOf(beatImg || '');
+      if (idx >= 0) setSlideshowIndex(idx);
+    }
+  }, [beatIndex, bgImage]);
+
+  const slideshowImage = ttsPlaying && allBeatImages.length > 1
+    ? allBeatImages[slideshowIndex % allBeatImages.length]
+    : bgImage;
+
   // Epic moment detection
   const hasEpicMoment = chapter ? !!epicMoments[chapter.id] : false;
   // Auto-narrate first beat only after all reveal/cards are closed
