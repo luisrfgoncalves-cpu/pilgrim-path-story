@@ -16,6 +16,7 @@ interface TTSOptions {
   emotion?: EmotionType;
   isEpic?: boolean;
   onEnd?: () => void;
+  allowLocalFallback?: boolean;
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
@@ -25,6 +26,7 @@ const LOCKED_PROVIDER: Extract<TTSTier, 'freetts'> = 'freetts';
 const memoryCache = new Map<string, string>();
 let globalAudio: HTMLAudioElement | null = null;
 let globalPlaybackToken = 0;
+let sessionVoiceMode: Extract<TTSTier, 'freetts' | 'local'> | null = null;
 
 const PROVIDER_PRIORITY = [LOCKED_PROVIDER] as const;
 
@@ -97,6 +99,11 @@ function getNarrationStyle(emotion: EmotionType): NarrationStyle {
   }
 }
 
+function getEstimatedNarrationMs(text: string): number {
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(2200, Math.min(18000, words * 340));
+}
+
 function stopGlobalAudio() {
   stopNarration();
   if (globalAudio) {
@@ -151,6 +158,9 @@ export function useTTS() {
 
     try {
       await audio.play();
+      if (tier === LOCKED_PROVIDER) {
+        sessionVoiceMode = LOCKED_PROVIDER;
+      }
       await promise;
     } catch {
       return false;
@@ -187,6 +197,9 @@ export function useTTS() {
         if (finished) return;
         finished = true;
         window.clearTimeout(safetyTimer);
+        if (ok) {
+          sessionVoiceMode = 'local';
+        }
         if (token === globalPlaybackToken) {
           setIsPlaying(false);
           setCurrentTier(null);
@@ -214,7 +227,7 @@ export function useTTS() {
   const speak = useCallback(async (text: string, options: TTSOptions = {}) => {
     stop();
 
-    const { emotion = 'neutral', onEnd } = options;
+    const { emotion = 'neutral', onEnd, allowLocalFallback = sessionVoiceMode !== LOCKED_PROVIDER } = options;
     const cleanText = text.replace(/\{\{\/?\w+\}\}/g, '').replace(/\s+/g, ' ').trim();
     if (!cleanText) {
       onEnd?.();
@@ -225,8 +238,9 @@ export function useTTS() {
     tokenRef.current = token;
     setIsPlaying(true);
     const cacheKey = getCacheKey(cleanText, emotion);
+    const canUseRemote = sessionVoiceMode !== 'local';
 
-    if (memoryCache.has(cacheKey)) {
+    if (canUseRemote && memoryCache.has(cacheKey)) {
       try {
         const ok = await playResolvedUrl(memoryCache.get(cacheKey)!, token, LOCKED_PROVIDER, undefined, undefined, onEnd, cleanText.length);
         if (ok) return;
@@ -234,64 +248,79 @@ export function useTTS() {
     }
 
     try {
-      const cachedBlob = await getFromIDB(cacheKey);
-      if (cachedBlob) {
-        const url = URL.createObjectURL(cachedBlob);
-        const ok = await playResolvedUrl(url, token, LOCKED_PROVIDER, cacheKey, cachedBlob, onEnd, cleanText.length);
-        if (ok) return;
-      }
-    } catch {}
-
-    try {
-      const hash = await hashKey(cleanText, emotion);
-      for (const provider of PROVIDER_PRIORITY) {
-        const storageUrl = `${SUPABASE_URL}/storage/v1/object/public/tts-cache/${provider}/${emotion}/${hash}.mp3`;
-        try {
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 4000);
-          const resp = await fetch(storageUrl, { signal: controller.signal });
-          clearTimeout(timeout);
-          if (resp.ok && resp.headers.get('content-type')?.includes('audio')) {
-            const blob = await resp.blob();
-            if (blob.size > 100) {
-              const url = URL.createObjectURL(blob);
-              const ok = await playResolvedUrl(url, token, provider, cacheKey, blob, onEnd, cleanText.length);
-              if (ok) return;
-            }
-          }
-        } catch {}
-      }
-    } catch {}
-
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 30000);
-      const response = await fetch(`${SUPABASE_URL}/functions/v1/elevenlabs-tts`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-        },
-        body: JSON.stringify({ text: cleanText, emotion, forceProvider: LOCKED_PROVIDER }),
-        signal: controller.signal,
-      });
-      clearTimeout(timeout);
-
-      if (response.ok) {
-        const blob = await response.blob();
-        if (blob.size > 100) {
-          const url = URL.createObjectURL(blob);
-          const ok = await playResolvedUrl(url, token, LOCKED_PROVIDER, cacheKey, blob, onEnd, cleanText.length);
+      if (canUseRemote) {
+        const cachedBlob = await getFromIDB(cacheKey);
+        if (cachedBlob) {
+          const url = URL.createObjectURL(cachedBlob);
+          const ok = await playResolvedUrl(url, token, LOCKED_PROVIDER, cacheKey, cachedBlob, onEnd, cleanText.length);
           if (ok) return;
         }
       }
     } catch {}
 
-    const localOk = await playLocalFallback(cleanText, token, emotion, onEnd);
-    if (localOk) return;
+    if (canUseRemote) {
+      try {
+        const hash = await hashKey(cleanText, emotion);
+        for (const provider of PROVIDER_PRIORITY) {
+          const storageUrl = `${SUPABASE_URL}/storage/v1/object/public/tts-cache/${provider}/${emotion}/${hash}.mp3`;
+          try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 4000);
+            const resp = await fetch(storageUrl, { signal: controller.signal });
+            clearTimeout(timeout);
+            if (resp.ok && resp.headers.get('content-type')?.includes('audio')) {
+              const blob = await resp.blob();
+              if (blob.size > 100) {
+                const url = URL.createObjectURL(blob);
+                const ok = await playResolvedUrl(url, token, provider, cacheKey, blob, onEnd, cleanText.length);
+                if (ok) return;
+              }
+            }
+          } catch {}
+        }
+      } catch {}
 
-    console.log('[TTS] All providers unavailable. Text-only mode.');
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000);
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/elevenlabs-tts`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${SUPABASE_KEY}`,
+          },
+          body: JSON.stringify({ text: cleanText, emotion, forceProvider: LOCKED_PROVIDER }),
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
+
+        if (response.ok) {
+          const blob = await response.blob();
+          if (blob.size > 100) {
+            const url = URL.createObjectURL(blob);
+            const ok = await playResolvedUrl(url, token, LOCKED_PROVIDER, cacheKey, blob, onEnd, cleanText.length);
+            if (ok) return;
+          }
+        }
+      } catch {}
+    }
+
+    if (allowLocalFallback && sessionVoiceMode !== LOCKED_PROVIDER) {
+      const localOk = await playLocalFallback(cleanText, token, emotion, onEnd);
+      if (localOk) return;
+    }
+
+    console.log('[TTS] Locked voice unavailable. Maintaining cinematic flow without switching voices.');
+    const delay = getEstimatedNarrationMs(cleanText);
+    if (typeof window !== 'undefined') {
+      window.setTimeout(() => {
+        if (!finalizeIfCurrent(token, null)) return;
+        onEnd?.();
+      }, delay);
+      return;
+    }
+
     finalizeIfCurrent(token, null);
     onEnd?.();
   }, [finalizeIfCurrent, playLocalFallback, playResolvedUrl, stop]);

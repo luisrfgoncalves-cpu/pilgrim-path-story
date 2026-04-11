@@ -34,11 +34,12 @@ function loadVoice() {
   const ptBrMale = ptBrVoices.find(v => isMale(v));
   // Fallback: any male pt voice
   const ptMale = ptVoices.find(v => isMale(v));
+  const anyMale = voices.find(v => isMale(v));
   // Last resort: any pt-BR
   const ptBrAny = ptBrVoices[0];
   const ptAny = ptVoices[0];
 
-  selectedVoice = ptBrMaleNatural || ptBrMaleGoogle || ptBrMaleMicrosoft || ptBrMale || ptMale || ptBrAny || ptAny || voices[0] || null;
+  selectedVoice = ptBrMaleNatural || ptBrMaleGoogle || ptBrMaleMicrosoft || ptBrMale || ptMale || anyMale || ptBrAny || ptAny || voices[0] || null;
   
   if (selectedVoice) {
     console.log(`[Narrator] Voice selected: ${selectedVoice.name} (${selectedVoice.lang})`);
