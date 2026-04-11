@@ -29,7 +29,15 @@ interface PregenProgress {
 function getProgress(): PregenProgress {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return {
+        completedHashes: Array.isArray(parsed.completedHashes) ? parsed.completedHashes : [],
+        lastKeyIdx: typeof parsed.lastKeyIdx === 'number' ? parsed.lastKeyIdx : 0,
+        lastRunAt: typeof parsed.lastRunAt === 'number' ? parsed.lastRunAt : 0,
+        failedHashes: Array.isArray(parsed.failedHashes) ? parsed.failedHashes : [],
+      };
+    }
   } catch { /* ignore */ }
   return { completedHashes: [], lastKeyIdx: 0, lastRunAt: 0, failedHashes: [] };
 }
