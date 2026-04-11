@@ -180,8 +180,23 @@ export default function RPGEventPopup({
       });
     }
 
+    // Misericórdia: wisdom_insight — 25% chance to auto-reveal a hint
+    if (hasContent && currentCharacterId) {
+      const charData = getCharacter(currentCharacterId);
+      const passiveEff = charData?.passive.effect;
+      if (passiveEff?.type === 'wisdom_insight' && Math.random() * 100 < passiveEff.hintChance) {
+        if (tileEventType === 'riddle') {
+          // Auto-reveal first hint for riddles
+          setHintIndex(0);
+          setWisdomHint(`🕊️ ${charData!.passive.name}: O Espírito sussurra uma pista ao ouvido de ${charData!.name}...`);
+        } else if (tileEventType === 'scripture') {
+          setWisdomHint(`🕊️ ${charData!.passive.name}: ${charData!.name} sente uma intuição divina sobre a resposta...`);
+        }
+      }
+    }
+
     return () => {};
-  }, [visible, eventKey, tileEventType, difficulty, playerNames, rotationState]);
+  }, [visible, eventKey, tileEventType, difficulty, playerNames, rotationState, currentCharacterId]);
 
   // ─── STAGED NARRATIVE: Dramatic suspense intro before context ───
   const getSuspenseText = (): { emoji: string; text: string } => {
