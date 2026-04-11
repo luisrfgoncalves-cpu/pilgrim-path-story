@@ -18,6 +18,7 @@ import {
 import { playRealSfx, getSfxForTileEvent, playNarrativeSfx } from '@/lib/realSfx';
 import { getRevelation } from '@/data/rpg/revelations';
 import { setChainFlag, hasChainFlag, applyChainCondition, getChainNarrativeModifier } from '@/data/rpg/chainSystem';
+import { getCharacter } from '@/data/rpg/characters';
 import { Clock, PlayCircle, BookOpen, Sparkles } from 'lucide-react';
 
 // Map RPG sound intents to available GameSfx types
@@ -37,6 +38,8 @@ interface RPGEventPopupProps {
   currentPlayerIdx: number;
   tileEventType: TileEventType;
   sourceTileType?: TileType;
+  currentCharacterId?: string;
+  passiveMessage?: string;
   onResult: (result: {
     success: boolean;
     posAdjust?: number;
@@ -57,7 +60,8 @@ type PopupPhase = 'suspense_intro' | 'context' | 'mode_reveal' | 'player_select'
 
 export default function RPGEventPopup({
   visible, eventKey, difficulty, playerNames, currentPlayerIdx,
-  tileEventType, sourceTileType, onResult, onDismiss, rotationState,
+  tileEventType, sourceTileType, currentCharacterId, passiveMessage,
+  onResult, onDismiss, rotationState,
   chainState, currentTurn,
 }: RPGEventPopupProps) {
   const [phase, setPhase] = useState<PopupPhase>('suspense_intro');
@@ -703,16 +707,39 @@ export default function RPGEventPopup({
                 </div>
               )}
 
-              {/* Context text */}
+              {/* Character identity badge */}
+              {currentCharacterId && (() => {
+                const char = getCharacter(currentCharacterId);
+                return char ? (
+                  <div className="flex items-center gap-3 p-3 rounded-xl" style={{
+                    background: `${char.color}15`,
+                    border: `1px solid ${char.color}40`,
+                  }}>
+                    <span className="text-2xl">{char.emoji}</span>
+                    <div>
+                      <p className="font-display font-bold text-sm text-foreground">{char.name} — {char.title}</p>
+                      <p className="text-xs text-muted-foreground">{char.passive.name}</p>
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+
+              {/* Passive ability triggered feedback */}
+              {passiveMessage && (
+                <div className="p-3 rounded-xl text-center text-sm font-display font-bold" style={{
+                  background: 'hsl(280 30% 12%)',
+                  border: '1px solid hsl(280 50% 40%)',
+                  color: 'hsl(280 60% 75%)',
+                  animation: 'goldenPulse 2s ease-in-out infinite',
+                }}>
+                  ✨ {passiveMessage}
+                </div>
+              )}
+
+              {/* Context text — dramatic Master intro */}
               <div className="p-5 rounded-xl bg-background/50 border border-border">
                 <p className="text-lg font-display leading-relaxed text-foreground/80 italic" style={{ lineHeight: '1.8' }}>
-                  {(() => {
-                    const raw = question?.context || riddle?.context || dilemma?.context || challenge?.context
-                      || (boss && (bossPhaseIdx > 0 ? boss.phases[bossPhaseIdx]?.description : boss.narrative))
-                      || specialEvent?.narrative || trapEvent?.narrative || refugeEvent?.narrative
-                      || '';
-                    return raw;
-                  })()}
+                  {getContextNarrationText()}
                 </p>
                 {refugeEvent?.bibleVerse && (
                   <p className="mt-2 text-xs text-primary italic">📖 {refugeEvent.bibleVerse}</p>

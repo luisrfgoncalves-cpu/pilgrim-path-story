@@ -1444,6 +1444,8 @@ const PresentialMultiplayer = () => {
         currentPlayerIdx={rpgEvent?.playerIdx || currentTurn}
         tileEventType={rpgEvent?.tileType || 'scripture'}
         sourceTileType={rpgEvent?.sourceTileType}
+        currentCharacterId={rpgEvent ? players[rpgEvent.playerIdx]?.characterId : undefined}
+        passiveMessage={streakAnnounce || undefined}
         onResult={handleRpgEventResult}
         onDismiss={() => {
           setRpgEvent(null);
