@@ -1,30 +1,32 @@
 import { useState, useCallback, useRef } from 'react';
 
 /**
- * useTTS — Text-to-Speech com cache inteligente de 3 camadas:
+ * useTTS — Text-to-Speech com cache inteligente + narração neural.
  * 
- * Cache Layer 1: Memória (sessão)
- * Cache Layer 2: IndexedDB (persistente no celular)
- * Cache Layer 3: Supabase Storage (global — todos compartilham)
- * Geração:  ElevenLabs via Edge Function (só na 1ª vez)
- * Fallback: Web Speech API (offline, sempre disponível)
+ * Toda geração de áudio passa pela Edge Function (servidor),
+ * que tenta: ElevenLabs → FreeTTS (Microsoft Neural) → eidosSpeech.
+ * Nenhuma voz robótica. Tudo neural.
+ * 
+ * Cache:
+ *   1. Memória (sessão)
+ *   2. IndexedDB (persistente no celular)
+ *   3. Supabase Storage (global — todos compartilham)
+ *   4. Edge Function gera e salva no Storage automaticamente
  */
 
-type TTSTier = 'elevenlabs' | 'webspeech' | 'cached';
+type TTSTier = 'elevenlabs' | 'freetts' | 'eidosspeech' | 'cached';
 type EmotionType = 'neutral' | 'dramatic' | 'solemn' | 'urgent' | 'celestial' | 'villain';
 
 interface TTSOptions {
   emotion?: EmotionType;
-  isEpic?: boolean;
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 
-// In-memory cache (session lifetime)
 const memoryCache = new Map<string, string>();
 
-// ─── IndexedDB persistent cache ───
+// ─── IndexedDB ───
 const DB_NAME = 'peregrino-tts-cache';
 const DB_VERSION = 1;
 const STORE_NAME = 'audio';
@@ -65,11 +67,10 @@ async function saveToIDB(key: string, blob: Blob): Promise<void> {
     const store = tx.objectStore(STORE_NAME);
     store.put(blob, key);
   } catch {
-    // Silently fail — cache is optional
+    // Cache is optional
   }
 }
 
-// ─── Hash function (matches edge function) ───
 async function hashKey(text: string, emotion: string): Promise<string> {
   const data = new TextEncoder().encode(`${emotion}:${text}`);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -81,7 +82,6 @@ function getCacheKey(text: string, emotion: string): string {
   return `${emotion}:${text.slice(0, 200)}`;
 }
 
-// ─── Play audio from URL ───
 function playAudioUrl(url: string): { audio: HTMLAudioElement; promise: Promise<void> } {
   const audio = new Audio(url);
   const promise = new Promise<void>((resolve, reject) => {
@@ -91,55 +91,16 @@ function playAudioUrl(url: string): { audio: HTMLAudioElement; promise: Promise<
   return { audio, promise };
 }
 
-// ─── Web Speech API fallback (always available, no network) ───
-const SPEECH_RATES: Record<EmotionType, number> = {
-  neutral: 0.9,
-  dramatic: 0.85,
-  solemn: 0.8,
-  urgent: 1.05,
-  celestial: 0.85,
-  villain: 0.8,
-};
-
-function speakWithWebSpeech(text: string, emotion: EmotionType): { cancel: () => void; promise: Promise<void> } {
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'pt-BR';
-  utterance.rate = SPEECH_RATES[emotion] || 0.9;
-  utterance.pitch = emotion === 'villain' ? 0.7 : emotion === 'celestial' ? 1.2 : 1.0;
-
-  // Try to find a pt-BR voice
-  const voices = speechSynthesis.getVoices();
-  const ptVoice = voices.find(v => v.lang.startsWith('pt-BR')) || voices.find(v => v.lang.startsWith('pt'));
-  if (ptVoice) utterance.voice = ptVoice;
-
-  const promise = new Promise<void>((resolve, reject) => {
-    utterance.onend = () => resolve();
-    utterance.onerror = (e) => reject(new Error(e.error || 'Speech failed'));
-  });
-
-  speechSynthesis.speak(utterance);
-
-  return {
-    cancel: () => speechSynthesis.cancel(),
-    promise,
-  };
-}
-
 export function useTTS() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTier, setCurrentTier] = useState<TTSTier | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const speechCancelRef = useRef<(() => void) | null>(null);
 
   const stop = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       audioRef.current = null;
-    }
-    if (speechCancelRef.current) {
-      speechCancelRef.current();
-      speechCancelRef.current = null;
     }
     setIsPlaying(false);
     setCurrentTier(null);
@@ -161,7 +122,7 @@ export function useTTS() {
 
     const cacheKey = getCacheKey(cleanText, emotion);
 
-    // ═══ LAYER 1: Memory cache (instant) ═══
+    // ═══ LAYER 1: Memory cache ═══
     if (memoryCache.has(cacheKey)) {
       try {
         const { audio, promise } = playAudioUrl(memoryCache.get(cacheKey)!);
@@ -175,7 +136,7 @@ export function useTTS() {
       } catch { /* fall through */ }
     }
 
-    // ═══ LAYER 2: IndexedDB cache (persistent on device) ═══
+    // ═══ LAYER 2: IndexedDB ═══
     try {
       const cachedBlob = await getFromIDB(cacheKey);
       if (cachedBlob) {
@@ -192,11 +153,10 @@ export function useTTS() {
       }
     } catch { /* fall through */ }
 
-    // ═══ LAYER 3: Supabase Storage (global cache) ═══
+    // ═══ LAYER 3: Supabase Storage (direct URL) ═══
     try {
       const hash = await hashKey(cleanText, emotion);
       const storageUrl = `${SUPABASE_URL}/storage/v1/object/public/tts-cache/${emotion}/${hash}.mp3`;
-      // Use GET with small timeout instead of HEAD (HEAD returns 400 on missing files)
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 4000);
       const resp = await fetch(storageUrl, { signal: controller.signal });
@@ -205,7 +165,7 @@ export function useTTS() {
         const blob = await resp.blob();
         const url = URL.createObjectURL(blob);
         memoryCache.set(cacheKey, url);
-        saveToIDB(cacheKey, blob); // fire-and-forget
+        saveToIDB(cacheKey, blob);
         const { audio, promise } = playAudioUrl(url);
         audioRef.current = audio;
         setCurrentTier('cached');
@@ -217,7 +177,7 @@ export function useTTS() {
       }
     } catch { /* fall through */ }
 
-    // ═══ LAYER 4: Generate via ElevenLabs Edge Function ═══
+    // ═══ LAYER 4: Edge Function (ElevenLabs → FreeTTS → eidosSpeech) ═══
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 30000);
@@ -234,14 +194,15 @@ export function useTTS() {
       clearTimeout(timeout);
 
       if (response.ok) {
+        const source = response.headers.get('X-TTS-Source') || 'unknown';
         const blob = await response.blob();
-        if (blob.size > 0) {
+        if (blob.size > 100) {
           const url = URL.createObjectURL(blob);
           memoryCache.set(cacheKey, url);
-          saveToIDB(cacheKey, blob); // fire-and-forget
+          saveToIDB(cacheKey, blob);
           const { audio, promise } = playAudioUrl(url);
           audioRef.current = audio;
-          setCurrentTier('elevenlabs');
+          setCurrentTier(source as TTSTier);
           await audio.play();
           await promise;
           setIsPlaying(false);
@@ -251,20 +212,8 @@ export function useTTS() {
       }
     } catch { /* fall through */ }
 
-    // ═══ FALLBACK: Web Speech API (always works, no network needed) ═══
-    try {
-      if ('speechSynthesis' in window) {
-        setCurrentTier('webspeech');
-        const { cancel, promise } = speakWithWebSpeech(cleanText, emotion);
-        speechCancelRef.current = cancel;
-        await promise;
-        setIsPlaying(false);
-        setCurrentTier(null);
-        return;
-      }
-    } catch { /* fall through */ }
-
-    // All failed silently
+    // All failed — no audio (no robotic voice)
+    console.log('[TTS] All providers unavailable. Text-only mode.');
     setIsPlaying(false);
     setCurrentTier(null);
   }, [stop]);
