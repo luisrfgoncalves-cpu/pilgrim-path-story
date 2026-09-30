@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStoryProgress } from '@/hooks/useStoryProgress';
 import { useProgressSync } from '@/hooks/useProgressSync';
-import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect, ToneNarrative, StoryChoice } from '@/data/story';
+import { getChapter, storyChapters, ChoiceEffect, ConditionalEffect, ToneNarrative, StoryChoice, NarrativeLine } from '@/data/story';
 import { getPart2Chapter } from '@/data/storyPart2';
 import { sceneImages } from '@/data/sceneImages';
 import { characterImages } from '@/data/characterImages';
@@ -25,6 +25,7 @@ import { ParticleEffects, getParticleTypeForScene } from '@/components/ParticleE
 import Inventory from '@/components/Inventory';
 import { TimedChoice, HoldButton, DragToChoose } from '@/components/InteractiveChallenges';
 import { SinkingEvent, SuspenseDelay, TensionPulse } from '@/components/SceneEvents';
+import { EpicCharacterView } from '@/components/game/EpicCharacterView';
 import { MiniGame, MiniGameResult } from '@/components/MiniGames';
 import { FullscreenMiniGame, FULLSCREEN_GAMES } from '@/components/FullscreenMiniGame';
 import { miniGameMappings } from '@/data/miniGameMappings';
@@ -81,6 +82,7 @@ const ScenePage = () => {
   const [miniGameResult, setMiniGameResult] = useState<MiniGameResult | null>(null);
   const [showMiniGameResult, setShowMiniGameResult] = useState(false);
   const [miniGameReady, setMiniGameReady] = useState(false);
+  const [miniGameTutorialActive, setMiniGameTutorialActive] = useState(false);
   const [miniGameButtonVisible, setMiniGameButtonVisible] = useState(false);
   const [miniGameAutoPopup, setMiniGameAutoPopup] = useState(false);
   const [timedRetryCount, setTimedRetryCount] = useState(0);
@@ -88,7 +90,7 @@ const ScenePage = () => {
   const [charReveal, setCharReveal] = useState<{ name: string; img: string; role?: string } | null>(null);
   const [charRevealDone, setCharRevealDone] = useState(false); // After reveal, show persistent portrait
   const [persistentChar, setPersistentChar] = useState<{ name: string; img: string; role?: string } | null>(null);
-  const { triggerChoiceEffect, triggerSceneEntryVFX } = useVisualEffects();
+  const { triggerEffect, triggerChoiceEffect, triggerSceneEntryVFX } = useVisualEffects();
   const { bonus: supportBonus, newSupportCount } = useSupportBonus();
   const [supportToastShown, setSupportToastShown] = useState(false);
   const { setAmbienceForScene, sfxForChoice, toggleAudio, stopAmbience } = useAudioEngine();
@@ -219,7 +221,7 @@ const ScenePage = () => {
     // Consequence echoes from past dynamic choices
     ...dynamicEvents.consequenceHints.map(h => `_${h}_`),
     ...(emotional?.atmosphereLine ? [emotional.atmosphereLine] : []),
-  ] : [];
+  ].filter(Boolean) : [];
 
   // Record playthrough completion when reaching a final ending
   const [playthroughRecorded, setPlaythroughRecorded] = useState(false);
@@ -253,6 +255,7 @@ const ScenePage = () => {
     setMiniGameResult(null);
     setShowMiniGameResult(false);
     setMiniGameButtonVisible(false);
+    setMiniGameTutorialActive(false);
     setMiniGameAutoPopup(false);
     setCharReveal(null);
     setCharRevealDone(false);
@@ -306,25 +309,52 @@ const ScenePage = () => {
   const hasCharReveal = !!charReveal;
   const canShowChoices = !hasCharReveal;
 
+  // CINEMATIC MODE: No auto-advance. Force user to tap to continue.
   useEffect(() => {
     if (!chapter) return;
-    if (narrativeIndex < fullNarrative.length - 1) {
-      // Faster pacing to avoid delayed text perception
-      const timer = setTimeout(() => setNarrativeIndex(prev => prev + 1), 320);
-      return () => clearTimeout(timer);
-    } else if (canShowChoices) {
+    if (narrativeIndex === fullNarrative.length - 1 && canShowChoices) {
       const timer = setTimeout(() => setShowChoices(true), 180);
       return () => clearTimeout(timer);
+    } else {
+      setShowChoices(false);
     }
   }, [narrativeIndex, chapter, fullNarrative.length, canShowChoices]);
 
-  // Delayed mini-game trigger button — appears 12s after choices show
-  // Auto-popup notification after 30s if user hasn't clicked the button
+  const handleTapToAdvance = () => {
+    if (narrativeIndex < fullNarrative.length - 1) {
+      const nextIdx = narrativeIndex + 1;
+      const nextLine = fullNarrative[nextIdx];
+      
+      // Trigger SFX/VFX if present on the line
+      if (typeof nextLine === 'object' && nextLine !== null) {
+        if (nextLine.sfx) playGameSfx(nextLine.sfx as any);
+        if (nextLine.vfx) triggerEffect(nextLine.vfx as any);
+      } else {
+        playGameSfx('accept');
+      }
+      
+      setNarrativeIndex(nextIdx);
+    }
+  };
+
+  // Trigger initial line VFX/SFX on scene load
+  useEffect(() => {
+    if (!transitioning && fullNarrative.length > 0 && narrativeIndex === 0) {
+      const firstLine = fullNarrative[0];
+      if (typeof firstLine === 'object' && firstLine !== null) {
+        if (firstLine.sfx) setTimeout(() => playGameSfx(firstLine.sfx as any), 300);
+        if (firstLine.vfx) setTimeout(() => triggerEffect(firstLine.vfx as any), 300);
+      }
+    }
+  }, [transitioning, chapter?.id]);
+
+  // Mini-game trigger — appears IMMEDIATELY when choices show (mandatory gameplay)
   useEffect(() => {
     if (!showChoices || miniGameDone || !miniGameMappings[chapter?.id || '']) return;
-    const btnTimer = setTimeout(() => setMiniGameButtonVisible(true), 12000);
-    const popupTimer = setTimeout(() => setMiniGameAutoPopup(true), 15000);
-    return () => { clearTimeout(btnTimer); clearTimeout(popupTimer); };
+    // INSTANT mini-game: no waiting, pure action
+    setMiniGameButtonVisible(true);
+    const popupTimer = setTimeout(() => setMiniGameAutoPopup(true), 500);
+    return () => { clearTimeout(popupTimer); };
   }, [showChoices, miniGameDone, chapter?.id]);
 
   const executeChoice = (nextChapterId: string, choiceText: string, effects: ChoiceEffect, consequence?: string, flag?: string, conditionalEffects?: ConditionalEffect[], item?: string) => {
@@ -415,12 +445,12 @@ const ScenePage = () => {
   const totalChapters = Object.keys(storyChapters).length;
   const progressPercent = Math.round((progress.visitedChapters.length / totalChapters) * 100);
 
-  const availableChoices = chapter.choices.filter(c => 
+  const availableChoices = (chapter.choices || []).filter(c => 
     meetsRequirements(c.requires) && 
     (!c.requiresFlag || hasFlag(c.requiresFlag)) &&
     (!c.excludesFlag || !hasFlag(c.excludesFlag))
   );
-  const lockedChoices = chapter.choices.filter(c => !meetsRequirements(c.requires) && !c.requiresFlag && !c.excludesFlag);
+  const lockedChoices = (chapter.choices || []).filter(c => !meetsRequirements(c.requires) && !c.requiresFlag && !c.excludesFlag);
 
   // Dynamic choices from event pools (converted to StoryChoice format)
   const dynamicChoicesMapped: StoryChoice[] = dynamicEvents.extraChoices.map(dc => ({
@@ -671,12 +701,32 @@ const ScenePage = () => {
             <div className="h-px flex-1 bg-primary/20" />
           </div>
 
-          <div className="space-y-3 mb-6" style={atmosphere.textStyle}>
-            {fullNarrative.slice(0, narrativeIndex + 1).map((paragraph, i) => (
-              <p key={i} className="narrative-text text-foreground/90 fade-in" style={{ animationDelay: `${i * 0.08}s` }}>
-                {paragraph}
+          <div 
+            className="space-y-6 mb-8 mt-4 min-h-[160px] flex flex-col justify-center cursor-pointer relative" 
+            style={{...atmosphere.textStyle, zIndex: 10}}
+            onClick={handleTapToAdvance}
+          >
+            {/* Cinematic Single-Block Rendering */}
+            <div className="relative animate-in slide-in-from-bottom-4 fade-in duration-500" key={narrativeIndex}>
+              <p className="narrative-text text-foreground/95 text-xl md:text-2xl font-bold italic leading-relaxed text-center" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>
+                {(() => {
+                  const line = fullNarrative[narrativeIndex];
+                  if (!line) return '...';
+                  if (typeof line === 'string') return line;
+                  if (typeof line === 'object' && 'text' in line) return (line as NarrativeLine).text;
+                  return String(line);
+                })()}
               </p>
-            ))}
+            </div>
+            
+            {/* Tap Hint */}
+            {narrativeIndex < fullNarrative.length - 1 && (
+              <div className="absolute -bottom-8 left-0 right-0 flex justify-center animate-pulse">
+                <span className="text-[10px] uppercase font-display tracking-[0.2em] text-primary/60">
+                  👆 Toque para continuar
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Scene events */}
@@ -708,7 +758,7 @@ const ScenePage = () => {
           )}
 
           {/* ═══ MINI-GAME AUTO-POPUP (after 30s inactivity) ═══ */}
-          <GameNotification visible={miniGameAutoPopup && !miniGameDone && !miniGameReady && !!miniGameMappings[chapter.id]} onDismiss={() => setMiniGameAutoPopup(false)} duration={0} persistent position="center">
+          <GameNotification visible={miniGameAutoPopup && !miniGameDone && !miniGameReady && !miniGameTutorialActive && !!miniGameMappings[chapter.id]} onDismiss={() => setMiniGameAutoPopup(false)} duration={0} persistent position="center">
             <div className="bg-card border-2 border-primary/40 rounded-2xl p-5 text-center space-y-3 shadow-2xl">
               <span className="text-4xl">⚔️</span>
               <p className="font-display text-lg text-primary">Desafio Disponível!</p>
@@ -716,9 +766,7 @@ const ScenePage = () => {
               <button
                 onClick={() => {
                   setMiniGameAutoPopup(false);
-                  window.scrollTo(0, 0);
-                  setMiniGameReady(true);
-                  requestAnimationFrame(() => window.scrollTo(0, 0));
+                  setMiniGameTutorialActive(true);
                 }}
                 className="btn-medieval w-full flex items-center justify-center gap-2"
               >
@@ -728,114 +776,123 @@ const ScenePage = () => {
             </div>
           </GameNotification>
 
-          {/* ═══ MINI-GAME TRIGGER BUTTON (appears after 12s delay) ═══ */}
-          {showChoices && !miniGameDone && miniGameMappings[chapter.id] && !miniGameReady && miniGameButtonVisible && (
-            <div className="mb-5 animate-scale-in" id="minigame-trigger">
-              <button
-                onClick={() => {
-                  setMiniGameAutoPopup(false);
-                  window.scrollTo(0, 0);
-                  document.documentElement.scrollTop = 0;
-                  document.body.scrollTop = 0;
-                  setMiniGameReady(true);
-                  requestAnimationFrame(() => {
-                    window.scrollTo(0, 0);
-                    document.documentElement.scrollTop = 0;
-                    document.body.scrollTop = 0;
-                  });
-                  setTimeout(() => {
-                    window.scrollTo(0, 0);
-                    document.documentElement.scrollTop = 0;
-                    const el = document.getElementById('minigame-area');
-                    if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
-                  }, 50);
-                  setTimeout(() => {
-                    window.scrollTo(0, 0);
-                    const el = document.getElementById('minigame-area');
-                    if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
-                  }, 200);
-                }}
-                className="btn-medieval w-full flex items-center justify-center gap-3"
-              >
-                <Zap className="w-5 h-5" />
-                <span>
-                  {FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type)
-                    ? '⚔️ Iniciar Desafio'
-                    : '🎮 Iniciar Mini-Game'}
-                </span>
-              </button>
-            </div>
-          )}
-
-          {/* Old inline mini-game area removed — now renders at top of main */}
-
-          {/* ═══ FULLSCREEN MINI-GAME (major games) ═══ */}
-          {showChoices && !miniGameDone && miniGameReady && miniGameMappings[chapter.id] && FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
-            <>
-              <div id="minigame-area" />
-              <FullscreenMiniGame
-                config={miniGameMappings[chapter.id]}
-                chapterId={chapter.id}
-                characterPortraits={scenePortraits}
-                onComplete={(result) => {
-                  setMiniGameResult(result);
-                  setMiniGameDone(true);
-                  setShowMiniGameResult(true);
-                  if (result.effects) {
-                    triggerChoiceEffect(result.effects as Record<string, number>);
-                    sfxForChoice(result.effects as Record<string, number>);
-                  }
-                  // GameNotification handles dismiss
-                }}
-                onSkip={() => {
-                  setMiniGameDone(true);
-                }}
-              />
-            </>
-          )}
-
-          {/* Mini-game result toast */}
-          {miniGameResult && (
-            <GameNotification visible={showMiniGameResult} onDismiss={() => setShowMiniGameResult(false)} duration={15000} position="top">
-              <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 ${
-                miniGameResult.success
-                  ? 'bg-primary/10 border-primary/30 text-primary'
-                  : 'bg-destructive/10 border-destructive/30 text-destructive'
-              }`}>
-                <span className="text-xl">{miniGameResult.success ? '🏆' : '💔'}</span>
-                <div className="flex-1">
-                  <p className="text-sm font-display">
-                    {miniGameResult.success ? 'Desafio superado!' : 'Desafio falhou...'}
-                  </p>
-                  <p className="text-xs opacity-80">
-                    {Object.entries(miniGameResult.effects)
-                      .filter(([, v]) => v !== 0)
-                      .map(([k, v]) => {
-                        const labels: Record<string, string> = { fe: 'Fé', perseveranca: 'Perseverança', discernimento: 'Discernimento', coragem: 'Coragem' };
-                        return `${labels[k] || k} ${(v as number) > 0 ? '+' : ''}${v}`;
-                      })
-                      .join(', ')}
-                  </p>
-                </div>
-              </div>
-            </GameNotification>
-          )}
-
-          {/* Suspense overlay */}
-          {suspenseActive && pendingChoice && (
-            <SuspenseDelay
-              duration={2500}
-              message="O destino pondera sua escolha..."
-              onComplete={() => {
-                setSuspenseActive(false);
-                pendingChoice();
-              }}
-            />
-          )}
-
           {showChoices && !suspenseActive && (
             <div className="space-y-3 slide-up pb-6">
-              {chapter.isEnding && (chapter.endingType === 'final_good' || chapter.endingType === 'final_bad') ? (() => {
+              {/* MINI-GAME GATE: Block choices until mini-game is completed */}
+              {!miniGameDone && miniGameMappings[chapter.id] && !miniGameReady && !miniGameTutorialActive && miniGameButtonVisible && (
+                <div className="mb-5 animate-scale-in text-center space-y-4" id="minigame-trigger">
+                  <div className="p-4 bg-primary/10 border-2 border-primary/40 rounded-2xl">
+                    <p className="text-primary font-display text-lg font-bold mb-2">⚔️ DESAFIO DISPONÍVEL!</p>
+                    <p className="text-foreground/70 text-sm mb-4">Complete o desafio para desbloquear suas escolhas e ganhar bônus de atributos!</p>
+                    <button
+                      onClick={() => {
+                        setMiniGameAutoPopup(false);
+                        setMiniGameTutorialActive(true);
+                        window.scrollTo(0, 0);
+                      }}
+                      className="btn-medieval w-full flex items-center justify-center gap-3 py-5 text-xl"
+                    >
+                      <Zap className="w-6 h-6" />
+                      <span>🎮 JOGAR AGORA</span>
+                    </button>
+                  </div>
+                  <button 
+                    onClick={() => setMiniGameDone(true)}
+                    className="text-xs text-muted-foreground/50 underline"
+                  >
+                    pular desafio
+                  </button>
+                </div>
+              )}
+
+              {/* MINI-GAME TUTORIAL OVERLAY */}
+              {miniGameTutorialActive && miniGameMappings[chapter.id] && (
+                <div className="mb-5 p-6 bg-card/95 backdrop-blur-md rounded-2xl border-2 border-primary shadow-[0_0_30px_rgba(255,215,0,0.15)] animate-in zoom-in-95 duration-300">
+                  <div className="flex flex-col items-center text-center space-y-4">
+                    <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
+                      <span className="text-3xl">🎮</span>
+                    </div>
+                    <h3 className="font-display text-2xl text-primary">Como Jogar</h3>
+                    <p className="text-foreground/90 font-medium">{miniGameMappings[chapter.id].intro}</p>
+                    <div className="bg-black/40 p-4 rounded-xl w-full text-sm text-muted-foreground text-left">
+                      <h4 className="text-primary text-xs font-bold mb-2 uppercase">Atenção às regras:</h4>
+                      <ul className="list-disc list-inside space-y-1">
+                        <li>Suas escolhas afetam seus atributos permanentes.</li>
+                        <li>Siga os comandos ou dicas que aparecerão rapidamente.</li>
+                        <li>O erro causa dano real, mas O Caminho perdoa.</li>
+                      </ul>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setMiniGameTutorialActive(false);
+                        setMiniGameReady(true);
+                        requestAnimationFrame(() => {
+                          const el = document.getElementById('minigame-area');
+                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        });
+                      }}
+                      className="btn-medieval w-full mt-4 bg-primary text-primary-foreground py-4 text-lg font-bold"
+                    >
+                      ESTOU PRONTO
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* ═══ FULLSCREEN MINI-GAME (major games) ═══ */}
+              {!miniGameDone && miniGameReady && miniGameMappings[chapter.id] && FULLSCREEN_GAMES.has(miniGameMappings[chapter.id].type) && (
+                <>
+                  <div id="minigame-area" />
+                  <FullscreenMiniGame
+                    config={miniGameMappings[chapter.id]}
+                    chapterId={chapter.id}
+                    characterPortraits={scenePortraits}
+                    onComplete={(result) => {
+                      setMiniGameResult(result);
+                      setMiniGameDone(true);
+                      setShowMiniGameResult(true);
+                      if (result.effects) {
+                        triggerChoiceEffect(result.effects as Record<string, number>);
+                        sfxForChoice(result.effects as Record<string, number>);
+                      }
+                    }}
+                    onSkip={() => {
+                      setMiniGameDone(true);
+                    }}
+                  />
+                </>
+              )}
+
+              {/* Mini-game result toast */}
+              {miniGameResult && (
+                <GameNotification visible={showMiniGameResult} onDismiss={() => setShowMiniGameResult(false)} duration={15000} position="top">
+                  <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 ${
+                    miniGameResult.success
+                      ? 'bg-primary/10 border-primary/30 text-primary'
+                      : 'bg-destructive/10 border-destructive/30 text-destructive'
+                  }`}>
+                    <span className="text-xl">{miniGameResult.success ? '🏆' : '💔'}</span>
+                    <div className="flex-1">
+                      <p className="text-sm font-display">
+                        {miniGameResult.success ? 'Desafio superado!' : 'Desafio falhou...'}
+                      </p>
+                      <p className="text-xs opacity-80">
+                        {Object.entries(miniGameResult.effects)
+                          .filter(([, v]) => v !== 0)
+                          .map(([k, v]) => {
+                            const labels: Record<string, string> = { fe: 'Fé', perseveranca: 'Perseverança', discernimento: 'Discernimento', coragem: 'Coragem' };
+                            return `${labels[k] || k} ${(v as number) > 0 ? '+' : ''}${v}`;
+                          })
+                          .join(', ')}
+                      </p>
+                    </div>
+                  </div>
+                </GameNotification>
+              )}
+
+              {/* NARRATIVE CHOICES — only visible after mini-game is done (or no mini-game) */}
+              {(miniGameDone || !miniGameMappings[chapter.id]) && (<>
+                {chapter.isEnding && (chapter.endingType === 'final_good' || chapter.endingType === 'final_bad') ? (() => {
                 const analysis = analyzePerformance(
                   progress.attributes,
                   progress.choicesMade,
@@ -850,7 +907,6 @@ const ScenePage = () => {
                 const accentColor = isComplete ? 'text-primary' : isDifficult ? 'text-yellow-500' : 'text-destructive';
                 const borderColor = isComplete ? 'border-primary/30' : isDifficult ? 'border-yellow-500/30' : 'border-destructive/30';
                 const bgAccent = isComplete ? 'bg-primary/10' : isDifficult ? 'bg-yellow-500/10' : 'bg-destructive/10';
-
                 return (
                   <div className="text-center space-y-5 py-6">
                     <div className={`inline-flex items-center justify-center w-14 h-14 rounded-full ${bgAccent} mx-auto`}>
@@ -862,8 +918,6 @@ const ScenePage = () => {
                       <div className={`h-px w-12 ${borderColor.replace('border', 'bg')}`} />
                     </div>
                     <p className="narrative-text text-foreground/90 italic text-sm">{analysis.message}</p>
-
-                    {/* Performance details */}
                     <div className={`bg-card border ${borderColor} rounded-lg p-4 text-left space-y-3`}>
                       <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Análise da Jornada</p>
                       <ul className="space-y-1.5">
@@ -875,8 +929,6 @@ const ScenePage = () => {
                         ))}
                       </ul>
                     </div>
-
-                    {/* Attributes */}
                     <div className="bg-card border border-border rounded-lg p-4 text-left space-y-2">
                       <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Atributos Finais</p>
                       <div className="grid grid-cols-2 gap-2 text-sm">
@@ -887,8 +939,6 @@ const ScenePage = () => {
                       </div>
                       <p className="text-xs text-muted-foreground pt-1">Decisões: {progress.choicesMade} · Capítulos: {progress.visitedChapters.length}</p>
                     </div>
-
-                    {/* Actions */}
                     <div className="space-y-3">
                       {!isIncomplete && (
                         <button onClick={() => navigate('/progresso')} className="btn-medieval w-full flex items-center justify-center gap-2">
@@ -926,7 +976,6 @@ const ScenePage = () => {
               ) : (
                 <>
                   <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3 font-display">Escolha seu caminho</p>
-
                   {chapter.interactionType === 'drag' && availableChoices.length >= 2 ? (
                     <DragToChoose
                       leftChoice={{ label: availableChoices[0].text, description: availableChoices[0].item ? '✦ Item' : undefined }}
@@ -936,7 +985,6 @@ const ScenePage = () => {
                         handleChoice(choice.nextChapterId, choice.text, choice.effects, choice.consequence, choice.flag, choice.conditionalEffects, choice.item);
                       }}
                     />
-
                   ) : chapter.interactionType === 'timed' ? (
                     <TimedChoice
                       key={`timed-${timedRetryCount}`}
@@ -954,7 +1002,6 @@ const ScenePage = () => {
                         </HoldButton>
                       ))}
                     </TimedChoice>
-
                   ) : chapter.interactionType === 'hold' ? (
                     <div className="space-y-3">
                       {availableChoices.map((choice, i) => (
@@ -965,10 +1012,8 @@ const ScenePage = () => {
                         </HoldButton>
                       ))}
                     </div>
-
                   ) : (
                     <>
-                      {/* Alternate route option */}
                       {dynamicEvents.alternateRoute && (
                         <button
                           onClick={() => handleChoice(dynamicEvents.alternateRoute!.nextChapterId, dynamicEvents.alternateRoute!.hint, {}, dynamicEvents.alternateRoute!.hint)}
@@ -981,7 +1026,6 @@ const ScenePage = () => {
                           <p className="text-xs text-primary/60 mt-1.5 uppercase tracking-wider">✦ Caminho alternativo</p>
                         </button>
                       )}
-
                       {allChoices.map((choice, i) => (
                         <button
                           key={i}
@@ -1000,7 +1044,6 @@ const ScenePage = () => {
                       ))}
                     </>
                   )}
-
                   {lockedChoices.map((choice, i) => (
                     <div key={`locked-${i}`} className="w-full text-left p-4 rounded-lg bg-muted/20 border border-border/50 opacity-50">
                       <p className="text-muted-foreground font-body text-sm flex items-center gap-2">
@@ -1017,6 +1060,7 @@ const ScenePage = () => {
                   ))}
                 </>
               )}
+              </>)}
             </div>
           )}
         </div>
@@ -1125,92 +1169,16 @@ const ScenePage = () => {
         </div>
       </GameNotification>
 
-      {/* ═══ CHARACTER ENTRANCE REVEAL — 3D style, no circle ═══ */}
+      {/* ═══ CHARACTER ENTRANCE REVEAL — EPIC FULLSCREEN STYLE ═══ */}
       {charReveal && (
-        <div
-          className="fixed inset-0 z-[55] flex items-center justify-center pointer-events-auto"
-          onClick={() => {
+        <EpicCharacterView 
+          character={charReveal as any}
+          onDismiss={() => {
             setCharReveal(null);
             setCharRevealDone(true);
             setPersistentChar(charReveal);
           }}
-          style={{ animation: 'charRevealBg 8s ease-out forwards' }}
-        >
-          {/* Dark cinematic backdrop with radial light */}
-          <div className="absolute inset-0" style={{
-            background: 'radial-gradient(ellipse 60% 80% at 50% 60%, hsl(0 0% 0% / 0.5) 0%, hsl(0 0% 0% / 0.92) 100%)',
-          }} />
-
-          {/* Ambient floating particles */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
-            {[...Array(18)].map((_, i) => (
-              <span
-                key={i}
-                className="absolute rounded-full"
-                style={{
-                  width: `${1.5 + Math.random() * 3}px`,
-                  height: `${1.5 + Math.random() * 3}px`,
-                  left: `${5 + Math.random() * 90}%`,
-                  top: `${10 + Math.random() * 80}%`,
-                  background: i % 3 === 0 ? 'hsl(40 70% 60% / 0.7)' : 'hsl(0 0% 80% / 0.4)',
-                  animation: `pilgrimDust ${2.5 + i * 0.4}s ease-in-out infinite`,
-                  animationDelay: `${i * 0.2}s`,
-                }}
-              />
-            ))}
-          </div>
-
-          {/* Character image — VERY BIG, no frame, floating 3D */}
-          <div className="relative z-10 flex flex-col items-center" style={{ animation: 'charRevealIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
-            <div className="relative">
-              <img
-                src={charReveal.img}
-                alt={charReveal.name}
-                className="w-72 h-[22rem] md:w-[22rem] md:h-[28rem] object-cover object-top mx-auto"
-                style={{
-                  borderRadius: '0',
-                  border: 'none',
-                  boxShadow: '0 0 80px hsl(40 50% 45% / 0.25), 0 30px 80px hsl(0 0% 0% / 0.8), -30px 0 60px hsl(0 0% 0% / 0.5), 30px 0 60px hsl(0 0% 0% / 0.5)',
-                  filter: 'contrast(1.12) brightness(1.08) drop-shadow(0 0 30px hsl(40 50% 40% / 0.3))',
-                  maskImage: 'linear-gradient(to bottom, black 65%, transparent 100%)',
-                  WebkitMaskImage: 'linear-gradient(to bottom, black 65%, transparent 100%)',
-                }}
-              />
-              {/* Glow behind character */}
-              <div className="absolute inset-0 -z-10 blur-3xl scale-125" style={{
-                background: 'radial-gradient(ellipse at center 40%, hsl(40 50% 50% / 0.2) 0%, transparent 70%)',
-              }} />
-            </div>
-
-            {/* Name — below image, dramatic */}
-            <div className="text-center mt-2" style={{ animation: 'charRevealName 0.8s ease-out 0.6s both' }}>
-              <p className="font-display text-4xl md:text-5xl font-bold" style={{
-                color: 'hsl(40 80% 75%)',
-                textShadow: '0 4px 20px hsl(0 0% 0% / 0.9), 0 0 60px hsl(40 60% 50% / 0.4)',
-                letterSpacing: '0.03em',
-              }}>
-                {charReveal.name}
-              </p>
-              {charReveal.role && (
-                <p className="text-base md:text-lg mt-2 font-display uppercase tracking-[0.3em]" style={{
-                  color: 'hsl(40 40% 55%)',
-                  textShadow: '0 2px 12px hsl(0 0% 0% / 0.8)',
-                  animation: 'charRevealName 0.6s ease-out 1s both',
-                }}>
-                  {charReveal.role}
-                </p>
-              )}
-            </div>
-
-            {/* Tap hint */}
-            <p className="text-[10px] mt-6 font-display uppercase tracking-widest" style={{
-              color: 'hsl(0 0% 45%)',
-              animation: 'charRevealName 0.5s ease-out 2s both',
-            }}>
-              Toque para continuar
-            </p>
-          </div>
-        </div>
+        />
       )}
     </div>
   );

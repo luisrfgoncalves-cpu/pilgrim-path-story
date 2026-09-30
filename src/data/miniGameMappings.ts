@@ -11,6 +11,15 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
   // ║  FASE 1 — Início da Jornada         ║
   // ╚══════════════════════════════════════╝
 
+  // O Fardo Despertado — Resistência Física (QTE)
+  'cena1': {
+    type: 'qte',
+    difficulty: 'easy',
+    intro: 'O fardo nas suas costas é esmagador! Para não ser esmagado, clique rapidamente nos pontos de tensão que aparecerão na tela!',
+    successBonus: { perseveranca: 1, coragem: 1 },
+    failurePenalty: { fe: -1 },
+  },
+
   // Fuga da Cidade — QTE (correr!)
   'cena2': {
     type: 'qte',
@@ -18,6 +27,15 @@ export const miniGameMappings: Record<string, MiniGameConfig> = {
     intro: 'Você precisa correr! Os vizinhos tentam impedi-lo. Toque nos obstáculos para desviar!',
     successBonus: { coragem: 1 },
     failurePenalty: { coragem: -1 },
+  },
+
+  // Pressão da Família — Filtrar vozes
+  'cena3': {
+    type: 'wordpuzzle',
+    difficulty: 'easy',
+    intro: 'Para abafar os gritos terríveis da sua família chamando você de louco, monte a Escritura da Verdade no meio do caos e recupere seu foco!',
+    successBonus: { discernimento: 2, fe: 1 },
+    failurePenalty: { discernimento: -1, coragem: -1 },
   },
 
   // Pântano do Desânimo — Stealth

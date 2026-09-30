@@ -1,4 +1,4 @@
-import cidadeDestruicao from '@/assets/scenes/cidade-destruicao.jpg';
+import cidadeDestruicao from '@/assets/scenes/cidade-destruicao-cinematic.png';
 import cristaPartida from '@/assets/scenes/crista-partida.jpg';
 import pantanoDesanimo from '@/assets/scenes/pantano-desanimo.jpg';
 import portaoEstreito from '@/assets/scenes/portao-estreito.jpg';

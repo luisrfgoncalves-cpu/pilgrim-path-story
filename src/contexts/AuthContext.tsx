@@ -57,12 +57,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
 
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
       if (session?.user) {
+        setSession(session);
+        setUser(session.user);
         fetchProfile(session.user.id);
+        setLoading(false);
+      } else {
+        // DEVELOPER BYPASS: Mock profile for instant testing in local environment
+        setSession({ user: { id: 'guest-pilgrim' }, access_token: 'mock', refresh_token: 'mock', expires_in: 3600, token_type: 'bearer' } as any);
+        setUser({ id: 'guest-pilgrim', email: 'guest@pilgrim.app' } as any);
+        setProfile({
+          id: 'guest-pilgrim',
+          display_name: 'Peregrino Convidado',
+          avatar_style: 'standard',
+          bio: 'Em busca da verdade.',
+          current_phase: 1,
+          total_choices: 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        } as any);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();

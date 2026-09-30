@@ -19,6 +19,7 @@ import AuthPage from "./pages/AuthPage.tsx";
 // Lazy loaded pages (loaded on demand — saves ~500KB+ on initial load)
 const JourneysPage = lazy(() => import("./pages/JourneysPage.tsx"));
 const ScenePage = lazy(() => import("./pages/ScenePage.tsx"));
+const CinemaPage = lazy(() => import("./pages/CinemaPage.tsx"));
 const ResultPage = lazy(() => import("./pages/ResultPage.tsx"));
 const ProgressPage = lazy(() => import("./pages/ProgressPage.tsx"));
 const CharactersPage = lazy(() => import("./pages/CharactersPage.tsx"));
@@ -132,6 +133,9 @@ const App = () => (
             } />
             <Route path="/multiplayer" element={
               isPreviewMode ? <PreviewTrialGate><MultiplayerPage /></PreviewTrialGate> : <AuthGate><MultiplayerPage /></AuthGate>
+            } />
+            <Route path="/cinema" element={
+              isPreviewMode ? <PreviewTrialGate><CinemaPage /></PreviewTrialGate> : <AuthGate><CinemaPage /></AuthGate>
             } />
             <Route path="/cena" element={
               isPreviewMode

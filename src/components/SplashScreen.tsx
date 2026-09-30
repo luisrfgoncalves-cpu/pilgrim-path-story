@@ -164,7 +164,11 @@ const SplashScreen = ({ onFinish }: SplashScreenProps) => {
     soundtrackRef.current?.stop();
     playEnterSfx();
     setFadeOut(true);
-    setTimeout(onFinish, 700);
+    // Action RPG Transition: predictable and smooth
+    setTimeout(() => {
+      onFinish();
+      window.scrollTo(0, 0);
+    }, 600);
   }, [onFinish]);
 
   return (

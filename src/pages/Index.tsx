@@ -101,6 +101,8 @@ const Index = () => {
   const handleSplashDone = useCallback(() => {
     setShowSplash(false);
     sessionStorage.setItem('splash_seen', '1');
+    // Force a small scroll to ensure the next view is positioned correctly
+    window.scrollTo(0, 0);
   }, []);
 
   const handleBackToSplash = useCallback(() => {
@@ -118,9 +120,16 @@ const Index = () => {
     }
   }, [streak, showSplash]);
 
-  const handleContinue = () => { startJourney(); navigate('/cena'); };
+  const handleContinue = () => { 
+    startJourney(); 
+    toast.success("Retornando ao caminho...", { icon: '👣' });
+    navigate('/cena'); 
+  };
   const handleNewJourney = (campaign: 'part1' | 'part2' = 'part1') => {
-    resetProgress(campaign); startJourney(); navigate('/cena');
+    resetProgress(campaign); 
+    startJourney(); 
+    toast.success("Uma nova alma desperta!", { icon: '✨' });
+    navigate('/cena');
   };
 
   const isPart2 = progress.campaign === 'part2';
